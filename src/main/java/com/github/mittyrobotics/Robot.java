@@ -1,6 +1,8 @@
 
 package com.github.mittyrobotics;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +18,8 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  AddressableLED led;
+  AddressableLEDBuffer buffer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -27,7 +31,12 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    led = new AddressableLED(1);
+    buffer = new AddressableLEDBuffer(100);
 
+    led.setLength(buffer.getLength());
+    led.setData(buffer);
+    led.start();
   }
 
   /**
@@ -38,7 +47,12 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    for (int i = 0; i < buffer.getLength(); i++) {
+      buffer.setRGB(i, 255, 0, 0);
+    }
+    led.setData(buffer);
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
