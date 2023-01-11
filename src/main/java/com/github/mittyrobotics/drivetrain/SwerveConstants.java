@@ -44,8 +44,8 @@ public class SwerveConstants {
 
 
     public static final double STARTING_HEADING = 0;
-    public static final double TRACK_WIDTH = 22.25 * 2.54 / 100.;
-    public static final double LENGTH = 22.25 * 2.54 / 100.;
+    public static final double TRACK_WIDTH = 22.75 * 2.54 / 100.;
+    public static final double LENGTH = 25.75 * 2.54 / 100.;
 
     public static final double JOYSTICK_DEADZONE = 0.05;
 
