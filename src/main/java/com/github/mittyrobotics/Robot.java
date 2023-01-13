@@ -18,8 +18,10 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  /*
   AddressableLED led;
   AddressableLEDBuffer buffer;
+   */
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -31,12 +33,15 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    /*
     led = new AddressableLED(1);
     buffer = new AddressableLEDBuffer(100);
 
     led.setLength(buffer.getLength());
     led.setData(buffer);
     led.start();
+    */
+
   }
 
   /**
@@ -48,10 +53,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    /*
     for (int i = 0; i < buffer.getLength(); i++) {
       buffer.setRGB(i, 255, 0, 0);
     }
     led.setData(buffer);
+    */
   }
 
   /**
