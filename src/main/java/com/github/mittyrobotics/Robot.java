@@ -1,6 +1,10 @@
 
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -14,12 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  AddressableLED led;
-  AddressableLEDBuffer buffer;
+//  private static final String kDefaultAuto = "Default";
+//  private static final String kCustomAuto = "My Auto";
+//  private String m_autoSelected;
+//  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+//  AddressableLED led;
+//  AddressableLEDBuffer buffer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -27,16 +31,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+//    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+//    m_chooser.addOption("My Auto", kCustomAuto);
+//    SmartDashboard.putData("Auto choices", m_chooser);
+//
+//    led = new AddressableLED(0);
+//    buffer = new AddressableLEDBuffer(150);
+//
+//    led.setLength(buffer.getLength());
+//    led.setData(buffer);
+//    led.start();
 
-    led = new AddressableLED(1);
-    buffer = new AddressableLEDBuffer(100);
-
-    led.setLength(buffer.getLength());
-    led.setData(buffer);
-    led.start();
+    SwerveSubsystem.getInstance().initHardware();
   }
 
   /**
@@ -48,10 +54,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    for (int i = 0; i < buffer.getLength(); i++) {
-      buffer.setRGB(i, 255, 0, 0);
-    }
-    led.setData(buffer);
+//    for (int i = 0; i < buffer.getLength(); i++) {
+//      buffer.setRGB(i, 255, 0, 0);
+//    }
+//    led.setData(buffer);
   }
 
   /**
@@ -66,23 +72,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+//    m_autoSelected = m_chooser.getSelected();
+//    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+//    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+//    switch (m_autoSelected) {
+//      case kCustomAuto:
+//        // Put custom auto code here
+//        break;
+//      case kDefaultAuto:
+//      default:
+//        // Put default auto code here
+//        break;
+//    }
   }
 
   /** This function is called once when teleop is enabled. */
@@ -91,7 +97,12 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SwerveSubsystem.getInstance().setSwerveModule(new Vector(0.3, 0.1), 0.1);
+    SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+    SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
+//    System.out.println(SwerveSubsystem.getInstance().getPose());
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
