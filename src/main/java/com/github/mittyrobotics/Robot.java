@@ -1,11 +1,17 @@
 
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.led.LedConstants;
+import com.github.mittyrobotics.led.LedSubsystem;
+import com.github.mittyrobotics.led.commands.PurpleCommand;
+import com.github.mittyrobotics.led.commands.RainbowCommand;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,10 +24,10 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  /*
+/*
   AddressableLED led;
   AddressableLEDBuffer buffer;
-   */
+*/
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,18 +35,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    LedSubsystem.getInstance().initHardware();
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    /*
-    led = new AddressableLED(1);
-    buffer = new AddressableLEDBuffer(100);
 
-    led.setLength(buffer.getLength());
-    led.setData(buffer);
-    led.start();
-    */
+//    led = new AddressableLED(9);
+//    buffer = new AddressableLEDBuffer(150);
+//
+//
+//
+//    led.setLength(buffer.getLength());
+//    led.setData(buffer);
+//    led.start();
+
 
   }
 
@@ -53,12 +63,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    /*
-    for (int i = 0; i < buffer.getLength(); i++) {
-      buffer.setRGB(i, 255, 0, 0);
-    }
-    led.setData(buffer);
-    */
+    CommandScheduler.getInstance().run();
+
+//    for (int i = 0; i < buffer.getLength(); i++) {
+//      buffer.setHSV(i, 0, 99, 99);
+//    }
+//    led.setData(buffer);
+
   }
 
   /**
@@ -94,7 +105,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    CommandScheduler.getInstance().schedule(new PurpleCommand());
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -102,11 +115,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+      LedSubsystem.getInstance().stopOutput();
+  }
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override

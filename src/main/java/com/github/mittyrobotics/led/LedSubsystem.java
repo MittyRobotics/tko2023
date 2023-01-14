@@ -56,10 +56,26 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     public void setHsvRange(int startIndex, int endIndex, int h, int s, int v) {
         //indexes from 0 | i.e. first led = 0, second led = 1, and so on
-        for (int i = startIndex; i < endIndex + 1; i++) {
+        for (int i = startIndex; i < endIndex; i++) {
             buffer.setHSV(i, h, s, v);
         }
         ledStrip.setData(buffer);
+    }
+
+    public void setRgb(int index, int r, int g, int b) {
+        buffer.setRGB(index, r, g, b);
+        ledStrip.setData(buffer);
+    }
+
+    public void setRgbRange(int startIndex, int endIndex, int r, int g, int b) {
+        for (int i = startIndex; i < endIndex; i++) {
+            buffer.setRGB(i, r, g, b);
+        }
+        ledStrip.setData(buffer);
+    }
+
+    public void disable() {
+        ledStrip.close();
     }
 
 }

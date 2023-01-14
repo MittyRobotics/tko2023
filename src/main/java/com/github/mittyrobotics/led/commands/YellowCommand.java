@@ -17,7 +17,7 @@ public class YellowCommand extends CommandBase {
         LedSubsystem.getInstance().startOutput();
 
         for (int i = 0; i < 3; i++) {
-            yellowHsv[i] = LedConstants.HSV_VALUES[2][i];
+            yellowHsv[i] = LedConstants.RGB_VALUES[2][i];
         }
     }
 
