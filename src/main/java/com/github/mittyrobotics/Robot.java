@@ -1,16 +1,11 @@
 
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.led.LedConstants;
 import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.led.commands.PurpleCommand;
-import com.github.mittyrobotics.led.commands.RainbowCommand;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
