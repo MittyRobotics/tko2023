@@ -114,4 +114,8 @@ public class SwervePath {
     public double getKd() {
         return kd;
     }
+
+    public double getLookahead() {
+        return lookahead;
+    }
 }

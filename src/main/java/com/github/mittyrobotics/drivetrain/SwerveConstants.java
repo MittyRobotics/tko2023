@@ -4,11 +4,11 @@ public class SwerveConstants {
 
     //in the order of quadrants
 
-    public static final int DRIVE_FALCON[] = {2, 0, 6, 4}; // 3, 10, 11, 7
+    public static final int DRIVE_FALCON[] = {6, 4, 2, 0}; // 3, 10, 11, 7
 
     //in the order of quadrants
 
-    public static final int ROTATION_FALCON[] = {3, 1, 7, 5};//6, 4, 9, 2
+    public static final int ROTATION_FALCON[] = {7, 5, 3, 1};//6, 4, 9, 2
 
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
@@ -68,7 +68,7 @@ public class SwerveConstants {
 
     public static final double TICKS_PER_RADIAN_MAG_ENCODER = MAG_ENCODER_TICKS / MAG_ENCODER_SAMPLING_RATE / (2*Math.PI);
 
-    public static final int PIGEON_TWO_ID = 62;
+    public static final int PIGEON_TWO_ID = 61;
     public static final double[] PIGEON_TWO_MOUNT_CONFIG = {-90, 0, 0}; //(-Yaw) Angle --> +CW, Pitch, Roll
     public static final double TRIGGER_THRESHOLD = 0.05;
 

@@ -70,10 +70,10 @@ public class SwervePurePursuitCommand extends CommandBase {
         speed = Math.min(speed, vi);
 
         SmartDashboard.putString("closest point", currentPath.getByT(closest).getPosition().toString());
-        Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, LOOKAHEAD);
+        Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
         SmartDashboard.putString("vector to lookahead", vectorToLookahead.toString());
 
-        System.out.println(vectorToLookahead);
+        //System.out.println(vectorToLookahead);
         // TODO: 9/4/2022 Fill in linear velocity scalar
 //        double scalar = 0.5;
 //        Vector linearVel = Vector.multiply(scalar, vectorToLookahead);
@@ -81,9 +81,9 @@ public class SwervePurePursuitCommand extends CommandBase {
         Vector linearVel = new Vector(vectorToLookahead.getY(), vectorToLookahead.getX());
 
         // TODO: 9/5/2022 Fill in angular PID constants (likely just P)
-        double angularVel = angularController.calculate(robot.getHeading().getRadians(), currentPath.getHeadingAtLookahead(robot, LOOKAHEAD).getRadians());
+        double angularVel = angularController.calculate(robot.getHeading().getRadians(), currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians());
         double currentAngle = robot.getHeading().getRadians();
-        double desiredAngle = currentPath.getHeadingAtLookahead(robot, LOOKAHEAD).getRadians();
+        double desiredAngle = currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians();
         SmartDashboard.putNumber("Desired Angle", desiredAngle);
 
         SmartDashboard.putNumber("Angular Velocity", angularVel);
@@ -100,7 +100,7 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         SmartDashboard.putNumber("angular Vel", angularVel);
         SmartDashboard.putNumber("current Heading", robot.getHeading().getRadians());
-        SmartDashboard.putNumber("desired Heading", currentPath.getHeadingAtLookahead(robot, LOOKAHEAD).getRadians());
+        SmartDashboard.putNumber("desired Heading", currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians());
 
 //        System.out.println(linearVel);
 
@@ -120,8 +120,9 @@ public class SwervePurePursuitCommand extends CommandBase {
 
 
         linearVel = new Vector(new Angle(angle), speed);
+        System.out.println("SPEED: " + speed);
 //        linearVel = new Vector(linearVel.getY(), linearVel.getX());
-        System.out.println(linearVel + " " + Math.atan2(linearVel.getY(), linearVel.getX()));
+//        System.out.println(linearVel + " " + Math.atan2(linearVel.getY(), linearVel.getX()));
 
         SmartDashboard.putNumber("Speed", speed);
         SmartDashboard.putString("linear vel", linearVel.toString());
@@ -135,6 +136,13 @@ public class SwervePurePursuitCommand extends CommandBase {
             linearVel = new Vector(0, 0);
             angularVel = 0;
             SmartDashboard.putBoolean("Halted", true);
+//            System.out.println("Halted: " + true);
+//            System.out.println("Halted: " + true);
+//            System.out.println("Halted: " + true);
+//            System.out.println("Halted: " + true);
+//            System.out.println("Halted: " + true);
+//            System.out.println("Halted: " + true);
+
         }
 //
 //        System.out.println("VTLA1:               " + vectorToLookahead);

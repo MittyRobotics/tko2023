@@ -1,15 +1,22 @@
 
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
+import com.github.mittyrobotics.drivetrain.commands.SwerveCommand;
+import com.github.mittyrobotics.drivetrain.commands.TriggerAngular;
+import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,10 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-//  private static final String kDefaultAuto = "Default";
-//  private static final String kCustomAuto = "My Auto";
-//  private String m_autoSelected;
-//  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private static final String kDefaultAuto = "Default";
+  private static final String kCustomAuto = "My Auto";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 //  AddressableLED led;
 //  AddressableLEDBuffer buffer;
 
@@ -41,7 +48,7 @@ public class Robot extends TimedRobot {
 //    led.setLength(buffer.getLength());
 //    led.setData(buffer);
 //    led.start();
-
+    Gyro.getInstance().initHardware();
     SwerveSubsystem.getInstance().initHardware();
   }
 
@@ -54,10 +61,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
 //    for (int i = 0; i < buffer.getLength(); i++) {
 //      buffer.setRGB(i, 255, 0, 0);
 //    }
 //    led.setData(buffer);
+    SmartDashboard.putString("Pose", SwerveSubsystem.getInstance().getPose().toString());
   }
 
   /**
@@ -72,14 +81,123 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    //Pose poseStart = new Pose(new Point(-271, 116), new Angle(Math.PI/2), false);
+    int accel = 22;
+    int maxSpeed = 3;
+    double whenToEnd = 0.5;
+
+    SwervePath[] paths = {
+            //simulate approximate game path
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(0, 0), new Angle(-Math.PI/2), new Point(2, -4), new Angle(-Math.PI/4)),
+                    new Angle(0),
+                    new Angle(Math.PI/2),
+                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
+            ),
+
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(2, -4), new Angle(3*Math.PI/4), new Point(0, 0), new Angle(Math.PI/2)),
+                    new Angle(Math.PI/2),
+                    new Angle(0),
+                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
+            )
+
+            //W
+
+//            new SwervePath(
+//                    new QuinticHermiteSpline(new Point(0,0), new Vector(2, -10), new Vector(0, 0), new Point(1.25, -1.5), new Vector(1, 0), new Vector(0, 0)),
+//                    new Angle(0),
+//                    new Angle(Math.PI),
+//                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd),
+//
+//            new SwervePath(
+//                    new QuinticHermiteSpline(new Point(1.25,-1.5), new Vector(1, 0), new Vector(0, 0), new Point(2.5, 0), new Vector(2, 10), new Vector(0, 0)),
+//                    new Angle(Math.PI),
+//                    new Angle(0),
+//                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd),
+//
+//            new SwervePath(
+//                    new QuinticHermiteSpline(new Point(2.5,0), new Vector(-2, -10), new Vector(0, 0), new Point(1.25, -1.5), new Vector(-1, 0), new Vector(0, 0)),
+//                    new Angle(0),
+//                    new Angle(Math.PI),
+//                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd),
+//
+//            new SwervePath(
+//                    new QuinticHermiteSpline(new Point(1.25,-1.5), new Vector(-1, 0), new Vector(0, 0), new Point(0, 0), new Vector(-2, 10), new Vector(0, 0)),
+//                    new Angle(Math.PI),
+//                    new Angle(0),
+//                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd),
+
+//
+
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,0), new Vector(-5, 0), new Vector(0, 0), new Point(0, 1.5), new Vector(-5, 0), new Vector(0, 0)),
+//                        new Angle(0),
+//                        new Angle(Math.PI/2),
+//                        0, 0, 1.5, 0.5, 0.5, 0.2, 2.5, 0, 0.02),
+//
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,1.5), new Vector(-5, 0), new Vector(0, 0), new Point(0, 0), new Vector(-5, 0), new Vector(0, 0)),
+//                        new Angle(Math.PI/2),
+//                        new Angle(2 * Math.PI),
+//                        0, 0, 1.5, 0.5, 0.5, 0.2, 2.5, 0, 0.02),
+
+            //CIRCLE PATH
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,0), new Angle(0), new Point(0, 2), new Angle(Math.PI)),
+//                        new Angle(0),
+//                        new Angle(Math.PI),
+//                        0, 0, 1, 0.5, 0.5, 0.2, 2.5, 0, 0.02),
+//
+            //S PATH
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,0), new Angle(0), new Point(0, 2), new Angle(0)),
+//                        new Angle(0),
+//                        new Angle(Math.PI),
+//                        0, 0, 1, 0.6, 0.6, 0.2, 2.5, 0, 0.02),
+//
+            // D PATH
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,0), new Angle(Math.PI/2), new Point(0, 2.5), new Angle(Math.PI/2.)),
+//                        new Angle(0),
+//                        new Angle(Math.PI/2),
+//                        0, 0, 0.5, 0.5, 0.5, 1),
+//
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,2.5), new Angle(Math.PI), new Point(0, 0), new Angle(0)),
+//                        new Angle(Math.PI/2),
+//                        new Angle(0),
+//                        0, 0, 0.5, 0.5, 0.5, 1)
+
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(0,2), new Angle(Math.PI), new Point(0, 0), new Angle(0)),
+//                        new Angle(0),
+//                        new Angle(0),
+//                        0, 0, 0.5, 0.5, 0.5, 1)
+
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(5,5), new Angle(Math.atan2(2, 3)), new Point(8,7), new Angle(Math.atan2(2, 3))),
+//                        new Angle(0),
+//                        new Angle(0)),
+//                new SwervePath(
+//                        new QuinticHermiteSpline(new Point(8,7), new Angle(Math.PI), new Point(2,2), new Angle(Math.PI)),
+//                        new Angle(0),
+//                        new Angle(0)),
+    };
+
+    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+    SwerveSubsystem.getInstance().setDefaultCommand(command);
+//
 //    m_autoSelected = m_chooser.getSelected();
-//    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-//    System.out.println("Auto selected: " + m_autoSelected);
+//    m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+////    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    System.out.println("POSE: " + SwerveSubsystem.getInstance().getPose());
+    SwerveSubsystem.getInstance().updateForwardKinematics();
 //    switch (m_autoSelected) {
 //      case kCustomAuto:
 //        // Put custom auto code here
@@ -93,14 +211,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    CommandScheduler.getInstance().schedule(new JoystickThrottleCommand());
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SwerveSubsystem.getInstance().setSwerveModule(new Vector(0.3, 0.1), 0.1);
+    /*
+    SwerveSubsystem.getInstance().setSwerveModule(new Vector(1, 0.0), -2);
     SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
     SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
+    */
 //    System.out.println(SwerveSubsystem.getInstance().getPose());
   }
 
