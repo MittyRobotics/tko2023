@@ -4,19 +4,16 @@ package com.github.mittyrobotics;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
-import com.github.mittyrobotics.drivetrain.commands.SwerveCommand;
-import com.github.mittyrobotics.drivetrain.commands.TriggerAngular;
 import com.github.mittyrobotics.util.Gyro;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -62,6 +59,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+
     CommandScheduler.getInstance().run();
 //    for (int i = 0; i < buffer.getLength(); i++) {
 //      buffer.setRGB(i, 255, 0, 0);
@@ -82,15 +81,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    SwerveSubsystem.getInstance().setAnglesZero();
-    SwerveSubsystem.getInstance().setWheelPercentOutput(1);
+
+//    SwerveSubsystem.getInstance().setAnglesZero();
+
+
+//    SwerveSubsystem.getInstance().setWheelPercentOutput(1);
 
     //Pose poseStart = new Pose(new Point(-271, 116), new Angle(Math.PI/2), false);
-//    int accel = 22;
-//    int maxSpeed = 1;
-//    double whenToEnd = 0.5;
+    int accel = 12;
+    int maxSpeed = 6;
+    double whenToEnd = 0.5;
+    int decel = 3;
 //
-//    SwervePath[] paths = {
+    SwervePath[] paths = {
 //            //straight line max speed test
 ////            new SwervePath(
 ////                    new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(2, -4), new Angle(Math.PI/2)),
@@ -100,19 +103,19 @@ public class Robot extends TimedRobot {
 ////            ),
 //
 //            //simulate approximate game path
-////            new SwervePath(
-////                    new QuinticHermiteSpline(new Point(0, 0), new Angle(-Math.PI/2), new Point(2, -4), new Angle(-Math.PI/4)),
-////                    new Angle(0),
-////                    new Angle(Math.PI/2),
-////                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
-////            ),
-////
-////            new SwervePath(
-////                    new QuinticHermiteSpline(new Point(2, -4), new Angle(3*Math.PI/4), new Point(0, 0), new Angle(Math.PI/2)),
-////                    new Angle(Math.PI/2),
-////                    new Angle(0),
-////                    0, 0, maxSpeed, accel, 0.75, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
-////            )
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(0, 0), new Angle(-Math.PI/2), new Point(2, -6), new Angle(-Math.PI/4)),
+                    new Angle(0),
+                    new Angle(Math.PI/2),
+                    0, 0, maxSpeed, accel, decel, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
+            ),
+
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(2, -6), new Angle(3*Math.PI/4), new Point(0, 0), new Angle(Math.PI/2)),
+                    new Angle(Math.PI/2),
+                    new Angle(0),
+                    0, 0, maxSpeed, accel, decel, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
+            )
 //
 //            //W
 //
@@ -195,10 +198,10 @@ public class Robot extends TimedRobot {
 ////                        new QuinticHermiteSpline(new Point(8,7), new Angle(Math.PI), new Point(2,2), new Angle(Math.PI)),
 ////                        new Angle(0),
 ////                        new Angle(0)),
-//    };
-//
-//    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
-//    SwerveSubsystem.getInstance().setDefaultCommand(command);
+    };
+//was 0.05, 0.07
+    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+    SwerveSubsystem.getInstance().setDefaultCommand(command);
 //
 //    m_autoSelected = m_chooser.getSelected();
 //    m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
@@ -208,7 +211,24 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    System.out.println("Velocity: " + SwerveSubsystem.getInstance().getSpeedOneMeters());
+//    SwerveSubsystem.getInstance().setMeterPerSecond(-1);
+//    SwerveSubsystem.getInstance().setWheelPercentOutput(0.3);
+
+//    if(SwerveSubsystem.getInstance().ticks(0) > -2048 - 4096) {
+//      SwerveSubsystem.getInstance().setWheelPercentOutput(-0.1);
+//    } else {
+//      SwerveSubsystem.getInstance().setWheelPercentOutput(0);
+//    }
+//    for (int i = 0; i < 4; i++) {
+//      System.out.println("Velocity " + i + " " + SwerveSubsystem.getInstance().getAllSpeedsMeters()[i]);
+//    }
+
+//    System.out.println(SwerveConstants.FALCON_TICKS / SwerveConstants.DRIVE_WHEEL_TO_FALCON_GEAR_RATIO);
+
+//    System.out.println("Wheel Zero Ticks: " + SwerveSubsystem.getInstance().ticks(0));
+
+
+
 //    System.out.println("POSE: " + SwerveSubsystem.getInstance().getPose());
     SwerveSubsystem.getInstance().updateForwardKinematics();
 //    switch (m_autoSelected) {
@@ -242,7 +262,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Brake);
+//    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically when disabled. */

@@ -279,8 +279,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
     }
 
-    public double getSpeedOneMeters() {
-        return driveFalcon[1].getSelectedSensorVelocity() / SwerveConstants.TICKS_PER_METER * 10;
+    public double[] getAllSpeedsMeters() {
+        double[] res = new double[4];
+        for (int i = 0; i < 4; i++) {
+            res[i] = driveFalcon[i].getSelectedSensorVelocity() / SwerveConstants.TICKS_PER_METER * 10;
+        }
+        return res;
     }
 
     public double ticks(int i) {

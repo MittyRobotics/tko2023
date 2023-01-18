@@ -67,7 +67,7 @@ public class SwervePurePursuitCommand extends CommandBase {
                 currentPath.getEndSpeed() * currentPath.getEndSpeed() + 2 * currentPath.getDecel() * length
         );
 
-        speed = Math.min(speed, vi);
+        SmartDashboard.putBoolean("Speed less than max", vi < speed);
 
         SmartDashboard.putString("closest point", currentPath.getByT(closest).getPosition().toString());
         Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
