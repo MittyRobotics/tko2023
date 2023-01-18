@@ -1,7 +1,11 @@
 
 package com.github.mittyrobotics;
 
+import edu.wpi.first.hal.DIOJNI;
+import edu.wpi.first.hal.simulation.DIODataJNI;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -12,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  DigitalInput di;
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -23,6 +28,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    di = new DigitalInput(4);
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -38,7 +45,11 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    System.out.println(di.get());
+    DIOSim dioSim = new DIOSim(4);
+    dioSim.get
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
