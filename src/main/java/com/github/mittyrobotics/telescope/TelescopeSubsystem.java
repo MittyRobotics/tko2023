@@ -35,9 +35,11 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setI(TelescopeConstants.DEFAULT_I);
         telescopeNeo.getPIDController().setD(TelescopeConstants.DEFAULT_D);
         telescopeNeo.restoreFactoryDefaults();
-        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MAX_VELOCITY);
-        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MIN_VELOCITY);
-        telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, );
+        telescopeNeo.getPIDController().setFeedbackDevice(telescopeNeo.getEncoder());
+        telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MAX_VELOCITY, 0);
+        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
+        telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, 0);
     }
 
     public void setPID(double P, double I, double D) {
