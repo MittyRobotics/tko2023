@@ -51,8 +51,7 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     public boolean pieceHeld(){
         double lowerThreshold;
         double upperThreshold;
-        //TODO: translate position to degrees
-        double currentPosition = grabberSpark.getEncoder().getPosition();
+        double currentPosition = grabberSpark.getEncoder().getPosition()*180;
         if(isCone){
             //TODO: tune upper/lower threshold values
             lowerThreshold=IntakeConstants.CONE_DEGREES-5;
