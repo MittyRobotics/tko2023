@@ -43,10 +43,12 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     }
 
     public void setGrabberAngle(double angle){
+        grabberSpark.getPIDController().setFeedbackDevice(grabberSpark.getEncoder());
         grabberSpark.getPIDController().setReference(angle*IntakeConstants.GRABBER_ROTATIONS_PER_DEGREE, CANSparkMax.ControlType.kPosition);
     }
 
     public boolean pieceHeld(){
+        
         return !clawProxSensor.get();
     }
 }
