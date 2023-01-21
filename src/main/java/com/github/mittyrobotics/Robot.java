@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+    SwerveSubsystem.getInstance().updateForwardKinematics();
 
     CommandScheduler.getInstance().run();
 //    for (int i = 0; i < buffer.getLength(); i++) {
@@ -104,14 +105,14 @@ public class Robot extends TimedRobot {
 //
 //            //simulate approximate game path
             new SwervePath(
-                    new QuinticHermiteSpline(new Point(0, 0), new Angle(-Math.PI/2), new Point(2, -6), new Angle(-Math.PI/4)),
+                    new QuinticHermiteSpline(new Point(0, 0), new Angle(-Math.PI/2), new Point(1.5, -5.5), new Angle(-Math.PI/4)),
                     new Angle(0),
                     new Angle(Math.PI/2),
                     0, 0, maxSpeed, accel, decel, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
             ),
 
             new SwervePath(
-                    new QuinticHermiteSpline(new Point(2, -6), new Angle(3*Math.PI/4), new Point(0, 0), new Angle(Math.PI/2)),
+                    new QuinticHermiteSpline(new Point(1.5, -5.5), new Angle(3*Math.PI/4), new Point(0, 0), new Angle(Math.PI/2)),
                     new Angle(Math.PI/2),
                     new Angle(0),
                     0, 0, maxSpeed, accel, decel, 0.2, 0.2, 2.5, 0, 0.02, whenToEnd
@@ -230,7 +231,7 @@ public class Robot extends TimedRobot {
 
 
 //    System.out.println("POSE: " + SwerveSubsystem.getInstance().getPose());
-    SwerveSubsystem.getInstance().updateForwardKinematics();
+
 //    switch (m_autoSelected) {
 //      case kCustomAuto:
 //        // Put custom auto code here

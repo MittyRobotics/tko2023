@@ -31,12 +31,12 @@ public class JoystickThrottleCommand extends CommandBase {
 
     @Override
     public void execute() {
-        leftY = OI.getInstance().getPS4Controller().getLeftX();
-        leftX = -OI.getInstance().getPS4Controller().getLeftY();
+        leftY = OI.getInstance().getDriveController().getLeftX();
+        leftX = -   OI.getInstance().getDriveController().getLeftY();
 //        rightY = OI.getInstance().getDriveController().getRightX();
-        rightX = -OI.getInstance().getPS4Controller().getRightX();
+        rightX = -OI.getInstance().getDriveController().getRightX();
 //        leftTrigger = OI.getInstance().getDriveController().getLeftTriggerAxis();
-        rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
+        rightTrigger = OI.getInstance().getDriveController().getRightTriggerAxis();
 //        System.out.println(rightTrigger);
 //        System.out.println("leftx: " +  leftX);
 
