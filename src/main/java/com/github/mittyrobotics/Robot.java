@@ -22,10 +22,11 @@ public class Robot extends TimedRobot {
   public static CANSparkMax armAngleSpark1, armAngleSpark2;
 
   public static CANSparkMax extensionSpark;
+
   public static CANSparkMax gripSpark1, gripSpark2;
 
   public static Encoder armAngleEncoder1, armAngleEncoder2;
-
+  public static Encoder extensionEncoder;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -100,6 +101,8 @@ public class Robot extends TimedRobot {
 
     armAngleEncoder1.setDistancePerPulse(1/Constants.TICKS_PER_DEGREE);
 
+    extensionEncoder = new Encoder(1,2);
+
 
 
   }
@@ -110,6 +113,10 @@ public class Robot extends TimedRobot {
     if (armAngleEncoder1.getDistance()<45*Constants.TICKS_PER_DEGREE){
       armAngleSpark1.set(1);
       armAngleSpark2.set(1);
+
+    }
+    if(extensionEncoder.getDistance()<Constants.MAX_EXTENSION){
+      extensionSpark.set(1);
     }
   }
   /** This function is called once when the robot is disabled. */
