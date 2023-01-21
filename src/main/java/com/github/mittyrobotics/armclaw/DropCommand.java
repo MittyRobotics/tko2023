@@ -5,9 +5,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class GrabCommand extends InstantCommand {
+public class DropCommand extends InstantCommand {
 
-    public GrabCommand(boolean isCone) {
-        super(() -> ClawGrabberSubsystem.getInstance().setGrabberAngle(isCone ? ClawConstants.CONE_DEGREES : ClawConstants.CUBE_DEGREES));
+    public DropCommand() {
+        super(() -> ClawGrabberSubsystem.getInstance().setGrabberAngle(ClawConstants.OPEN_DEGREES));
     }
 }
