@@ -1,10 +1,9 @@
-package com.github.mittyrobotics.armclaw;
+package com.github.mittyrobotics.intake;
 
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsystem {
@@ -31,11 +30,11 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
 
     @Override
     public void initHardware() {
-        grabberSpark = new CANSparkMax(ClawConstants.GRABBER_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        grabberSpark = new CANSparkMax(IntakeConstants.GRABBER_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         grabberSpark.restoreFactoryDefaults();
         grabberSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        grabberSpark.setInverted(ClawConstants.GRABBER_SPARK_INVERTED);
-        clawProxSensor = new DigitalInput(ClawConstants.CLAW_PROX_SENSOR_CHANNEL);
+        grabberSpark.setInverted(IntakeConstants.GRABBER_SPARK_INVERTED);
+        clawProxSensor = new DigitalInput(IntakeConstants.CLAW_PROX_SENSOR_CHANNEL);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     }
 
     public void setGrabberAngle(double angle){
-        grabberSpark.getPIDController().setReference(angle*ClawConstants.GRABBER_ROTATIONS_PER_DEGREE, CANSparkMax.ControlType.kPosition);
+        grabberSpark.getPIDController().setReference(angle*IntakeConstants.GRABBER_ROTATIONS_PER_DEGREE, CANSparkMax.ControlType.kPosition);
     }
 
     public boolean pieceHeld(){

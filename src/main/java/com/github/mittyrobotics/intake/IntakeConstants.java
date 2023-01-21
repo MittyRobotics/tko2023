@@ -1,6 +1,6 @@
-package com.github.mittyrobotics.armclaw;
+package com.github.mittyrobotics.intake;
 
-public class ClawConstants {
+public class IntakeConstants {
 
     //TODO: figure literally everything out
     public static final double GRABBER_GEAR_RATIO = 1;

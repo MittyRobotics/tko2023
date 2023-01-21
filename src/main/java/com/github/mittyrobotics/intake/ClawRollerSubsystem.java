@@ -1,10 +1,8 @@
-package com.github.mittyrobotics.armclaw;
+package com.github.mittyrobotics.intake;
 
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
@@ -30,9 +28,9 @@ public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
 
     @Override
     public void initHardware() {
-        rollerSpark = new CANSparkMax(ClawConstants.ROLLER_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rollerSpark = new CANSparkMax(IntakeConstants.ROLLER_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         rollerSpark.restoreFactoryDefaults();
         rollerSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        rollerSpark.setInverted(ClawConstants.ROLLER_SPARK_INVERTED);
+        rollerSpark.setInverted(IntakeConstants.ROLLER_SPARK_INVERTED);
     }
 }
