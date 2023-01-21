@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
     armAngleEncoder1 = new Encoder(Constants.ARM_ENCODER_IDS[0],Constants.ARM_ENCODER_IDS[1]);
     //Find out why there are two parameters for encoder
 
-    armAngleEncoder1.setDistancePerPulse(1/Constants.TICKS_PER_DEGREE);
+    armAngleEncoder1.setDistancePerPulse(1/Constants.ROTATIONS_PER_DEGREE);
 
     extensionEncoder = new Encoder(1,2);
 
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (armAngleEncoder1.getDistance()<45*Constants.TICKS_PER_DEGREE){
+    if (armAngleEncoder1.getDistance()<45*Constants.ROTATIONS_PER_DEGREE){
       armAngleSpark1.set(1);
       armAngleSpark2.set(1);
 
