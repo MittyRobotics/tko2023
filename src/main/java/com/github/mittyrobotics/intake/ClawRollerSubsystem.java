@@ -33,4 +33,13 @@ public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
         rollerSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         rollerSpark.setInverted(IntakeConstants.ROLLER_SPARK_INVERTED);
     }
+
+    public void roll(boolean intaking){
+        if(intaking){
+            rollerSpark.set(IntakeConstants.ROLLER_INTAKE_SPEED);
+        }
+        else{
+            rollerSpark.set(0);
+        }
+    }
 }

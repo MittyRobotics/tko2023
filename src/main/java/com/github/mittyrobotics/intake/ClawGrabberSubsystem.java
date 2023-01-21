@@ -11,6 +11,7 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     private static ClawGrabberSubsystem instance;
     private double initialPosition = 0;
     private static DigitalInput clawProxSensor;
+    private static boolean isCone = false;
 
     private ClawGrabberSubsystem(){
         super();
@@ -47,6 +48,27 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     }
 
     public boolean pieceHeld(){
-        return !clawProxSensor.get();
+        double lowerThreshold;
+        double upperThreshold;
+        //TODO: translate position to degrees
+        double currentPosition = grabberSpark.getEncoder().getPosition();
+        if(isCone){
+            //TODO: tune upper/lower threshold values
+            lowerThreshold=IntakeConstants.CONE_DEGREES-5;
+            upperThreshold=IntakeConstants.CONE_DEGREES+5;
+        }
+        else{
+            lowerThreshold=IntakeConstants.CUBE_DEGREES-5;
+            upperThreshold=IntakeConstants.CUBE_DEGREES+5;
+        }
+        return !clawProxSensor.get() && (lowerThreshold < currentPosition && upperThreshold > currentPosition);
+    }
+    public void setConeOrCube(boolean isCone){
+        if(isCone){
+            this.isCone = true;
+        }
+        else{
+            this.isCone = false;
+        }
     }
 }

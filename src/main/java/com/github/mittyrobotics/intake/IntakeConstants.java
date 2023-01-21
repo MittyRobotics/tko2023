@@ -17,6 +17,7 @@ public class IntakeConstants {
 
     public static final double ROLLER_GEAR_RATIO = 1;
     public static final int ROLLER_SPARK_ID = 7;
+    public static final double ROLLER_INTAKE_SPEED = 1;
     public static final boolean ROLLER_SPARK_INVERTED = false;
 
     //TODO: setID

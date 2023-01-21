@@ -6,5 +6,6 @@ public class GrabCommand extends InstantCommand {
 
     public GrabCommand(boolean isCone) {
         super(() -> ClawGrabberSubsystem.getInstance().setGrabberAngle(isCone ? IntakeConstants.CONE_DEGREES : IntakeConstants.CUBE_DEGREES));
+        ClawGrabberSubsystem.getInstance().setConeOrCube(isCone);
     }
 }
