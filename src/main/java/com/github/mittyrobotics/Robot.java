@@ -1,8 +1,5 @@
 package com.github.mittyrobotics;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,16 +16,6 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  public static CANSparkMax armAngleSpark1, armAngleSpark2;
-
-  public static CANSparkMax extensionSpark;
-
-  public static CANSparkMax gripSpark1, gripSpark2;
-
-  public static Encoder armAngleEncoder1, armAngleEncoder2;
-  public static Encoder extensionEncoder;
-
-
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -39,10 +26,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-
-
-
-
   }
 
   /**
@@ -69,7 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
   }
 
@@ -90,34 +73,13 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-//    armAngleSpark1 = new CANSparkMax(Constants.Arm_Spark_IDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
-//    armAngleSpark2 = new CANSparkMax(Constants.Arm_Spark_IDs[1], CANSparkMaxLowLevel.MotorType.kBrushless);
-//
-//    extensionSpark = new CANSparkMax(Constants.Arm_Spark_IDs[2], CANSparkMaxLowLevel.MotorType.kBrushless);
-//
-//    gripSpark1 = new CANSparkMax(Constants.Arm_Spark_IDs[3], CANSparkMaxLowLevel.MotorType.kBrushless);
-//    gripSpark2 = new CANSparkMax(Constants.Arm_Spark_IDs[4], CANSparkMaxLowLevel.MotorType.kBrushless);
-//
-//    armAngleEncoder1 = new Encoder(Constants.ARM_ENCODER_IDS[0],Constants.ARM_ENCODER_IDS[1]);
-//    //Find out why there are two parameters for encoder
-//
-//    armAngleEncoder1.setDistancePerPulse(1/Constants.ROTATIONS_PER_DEGREE);
-//
-//    extensionEncoder = new Encoder(1,2);
-
-
 
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-//    if (armAngleEncoder1.getDistance()<45*Constants.ROTATIONS_PER_DEGREE){
-//      armAngleSpark1.set(1);
-//      armAngleSpark2.set(1);
-//    if(extensionEncoder.getDistance()<Constants.MAX_EXTENSION){
-//      extensionSpark.set(1);
-//    }
+
   }
   /** This function is called once when the robot is disabled. */
   @Override

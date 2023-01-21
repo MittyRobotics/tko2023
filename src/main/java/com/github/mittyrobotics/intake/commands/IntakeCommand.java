@@ -1,4 +1,4 @@
-package com.github.mittyrobotics.intake;
+package com.github.mittyrobotics.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 

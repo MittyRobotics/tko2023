@@ -1,6 +1,6 @@
-package com.github.mittyrobotics;
+package com.github.mittyrobotics.intake;
 
-public class Constants {
+public class IntakeConstants2 {
 
     public static final int[] Arm_Spark_IDs = {1,2,3,4,5};
     public static final double ROTATIONS_PER_DEGREE = 1/360;
