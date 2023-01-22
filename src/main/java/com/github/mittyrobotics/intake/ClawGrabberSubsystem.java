@@ -66,6 +66,11 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
         return !clawProxSensor.get() && (lowerThreshold < currentPosition && upperThreshold > currentPosition);
     }
 
+    public boolean getProximitySensor() {
+        //TODO: Check if opposite or not
+        return !clawProxSensor.get();
+    }
+
     /*  sets the current state of the ClawGrabberSubsystem to cone or cube, called in grab command, used above ^ to specify the thresholds
      */
     public void setConeOrCube(boolean isCone){

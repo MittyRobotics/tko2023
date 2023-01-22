@@ -18,4 +18,20 @@ public class ArmKinematics {
     public static double getTelescopeDesired() {
         return radius;
     }
+
+    public static void handleGround() {
+        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+    }
+
+    public static void handleMid() {
+        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+    }
+
+    public static void handleHigh() {
+        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+    }
+
+    public static void handleHumanPlayer() {
+        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+    }
 }

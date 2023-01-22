@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,5 +63,9 @@ public class PivotSubsystem extends SubsystemBase {
         spark.getPIDController().setP(p);
         spark.getPIDController().setI(i);
         spark.getPIDController().setD(d);
+    }
+
+    public boolean withinThreshold() {
+        return Math.abs(ArmKinematics.getPivotDesired().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_THRESHOLD;
     }
 }

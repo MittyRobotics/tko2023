@@ -1,9 +1,11 @@
 package com.github.mittyrobotics.telescope;
 
+import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import jdk.jfr.Threshold;
 
 public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     CANSparkMax telescopeNeo;
@@ -71,5 +73,9 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
     public double getVelocityInchesPerSecond() {
         return ((telescopeNeo.getEncoder().getVelocity() / 60.) * TelescopeConstants.METERS_PER_REV) * 39.37;
+    }
+
+    public boolean withinThreshold() {
+        return Math.abs(ArmKinematics.getTelescopeDesired() - getDistanceMeters()) < TelescopeConstants.EXTENSION_THRESHOLD;
     }
 }

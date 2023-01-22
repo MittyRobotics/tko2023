@@ -44,4 +44,12 @@ public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
             rollerSpark.set(0);
         }
     }
+
+   public void handleGamePiece(boolean isLoading) {
+        rollerSpark.set(isLoading ? IntakeConstants.ROLLER_INTAKE_SPEED : -IntakeConstants.ROLLER_INTAKE_SPEED);
+   }
+
+   public void setRoller(double percent) {
+        rollerSpark.set(percent);
+   }
 }

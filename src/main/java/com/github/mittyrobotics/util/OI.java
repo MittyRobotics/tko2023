@@ -24,11 +24,15 @@
 
 package com.github.mittyrobotics.util;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import com.github.mittyrobotics.StateMachine;
+import com.github.mittyrobotics.intake.commands.IntakeAnyLevelCommand;
+import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * OI Class to manage all controllers and input
@@ -91,11 +95,35 @@ public class OI {
     public void setupControls() {
         XboxController controller = getOperatorController();
 
+        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
+        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+
+        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
+        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+
+        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
+        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+
+        Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
+        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+
+        Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
+        midKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+
+        Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
+        highKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+
+        Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
+                StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
+        humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+
+        Trigger intake = new Trigger(() -> TelescopeSubsystem.getInstance().withinThreshold() &&
+                PivotSubsystem.getInstance().withinThreshold() && getOperatorController().getAButton());
+        intake.whileTrue(new IntakeAnyLevelCommand());
     }
 
     public void setUpTuningControls() {
         XboxController controller = getOperatorController();
-
     }
 
     private void triggerFunctionAfterTime(Runnable runnable, long time){

@@ -13,6 +13,8 @@ public class TelescopeConstants {
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_ACCEL = 0;
 
+    public static final double EXTENSION_THRESHOLD = 0;
+
 
     //2.75 inches every MOTOR rotation
     //4 motor rotations for 5.5 inches (times 2, since 2 stage)

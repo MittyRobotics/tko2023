@@ -19,14 +19,6 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  public static CANSparkMax armAngleSpark1, armAngleSpark2;
-
-  public static CANSparkMax extensionSpark;
-  public static CANSparkMax gripSpark1, gripSpark2;
-
-  public static Encoder armAngleEncoder1, armAngleEncoder2;
-
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -87,30 +79,13 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    armAngleSpark1 = new CANSparkMax(Constants.Arm_Spark_IDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
-    armAngleSpark2 = new CANSparkMax(Constants.Arm_Spark_IDs[1], CANSparkMaxLowLevel.MotorType.kBrushless);
-
-    extensionSpark = new CANSparkMax(Constants.Arm_Spark_IDs[2], CANSparkMaxLowLevel.MotorType.kBrushless);
-
-    gripSpark1 = new CANSparkMax(Constants.Arm_Spark_IDs[3], CANSparkMaxLowLevel.MotorType.kBrushless);
-    gripSpark2 = new CANSparkMax(Constants.Arm_Spark_IDs[4], CANSparkMaxLowLevel.MotorType.kBrushless);
-
-    armAngleEncoder1 = new Encoder(Constants.ARM_ENCODER_IDS[0],Constants.ARM_ENCODER_IDS[1]);
-    //Find out why there are two parameters for encoder
-
-    armAngleEncoder1.setDistancePerPulse(1/Constants.TICKS_PER_DEGREE);
-
-
 
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (armAngleEncoder1.getDistance()<45*Constants.TICKS_PER_DEGREE){
-      armAngleSpark1.set(1);
-      armAngleSpark2.set(1);
-    }
+
   }
   /** This function is called once when the robot is disabled. */
   @Override
