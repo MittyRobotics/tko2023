@@ -14,6 +14,7 @@ public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
         super();
         setName("ClawRoller");
     }
+
     public static ClawRollerSubsystem getInstance(){
         if(instance==null){
             instance = new ClawRollerSubsystem();

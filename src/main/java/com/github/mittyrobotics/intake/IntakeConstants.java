@@ -10,6 +10,7 @@ public class IntakeConstants {
     public static final int GRABBER_SPARK_ID = 6;
     public static final boolean GRABBER_SPARK_INVERTED = false;
 
+
     public static final double CONE_DEGREES = 45;
     public static final double CUBE_DEGREES = 90;
     public static final double OPEN_DEGREES = 120;

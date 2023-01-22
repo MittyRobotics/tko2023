@@ -17,6 +17,7 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
         super();
         setName("ClawGrabber");
     }
+
     public static ClawGrabberSubsystem getInstance(){
         if(instance==null){
             instance = new ClawGrabberSubsystem();
@@ -43,17 +44,20 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     @Override
     public void overrideSetMotor(double percent) {
 
+
     }
     /* sets grabber claws at specific angle, 0 = fully closed */
     public void setGrabberAngle(double angle){
         grabberSpark.getPIDController().setReference(angle*IntakeConstants.GRABBER_ROTATIONS_PER_DEGREE, CANSparkMax.ControlType.kPosition);
     }
 
+
     /* returns true if prox sensor detects a game piece within range and the claws are in contact with the game piece */
     public boolean pieceHeld(){
         double lowerThreshold;
         double upperThreshold;
         double currentPosition = grabberSpark.getEncoder().getPosition()*180;
+
         if(isCone){
             //TODO: tune upper/lower threshold values
             lowerThreshold=IntakeConstants.CONE_DEGREES-5;
@@ -63,11 +67,13 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
             lowerThreshold=IntakeConstants.CUBE_DEGREES-5;
             upperThreshold=IntakeConstants.CUBE_DEGREES+5;
         }
+
         return !clawProxSensor.get() && (lowerThreshold < currentPosition && upperThreshold > currentPosition);
     }
 
     /*  sets the current state of the ClawGrabberSubsystem to cone or cube, called in grab command, used above ^ to specify the thresholds
      */
+
     public void setConeOrCube(boolean isCone){
         if(isCone){
             this.isCone = true;
