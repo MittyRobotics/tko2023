@@ -25,6 +25,7 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.StateMachine;
+import com.github.mittyrobotics.drivetrain.commands.SnapToAngle;
 import com.github.mittyrobotics.intake.commands.IntakeAnyLevelCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
@@ -120,6 +121,18 @@ public class OI {
         Trigger intake = new Trigger(() -> TelescopeSubsystem.getInstance().withinThreshold() &&
                 PivotSubsystem.getInstance().withinThreshold() && getOperatorController().getAButton());
         intake.whileTrue(new IntakeAnyLevelCommand());
+
+        Trigger lock0 = new Trigger(getDriveController()::getYButton);
+        lock0.whileTrue(new SnapToAngle(0));
+
+        Trigger lock90 = new Trigger(getDriveController()::getBButton);
+        lock90.whileTrue(new SnapToAngle(3));
+
+        Trigger lock180 = new Trigger(getDriveController()::getAButton);
+        lock180.whileTrue(new SnapToAngle(2));
+
+        Trigger lock270 = new Trigger(getDriveController()::getXButton);
+        lock270.whileTrue(new SnapToAngle(1));
     }
 
     public void setUpTuningControls() {
