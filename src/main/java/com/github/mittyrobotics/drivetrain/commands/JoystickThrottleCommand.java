@@ -6,21 +6,38 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.OI;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class JoystickThrottleCommand extends CommandBase {
 
     double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger;
 
+    boolean a, b, x, y;
+
     boolean notMoving;
 
-    double linearVelAngle, linearVelMagnitude, angularVel, heading;
+    double angularVel, heading;
 
     Vector linearVel;
 
     boolean disabled;
 
+    PIDController controller = new PIDController(SwerveConstants.ANGLE_LOCK_P,
+            SwerveConstants.ANGLE_LOCK_I, SwerveConstants.ANGLE_LOCK_D);
+
+    int anglePreset = 2;
+    double currentAngle = 0;
+
+    double[] quad2sp = {0, Math.PI/2, Math.PI, -Math.PI/2};
+    double[] quad3sp = {0, Math.PI/2, Math.PI, 3*Math.PI/2};
+    double[] quad4sp = {2*Math.PI, Math.PI/2, Math.PI, 3*Math.PI/2};
+    double[] quad1sp = {2*Math.PI, 5*Math.PI/2, Math.PI, 3*Math.PI/2};
+
+    double[] correctSP = quad2sp;
+
     public JoystickThrottleCommand() {
+        this.anglePreset = anglePreset;
         addRequirements(SwerveSubsystem.getInstance(), Gyro.getInstance());
     }
 
@@ -31,22 +48,21 @@ public class JoystickThrottleCommand extends CommandBase {
 
     @Override
     public void execute() {
+        a = OI.getInstance().getPS4Controller().getCrossButton();
+        b = OI.getInstance().getPS4Controller().getCircleButton();
+        x = OI.getInstance().getPS4Controller().getSquareButton();
+        y = OI.getInstance().getPS4Controller().getTriangleButton();
+
         leftY = OI.getInstance().getPS4Controller().getLeftX();
         leftX = -OI.getInstance().getPS4Controller().getLeftY();
-//        rightY = OI.getInstance().getDriveController().getRightX();
         rightX = -OI.getInstance().getPS4Controller().getRightX();
-//        leftTrigger = OI.getInstance().getDriveController().getLeftTriggerAxis();
         rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
-//        System.out.println(rightTrigger);
-//        System.out.println("leftx: " +  leftX);
 
         notMoving = false;
 
         if(rightTrigger < 0.001 && leftX < 0.001 && leftY < 0.001 && !OI.getInstance().getPS4Controller().getCircleButton()) {
             notMoving = true;
         }
-
-
 
         if (Math.abs(leftX) < SwerveConstants.JOYSTICK_DEADZONE) leftX = 0;
         if (Math.abs(leftY) < SwerveConstants.JOYSTICK_DEADZONE) leftY = 0;
@@ -55,7 +71,6 @@ public class JoystickThrottleCommand extends CommandBase {
         if (Math.abs(rightTrigger) < SwerveConstants.TRIGGER_THRESHOLD) rightTrigger = 0;
 
         disabled = false;
-
         if ((leftX == 0 && leftY == 0) && rightX == 0 && !OI.getInstance().getPS4Controller().getCircleButton()) {
             disabled = true;
         }
@@ -72,21 +87,42 @@ public class JoystickThrottleCommand extends CommandBase {
                 new Angle(angle), throttle
         );
 
-//        if (OI.getInstance().getPS4Controller().getCircleButton()) {
-//            linearVel = new Vector(new Angle(heading), 0);
-//        }
+        currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingAngle());
+
+        if(currentAngle >= 3*Math.PI/2 && currentAngle < 2*Math.PI) {
+            correctSP = quad1sp;
+        } else if(currentAngle >= 0 && currentAngle < Math.PI/2) {
+            correctSP = quad2sp;
+        } else if(currentAngle >= Math.PI/2 && currentAngle < Math.PI) {
+            correctSP = quad3sp;
+        } else {
+            correctSP = quad4sp;
+        }
 
         if(rightX < 0) {
             angularVel = -(Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL);
         } else angularVel = Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL;
-
         angularVel = -angularVel;
 
-//        System.out.println("inputs: " + linearVel + " " + angularVel);
+        if(y) {
+            anglePreset = 0;
+            controller.setSetpoint(correctSP[anglePreset]);
+            angularVel = controller.calculate(currentAngle);
+        } else if(b) {
+            anglePreset = 1;
+            controller.setSetpoint(correctSP[anglePreset]);
+            angularVel = controller.calculate(currentAngle);
+        } else if(a) {
+            anglePreset = 2;
+            controller.setSetpoint(correctSP[anglePreset]);
+            angularVel = controller.calculate(currentAngle);
+        } else if(x) {
+            anglePreset = 3;
+            controller.setSetpoint(correctSP[anglePreset]);
+            angularVel = controller.calculate(currentAngle);
+        }
 
         SwerveSubsystem.getInstance().setSwerveModule(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
-
-//        System.out.println(linearVel.toStringMetric() + ", " + angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 

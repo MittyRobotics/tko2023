@@ -122,6 +122,8 @@ public class OI {
                 PivotSubsystem.getInstance().withinThreshold() && getOperatorController().getAButton());
         intake.whileTrue(new IntakeAnyLevelCommand());
 
+        /*
+        //incorporated into joystick throttle command
         Trigger lock0 = new Trigger(getDriveController()::getYButton);
         lock0.whileTrue(new SnapToAngle(0));
 
@@ -133,6 +135,7 @@ public class OI {
 
         Trigger lock270 = new Trigger(getDriveController()::getXButton);
         lock270.whileTrue(new SnapToAngle(1));
+        */
     }
 
     public void setUpTuningControls() {
