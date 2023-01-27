@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 
 public class ArmKinematics {
@@ -20,18 +21,26 @@ public class ArmKinematics {
     }
 
     public static void handleGround() {
-        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE,
+                    PivotConstants.LOW_HEIGHT - PivotConstants.PIVOT_HEIGHT);
     }
 
     public static void handleMid() {
-        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(PivotConstants.DISTANCE_TO_MID_SCORE,
+                    PivotConstants.MID_HEIGHT - PivotConstants.PIVOT_HEIGHT);
     }
 
     public static void handleHigh() {
-        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(PivotConstants.DISTANCE_TO_HIGH_SCORE,
+                    PivotConstants.HIGH_HEIGHT - PivotConstants.PIVOT_HEIGHT);
     }
 
     public static void handleHumanPlayer() {
-        setArmKinematics(PivotConstants.DISTANCE_TO_LOW_SCORE, PivotConstants.PIVOT_HEIGHT);
+        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(PivotConstants.DISTANCE_TO_HP_SCORE,
+                    PivotConstants.HP_HEIGHT - PivotConstants.PIVOT_HEIGHT);
     }
 }

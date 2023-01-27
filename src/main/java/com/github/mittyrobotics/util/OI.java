@@ -139,7 +139,7 @@ public class OI {
     }
 
     public void setUpTuningControls() {
-        XboxController controller = getOperatorController();
+        setupControls();
     }
 
     private void triggerFunctionAfterTime(Runnable runnable, long time){
