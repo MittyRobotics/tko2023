@@ -1,6 +1,7 @@
 package com.github.mittyrobotics.telescope;
 
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -42,6 +43,8 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MAX_VELOCITY, 0);
         telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
         telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, 0);
+
+        new ExtensionToKinematics();
     }
 
     public void setPID(double P, double I, double D) {

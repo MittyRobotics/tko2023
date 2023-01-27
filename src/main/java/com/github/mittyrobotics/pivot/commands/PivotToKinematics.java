@@ -20,11 +20,17 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void execute() {
+        if(PivotSubsystem.getInstance().getHalifaxContact()) {
+            PivotSubsystem.getInstance().resetAngleDegrees(PivotConstants.HALIFAX_POSITION_DEGREES);
+        }
+
         double desired = ArmKinematics.getPivotDesired().getRadians();
         double currentExtension = TelescopeSubsystem.getInstance().getDistanceMeters();
-        PivotSubsystem.getInstance().configPID(PivotConstants.PIVOT_BASE_P * currentExtension,
-                PivotConstants.PIVOT_BASE_I * currentExtension, PivotConstants.PIVOT_BASE_D * currentExtension);
-        PivotSubsystem.getInstance().setPositionRadians(desired);
+        PivotSubsystem.getInstance().configPID(
+                PivotConstants.PIVOT_BASE_P * currentExtension * currentExtension,
+                PivotConstants.PIVOT_BASE_I * currentExtension * currentExtension,
+                PivotConstants.PIVOT_BASE_D * currentExtension * currentExtension);
+        PivotSubsystem.getInstance().setPositionRadians(Math.abs(desired) < Math.PI/4 ? desired : 0);
     }
 
     @Override

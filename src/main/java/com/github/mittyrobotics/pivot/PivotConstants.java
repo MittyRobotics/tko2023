@@ -27,5 +27,6 @@ public class PivotConstants {
     public static final double PIVOT_THRESHOLD = 0;
 
 
-
+    public static final int HALIFAX_ID = 0;
+    public static final double HALIFAX_POSITION_DEGREES = 20;
 }

@@ -1,13 +1,16 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.pivot.commands.PivotToKinematics;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
-    public static PivotSubsystem instance;
+    private static PivotSubsystem instance;
     private CANSparkMax spark;
+    private DigitalInput halifax;
 
     public static PivotSubsystem getInstance() {
         return instance == null ? new PivotSubsystem() : instance;
@@ -25,6 +28,10 @@ public class PivotSubsystem extends SubsystemBase {
         spark.getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_ACCEL, 0);
         spark.getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_VEL, 0);
         spark.getPIDController().setFeedbackDevice(spark.getEncoder());
+
+        halifax = new DigitalInput(PivotConstants.HALIFAX_ID);
+
+        new PivotToKinematics();
     }
 
     public void setPositionRadians(double radians) {
@@ -67,5 +74,17 @@ public class PivotSubsystem extends SubsystemBase {
 
     public boolean withinThreshold() {
         return Math.abs(ArmKinematics.getPivotDesired().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_THRESHOLD;
+    }
+
+    public void resetAngleDegrees(double degrees) {
+        spark.getEncoder().setPosition(degrees / 360);
+    }
+
+    public void resetAngleRadians(double radians) {
+        spark.getEncoder().setPosition(radians / (2*Math.PI));
+    }
+
+    public boolean getHalifaxContact() {
+        return !halifax.get();
     }
 }

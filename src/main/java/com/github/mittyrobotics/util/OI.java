@@ -30,6 +30,8 @@ import com.github.mittyrobotics.intake.commands.IntakeAnyLevelCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.telescope.commands.ExtensionCommand;
+import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -140,6 +142,19 @@ public class OI {
 
     public void setUpTuningControls() {
         setupControls();
+
+
+        Trigger pivotUp = new Trigger(() -> getOperatorController().getLeftY() > 0.1);
+        pivotUp.whileTrue(new InstantCommand(() -> ArmKinematics.incrementHeight(true)));
+
+        Trigger pivotDown = new Trigger(() -> getOperatorController().getLeftY() < -0.1);
+        pivotDown.whileTrue(new InstantCommand(() -> ArmKinematics.incrementHeight(false)));
+
+        Trigger extend = new Trigger(() -> getOperatorController().getRightY() > 0.1);
+        extend.whileTrue(new InstantCommand(() -> ArmKinematics.incrementDistance(true)));
+
+        Trigger retract = new Trigger(() -> getOperatorController().getRightY() < -0.1);
+        retract.whileTrue(new InstantCommand(() -> ArmKinematics.incrementDistance(false)));
     }
 
     private void triggerFunctionAfterTime(Runnable runnable, long time){
