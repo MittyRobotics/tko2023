@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
     private static PivotSubsystem instance;
-    private CANSparkMax spark;
+    private CANSparkMax[] spark = new CANSparkMax[2];
     private DigitalInput halifax;
 
     public static PivotSubsystem getInstance() {
@@ -21,21 +21,36 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void initHardware() {
-        spark = new CANSparkMax(PivotConstants.PIVOT_ID, CANSparkMax.MotorType.kBrushless);
-        spark.restoreFactoryDefaults();
-        spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        spark.getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
-        spark.getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_ACCEL, 0);
-        spark.getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_VEL, 0);
-        spark.getPIDController().setFeedbackDevice(spark.getEncoder());
+        for (int i = 0; i < 2; i++) {
+            spark[i] = new CANSparkMax(PivotConstants.PIVOT_ID, CANSparkMax.MotorType.kBrushless);
+            spark[i].restoreFactoryDefaults();
+            spark[i].setIdleMode(CANSparkMax.IdleMode.kBrake);
+            spark[i].getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
+            spark[i].getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_ACCEL, 0);
+            spark[i].getPIDController().setSmartMotionMaxAccel(PivotConstants.MAX_VEL, 0);
+            spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
+        }
 
         halifax = new DigitalInput(PivotConstants.HALIFAX_ID);
 
-        new PivotToKinematics();
+        setDefaultCommand(new PivotToKinematics());
+    }
+
+    public void setBrakeMode() {
+        for (int i = 0; i < 2; i++) {
+            spark[i].setIdleMode(CANSparkMax.IdleMode.kBrake);
+        }
+    }
+
+    public void setCoastMode() {
+        for (int i = 0; i < 2; i++) {
+            spark[i].setIdleMode(CANSparkMax.IdleMode.kCoast);
+        }
     }
 
     public void setPositionRadians(double radians) {
-        spark.getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kSmartMotion);
+        spark[0].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kSmartMotion);
+        spark[1].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kSmartMotion);
     }
 
     public void setPositionDegrees(double degrees) {
@@ -43,7 +58,8 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setVelocityRadiansPerSecond(double radiansPerSecond) {
-        spark.getPIDController().setReference(radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kVelocity);
+        spark[0].getPIDController().setReference(radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kVelocity);
+        spark[1].getPIDController().setReference(radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kVelocity);
     }
 
     public void setVelocityDegreesPerSecond(double degreesPerSecond) {
@@ -51,7 +67,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getPositionRadians() {
-        return spark.getEncoder().getPosition() * 2 * Math.PI;
+        return (spark[0].getEncoder().getPosition() * 2 * Math.PI) * PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
     }
 
     public double getPositionDegrees() {
@@ -59,7 +75,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getVelocityRadiansPerSecond() {
-        return spark.getEncoder().getVelocity() * 2 * Math.PI / 60;
+        return (spark[0].getEncoder().getVelocity() * 2 * Math.PI / 60) * PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
     }
 
     public double getVelocityDegreesPerSecond() {
@@ -67,9 +83,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void configPID (double p, double i, double d) {
-        spark.getPIDController().setP(p);
-        spark.getPIDController().setI(i);
-        spark.getPIDController().setD(d);
+        for (int j = 0; j < 2; j++) {
+            spark[j].getPIDController().setP(p);
+            spark[j].getPIDController().setI(i);
+            spark[j].getPIDController().setD(d);
+        }
     }
 
     public boolean withinThreshold() {
@@ -77,11 +95,13 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void resetAngleDegrees(double degrees) {
-        spark.getEncoder().setPosition(degrees / 360);
+        spark[0].getEncoder().setPosition(degrees / 360);
+        spark[1].getEncoder().setPosition(degrees / 360);
     }
 
     public void resetAngleRadians(double radians) {
-        spark.getEncoder().setPosition(radians / (2*Math.PI));
+        spark[0].getEncoder().setPosition(radians / (2*Math.PI));
+        spark[1].getEncoder().setPosition(radians / (2*Math.PI));
     }
 
     public boolean getHalifaxContact() {

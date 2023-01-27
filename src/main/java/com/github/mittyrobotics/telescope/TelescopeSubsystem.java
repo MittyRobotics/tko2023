@@ -6,7 +6,6 @@ import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import jdk.jfr.Threshold;
 
 public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     CANSparkMax telescopeNeo;
@@ -44,7 +43,15 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
         telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, 0);
 
-        new ExtensionToKinematics();
+        setDefaultCommand(new ExtensionToKinematics());
+    }
+
+    public void setBrakeMode() {
+            telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
+
+    public void setCoastMode() {
+            telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kCoast);
     }
 
     public void setPID(double P, double I, double D) {
@@ -54,16 +61,16 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public void setPositionMeters(double meters) {
-        telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_REV, CANSparkMax.ControlType.kSmartMotion);
+        telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
     public void setPositionInches(double inches) {
-        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_REV, CANSparkMax.ControlType.kPosition);
+        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
     }
 
     public double getDistanceMeters() {
-        return telescopeNeo.getEncoder().getPosition() * TelescopeConstants.METERS_PER_REV;
+        return telescopeNeo.getEncoder().getPosition() * TelescopeConstants.METERS_PER_MOTOR_REV;
     }
 
     public double getDistanceInches() {
@@ -71,11 +78,11 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public double getVelocityMetersPerSecond() {
-        return (telescopeNeo.getEncoder().getVelocity() / 60.) * TelescopeConstants.METERS_PER_REV;
+        return (telescopeNeo.getEncoder().getVelocity() / 60.) * TelescopeConstants.METERS_PER_MOTOR_REV;
     }
 
     public double getVelocityInchesPerSecond() {
-        return ((telescopeNeo.getEncoder().getVelocity() / 60.) * TelescopeConstants.METERS_PER_REV) * 39.37;
+        return ((telescopeNeo.getEncoder().getVelocity() / 60.) * TelescopeConstants.METERS_PER_MOTOR_REV) * 39.37;
     }
 
     public boolean withinThreshold() {

@@ -4,11 +4,11 @@ public class TelescopeConstants {
     //TODO: Fill in all except meters per rev conversion
     public static final int TELESCOPE_SPARK_ID = 0;
 
-    public static final double DEFAULT_P = 1;
-    public static final double DEFAULT_I = 1;
-    public static final double DEFAULT_D = 1;
+    public static final double DEFAULT_P = 0.01;
+    public static final double DEFAULT_I = 0;
+    public static final double DEFAULT_D = 0;
 
-    public static final double METERS_PER_REV = 2.75/39.37; //includes gear ratio and two stage
+    public static final double METERS_PER_MOTOR_REV = 2.75/39.37; //includes gear ratio and two stage
     public static final double MAX_VELOCITY = 0;
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_ACCEL = 0;

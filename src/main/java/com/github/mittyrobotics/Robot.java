@@ -1,5 +1,10 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.OI;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.Encoder;
@@ -25,9 +30,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SwerveSubsystem.getInstance().initHardware();
+
+    TelescopeSubsystem.getInstance().initHardware();
+    PivotSubsystem.getInstance().initHardware();
+
+    OI.getInstance().setUpTuningControls();
+
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    PivotSubsystem.getInstance().setCoastMode();
+    TelescopeSubsystem.getInstance().setCoastMode();
 
 
 
@@ -43,6 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SwerveSubsystem.getInstance().updateForwardKinematics();
 
   }
 

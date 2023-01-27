@@ -4,6 +4,7 @@ import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PivotToKinematics extends CommandBase {
@@ -23,6 +24,9 @@ public class PivotToKinematics extends CommandBase {
         if(PivotSubsystem.getInstance().getHalifaxContact()) {
             PivotSubsystem.getInstance().resetAngleDegrees(PivotConstants.HALIFAX_POSITION_DEGREES);
         }
+
+        System.out.println("PIVOT DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
+        SmartDashboard.putNumber("PIVOT DEGREES", PivotSubsystem.getInstance().getPositionDegrees());
 
         double desired = ArmKinematics.getPivotDesired().getRadians();
         double currentExtension = TelescopeSubsystem.getInstance().getDistanceMeters();
