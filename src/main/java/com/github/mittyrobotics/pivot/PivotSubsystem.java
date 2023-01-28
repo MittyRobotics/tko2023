@@ -1,7 +1,6 @@
 package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.pivot.commands.PivotToKinematics;
-import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -10,7 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class PivotSubsystem extends SubsystemBase {
     private static PivotSubsystem instance;
     private CANSparkMax[] spark = new CANSparkMax[2];
-    private DigitalInput halifax;
+    private DigitalInput halifaxTop;
+    private DigitalInput halifaxBottom;
 
     public static PivotSubsystem getInstance() {
         return instance == null ? new PivotSubsystem() : instance;
@@ -31,7 +31,8 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
         }
 
-        halifax = new DigitalInput(PivotConstants.HALIFAX_ID);
+        halifaxTop = new DigitalInput(PivotConstants.HALIFAX_TOP_CHANNEL);
+        halifaxBottom = new DigitalInput(PivotConstants.HALIFAX_BOTTOM_CHANNEL);
 
         setDefaultCommand(new PivotToKinematics());
     }
@@ -95,16 +96,26 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void resetAngleDegrees(double degrees) {
-        spark[0].getEncoder().setPosition(degrees / 360);
-        spark[1].getEncoder().setPosition(degrees / 360);
+        spark[0].getEncoder().setPosition((degrees / 360) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
+        spark[1].getEncoder().setPosition((degrees / 360) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
     }
 
     public void resetAngleRadians(double radians) {
-        spark[0].getEncoder().setPosition(radians / (2*Math.PI));
-        spark[1].getEncoder().setPosition(radians / (2*Math.PI));
+        spark[0].getEncoder().setPosition((radians / (2*Math.PI)) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
+        spark[1].getEncoder().setPosition((radians / (2*Math.PI)) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
     }
 
-    public boolean getHalifaxContact() {
-        return !halifax.get();
+    public boolean getHalifaxTopContact() {
+        return !halifaxTop.get();
+    }
+
+    public boolean getHalifaxBottomContact() {
+        return !halifaxBottom.get();
+    }
+
+    public void setVelZero() {
+        for (int i = 0; i < 2; i++) {
+            spark[i].set(0);
+        }
     }
 }

@@ -21,8 +21,16 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void execute() {
-        if(PivotSubsystem.getInstance().getHalifaxContact()) {
-            PivotSubsystem.getInstance().resetAngleDegrees(PivotConstants.HALIFAX_POSITION_DEGREES);
+        if(PivotSubsystem.getInstance().getHalifaxTopContact()) {
+            PivotSubsystem.getInstance().resetAngleDegrees(PivotConstants.HALIFAX_TOP_DEGREES);
+        } else if(PivotSubsystem.getInstance().getHalifaxBottomContact()) {
+            PivotSubsystem.getInstance().resetAngleDegrees(PivotConstants.HALIFAX_BOTTOM_DEGREES);
+        }
+
+        if(PivotSubsystem.getInstance().getPositionRadians() > PivotConstants.SOFT_LIMIT_TOP_RADIANS) {
+            PivotSubsystem.getInstance().setVelZero();
+        } else if(PivotSubsystem.getInstance().getPositionRadians() < PivotConstants.SOFT_LIMIT_BOTTOM_RADIANS) {
+            PivotSubsystem.getInstance().setVelZero();
         }
 
         System.out.println("PIVOT DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());

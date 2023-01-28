@@ -27,6 +27,12 @@ public class PivotConstants {
     public static final double PIVOT_THRESHOLD = 0;
 
 
-    public static final int HALIFAX_ID = 0;
-    public static final double HALIFAX_POSITION_DEGREES = 20;
+    public static final int HALIFAX_TOP_CHANNEL = 0;
+    public static final int HALIFAX_BOTTOM_CHANNEL = 0;
+
+    public static final double HALIFAX_TOP_DEGREES = 18.26;
+    public static final double HALIFAX_BOTTOM_DEGREES = -18.26;
+
+    public static final double SOFT_LIMIT_TOP_RADIANS = Math.PI/4;
+    public static final double SOFT_LIMIT_BOTTOM_RADIANS = -Math.PI/4;
 }

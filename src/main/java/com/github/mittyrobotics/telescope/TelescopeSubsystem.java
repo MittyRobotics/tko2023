@@ -5,11 +5,14 @@ import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     CANSparkMax telescopeNeo;
 
+    DigitalInput halifaxMax;
+    DigitalInput halifaxMin;
 
     private static TelescopeSubsystem instance;
 
@@ -42,6 +45,9 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MAX_VELOCITY, 0);
         telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
         telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, 0);
+
+        halifaxMax = new DigitalInput(TelescopeConstants.HALIFAX_MAX_CHANNEL);
+        halifaxMin = new DigitalInput(TelescopeConstants.HALIFAX_MIN_CHANNEL);
 
         setDefaultCommand(new ExtensionToKinematics());
     }
@@ -88,4 +94,25 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     public boolean withinThreshold() {
         return Math.abs(ArmKinematics.getTelescopeDesired() - getDistanceMeters()) < TelescopeConstants.EXTENSION_THRESHOLD;
     }
+
+    public boolean getHalifaxMaxContact() {
+        return !halifaxMax.get();
+    }
+
+    public boolean getHalifaxMinContact() {
+        return !halifaxMin.get();
+    }
+
+    public void resetMeters(double meters) {
+        telescopeNeo.getEncoder().setPosition(meters / TelescopeConstants.METERS_PER_MOTOR_REV);
+    }
+
+    public void resetInches(double inches) {
+        telescopeNeo.getEncoder().setPosition((inches / 39.37) / TelescopeConstants.METERS_PER_MOTOR_REV);
+    }
+
+    public void setVelZero() {
+        telescopeNeo.set(0);
+    }
+
 }

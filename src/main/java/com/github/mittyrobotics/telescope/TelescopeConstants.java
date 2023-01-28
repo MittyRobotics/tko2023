@@ -15,6 +15,11 @@ public class TelescopeConstants {
 
     public static final double EXTENSION_THRESHOLD = 0;
 
+    public static final int HALIFAX_MAX_CHANNEL = 0;
+    public static final int HALIFAX_MIN_CHANNEL = 0;
+
+    public static final double MAX_EXTENSION_METERS = 0.5;
+
 
     //2.75 inches every MOTOR rotation
     //4 motor rotations for 5.5 inches (times 2, since 2 stage)
