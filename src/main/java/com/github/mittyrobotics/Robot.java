@@ -16,7 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  DigitalInput di;
+  DigitalInput extensionMax;
+//  DigitalInput extensionMin;
+//  DigitalInput pivotMax;
+//  DigitalInput pivotMin;
+
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -28,7 +33,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    di = new DigitalInput(4);
+    extensionMax = new DigitalInput(7);
+//    extensionMin
+//    DigitalInput pivotMax
+//    DigitalInput pivotMin
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -46,9 +54,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println(di.get());
-    DIOSim dioSim = new DIOSim(4);
-    dioSim.get
+    System.out.println("EXTENSION: " +
+            "" + extensionMax.get());
   }
 
   /**
