@@ -2,9 +2,9 @@ package com.github.mittyrobotics.telescope;
 
 public class TelescopeConstants {
     //TODO: Fill in all except meters per rev conversion
-    public static final int TELESCOPE_SPARK_ID = 0;
+    public static final int TELESCOPE_SPARK_ID = 10;
 
-    public static final double DEFAULT_P = 0.01;
+    public static final double DEFAULT_P = 1;
     public static final double DEFAULT_I = 0;
     public static final double DEFAULT_D = 0;
 
@@ -15,10 +15,10 @@ public class TelescopeConstants {
 
     public static final double EXTENSION_THRESHOLD = 0;
 
-    public static final int HALIFAX_MAX_CHANNEL = 0;
-    public static final int HALIFAX_MIN_CHANNEL = 0;
+    public static final int HALIFAX_MAX_CHANNEL = 6;
+    public static final int HALIFAX_MIN_CHANNEL = 8;
 
-    public static final double MAX_EXTENSION_METERS = 0.5;
+    public static final double MAX_EXTENSION_METERS = 1.0111647328053874;
 
 
     //2.75 inches every MOTOR rotation

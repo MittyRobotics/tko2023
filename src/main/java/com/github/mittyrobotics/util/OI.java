@@ -35,6 +35,7 @@ import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -107,21 +108,22 @@ public class OI {
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
-        Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+//        Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
+//        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
-        midKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+        midKinematics.whileTrue(new InstantCommand(ArmKinematics::handleMid));
 
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
-        highKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+        highKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHigh));
 
         Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
                 StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
-        humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+        humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHumanPlayer));
 
         Trigger intake = new Trigger(() -> TelescopeSubsystem.getInstance().withinThreshold() &&
                 PivotSubsystem.getInstance().withinThreshold() && getOperatorController().getAButton());
+
         intake.whileTrue(new IntakeAnyLevelCommand());
 
         /*
@@ -144,11 +146,12 @@ public class OI {
         setupControls();
 
 
-        Trigger pivotUp = new Trigger(() -> getOperatorController().getLeftY() > 0.1);
-        pivotUp.whileTrue(new InstantCommand(() -> ArmKinematics.incrementHeight(true)));
+        Trigger pivotUp = new Trigger(() -> getOperatorController().getLeftY() < -0.1);
+        pivotUp.whileTrue(new RunCommand(() -> {ArmKinematics.incrementHeight(true);
+            System.out.println("Triggered");}));
 
-        Trigger pivotDown = new Trigger(() -> getOperatorController().getLeftY() < -0.1);
-        pivotDown.whileTrue(new InstantCommand(() -> ArmKinematics.incrementHeight(false)));
+        Trigger pivotDown = new Trigger(() -> getOperatorController().getLeftY() > 0.1);
+        pivotDown.whileTrue(new RunCommand(() -> ArmKinematics.incrementHeight(false)));
 
         Trigger extend = new Trigger(() -> getOperatorController().getRightY() > 0.1);
         extend.whileTrue(new InstantCommand(() -> ArmKinematics.incrementDistance(true)));

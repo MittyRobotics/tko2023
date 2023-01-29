@@ -15,26 +15,28 @@ public class ExtensionToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-
+        System.out.println("INIT COMMAND");
     }
 
     @Override
     public void execute() {
-        if(TelescopeSubsystem.getInstance().getHalifaxMaxContact()) {
-            TelescopeSubsystem.getInstance().resetMeters(TelescopeConstants.MAX_EXTENSION_METERS);
-            if(TelescopeSubsystem.getInstance().getVelocityMetersPerSecond() > 0) {
-                TelescopeSubsystem.getInstance().setVelZero();
-            }
-        } else if(TelescopeSubsystem.getInstance().getHalifaxMinContact()) {
-            TelescopeSubsystem.getInstance().resetMeters(0);
-            if(TelescopeSubsystem.getInstance().getVelocityMetersPerSecond() < 0) {
-                TelescopeSubsystem.getInstance().setVelZero();
-            }
-        }
 
-        TelescopeSubsystem.getInstance().setPositionMeters(ArmKinematics.getTelescopeDesired());
-        System.out.println("EXTENSION INCHES: " + TelescopeSubsystem.getInstance().getDistanceInches());
-        SmartDashboard.putNumber("EXTENSION INCHES", TelescopeSubsystem.getInstance().getDistanceInches());
+
+//        if(TelescopeSubsystem.getInstance().getHalifaxMaxContact()) {
+//            TelescopeSubsystem.getInstance().resetMeters(TelescopeConstants.MAX_EXTENSION_METERS);
+//        } else if(TelescopeSubsystem.getInstance().getHalifaxMinContact()) {
+//            TelescopeSubsystem.getInstance().resetMeters(0);
+//        }
+
+        double desired = ArmKinematics.getTelescopeDesired();
+
+        TelescopeSubsystem.getInstance().setPID(0.1, 0, 0);
+        TelescopeSubsystem.getInstance().setPositionMeters(Math.min(desired, TelescopeConstants.MAX_EXTENSION_METERS));
+//        System.out.println("TELESCOPE DES: " + ArmKinematics.getTelescopeDesired());
+
+
+//        System.out.println("EXTENSION INCHES: " + TelescopeSubsystem.getInstance().getDistanceInches());
+//        SmartDashboard.putNumber("EXTENSION INCHES", TelescopeSubsystem.getInstance().getDistanceInches());
     }
 
     @Override

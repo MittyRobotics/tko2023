@@ -4,11 +4,11 @@ public class SwerveConstants {
 
     //in the order of quadrants
 
-    public static final int DRIVE_FALCON[] = {11, 10, 3, 7}; // 3, 10, 11, 7
+    public static final int DRIVE_FALCON[] = {6, 4, 2, 0}; // 3, 10, 11, 7
 
     //in the order of quadrants
 
-    public static final int ROTATION_FALCON[] = {9, 4, 6, 2};//6, 4, 9, 2
+    public static final int ROTATION_FALCON[] = {7, 5, 3, 1};//6, 4, 9, 2
 
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6,7}};

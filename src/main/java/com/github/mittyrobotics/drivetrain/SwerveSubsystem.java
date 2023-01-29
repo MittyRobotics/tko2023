@@ -82,9 +82,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i].config_kI(0, SwerveConstants.ANGULAR_POSITION_I);
             rotationFalcon[i].config_kD(0, SwerveConstants.ANGULAR_POSITION_D);
 
-            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1], true);
-            encoder[i].reset();
-            encoder[i].setDistancePerPulse(1./SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER);
+//            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1], true);
+//            encoder[i].reset();
+//            encoder[i].setDistancePerPulse(1./SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER);
 
 //            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1]);
             prevEnc[i] = driveFalcon[i].getSelectedSensorPosition();
@@ -106,17 +106,18 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 //    }
 
     public void resetMagEncoder(int i) {
-        encoder[i].reset();
+//        encoder[i].reset();
     }
 
     public void resetMagEncoderAll() {
         for(int i = 0; i < 4; i++) {
-            encoder[i].reset();
+//            encoder[i].reset();
         }
     }
 
     public double getMagEncoderDistance(int i) {
-        return encoder[i].getDistance();
+//        return encoder[i].getDistance();
+        return 0;
     }
 
     //set all motors

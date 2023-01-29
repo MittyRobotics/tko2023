@@ -2,8 +2,11 @@ package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -11,6 +14,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -35,6 +39,8 @@ public class Robot extends TimedRobot {
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
 
+    Gyro.getInstance().initHardware();
+
     OI.getInstance().setUpTuningControls();
 
 
@@ -42,8 +48,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    PivotSubsystem.getInstance().setCoastMode();
-    TelescopeSubsystem.getInstance().setCoastMode();
+    PivotSubsystem.getInstance().setBrakeMode();
+    TelescopeSubsystem.getInstance().setBrakeMode();
 
 
 
@@ -59,6 +65,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+//    CommandScheduler.getInstance().run();
+
     SwerveSubsystem.getInstance().updateForwardKinematics();
 
   }
@@ -76,14 +84,45 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    TelescopeSubsystem.getInstance().setPID(0.01, 0, 0);
+    TelescopeSubsystem.getInstance().setPositionInches(10);
+    /*
+    TelescopeSubsystem.getInstance().setMotor(0.1);
+*/
+
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+//    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
+//    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
+
+    //high, mid, hp, no low yet since no bumpers
+//    System.out.println("HALIFAX TOP: " + PivotSubsystem.getInstance().getHalifaxTopContact());
+//    System.out.println("ENCODER DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
+//    System.out.println("MAX: " + !TelescopeSubsystem.getInstance().getHalifaxMaxContact());
+//    System.out.println(TelescopeSubsystem.getInstance().getDistanceMeters());
+
+    //
+
+    //-9.033033020642339 ENCODER LEAVE
+
+//-5.024293928730245 ENCODER FIRST
+/*
+    System.out.println("MAX: " + !TelescopeSubsystem.getInstance().getHalifaxMaxContact());
+    System.out.println("Min: " + !TelescopeSubsystem.getInstance().getHalifaxMinContact());
+    if(TelescopeSubsystem.getInstance().getHalifaxMaxContact()) {
+      TelescopeSubsystem.getInstance().setMotor(-0.1);
+    } else if(TelescopeSubsystem.getInstance().getHalifaxMinContact()) {
+      TelescopeSubsystem.getInstance().setMotor(0.1);
+    }
+*/
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -105,10 +144,25 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+
+    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
+    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
+
+//    if (OI.getInstance().getOperatorController().getLeftY() < -0.1) ArmKinematics.incrementHeight(true);
+//    if (OI.getInstance().getOperatorController().getLeftY() > 0.1) ArmKinematics.incrementHeight(false);
+//    if (OI.getInstance().getOperatorController().getRightY() < -0.1) ArmKinematics.incrementDistance(true);
+//    if (OI.getInstance().getOperatorController().getRightY() > 0.1) ArmKinematics.incrementDistance(false);
+
+
+
+
   }
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    TelescopeSubsystem.getInstance().setCoastMode();
+    PivotSubsystem.getInstance().setCoastMode();
+  }
 
   /** This function is called periodically when disabled. */
   @Override

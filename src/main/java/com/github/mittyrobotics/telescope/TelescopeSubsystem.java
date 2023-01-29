@@ -40,16 +40,24 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setI(TelescopeConstants.DEFAULT_I);
         telescopeNeo.getPIDController().setD(TelescopeConstants.DEFAULT_D);
         telescopeNeo.restoreFactoryDefaults();
+        telescopeNeo.getEncoder().setPosition(0);
         telescopeNeo.getPIDController().setFeedbackDevice(telescopeNeo.getEncoder());
         telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(TelescopeConstants.MAX_VELOCITY, 0);
-        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
-        telescopeNeo.getPIDController().setSmartMotionMaxAccel(TelescopeConstants.MAX_ACCEL, 0);
+        telescopeNeo.getPIDController().setSmartMotionMaxAccel(5/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(10/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMaxAccel(5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
 
         halifaxMax = new DigitalInput(TelescopeConstants.HALIFAX_MAX_CHANNEL);
         halifaxMin = new DigitalInput(TelescopeConstants.HALIFAX_MIN_CHANNEL);
 
         setDefaultCommand(new ExtensionToKinematics());
+        System.out.println("AFTER SET DEFAULT");
+    }
+
+    public void setMotor(double percentOutput) {
+        telescopeNeo.set(percentOutput);
     }
 
     public void setBrakeMode() {
@@ -68,11 +76,10 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
     public void setPositionMeters(double meters) {
         telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
-
     }
 
     public void setPositionInches(double inches) {
-        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
+        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
     }
 
     public double getDistanceMeters() {
