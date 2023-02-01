@@ -31,12 +31,14 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getPIDController().setSmartMotionMaxAccel(Math.PI/12 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
             spark[i].getPIDController().setSmartMotionMaxVelocity(Math.PI/6 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
+            spark[i].setClosedLoopRampRate(1.5);
+            spark[i].getPIDController().setOutputRange(-0.25, 0.25);
         }
 
         halifaxTop = new DigitalInput(PivotConstants.HALIFAX_TOP_CHANNEL);
         halifaxBottom = new DigitalInput(PivotConstants.HALIFAX_BOTTOM_CHANNEL);
 
-//        setDefaultCommand(new PivotToKinematics());
+        setDefaultCommand(new PivotToKinematics());
     }
 
     public void setBrakeMode() {
@@ -119,5 +121,9 @@ public class PivotSubsystem extends SubsystemBase {
         for (int i = 0; i < 2; i++) {
             spark[i].set(0);
         }
+    }
+
+    public double getOutput() {
+        return spark[0].getAppliedOutput();
     }
 }

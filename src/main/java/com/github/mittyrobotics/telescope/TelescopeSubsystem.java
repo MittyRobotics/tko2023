@@ -3,8 +3,10 @@ package com.github.mittyrobotics.telescope;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,11 +45,20 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getEncoder().setPosition(0);
         telescopeNeo.getPIDController().setFeedbackDevice(telescopeNeo.getEncoder());
         telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        telescopeNeo.getPIDController().setSmartMotionMaxAccel(5/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
-        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(10/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+        telescopeNeo.getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
+        telescopeNeo.getPIDController().setSmartMotionMaxAccel(0.1, 0);
+        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(0.1, 0);
+        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(0.05, 0);
+        telescopeNeo.setClosedLoopRampRate(1.5);
+
+
+
+//        telescopeNeo.getPIDController().setSmartMotionMaxAccel(5/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(10/100. / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
 //        telescopeNeo.getPIDController().setSmartMotionMaxAccel(5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
 //        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0);
 //        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(TelescopeConstants.MIN_VELOCITY, 0);
+//        telescopeNeo.getPIDController().setOutputRange(-0.2, 0.2);
 
         halifaxMax = new DigitalInput(TelescopeConstants.HALIFAX_MAX_CHANNEL);
         halifaxMin = new DigitalInput(TelescopeConstants.HALIFAX_MIN_CHANNEL);
@@ -75,11 +86,23 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public void setPositionMeters(double meters) {
-        telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
+        telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
     }
 
     public void setPositionInches(double inches) {
-        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
+        telescopeNeo.getPIDController().setReference((inches/39.37)/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
+    }
+
+    public void setVelocityMeters(double meters) {
+        telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV * 60, CANSparkMax.ControlType.kVelocity);
+    }
+
+    public void setVelocityInches(double inches) {
+        setVelocityMeters(inches / 39.37);
+    }
+
+    public double getOutput() {
+        return telescopeNeo.getAppliedOutput();
     }
 
     public double getDistanceMeters() {
@@ -122,4 +145,10 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.set(0);
     }
 
+    @Override
+    public void periodic() {
+//        if (getVelocityInchesPerSecond() > 2) {
+//            setVelocityInches(2);
+//        }
+    }
 }

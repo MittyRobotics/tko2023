@@ -65,9 +65,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-//    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
+//    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
+
 
   }
 
@@ -84,8 +86,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    TelescopeSubsystem.getInstance().setPID(0.01, 0, 0);
-    TelescopeSubsystem.getInstance().setPositionInches(10);
+//    PivotSubsystem.getInstance().configPID(0.1, 0, 0);
+//    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
+//    TelescopeSubsystem.getInstance().setPID(0.15, 0, 0.2);
+//    TelescopeSubsystem.getInstance().setPositionInches(1);
     /*
     TelescopeSubsystem.getInstance().setMotor(0.1);
 */
@@ -108,6 +112,8 @@ public class Robot extends TimedRobot {
 //    System.out.println("ENCODER DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
 //    System.out.println("MAX: " + !TelescopeSubsystem.getInstance().getHalifaxMaxContact());
 //    System.out.println(TelescopeSubsystem.getInstance().getDistanceMeters());
+//    System.out.println(TelescopeSubsystem.getInstance().getOutput());
+
 
     //
 
@@ -145,8 +151,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
-    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
+//    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
+//    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
 
 //    if (OI.getInstance().getOperatorController().getLeftY() < -0.1) ArmKinematics.incrementHeight(true);
 //    if (OI.getInstance().getOperatorController().getLeftY() > 0.1) ArmKinematics.incrementHeight(false);

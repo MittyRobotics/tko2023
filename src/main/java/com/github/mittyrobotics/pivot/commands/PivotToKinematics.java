@@ -43,7 +43,9 @@ public class PivotToKinematics extends CommandBase {
 //                PivotConstants.PIVOT_BASE_P * currentExtension * currentExtension,
 //                PivotConstants.PIVOT_BASE_I * currentExtension * currentExtension,
 //                PivotConstants.PIVOT_BASE_D * currentExtension * currentExtension);
-        PivotSubsystem.getInstance().configPID(0.1, 0, 0);
+        PivotSubsystem.getInstance().configPID(0.5, 0, 0.3
+        );
+        System.out.println(PivotSubsystem.getInstance().getPositionRadians());
         if(Math.PI/2 > Math.abs(desired)) {
             PivotSubsystem.getInstance().setPositionRadians(desired);
         } else {
