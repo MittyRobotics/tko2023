@@ -3,10 +3,13 @@ package com.github.mittyrobotics.telescope.commands;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ExtensionToKinematics extends CommandBase {
+    TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60);
+//    TrapezoidProfile motionProfile = new TrapezoidProfile(constraints, );
 
     public ExtensionToKinematics() {
         super();
@@ -31,7 +34,7 @@ public class ExtensionToKinematics extends CommandBase {
         double desired = ArmKinematics.getTelescopeDesired();
 
         TelescopeSubsystem.getInstance().setPID(0.1, 0, 0);
-        TelescopeSubsystem.getInstance().setPositionMeters(Math.min(desired, TelescopeConstants.MAX_EXTENSION_METERS));
+        TelescopeSubsystem.getInstance().setPositionMeters(Math.min(0, TelescopeConstants.MAX_EXTENSION_METERS));
 //        System.out.println("TELESCOPE DES: " + ArmKinematics.getTelescopeDesired());
 
 

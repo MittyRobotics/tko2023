@@ -1,5 +1,10 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
@@ -65,9 +70,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-//    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
+//    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
+
 
   }
 
@@ -84,15 +91,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    TelescopeSubsystem.getInstance().setPID(0.01, 0, 0);
-    TelescopeSubsystem.getInstance().setPositionInches(10);
-    /*
-    TelescopeSubsystem.getInstance().setMotor(0.1);
-*/
-
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    SwervePath[] paths = {
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(0, 0), new Angle(3*Math.PI/2), new Point(-26/39.37, -224/39.37), new Angle(3*Math.PI/2)),
+                            new Angle(0), new Angle(Math.PI),
+                            0, 0, 6., 12., 0.75, 0.2, 0.2, 2.5, 0, 0.02, 0.5
+                    )
+    };
 
   }
 
@@ -108,6 +113,8 @@ public class Robot extends TimedRobot {
 //    System.out.println("ENCODER DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
 //    System.out.println("MAX: " + !TelescopeSubsystem.getInstance().getHalifaxMaxContact());
 //    System.out.println(TelescopeSubsystem.getInstance().getDistanceMeters());
+//    System.out.println(TelescopeSubsystem.getInstance().getOutput());
+
 
     //
 
@@ -145,8 +152,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
-    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
+//    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
+//    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
 
 //    if (OI.getInstance().getOperatorController().getLeftY() < -0.1) ArmKinematics.incrementHeight(true);
 //    if (OI.getInstance().getOperatorController().getLeftY() > 0.1) ArmKinematics.incrementHeight(false);
