@@ -4,9 +4,18 @@ public class Pose {
     private Point position;
     private Angle heading;
 
+    public Pose(Point position, Angle heading, boolean meters) {
+        if (meters) {
+            this.position = position;
+            this.heading = heading;
+        } else {
+            this.position = Point.multiply(1 / 39.3700787, position);
+            this.heading = heading;
+        }
+    }
+
     public Pose(Point position, Angle heading) {
-        this.position = position;
-        this.heading = heading;
+        this(position, heading, true);
     }
 
     public static Angle doLinearInterpolation(Angle start, Angle end, double t) {

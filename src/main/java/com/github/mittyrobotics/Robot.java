@@ -1,5 +1,10 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
@@ -86,17 +91,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-//    PivotSubsystem.getInstance().configPID(0.1, 0, 0);
-//    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
-//    TelescopeSubsystem.getInstance().setPID(0.15, 0, 0.2);
-//    TelescopeSubsystem.getInstance().setPositionInches(1);
-    /*
-    TelescopeSubsystem.getInstance().setMotor(0.1);
-*/
-
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    SwervePath[] paths = {
+            new SwervePath(
+                    new QuinticHermiteSpline(new Point(0, 0), new Angle(3*Math.PI/2), new Point(-26/39.37, -224/39.37), new Angle(3*Math.PI/2)),
+                            new Angle(0), new Angle(Math.PI),
+                            0, 0, 6., 12., 0.75, 0.2, 0.2, 2.5, 0, 0.02, 0.5
+                    )
+    };
 
   }
 
