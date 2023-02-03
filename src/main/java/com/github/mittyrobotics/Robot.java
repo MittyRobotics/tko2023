@@ -13,8 +13,10 @@ import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,12 +35,17 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  TrapezoidalMotionProfile tp;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    tp = new TrapezoidalMotionProfile(0.1, 0.1, 1, 0, 10, 0.05);
+//    tp = new TrapezoidalMotionProfile(0.1, 1, 10);
+
     SwerveSubsystem.getInstance().initHardware();
 
     TelescopeSubsystem.getInstance().initHardware();
@@ -70,7 +77,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+//    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
 //    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
@@ -150,6 +157,23 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    TelescopeSubsystem.getInstance().getNeo().getPIDController().setP(.003);
+    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference(tp.update(0.02, TelescopeSubsystem.getInstance().getVelocityInchesPerSecond() / 600.,
+            TelescopeSubsystem.getInstance().getDistanceInches()), CANSparkMax.ControlType.kVelocity);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference(10/39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
+    System.out.println(TelescopeSubsystem.getInstance().getVelocityInchesPerSecond());
+
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setFF(1/6000.);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionMaxAccel(0, 0);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionMaxVelocity(0, 0);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionMinOutputVelocity(0.05, 0);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionAllowedClosedLoopError(0, 0);
+//    System.out.println("Pos: " + TelescopeSubsystem.getInstance().getNeo().getEncoder().getPosition());
+//    TelescopeSubsystem.getInstance().setPositionMeters(10/39.37);
+    System.out.println("Percent output: " + TelescopeSubsystem.getInstance().getOutput());
+
 
 
 //    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());

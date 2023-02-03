@@ -56,8 +56,8 @@ public class RobotTest extends Robot {
      */
     @Override
     public void autonomousInit() {
-        TelescopeSubsystem.getInstance().setPID(0.01, 0, 0);
-        TelescopeSubsystem.getInstance().setPositionInches(10);
+//        TelescopeSubsystem.getInstance().setPID(0.01, 0, 0);
+//        TelescopeSubsystem.getInstance().setPositionInches(10);
     /*
     TelescopeSubsystem.getInstance().setMotor(0.1);
 */
@@ -109,11 +109,13 @@ public class RobotTest extends Robot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        tp = new TrapezoidalMotionProfile(0.1, 1);
+        tp = new TrapezoidalMotionProfile(1, 10, 10);
         spark.restoreFactoryDefaults();
-        spark.getPIDController().setP(0.01);
-//        spark.getPIDController().setI(0.01);
-//        spark.getPIDController().setP(0.01);
+        spark.getEncoder().setPosition(0);
+        spark.getPIDController().setP(0.1);
+        spark.getPIDController().setI(0.0);
+        spark.getPIDController().setP(0.0);
+        spark.getPIDController().setFF(0.1);
 
     }
 
@@ -121,10 +123,18 @@ public class RobotTest extends Robot {
     @Override
     public void teleopPeriodic() {
 
-        double output = tp.update(0.02, spark.getEncoder().getVelocity(), spark.getEncoder().getPosition());
-        spark.getPIDController().setReference(output, CANSparkMax.ControlType.kSmartVelocity);
+//        System.out.println(tp.getMaxVelFromPos(9.9));
+        if (Math.abs(spark.getEncoder().getPosition() - 10) > 0.1) {
+            double output = tp.update(0.02, spark.getEncoder().getVelocity() / 600, spark.getEncoder().getPosition());
+        System.out.println(output + " | " + spark.getEncoder().getVelocity() + " | " + spark.getEncoder().getPosition());
 
-//        System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
+            spark.getPIDController().setReference(output, CANSparkMax.ControlType.kVelocity);
+        } else {
+            spark.getPIDController().setReference(0, CANSparkMax.ControlType.kVelocity);
+        }
+//        spark.getPIDController().setReference(0.1, CANSparkMax.ControlType.kVelocity);
+
+//        System.out.println("RADIANS THE  TA: " + PivotSubsystem.getInstance().getPositionRadians());
 //        System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
 
 //    if (OI.getInstance().getOperatorController().getLeftY() < -0.1) ArmKinematics.incrementHeight(true);
@@ -139,8 +149,8 @@ public class RobotTest extends Robot {
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {
-        TelescopeSubsystem.getInstance().setCoastMode();
-        PivotSubsystem.getInstance().setCoastMode();
+//        TelescopeSubsystem.getInstance().setCoastMode();
+//        PivotSubsystem.getInstance().setCoastMode();
     }
 
     /** This function is called periodically when disabled. */

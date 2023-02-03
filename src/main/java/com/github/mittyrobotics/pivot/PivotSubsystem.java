@@ -31,14 +31,16 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getPIDController().setSmartMotionMaxAccel(Math.PI/12 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
             spark[i].getPIDController().setSmartMotionMaxVelocity(Math.PI/6 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
-            spark[i].setClosedLoopRampRate(1.5);
-            spark[i].getPIDController().setOutputRange(-0.25, 0.25);
+            spark[i].getPIDController().setFF(1/6000.);
+            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
+//            spark[i].setClosedLoopRampRate(1.5);
+            spark[i].getPIDController().setSmartMotionAllowedClosedLoopError(1, 0);
         }
 
         halifaxTop = new DigitalInput(PivotConstants.HALIFAX_TOP_CHANNEL);
         halifaxBottom = new DigitalInput(PivotConstants.HALIFAX_BOTTOM_CHANNEL);
 
-        setDefaultCommand(new PivotToKinematics());
+//        setDefaultCommand(new PivotToKinematics());
     }
 
     public void setBrakeMode() {
@@ -54,21 +56,22 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setPositionRadians(double radians) {
-        spark[0].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kPosition);
-        spark[1].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kPosition);
+        spark[0].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kSmartMotion);
+        spark[1].getPIDController().setReference(radians / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kSmartMotion);
     }
 
     public void setPositionDegrees(double degrees) {
         setPositionRadians(Math.PI / 180 * degrees);
     }
 
+    //check unit conversions if u going to use set vel
     public void setVelocityRadiansPerSecond(double radiansPerSecond) {
-       spark[0].getPIDController().setReference(radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kVelocity);
-       spark[1].getPIDController().setReference(radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, CANSparkMax.ControlType.kVelocity);
+       spark[0].getPIDController().setReference((radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 10, CANSparkMax.ControlType.kVelocity);
+       spark[1].getPIDController().setReference((radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 10, CANSparkMax.ControlType.kVelocity);
     }
 
     public void setVelocityDegreesPerSecond(double degreesPerSecond) {
-        setVelocityRadiansPerSecond(degreesPerSecond * Math.PI / 180);
+        setVelocityRadiansPerSecond((degreesPerSecond * Math.PI / 180) * 10);
     }
 // 25 in/s, 90 deg/s
     public double getPositionRadians() {
@@ -80,7 +83,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getVelocityRadiansPerSecond() {
-        return (spark[0].getEncoder().getVelocity() * 2 * Math.PI / 60) * PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
+        return ((spark[0].getEncoder().getVelocity() * 2 * Math.PI / 60) * PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
     }
 
     public double getVelocityDegreesPerSecond() {
