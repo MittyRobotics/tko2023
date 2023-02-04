@@ -14,9 +14,13 @@ public class RobotTestRev extends TimedRobot {
     private RelativeEncoder m_encoder;
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
+    protected RobotTestRev() {
+        super();
+    }
+
     @Override
     public void robotInit() {
-        allowedErr = 10;
+        allowedErr = 0;
         // initialize motor
         m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
 
@@ -33,24 +37,25 @@ public class RobotTestRev extends TimedRobot {
         m_encoder = m_motor.getEncoder();
 
         // PID coefficients
-        kP = 0.1;
+        kP = 1;
         kI = 0.0;
         kD = 0.0;
-        kFF = 1/6000.1 ;
-        kMaxOutput = 0.1;
-        kMinOutput = -0.1;
+        kFF = 1/6080. ;
+        kMaxOutput = 0.3;
+        kMinOutput = -0.3;
         maxRPM = 5700;
 
         // Smart Motion Coefficients
         maxVel = 3000; // rpm
         maxAcc = 1500;
+        minVel = 100;
 
         // set PID coefficients
         m_pidController.setP(kP);
         m_pidController.setI(kI);
         m_pidController.setD(kD);
         m_pidController.setFF(kFF);
-        m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+//        m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
         /**
          * Smart Motion coefficients are set on a SparkMaxPIDController object
@@ -72,9 +77,37 @@ public class RobotTestRev extends TimedRobot {
     }
 
     @Override
+    public void autonomousInit() {
+        m_motor.set(0.5);
+    }
+
+    @Override
+    public void teleopInit() {
+        super.teleopInit();
+    }
+
+    @Override
+    public void robotPeriodic() {
+        super.robotPeriodic();
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        super.disabledPeriodic();
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        System.out.println(m_motor.getEncoder().getVelocity());
+    }
+
+    @Override
     public void teleopPeriodic() {
-        m_pidController.setReference(100, CANSparkMax.ControlType.kSmartMotion);
+        SmartDashboard.putNumber("VEL", m_motor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("OUTPUT", m_motor.getAppliedOutput());
+        m_pidController.setReference(1500, CANSparkMax.ControlType.kSmartMotion);
         System.out.println("POS: " + m_encoder.getPosition());
     }
+
 }
 
