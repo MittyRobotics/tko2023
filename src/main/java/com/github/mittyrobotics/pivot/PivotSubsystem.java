@@ -2,6 +2,7 @@ package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.pivot.commands.PivotToKinematics;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,13 +29,13 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getEncoder().setPosition(0);
             spark[i].setIdleMode(CANSparkMax.IdleMode.kBrake);
             spark[i].getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
-            spark[i].getPIDController().setSmartMotionMaxAccel(Math.PI/12 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
-            spark[i].getPIDController().setSmartMotionMaxVelocity(Math.PI/6 / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO / (2 * Math.PI) * 60, 0);
+            spark[i].getPIDController().setSmartMotionMaxAccel(30. / 360 * 60, 0);
+            spark[i].getPIDController().setSmartMotionMaxVelocity(40. / 360 * 60, 0);
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
-            spark[i].getPIDController().setFF(1/6000.);
-            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
-//            spark[i].setClosedLoopRampRate(1.5);
-            spark[i].getPIDController().setSmartMotionAllowedClosedLoopError(1, 0);
+            spark[i].getPIDController().setFF(0.3/(1765.));
+//            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
+            spark[i].setClosedLoopRampRate(1.5);
+//            spark[i].getPIDController().setSmartMotionAllowedClosedLoopError(1, 0);
         }
 
         halifaxTop = new DigitalInput(PivotConstants.HALIFAX_TOP_CHANNEL);
@@ -66,12 +67,13 @@ public class PivotSubsystem extends SubsystemBase {
 
     //check unit conversions if u going to use set vel
     public void setVelocityRadiansPerSecond(double radiansPerSecond) {
-       spark[0].getPIDController().setReference((radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 10, CANSparkMax.ControlType.kVelocity);
-       spark[1].getPIDController().setReference((radiansPerSecond / (2 * Math.PI / 60) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 10, CANSparkMax.ControlType.kVelocity);
+        System.out.println((radiansPerSecond / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 60);
+       spark[0].getPIDController().setReference((radiansPerSecond / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 60, CANSparkMax.ControlType.kVelocity);
+       spark[1].getPIDController().setReference((radiansPerSecond / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO) * 60, CANSparkMax.ControlType.kVelocity);
     }
 
     public void setVelocityDegreesPerSecond(double degreesPerSecond) {
-        setVelocityRadiansPerSecond((degreesPerSecond * Math.PI / 180) * 10);
+        setVelocityRadiansPerSecond(degreesPerSecond * Math.PI / 180);
     }
 // 25 in/s, 90 deg/s
     public double getPositionRadians() {
@@ -124,6 +126,24 @@ public class PivotSubsystem extends SubsystemBase {
         for (int i = 0; i < 2; i++) {
             spark[i].set(0);
         }
+    }
+
+    public void setMotor(double val) {
+        spark[0].set(val);
+        spark[1].set(val);
+    }
+
+    public double rawVel() {
+        return spark[0].getEncoder().getVelocity();
+    }
+
+    public double rawPos() {
+        return spark[0].getEncoder().getPosition();
+    }
+
+    public void setRaw() {
+        spark[0].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
+        spark[1].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
     }
 
     public double getOutput() {

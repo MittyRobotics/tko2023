@@ -74,7 +74,7 @@ public class SwerveConstants {
 
     public static final double TICKS_PER_RADIAN_MAG_ENCODER = MAG_ENCODER_TICKS / MAG_ENCODER_SAMPLING_RATE / (2*Math.PI);
 
-    public static final int PIGEON_TWO_ID = 61;
+    public static final int PIGEON_TWO_ID = 62;
     public static final double[] PIGEON_TWO_MOUNT_CONFIG = {-90, 0, 0}; //(-Yaw) Angle --> +CW, Pitch, Roll
     public static final double TRIGGER_THRESHOLD = 0.05;
 

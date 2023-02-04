@@ -9,6 +9,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
@@ -81,6 +82,7 @@ public class Robot extends TimedRobot {
 //    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
+    SmartDashboard.putNumber("Raw vel", PivotSubsystem.getInstance().rawVel());
 //    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
 
 
@@ -172,11 +174,31 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    TelescopeSubsystem.getInstance().getNeo().getPIDController().setP(.003);
-    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference(tp.update(0.02, TelescopeSubsystem.getInstance().getVelocityInchesPerSecond() / 600.,
-            TelescopeSubsystem.getInstance().getDistanceInches()), CANSparkMax.ControlType.kVelocity);
+//    PivotSubsystem.getInstance().configPID(0.0003, 0, 0.00000); // FOR RAW PID
+    PivotSubsystem.getInstance().configPID(0.01, 0, 0);
+//    PivotSubsystem.getInstance().configPID(0, 0, 0);
+//    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(30);
+    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
+    SmartDashboard.putNumber("Pos Degrees", PivotSubsystem.getInstance().getPositionDegrees());
+//    PivotSubsystem.getInstance().setMotor(0.2);
+    //668, 1251, 1751
+//    PivotSubsystem.getInstance().setRaw();
+//    System.out.println(PivotSubsystem.getInstance().getVelocityDegreesPerSecond());
+    SmartDashboard.putNumber("Pivot Pos", PivotSubsystem.getInstance().rawPos());
+
+
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setP(.003);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference(tp.update(0.02, TelescopeSubsystem.getInstance().getVelocityInchesPerSecond() / 600.,
+//            TelescopeSubsystem.getInstance().getDistanceInches()), CANSparkMax.ControlType.kVelocity);
 //    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference(10/39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kPosition);
-    System.out.println(TelescopeSubsystem.getInstance().getVelocityInchesPerSecond());
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setP(0.001);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setI(0.000);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setD(0.000);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setFF();
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setReference((2/39.37) / TelescopeConstants.METERS_PER_MOTOR_REV / 10, CANSparkMax.ControlType.kVelocity);
+//    System.out.println(TelescopeSubsystem.getInstance().getVelocityInchesPerSecond());
+//    TelescopeSubsystem.getInstance().getNeo().set(0.1);
+//    System.out.println(TelescopeSubsystem.getInstance().getNeo().getEncoder().getVelocity());
 
 //    TelescopeSubsystem.getInstance().getNeo().getPIDController().setFF(1/6000.);
 //    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
@@ -186,7 +208,8 @@ public class Robot extends TimedRobot {
 //    TelescopeSubsystem.getInstance().getNeo().getPIDController().setSmartMotionAllowedClosedLoopError(0, 0);
 //    System.out.println("Pos: " + TelescopeSubsystem.getInstance().getNeo().getEncoder().getPosition());
 //    TelescopeSubsystem.getInstance().setPositionMeters(10/39.37);
-    System.out.println("Percent output: " + TelescopeSubsystem.getInstance().getOutput());
+    System.out.println("Percent output: " + PivotSubsystem.getInstance().getOutput());
+    //4.5
 
 
 
