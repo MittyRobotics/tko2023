@@ -16,9 +16,16 @@ public class TrapezoidalMotionProfile {
     }
 
     public double update(double dt, double curVel, double curPos) {
-        double output = Math.min(maxVel, curVel + dt * maxAccel);
-        output = Math.min(output, getMaxVelFromPos(endPos - curPos));
-        return Math.max(minOutput, output) * (curPos < endPos ? 1 : -1);
+        double output;
+        if (curPos < endPos) {
+            output = Math.min(maxVel, curVel + dt * maxAccel);
+            output = Math.min(output, getMaxVelFromPos(endPos - curPos));
+        } else {
+            output = Math.max(-maxVel, curVel - dt * maxAccel);
+            output = Math.max(output, -getMaxVelFromPos(endPos - curPos));
+        }
+
+        return output;
     }
 
     public double getMaxVelFromPos(double pos) {

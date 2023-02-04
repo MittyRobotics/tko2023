@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    tp = new TrapezoidalMotionProfile(0.1, 0.1, 1, 0, 10, 0.05);
+    tp = new TrapezoidalMotionProfile(10, 10, 10, 0, 30, 0.05);
 //    tp = new TrapezoidalMotionProfile(0.1, 1, 10);
 
     SwerveSubsystem.getInstance().initHardware();
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
     };
 
     SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
-    SwerveSubsystem.getInstance().setDefaultCommand(command);
+//    SwerveSubsystem.getInstance().setDefaultCommand(command);
   }
 
   /** This function is called periodically during autonomous. */
@@ -174,11 +174,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+    double vel = tp.update(0.02, PivotSubsystem.getInstance().getVelocityDegreesPerSecond(), PivotSubsystem.getInstance().getPositionDegrees());
+
 //    PivotSubsystem.getInstance().configPID(0.0003, 0, 0.00000); // FOR RAW PID
-    PivotSubsystem.getInstance().configPID(0.01, 0, 0);
+    PivotSubsystem.getInstance().configPID(0.0001, 0, 0);
 //    PivotSubsystem.getInstance().configPID(0, 0, 0);
 //    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(30);
-    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
+//    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
+    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(vel);
     SmartDashboard.putNumber("Pos Degrees", PivotSubsystem.getInstance().getPositionDegrees());
 //    PivotSubsystem.getInstance().setMotor(0.2);
     //668, 1251, 1751
