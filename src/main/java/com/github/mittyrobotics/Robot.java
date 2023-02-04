@@ -1,10 +1,15 @@
 
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.util.TrapezoidalProfile;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.hal.DIOJNI;
 import edu.wpi.first.hal.simulation.DIODataJNI;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,7 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  DigitalInput extensionMax;
+  TrapezoidalProfile tp;
+  CANSparkMax spark;
+  double lastTime;
 //  DigitalInput extensionMin;
 //  DigitalInput pivotMax;
 //  DigitalInput pivotMin;
@@ -33,7 +40,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    extensionMax = new DigitalInput(7);
+    tp = new TrapezoidalProfile(1000, 1000, 3000, 0, 1000, 0);
+    spark = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+    spark.getPIDController().setFF(1/5000.);
+    spark.getPIDController().setP(0.0001);
+    spark.getPIDController().setI(0.);
+    spark.getPIDController().setD(0.);
+
+
+
 //    extensionMin
 //    DigitalInput pivotMax
 //    DigitalInput pivotMin
@@ -54,8 +69,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println("EXTENSION: " +
-            "" + extensionMax.get());
+//    System.out.println("EXTENSION: " +
+//            "" + extensionMax.get());
   }
 
   /**
@@ -87,15 +102,29 @@ public class Robot extends TimedRobot {
         // Put default auto code here
         break;
     }
+
+    System.out.println(spark.getEncoder().getPosition());
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    spark.getEncoder().setPosition(0);
+    lastTime = Timer.getFPGATimestamp();
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    double output = tp.update(Timer.getFPGATimestamp() - lastTime, spark.getEncoder().getPosition());
+    spark.getPIDController().setReference(output, CANSparkMax.ControlType.kVelocity);
+//    spark.getPIDController().setReference(3000, CANSparkMax.ControlType.kVelocity);
+//    System.out.println(spark.getAppliedOutput());
+    SmartDashboard.putNumber("VEL", spark.getEncoder().getVelocity());
+    SmartDashboard.putNumber("POS", spark.getEncoder().getPosition());
+    SmartDashboard.putNumber("OUTPUT", output);
+    lastTime = Timer.getFPGATimestamp();
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
