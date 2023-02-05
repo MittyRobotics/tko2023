@@ -3,8 +3,8 @@ package com.github.mittyrobotics.util;
 public class TrapezoidalMotionProfile {
     private double maxAccel, maxDecel, maxVel, startPos, endPos, minOutput;
     public TrapezoidalMotionProfile(double maxAccel, double maxDecel, double maxVel, double startPos, double endPos, double minOutput) {
-        this.maxAccel = maxAccel;
-        this.maxDecel = maxDecel;
+        this.maxAccel = maxAccel * 60;
+        this.maxDecel = maxDecel * 60;
         this.maxVel = maxVel;
         this.startPos = startPos;
         this.endPos = endPos;
@@ -15,14 +15,17 @@ public class TrapezoidalMotionProfile {
         this(maxAccel, maxAccel, maxVel, 0, endPos, 1);
     }
 
-    public double update(double dt, double curVel, double curPos) {
-        double output;
+    public double update(double dt, double curPos) {
+        double output = 0;
+//        System.out.println("DIFF: " + (curPos - endPos));
         if (curPos < endPos) {
-            output = Math.min(maxVel, curVel + dt * maxAccel);
+            output = Math.min(maxVel, getMaxVelFromPos(curPos - startPos) + dt / 60 * maxAccel);
             output = Math.min(output, getMaxVelFromPos(endPos - curPos));
+            if (curPos - startPos < 2) output = Math.max(output, minOutput);
         } else {
-            output = Math.max(-maxVel, curVel - dt * maxAccel);
+            output = Math.max(-maxVel, -getMaxVelFromPos(curPos - startPos) - dt / 60 * maxAccel);
             output = Math.max(output, -getMaxVelFromPos(endPos - curPos));
+//            output = Math.min(output, -minOutput);
         }
 
         return output;

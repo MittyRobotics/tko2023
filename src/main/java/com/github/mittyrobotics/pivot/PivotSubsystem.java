@@ -81,7 +81,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getPositionDegrees() {
-        return getPositionRadians() * 180 / (2 * Math.PI);
+        return getPositionRadians() * 180 / (Math.PI);
     }
 
     public double getVelocityRadiansPerSecond() {
@@ -141,9 +141,9 @@ public class PivotSubsystem extends SubsystemBase {
         return spark[0].getEncoder().getPosition();
     }
 
-    public void setRaw() {
-        spark[0].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
-        spark[1].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
+    public void setRaw(double rpm) {
+        spark[0].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
+        spark[1].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
     }
 
     public double getOutput() {

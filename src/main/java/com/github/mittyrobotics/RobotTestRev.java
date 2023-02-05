@@ -1,5 +1,6 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
@@ -16,6 +17,8 @@ public class RobotTestRev extends TimedRobot {
 
     public LoggerInterface log;
 
+    TrapezoidalMotionProfile tp;
+
     protected RobotTestRev() {
         super();
     }
@@ -25,6 +28,7 @@ public class RobotTestRev extends TimedRobot {
         allowedErr = 0;
         // initialize motor
         m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 1000, 0);
 
         log = new LoggerInterface();
 
@@ -33,18 +37,18 @@ public class RobotTestRev extends TimedRobot {
          * in the SPARK MAX to their factory default state. If no argument is passed, these
          * parameters will not persist between power cycles
          */
-//        m_motor.restoreFactoryDefaults();
-//        m_motor.getEncoder().setPosition(0);
+        m_motor.restoreFactoryDefaults();
+        m_motor.getEncoder().setPosition(0);
 //
 //        // initialze PID controller and encoder objects
-//        m_pidController = m_motor.getPIDController();
-//        m_encoder = m_motor.getEncoder();
+        m_pidController = m_motor.getPIDController();
+        m_encoder = m_motor.getEncoder();
 //
 //        // PID coefficients
-//        kP = 1;
-//        kI = 0.0;
-//        kD = 0.0;
-//        kFF = 1/6080. ;
+        kP = 0.0003;
+        kI = 0.0;
+        kD = 0.0;
+        kFF = 1/4000. ;
 //        kMaxOutput = 0.3;
 //        kMinOutput = -0.3;
 //        maxRPM = 5700;
@@ -55,10 +59,10 @@ public class RobotTestRev extends TimedRobot {
 //        minVel = 100;
 //
 //        // set PID coefficients
-//        m_pidController.setP(kP);
-//        m_pidController.setI(kI);
-//        m_pidController.setD(kD);
-//        m_pidController.setFF(kFF);
+        m_pidController.setP(kP);
+        m_pidController.setI(kI);
+        m_pidController.setD(kD);
+        m_pidController.setFF(kFF);
 ////        m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 //
 //        /**
@@ -111,6 +115,7 @@ public class RobotTestRev extends TimedRobot {
         SmartDashboard.putNumber("VEL", m_motor.getEncoder().getVelocity());
         SmartDashboard.putNumber("OUTPUT", m_motor.getAppliedOutput());
 //        m_pidController.setReference(1500, CANSparkMax.ControlType.kSmartMotion);
+        m_motor.getPIDController().setReference(tp.update(0.02, m_motor.getEncoder().getPosition()), CANSparkMax.ControlType.kVelocity);
         System.out.println("POS: " + m_motor.getEncoder().getPosition());
     }
 
