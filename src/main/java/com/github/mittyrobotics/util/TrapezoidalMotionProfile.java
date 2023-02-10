@@ -17,6 +17,18 @@ public class TrapezoidalMotionProfile {
         this.endPos = setpoint;
     }
 
+    public void setStartVel(double startVel) {
+        this.startVel = startVel;
+    }
+
+    public void setStartPos(double startPos) {
+        this.startPos = startPos;
+    }
+
+    public double getSetpoint() {
+        return this.endPos;
+    }
+
     public void setDecel(double decel) {
         this.maxDecel = decel;
     }
@@ -27,9 +39,9 @@ public class TrapezoidalMotionProfile {
 
     public double update(double dt, double curPos) {
         double output;
-        System.out.println("Distance from start: " + Math.abs(curPos - startPos) + "  END: " + getMaxVelFromEnd(endPos - curPos));
+        System.out.println("Distance from start: " + Math.abs(curPos - startPos) + "  Start Vel: " + getMaxVelFromStart(curPos - startPos)
+        + "\n" + "Distance from end: " + Math.abs(endPos - curPos) + "  End Vel: " + getMaxVelFromEnd(endPos - curPos));
 
-//        System.out.println("DIFF: " + (DIFFcurPos - endPos));
         if (curPos < endPos) {
             output = Math.min(maxVel, getMaxVelFromStart(startPos - curPos) + dt * maxAccel);
             output = Math.min(output, getMaxVelFromEnd(endPos - curPos));
