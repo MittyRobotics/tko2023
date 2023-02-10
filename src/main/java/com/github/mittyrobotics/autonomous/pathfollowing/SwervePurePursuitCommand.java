@@ -23,7 +23,6 @@ public class SwervePurePursuitCommand extends CommandBase {
     private double dt, lastT = 0;
 
     public SwervePurePursuitCommand(double linearThreshold, double angularThreshold, SwervePath... paths) {
-//        addRequirements(SwerveSubsystem.getInstance());
         setName("Swerve Pure Pursuit");
         this.paths = paths;
         this.linearThreshold = linearThreshold;
@@ -36,7 +35,6 @@ public class SwervePurePursuitCommand extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
-        SwerveSubsystem.getInstance().resetPose();
         speed = paths[currentPathNumber].getInitSpeed();
         lastT = Timer.getFPGATimestamp();
     }
@@ -150,7 +148,7 @@ public class SwervePurePursuitCommand extends CommandBase {
 //
 //        System.out.println("linearVel1:          " + linearVel);
 
-        SwerveSubsystem.getInstance().setSwerveModule(linearVel, -angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
 //        SwerveSubsystem.getInstance().setSwerveModule(linearVel, 0);
 //        SwerveSubsystem.getInstance().setSwerveModule(new Vector(0, 0), angularVel);
 

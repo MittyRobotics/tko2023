@@ -101,7 +101,7 @@ public class SwervePPArcCommand extends CommandBase {
             angularVel = 0;
         }
 
-        SwerveSubsystem.getInstance().setSwerveModule(linearVel, -angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 
@@ -112,7 +112,7 @@ public class SwervePPArcCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setSwerveModule(new Vector(0, 0), 0);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 

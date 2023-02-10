@@ -50,14 +50,14 @@ public class SnapToAngle extends CommandBase {
         controller.setSetpoint(correctSP[angle]);
         double output = controller.calculate(currentAngle);
 
-        SwerveSubsystem.getInstance().setSwerveModule(new Vector(0,0), -output);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0,0), -output);
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
     }
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setSwerveModule(new Vector(0,0), 0);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0,0), 0);
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
     }

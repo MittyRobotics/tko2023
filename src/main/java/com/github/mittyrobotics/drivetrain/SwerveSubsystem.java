@@ -23,6 +23,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     private InverseKinematics inverseKinematics;
     private ForwardKinematics forwardKinematics;
+    private DiffDriveKinematics diffDriveKinematics;
 
     private TalonFX[] driveFalcon = new TalonFX[4];
     private TalonFX[] rotationFalcon = new TalonFX[4];
@@ -92,12 +93,13 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 //            encoder[i].setPositionOffset(10);
 //            rotationFalcon[i].setSelectedSensorPosition(encoder[i].getAbsolutePosition() * SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER);
 
-            inverseKinematics = new InverseKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
-            forwardKinematics = new ForwardKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
-
-            setDefaultCommand(new JoystickThrottleCommand());
-
         }
+
+        inverseKinematics = new InverseKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
+        forwardKinematics = new ForwardKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
+        diffDriveKinematics = new DiffDriveKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
+
+        setDefaultCommand(new JoystickThrottleCommand());
     }
 
 //    public double getMagEncoderAbsRadians(int i) {
@@ -133,8 +135,20 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
     }
 
-    public void setSwerveModule(Vector linearVel, double angularVel) {
+    public void setSwerveInvKinematics(Vector linearVel, double angularVel) {
         inverseKinematics.setSwerveModule(linearVel, angularVel);
+    }
+
+    public void setDiffDriveKinematics(double linearVelocity, double radius) {
+        diffDriveKinematics.updateFromLinearVelocityAndRadius(linearVelocity, radius);
+    }
+
+    public double[] getDiffDriveVels() {
+        return diffDriveKinematics.linearVels;
+    }
+
+    public double[] getDiffDriveAngles() {
+        return diffDriveKinematics.angles;
     }
 
     public double getPigeonHeading() {
@@ -320,6 +334,50 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         forwardKinematics.updateForwardKinematics(modules);
     }
 
+    public static class DiffDriveKinematics {
+        protected double linearVelocity, angularVelocity, leftVelocity, rightVelocity, radius, trackWidth, trackLength;
+        private double linearVels[] = new double[4];
+        private double angles[] = new double[4];
+        private int radSigns[] = new int[]{-1, -1, 1, 1};
+        private int angSigns[] = new int[]{-1, 1, 1, -1};
+
+        public DiffDriveKinematics(double trackWidth, double trackLength) {
+            this.trackWidth = trackWidth;
+            this.trackLength = trackLength;
+        }
+
+        public void updateFromLinearAndAngularVelocity(double linearVelocity, double angularVelocity) {
+            //left vel = angular vel * (radius - trackwidth / 2)
+            //right vel = angular vel * (radius + trackwidth / 2)
+            //radius = linear vel / w
+            this.linearVelocity = linearVelocity;
+            this.angularVelocity = angularVelocity;
+
+            if(Math.abs(angularVelocity) < 2e-9) {
+                this.radius = Double.POSITIVE_INFINITY;
+                this.leftVelocity = linearVelocity;
+                this.rightVelocity = linearVelocity;
+            } else {
+                this.radius = linearVelocity / angularVelocity;
+                for(int i = 0; i < 4; ++i) {
+                    double l = radius + radSigns[i] * trackWidth/2;
+                    double w = trackLength / 2;
+                    angles[i] = angSigns[i] * Math.atan2(w, l);
+                    linearVels[i] = angularVelocity * Math.sqrt(w * w + l + l);
+                }
+            }
+        }
+
+        public void updateFromLinearVelocityAndRadius(double linearVelocity, double radius) {
+            if(Double.isInfinite(radius)) {
+                this.angularVelocity = 0;
+            } else {
+                this.angularVelocity = linearVelocity / radius;
+            }
+            updateFromLinearAndAngularVelocity(linearVelocity, this.angularVelocity);
+        }
+    }
+
     public static class InverseKinematics {
         private final Vector swerveModule[] = new Vector[4];
         private Vector tangentialVelocityVector[] = new Vector[4];
@@ -346,7 +404,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
             for(int i = 0; i < 4; i++) {
                 swerveModule[i] = Vector.add(linearVel, tangentialVelocityVector[i]);
-//                System.out.println(i + ": " + swerveModule[i]);
             }
         }
     }
@@ -370,10 +427,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             pose = Point.add(pose, new_);
             directionOfTravel = new Angle(new Vector(new_).getAngle().getRadians() - Math.PI/2);
 
-//            System.out.println(pose.toString() + " " + new_.toString());
-
-
-//            System.out.println(pose.toStringMetric());
         }
 
         public Vector getR(int i) {

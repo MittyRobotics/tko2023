@@ -51,6 +51,10 @@ public class SwervePath {
         return spline.getTFromLength(length);
     }
 
+    public Point getLookaheadPoint(Pose robot, double lookahead) {
+        return spline.get(getTForLookahead(robot, lookahead));
+    }
+
     public Vector getVectorToLookahead(Pose robot, double lookahead) {
         // TODO: 9/2/2022 Fix lookahead format - should be resolved
         double t = getTForLookahead(robot, lookahead);

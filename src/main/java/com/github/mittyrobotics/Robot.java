@@ -58,9 +58,9 @@ public class Robot extends TimedRobot {
     OI.getInstance().setUpTuningControls();
 
 
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+//    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+//    m_chooser.addOption("My Auto", kCustomAuto);
+//    SmartDashboard.putData("Auto choices", m_chooser);
 
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
@@ -101,6 +101,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    SwerveSubsystem.getInstance().resetPose();
+
     SwervePath[] paths = {
             new SwervePath(
                     new QuinticHermiteSpline(
