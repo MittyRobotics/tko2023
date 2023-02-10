@@ -34,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
 //            spark[i].getPIDController().setFF();
 //            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
-            spark[i].setClosedLoopRampRate(1.5);
+//            spark[i].setClosedLoopRampRate(1.5);
 //            spark[i].getPIDController().setSmartMotionAllowedClosedLoopError(1, 0);
         }
 

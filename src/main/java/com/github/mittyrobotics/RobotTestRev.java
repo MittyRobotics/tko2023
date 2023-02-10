@@ -28,7 +28,7 @@ public class RobotTestRev extends TimedRobot {
         allowedErr = 0;
         // initialize motor
         m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 1000, 0);
+        tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 1000, 0, 0);
 
         log = new LoggerInterface();
 
@@ -115,7 +115,7 @@ public class RobotTestRev extends TimedRobot {
         SmartDashboard.putNumber("VEL", m_motor.getEncoder().getVelocity());
         SmartDashboard.putNumber("OUTPUT", m_motor.getAppliedOutput());
 //        m_pidController.setReference(1500, CANSparkMax.ControlType.kSmartMotion);
-        m_motor.getPIDController().setReference(tp.update(0.02, m_motor.getEncoder().getPosition()), CANSparkMax.ControlType.kVelocity);
+//        m_motor.getPIDController().setReference(tp.update(0.02, m_motor.getEncoder().getPosition()), CANSparkMax.ControlType.kVelocity);
         System.out.println("POS: " + m_motor.getEncoder().getPosition());
     }
 
