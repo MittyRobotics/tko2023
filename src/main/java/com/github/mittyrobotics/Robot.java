@@ -25,79 +25,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
   TrapezoidalMotionProfile tpPivot, tpTelescope;
   double lastTime;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   @Override
   public void robotInit() {
     // WORKS FOR PIVOT
-    tpPivot = new TrapezoidalMotionProfile(90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 180 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 60 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 20 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.5);
+    tpPivot = new TrapezoidalMotionProfile(90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 180 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 60 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 20 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.5);
 
     //WORKS FOR TELESCOPE
-    tpTelescope = new TrapezoidalMotionProfile(100 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0, 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 1);
-
+    tpTelescope = new TrapezoidalMotionProfile(100 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 0, 0, 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 1);
 
 
     SwerveSubsystem.getInstance().initHardware();
-
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
-
     Gyro.getInstance().initHardware();
-
     OI.getInstance().setUpTuningControls();
-
-
-//    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-//    m_chooser.addOption("My Auto", kCustomAuto);
-//    SmartDashboard.putData("Auto choices", m_chooser);
-
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
 
-
-
-
   }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
   @Override
   public void robotPeriodic() {
 //    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
-    SmartDashboard.putNumber("Raw vel", PivotSubsystem.getInstance().rawVel());
+//    SmartDashboard.putNumber("Raw vel", PivotSubsystem.getInstance().rawVel());
 //    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
-
 
   }
 
-
-  /**
-   * This autonomous (along with the chooser code above) shows how to select between different
-   * autonomous modes using the dashboard. The sendable chooser code works with the Java
-   * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
-   * uncomment the getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
-   * below with additional strings. If using the SendableChooser make sure to add them to the
-   * chooser code above as well.
-   */
   @Override
   public void autonomousInit() {
     SwerveSubsystem.getInstance().resetPose();
@@ -126,7 +85,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-
 //    System.out.println("RADIANS THETA: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("METERS R: " + TelescopeSubsystem.getInstance().getDistanceMeters());
 
@@ -136,9 +94,6 @@ public class Robot extends TimedRobot {
 //    System.out.println("MAX: " + !TelescopeSubsystem.getInstance().getHalifaxMaxContact());
 //    System.out.println(TelescopeSubsystem.getInstance().getDistanceMeters());
 //    System.out.println(TelescopeSubsystem.getInstance().getOutput());
-
-
-    //
 
     //-9.033033020642339 ENCODER LEAVE
 
@@ -152,23 +107,13 @@ public class Robot extends TimedRobot {
       TelescopeSubsystem.getInstance().setMotor(0.1);
     }
 */
-//    switch (m_autoSelected) {
-//      case kCustomAuto:
-//        // Put custom auto code here
-//        break;
-//      case kDefaultAuto:
-//      default:
-//        // Put default auto code here
-//        break;
-//    }
-
-    System.out.println(Gyro.getInstance().getHeadingRadians());
+//    System.out.println(Gyro.getInstance().getHeadingRadians());
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
+      TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
       lastTime = Timer.getFPGATimestamp();
   }
 
@@ -216,10 +161,10 @@ public class Robot extends TimedRobot {
 //    PivotSubsystem.getInstance().configPID(0.0003, 0, 0.00000); // FOR RAW PID
 //    PivotSubsystem.getInstance().configPID(0.0003 + 0.00022 * 24/14., 0, 0.00000); // FOR RAW PID
 
-    double velTelescope = tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel());
+    double velTelescope = tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
     double velPivot = 0;
     if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
-        velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
+        velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
     lastTime = Timer.getFPGATimestamp();
 //    PivotSubsystem.getInstance().configPID(0.001, 0, 0);
 //    System.out.println(TelescopeSubsystem.getInstance().getHalifaxMaxContact());

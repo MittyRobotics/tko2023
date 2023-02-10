@@ -1,9 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Line;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -49,9 +46,13 @@ public class SwerveAutoPickupCommand extends CommandBase {
 
 
         SwerveSubsystem.getInstance().setDiffDriveKinematics(speed, purePursuitRadius);
-        
-        SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().getDiffDriveVels());
-        SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().getDiffDriveAngles());
+
+        if (new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() > threshold) {
+            SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().getDiffDriveVels());
+            SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().getDiffDriveAngles());
+        } else {
+            SwerveSubsystem.getInstance().setZero();
+        }
 
         lastT = Timer.getFPGATimestamp();
     }

@@ -28,7 +28,7 @@ public class RobotTestRev extends TimedRobot {
         allowedErr = 0;
         // initialize motor
         m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 1000, 0, 0);
+        tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 0, 1000, 0, 0);
 
         log = new LoggerInterface();
 
