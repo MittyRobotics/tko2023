@@ -124,14 +124,14 @@ public class RobotTest extends Robot {
     public void teleopPeriodic() {
 
 //        System.out.println(tp.getMaxVelFromPos(9.9));
-        if (Math.abs(spark.getEncoder().getPosition() - 10) > 0.1) {
-            double output = tp.update(0.02, spark.getEncoder().getVelocity() / 600, spark.getEncoder().getPosition());
-        System.out.println(output + " | " + spark.getEncoder().getVelocity() + " | " + spark.getEncoder().getPosition());
-
-            spark.getPIDController().setReference(output, CANSparkMax.ControlType.kVelocity);
-        } else {
-            spark.getPIDController().setReference(0, CANSparkMax.ControlType.kVelocity);
-        }
+//        if (Math.abs(spark.getEncoder().getPosition() - 10) > 0.1) {
+//            double output = tp.update(0.02, spark.getEncoder().getPosition());
+//        System.out.println(output + " | " + spark.getEncoder().getVelocity() + " | " + spark.getEncoder().getPosition());
+//
+//            spark.getPIDController().setReference(output, CANSparkMax.ControlType.kVelocity);
+//        } else {
+//            spark.getPIDController().setReference(0, CANSparkMax.ControlType.kVelocity);
+//        }
 //        spark.getPIDController().setReference(0.1, CANSparkMax.ControlType.kVelocity);
 
 //        System.out.println("RADIANS THE  TA: " + PivotSubsystem.getInstance().getPositionRadians());

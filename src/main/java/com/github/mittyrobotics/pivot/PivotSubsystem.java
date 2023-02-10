@@ -32,9 +32,9 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].getPIDController().setSmartMotionMaxAccel(30. / 360 * 60, 0);
             spark[i].getPIDController().setSmartMotionMaxVelocity(40. / 360 * 60, 0);
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
-            spark[i].getPIDController().setFF(0.3/(1765.));
+//            spark[i].getPIDController().setFF();
 //            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
-            spark[i].setClosedLoopRampRate(1.5);
+//            spark[i].setClosedLoopRampRate(1.5);
 //            spark[i].getPIDController().setSmartMotionAllowedClosedLoopError(1, 0);
         }
 
@@ -81,7 +81,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getPositionDegrees() {
-        return getPositionRadians() * 180 / (2 * Math.PI);
+        return getPositionRadians() * 180 / (Math.PI);
     }
 
     public double getVelocityRadiansPerSecond() {
@@ -98,6 +98,11 @@ public class PivotSubsystem extends SubsystemBase {
             spark[j].getPIDController().setI(i);
             spark[j].getPIDController().setD(d);
         }
+    }
+
+    public void setFF(double val) {
+        spark[0].getPIDController().setFF(val);
+        spark[1].getPIDController().setFF(val);
     }
 
     public boolean withinThreshold() {
@@ -141,9 +146,9 @@ public class PivotSubsystem extends SubsystemBase {
         return spark[0].getEncoder().getPosition();
     }
 
-    public void setRaw() {
-        spark[0].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
-        spark[1].getPIDController().setReference(668, CANSparkMax.ControlType.kVelocity);
+    public void setRaw(double rpm) {
+        spark[0].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
+        spark[1].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
     }
 
     public double getOutput() {

@@ -41,16 +41,16 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setP(TelescopeConstants.DEFAULT_P);
         telescopeNeo.getPIDController().setI(TelescopeConstants.DEFAULT_I);
         telescopeNeo.getPIDController().setD(TelescopeConstants.DEFAULT_D);
-//        telescopeNeo.getPIDController().setFF(1/6000.);
+        telescopeNeo.getPIDController().setFF(0.1/450);
         telescopeNeo.getPIDController().setOutputRange(-0.5, 0.5);
         telescopeNeo.getEncoder().setPosition(0);
         telescopeNeo.getPIDController().setFeedbackDevice(telescopeNeo.getEncoder());
         telescopeNeo.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        telescopeNeo.getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
-        telescopeNeo.getPIDController().setSmartMotionMaxAccel(0.001, 0);
-        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(0.01, 0);
-        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(0.05, 0);
-        telescopeNeo.getPIDController().setSmartMotionAllowedClosedLoopError(0, 0);
+//        telescopeNeo.getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMaxAccel(0.001, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMaxVelocity(0.01, 0);
+//        telescopeNeo.getPIDController().setSmartMotionMinOutputVelocity(0.05, 0);
+//        telescopeNeo.getPIDController().setSmartMotionAllowedClosedLoopError(0, 0);
 //        telescopeNeo.setClosedLoopRampRate(1.5);
 
 
@@ -149,6 +149,18 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
     public void setVelZero() {
         telescopeNeo.set(0);
+    }
+
+    public double rawPos() {
+        return telescopeNeo.getEncoder().getPosition();
+    }
+
+    public double rawVel() {
+        return telescopeNeo.getEncoder().getVelocity();
+    }
+
+    public void setRaw(double vel) {
+        telescopeNeo.getPIDController().setReference(vel, CANSparkMax.ControlType.kVelocity);
     }
 
     @Override

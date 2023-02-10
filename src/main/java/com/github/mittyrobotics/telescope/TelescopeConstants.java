@@ -4,7 +4,7 @@ public class TelescopeConstants {
     //TODO: Fill in all except meters per rev conversion
     public static final int TELESCOPE_SPARK_ID = 10;
 
-    public static final double DEFAULT_P = 0.1;
+    public static final double DEFAULT_P = 0.0003;
     public static final double DEFAULT_I = 0;
     public static final double DEFAULT_D = 0;
 
