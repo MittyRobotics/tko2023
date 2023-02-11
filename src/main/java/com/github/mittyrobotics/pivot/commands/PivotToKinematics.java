@@ -1,12 +1,16 @@
 package com.github.mittyrobotics.pivot.commands;
 
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PivotToKinematics extends CommandBase {
-
+    TrapezoidalMotionProfile tpPivot;
+    double lastTime;
     public PivotToKinematics() {
         super();
         addRequirements(PivotSubsystem.getInstance());
@@ -14,7 +18,8 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-
+        tpPivot = new TrapezoidalMotionProfile(360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, PivotSubsystem.getInstance().rawPos(), 20 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
+        lastTime = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -33,25 +38,17 @@ public class PivotToKinematics extends CommandBase {
 //            }
 //        }
 
-//        System.out.println("PIVOT DES: " + ArmKinematics.getPivotDesiredPolar());
-//        System.out.println("PIVOT DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
-//        SmartDashboard.putNumber("PIVOT DEGREES", PivotSubsystem.getInstance().getPositionDegrees());
-
         double desired = ArmKinematics.getPivotDesiredPolar().getRadians();
-        double currentExtension = TelescopeSubsystem.getInstance().getDistanceMeters();
-//        PivotSubsystem.getInstance().configPID(
-//                PivotConstants.PIVOT_BASE_P * currentExtension * currentExtension,
-//                PivotConstants.PIVOT_BASE_I * currentExtension * currentExtension,
-//                PivotConstants.PIVOT_BASE_D * currentExtension * currentExtension);
-        PivotSubsystem.getInstance().configPID(0.5, 0, 0.3
-        );
-        System.out.println(PivotSubsystem.getInstance().getPositionRadians());
-        if(Math.PI/2 > Math.abs(desired)) {
-            PivotSubsystem.getInstance().setPositionRadians(desired);
-        } else {
-            PivotSubsystem.getInstance().setPositionRadians(desired > 0 ? Math.PI/2 : - Math.PI/2);
-        }
 
+        PivotSubsystem.getInstance().configPID(PivotConstants.PIVOT_BASE_P, PivotConstants.PIVOT_BASE_I, PivotConstants.PIVOT_BASE_D);
+        PivotSubsystem.getInstance().setFF(PivotConstants.PIVOT_FF);
+
+        tpPivot.changeSetpoint(desired, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel());
+        double velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
+
+        PivotSubsystem.getInstance().setRaw(velPivot);
+
+        lastTime = Timer.getFPGATimestamp();
     }
 
     @Override

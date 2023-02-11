@@ -13,9 +13,9 @@ public class SwerveAutoPickupCommand extends CommandBase {
     private double speed = 0;
     private double dt, lastT = 0;
 
-    public SwerveAutoPickupCommand(double threshold, SwervePath paths) {
+    public SwerveAutoPickupCommand(double threshold, SwervePath path) {
         setName("Swerve Pure Pursuit");
-        this.path = paths;
+        this.path = path;
         this.threshold = threshold;
 
         addRequirements(SwerveSubsystem.getInstance());
@@ -58,10 +58,10 @@ public class SwerveAutoPickupCommand extends CommandBase {
     }
 
 
-    public double getRadiusFromPoints(Pose robot, Point lookahead) {
+    public static double getRadiusFromPoints(Pose robot, Point lookahead) {
         double radius;
 
-        Angle angleOfRadius = new Angle(robot.getHeading().getRadians() - Math.PI/2);
+        Angle angleOfRadius = new Angle(Math.PI/2 - (robot.getHeading().getRadians() - Math.PI/2));
         Line radius1 = new Line(angleOfRadius, robot.getPosition());
 
         Line lineThroughPoints = new Line(robot.getPosition(), lookahead);
@@ -79,7 +79,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
         return radius * orientationOfPoseAndPoint(robot, lookahead);
     }
 
-    public int orientationOfPoseAndPoint(Pose pose, Point point3) {
+    public static int orientationOfPoseAndPoint(Pose pose, Point point3) {
         Point point1 = pose.getPosition();
         Point point2 = new Point(point1.getX() + Math.cos(pose.getHeading().getRadians()), point1.getY() + Math.sin(pose.getHeading().getRadians()));
 

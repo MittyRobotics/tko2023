@@ -1,11 +1,15 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+
 public class PivotConstants {
     public static final int[] PIVOT_ID = {8, 9};
 
-    public static final double PIVOT_BASE_P = 7;
+    public static final double PIVOT_BASE_P = 0.000025;
     public static final double PIVOT_BASE_I = 0.000;
-    public static final double PIVOT_BASE_D = 0.1;
+    public static final double PIVOT_BASE_D = 0.000;
+
+    public static final double PIVOT_FF = 0.3/1765.;
 
     public static final double MAX_ACCEL = 0;
     public static final double MAX_VEL = 0;

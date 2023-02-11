@@ -60,24 +60,24 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     SwerveSubsystem.getInstance().resetPose();
 
-    SwervePath[] paths = {
-            new SwervePath(
-                    new QuinticHermiteSpline(
-                            new Point(0, 0), new Angle(2.5*Math.PI/2),
-                            new Point(-26/39.37, (-224+26)/39.37), new Angle(3*Math.PI/2)),
-                    new Angle(0), new Angle(Math.PI),
-                    0, 0, 6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
-            ),
-            new SwervePath(
-                    new QuinticHermiteSpline(
-                            new Point(-26/39.37, (-224+26)/39.37), new Angle(Math.PI/2),
-                            new Point(0, 0), new Angle(0.5*Math.PI/2)),
-                    new Angle(Math.PI), new Angle(0),
-                    0, 0,6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
-            )
-    };
+//    SwervePath[] paths = {
+////            new SwervePath(
+////                    new QuinticHermiteSpline(
+////                            new Point(0, 0), new Angle(2.5*Math.PI/2),
+////                            new Point(-26/39.37, (-224+26)/39.37), new Angle(3*Math.PI/2)),
+////                    new Angle(0), new Angle(Math.PI),
+////                    0, 0, 6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
+////            ),
+////            new SwervePath(
+////                    new QuinticHermiteSpline(
+////                            new Point(-26/39.37, (-224+26)/39.37), new Angle(Math.PI/2),
+////                            new Point(0, 0), new Angle(0.5*Math.PI/2)),
+////                    new Angle(Math.PI), new Angle(0),
+////                    0, 0,6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
+////            )
+////    };
 
-    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+//    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
   }
 
