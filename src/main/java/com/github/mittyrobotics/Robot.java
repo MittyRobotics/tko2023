@@ -16,6 +16,7 @@ import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-//    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
 
     SwerveSubsystem.getInstance().updateForwardKinematics();
 //    SmartDashboard.putNumber("Raw vel", PivotSubsystem.getInstance().rawVel());
@@ -107,11 +108,15 @@ public class Robot extends TimedRobot {
     }
 */
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
+
+    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
+    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    OI.getInstance().setupControls();
       TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
       lastTime = Timer.getFPGATimestamp();
   }
@@ -119,103 +124,103 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-      System.out.println(OI.getInstance().getOperatorController().getPOV());
-
-      if (OI.getInstance().getOperatorController().getRightBumper()) {
-        if (OI.getInstance().getOperatorController().getAButton()) {
-          tpPivot.changeSetpoint(45 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
-        } else if (OI.getInstance().getOperatorController().getBButton()) {
-          tpPivot.changeSetpoint(0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
-        } else if (OI.getInstance().getOperatorController().getXButton()) {
-          tpPivot.changeSetpoint(90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
-        }
-      }
-
-      if (OI.getInstance().getOperatorController().getLeftBumper()) {
-        if (OI.getInstance().getOperatorController().getAButton()) {
-          tpTelescope.changeSetpoint(12 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
-        } else if (OI.getInstance().getOperatorController().getBButton()) {
-          tpTelescope.changeSetpoint(0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
-        } else if (OI.getInstance().getOperatorController().getXButton()) {
-          tpTelescope.changeSetpoint(24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
-        }
-      }
-//    double pivotSetPoint = 45 - OI.getInstance().getOperatorController().getLeftY() * 45;
-//    tpTelescope.setDecel(20 + Math.sin(PivotSubsystem.getInstance().getPositionRadians()) * (60 - 20));
-//    System.out.println("PIVOT SP: " + pivotSetPoint / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
-//    System.out.println("DECEL: " + (20 + Math.sin(PivotSubsystem.getInstance().getPositionRadians()) * (60 - 20)));
-
-    double rightX = (OI.getInstance().getOperatorController().getRightX() + 1)/2;
-//    double telescopeSetPoint = rightX * 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV;
-//    double telescopeSetPoint = 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV;
-//    tpTelescope.setSetpoint(telescopeSetPoint);
-
-
-    boolean pivotMovingDown = tpPivot.getSetpoint() > PivotSubsystem.getInstance().rawPos();
-    boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();
-
-    double tuningConstant = 0;
-    double pivotFF = 0.3/(1765.) * (pivotMovingDown ?
-            0.5 - 0 / 12. * TelescopeSubsystem.getInstance().getDistanceInches() :
-            0.8 + 0.2 / 12. * TelescopeSubsystem.getInstance().getDistanceInches());
-
-    tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
-            1 - 0 / 12. * TelescopeSubsystem.getInstance().getDistanceInches() :
-            1 + 0.1 / 12. * TelescopeSubsystem.getInstance().getDistanceInches()));
-
-    double pidmax = 0.00025;
-
-    double telescopeP = Math.max(0.0001, pidmax - (pidmax - 0.0001) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
-    double telescopeFF = (0.25 / (300 + (900 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
-            (telescopeMovingDown ? 1 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4); //(PivotSubsystem.getInstance().getPositionDegrees() / 90));
-//    System.out.println("telescopeP: " + telescopeP);
-//    System.out.println("telescopeFF: " + 0.2/telescopeFF);
-    // FOR HORIZONTAL
-//    TelescopeSubsystem.getInstance().setPID(0.0003, 0, 0);
-//    TelescopeSubsystem.getInstance().setPID(telescopeP, 0, 0);
-
-
-    TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? telescopeP : 0, 0, 0);
-//    TelescopeSubsystem.getInstance().setPID(0, 0,0);
-    TelescopeSubsystem.getInstance().getNeo().getPIDController().setFF(telescopeFF);
-
-    PivotSubsystem.getInstance().setFF(pivotFF);
-    PivotSubsystem.getInstance().configPID(0, 0,0);
+//
+//      System.out.println(OI.getInstance().getOperatorController().getPOV());
+//
+//      if (OI.getInstance().getOperatorController().getRightBumper()) {
+//        if (OI.getInstance().getOperatorController().getAButton()) {
+//          tpPivot.changeSetpoint(45 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
+//        } else if (OI.getInstance().getOperatorController().getBButton()) {
+//          tpPivot.changeSetpoint(0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
+//        } else if (OI.getInstance().getOperatorController().getXButton()) {
+//          tpPivot.changeSetpoint(90 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
+//        }
+//      }
+//
+//      if (OI.getInstance().getOperatorController().getLeftBumper()) {
+//        if (OI.getInstance().getOperatorController().getAButton()) {
+//          tpTelescope.changeSetpoint(12 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
+//        } else if (OI.getInstance().getOperatorController().getBButton()) {
+//          tpTelescope.changeSetpoint(0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
+//        } else if (OI.getInstance().getOperatorController().getXButton()) {
+//          tpTelescope.changeSetpoint(24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
+//        }
+//      }
+////    double pivotSetPoint = 45 - OI.getInstance().getOperatorController().getLeftY() * 45;
+////    tpTelescope.setDecel(20 + Math.sin(PivotSubsystem.getInstance().getPositionRadians()) * (60 - 20));
+////    System.out.println("PIVOT SP: " + pivotSetPoint / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
+////    System.out.println("DECEL: " + (20 + Math.sin(PivotSubsystem.getInstance().getPositionRadians()) * (60 - 20)));
+//
+//    double rightX = (OI.getInstance().getOperatorController().getRightX() + 1)/2;
+////    double telescopeSetPoint = rightX * 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV;
+////    double telescopeSetPoint = 24 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV;
+////    tpTelescope.setSetpoint(telescopeSetPoint);
+//
+//
+//    boolean pivotMovingDown = tpPivot.getSetpoint() > PivotSubsystem.getInstance().rawPos();
+//    boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();
+//
+//    double tuningConstant = 0;
+//    double pivotFF = 0.3/(1765.) * (pivotMovingDown ?
+//            0.5 - 0 / 12. * TelescopeSubsystem.getInstance().getDistanceInches() :
+//            0.8 + 0.2 / 12. * TelescopeSubsystem.getInstance().getDistanceInches());
+//
+//    tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
+//            1 - 0 / 12. * TelescopeSubsystem.getInstance().getDistanceInches() :
+//            1 + 0.1 / 12. * TelescopeSubsystem.getInstance().getDistanceInches()));
+//
+//    double pidmax = 0.00025;
+//
+//    double telescopeP = Math.max(0.0001, pidmax - (pidmax - 0.0001) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
+//    double telescopeFF = (0.25 / (300 + (900 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
+//            (telescopeMovingDown ? 1 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4); //(PivotSubsystem.getInstance().getPositionDegrees() / 90));
+////    System.out.println("telescopeP: " + telescopeP);
+////    System.out.println("telescopeFF: " + 0.2/telescopeFF);
+//    // FOR HORIZONTAL
+////    TelescopeSubsystem.getInstance().setPID(0.0003, 0, 0);
+////    TelescopeSubsystem.getInstance().setPID(telescopeP, 0, 0);
+//
+//
+//    TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? telescopeP : 0, 0, 0);
+////    TelescopeSubsystem.getInstance().setPID(0, 0,0);
+//    TelescopeSubsystem.getInstance().getNeo().getPIDController().setFF(telescopeFF);
+//
+//    PivotSubsystem.getInstance().setFF(pivotFF);
+////    PivotSubsystem.getInstance().configPID(0, 0,0);
 //    PivotSubsystem.getInstance().configPID(0.000025, 0, 0);
-
-
-//    PivotSubsystem.getInstance().configPID(0.0003, 0, 0.00000); // FOR RAW PID
-//    PivotSubsystem.getInstance().configPID(0.0003 + 0.00022 * 24/14., 0, 0.00000); // FOR RAW PID
-
-    double velTelescope = 0;
-    if(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2)
-        velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
-    double velPivot = 0;
-    if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
-        velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
-    lastTime = Timer.getFPGATimestamp();
-//    PivotSubsystem.getInstance().configPID(0.001, 0, 0);
-//    System.out.println(TelescopeSubsystem.getInstance().getHalifaxMaxContact());
-//    TelescopeSubsystem.getInstance().setMotor(TelescopeSubsystem.getInstance().getHalifaxMaxContact() ? 0 : 0.1);
-    //450
-    SmartDashboard.putNumber("Telescope Pos", TelescopeSubsystem.getInstance().getDistanceInches());
-    SmartDashboard.putNumber("Telescope Vel", TelescopeSubsystem.getInstance().rawVel());
-//    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(30);
-//    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
-//    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(vel);
-    SmartDashboard.putNumber("Pos Degrees", PivotSubsystem.getInstance().getPositionDegrees());
-    SmartDashboard.putNumber("Pivot Vel", velPivot);
-    SmartDashboard.putNumber("Pivot Raw Vel", PivotSubsystem.getInstance().rawVel());
-
-//    TelescopeSubsystem.getInstance().setMotor(0.05);
-    //668, 1251, 1751
-    TelescopeSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2 ? velTelescope : 0);
-    PivotSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2 ? velPivot : 0);
-//    PivotSubsystem.getInstance().setMotor(0.1);
-
-//    System.out.println(PivotSubsystem.getInstance().getVelocityDegreesPerSecond());
-    SmartDashboard.putNumber("Pivot raw vel", PivotSubsystem.getInstance().rawVel());
+//
+//
+////    PivotSubsystem.getInstance().configPID(0.0003, 0, 0.00000); // FOR RAW PID
+////    PivotSubsystem.getInstance().configPID(0.0003 + 0.00022 * 24/14., 0, 0.00000); // FOR RAW PID
+//
+//    double velTelescope = 0;
+//    if(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2)
+//        velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
+//    double velPivot = 0;
+//    if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
+//        velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
+//    lastTime = Timer.getFPGATimestamp();
+////    PivotSubsystem.getInstance().configPID(0.001, 0, 0);
+////    System.out.println(TelescopeSubsystem.getInstance().getHalifaxMaxContact());
+////    TelescopeSubsystem.getInstance().setMotor(TelescopeSubsystem.getInstance().getHalifaxMaxContact() ? 0 : 0.1);
+//    //450
+//    SmartDashboard.putNumber("Telescope Pos", TelescopeSubsystem.getInstance().getDistanceInches());
+//    SmartDashboard.putNumber("Telescope Vel", TelescopeSubsystem.getInstance().rawVel());
+////    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(30);
+////    PivotSubsystem.getInstance().setPositionRadians(Math.PI/4);
+////    PivotSubsystem.getInstance().setVelocityDegreesPerSecond(vel);
+//    SmartDashboard.putNumber("Pos Degrees", PivotSubsystem.getInstance().getPositionDegrees());
+//    SmartDashboard.putNumber("Pivot Vel", velPivot);
+//    SmartDashboard.putNumber("Pivot Raw Vel", PivotSubsystem.getInstance().rawVel());
+//
+////    TelescopeSubsystem.getInstance().setMotor(0.05);
+//    //668, 1251, 1751
+//    TelescopeSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2 ? velTelescope : 0);
+//    PivotSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2 ? velPivot : 0);
+////    PivotSubsystem.getInstance().setMotor(0.1);
+//
+////    System.out.println(PivotSubsystem.getInstance().getVelocityDegreesPerSecond());
+//    SmartDashboard.putNumber("Pivot raw vel", PivotSubsystem.getInstance().rawVel());
 
 
 //    TelescopeSubsystem.getInstance().getNeo().getPIDController().setP(.003);

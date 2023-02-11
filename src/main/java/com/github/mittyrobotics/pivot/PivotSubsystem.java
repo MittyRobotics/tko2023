@@ -41,7 +41,9 @@ public class PivotSubsystem extends SubsystemBase {
         halifaxTop = new DigitalInput(PivotConstants.HALIFAX_TOP_CHANNEL);
         halifaxBottom = new DigitalInput(PivotConstants.HALIFAX_BOTTOM_CHANNEL);
 
-//        setDefaultCommand(new PivotToKinematics());
+        System.out.println(PivotSubsystem.getInstance().getPositionRadians());
+
+        setDefaultCommand(new PivotToKinematics());
     }
 
     public void setBrakeMode() {

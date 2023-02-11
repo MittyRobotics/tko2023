@@ -1,16 +1,20 @@
 package com.github.mittyrobotics.telescope.commands;
 
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ExtensionToKinematics extends CommandBase {
-    TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60, 5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * 60);
-//    TrapezoidProfile motionProfile = new TrapezoidProfile(constraints, );
 
+    TrapezoidalMotionProfile tpTelescope;
+    double velTelescope, lastTime;
     public ExtensionToKinematics() {
         super();
         addRequirements(TelescopeSubsystem.getInstance());
@@ -18,28 +22,44 @@ public class ExtensionToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("INIT COMMAND");
+        tpTelescope = new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2);
+        velTelescope = 0;
+        lastTime = Timer.getFPGATimestamp();
+
     }
 
     @Override
     public void execute() {
-
-
 //        if(TelescopeSubsystem.getInstance().getHalifaxMaxContact()) {
 //            TelescopeSubsystem.getInstance().resetMeters(TelescopeConstants.MAX_EXTENSION_METERS);
 //        } else if(TelescopeSubsystem.getInstance().getHalifaxMinContact()) {
 //            TelescopeSubsystem.getInstance().resetMeters(0);
 //        }
 
-        double desired = ArmKinematics.getTelescopeDesired();
+        double desired = ArmKinematics.getTelescopeDesired() / TelescopeConstants.METERS_PER_MOTOR_REV;
+        tpTelescope.changeSetpoint(desired, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
 
-        TelescopeSubsystem.getInstance().setPID(0.1, 0, 0);
-        TelescopeSubsystem.getInstance().setPositionMeters(Math.min(0, TelescopeConstants.MAX_EXTENSION_METERS));
-//        System.out.println("TELESCOPE DES: " + ArmKinematics.getTelescopeDesired());
+        boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();
 
+        double pidmax = 0.00025;
+        double telescopeP = Math.max(0.0001, pidmax - (pidmax - 0.0001) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
+        TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? telescopeP : 0, 0, 0);
 
-//        System.out.println("EXTENSION INCHES: " + TelescopeSubsystem.getInstance().getDistanceInches());
-//        SmartDashboard.putNumber("EXTENSION INCHES", TelescopeSubsystem.getInstance().getDistanceInches());
+        double telescopeFF = (0.25 / (300 + (900 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
+                (telescopeMovingDown ? 1 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4);
+        TelescopeSubsystem.getInstance().setFF(telescopeFF);
+
+        velTelescope = 0;
+//        if(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2)
+            velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
+
+//        TelescopeSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2 ? velTelescope : 0);
+        TelescopeSubsystem.getInstance().setRaw(velTelescope);
+
+        lastTime = Timer.getFPGATimestamp();
+
+        SmartDashboard.putNumber("Telescope meters", TelescopeSubsystem.getInstance().getDistanceMeters());
+        SmartDashboard.putNumber("Telescope vel", TelescopeSubsystem.getInstance().rawVel());
     }
 
     @Override

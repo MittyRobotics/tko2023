@@ -1,11 +1,20 @@
 package com.github.mittyrobotics.pivot.commands;
 
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PivotToKinematics extends CommandBase {
+
+    TrapezoidalMotionProfile tpPivot;
+    double velPivot, lastTime;
 
     public PivotToKinematics() {
         super();
@@ -14,7 +23,9 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-
+        tpPivot = new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 180 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
+        velPivot = 0;
+        lastTime = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -33,25 +44,35 @@ public class PivotToKinematics extends CommandBase {
 //            }
 //        }
 
-//        System.out.println("PIVOT DES: " + ArmKinematics.getPivotDesiredPolar());
-//        System.out.println("PIVOT DEGREES: " + PivotSubsystem.getInstance().getPositionDegrees());
-//        SmartDashboard.putNumber("PIVOT DEGREES", PivotSubsystem.getInstance().getPositionDegrees());
+        double desired = ArmKinematics.getPivotDesiredPolar().getRadians() / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
+        tpPivot.changeSetpoint(desired, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
 
-        double desired = ArmKinematics.getPivotDesiredPolar().getRadians();
-        double currentExtension = TelescopeSubsystem.getInstance().getDistanceMeters();
-//        PivotSubsystem.getInstance().configPID(
-//                PivotConstants.PIVOT_BASE_P * currentExtension * currentExtension,
-//                PivotConstants.PIVOT_BASE_I * currentExtension * currentExtension,
-//                PivotConstants.PIVOT_BASE_D * currentExtension * currentExtension);
-        PivotSubsystem.getInstance().configPID(0.5, 0, 0.3
-        );
-        System.out.println(PivotSubsystem.getInstance().getPositionRadians());
-        if(Math.PI/2 > Math.abs(desired)) {
-            PivotSubsystem.getInstance().setPositionRadians(desired);
-        } else {
-            PivotSubsystem.getInstance().setPositionRadians(desired > 0 ? Math.PI/2 : - Math.PI/2);
-        }
+        double currentExtension = TelescopeSubsystem.getInstance().getDistanceInches();
 
+        boolean pivotMovingDown = tpPivot.getSetpoint() > PivotSubsystem.getInstance().rawPos();
+
+        double pivotFF = 0.3/(1765.) * (pivotMovingDown ?
+                0.6 - 0 / 12. * currentExtension :
+                0.8 + 0.2 / 12. * currentExtension);
+        PivotSubsystem.getInstance().setFF(pivotFF);
+
+        PivotSubsystem.getInstance().configPID(0.00002, 0, 0);
+
+        tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
+                1 - 0 / 12. * currentExtension :
+                1 + 0.1 / 12. * currentExtension));
+
+        velPivot = 0;
+//        if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
+            velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
+
+//        PivotSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2 ? velPivot : 0);
+        PivotSubsystem.getInstance().setRaw(velPivot);
+
+        lastTime = Timer.getFPGATimestamp();
+
+        SmartDashboard.putNumber("Pivot Radians", PivotSubsystem.getInstance().getPositionRadians());
+        SmartDashboard.putNumber("Pivot raw vel", PivotSubsystem.getInstance().rawVel());
     }
 
     @Override

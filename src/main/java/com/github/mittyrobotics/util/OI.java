@@ -108,8 +108,11 @@ public class OI {
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
-//        Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-//        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+        Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
+        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+
+        Trigger zeroAll = new Trigger(getOperatorController()::getRightBumper);
+        zeroAll.whileTrue(new InstantCommand(ArmKinematics::zeroAll));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
         midKinematics.whileTrue(new InstantCommand(ArmKinematics::handleMid));
@@ -117,8 +120,9 @@ public class OI {
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
         highKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHigh));
 
-        Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
-                StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
+//        Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
+//                StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
+        Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHumanPlayer));
 
         Trigger intake = new Trigger(() -> TelescopeSubsystem.getInstance().withinThreshold() &&

@@ -91,6 +91,10 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setD(D);
     }
 
+    public void setFF(double FF) {
+        telescopeNeo.getPIDController().setFF(FF);
+    }
+
     public void setPositionMeters(double meters) {
         telescopeNeo.getPIDController().setReference(meters/TelescopeConstants.METERS_PER_MOTOR_REV, CANSparkMax.ControlType.kSmartMotion);
     }

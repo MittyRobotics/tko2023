@@ -35,25 +35,29 @@ public class ArmKinematics {
     }
 
     public static void handleHigh() {
-        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
-            setArmKinematics(new Angle(1.1828889648626106), 0.9712510524378655);
+//        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(new Angle(1.0933341743024654 - 0.04 - 0.035), 0.9712510524378655);
     }
 
     public static void handleMid() {
-        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
-            setArmKinematics(new Angle(1.1866203864449478), 0.545497612205895);
+//        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(new Angle(1.173560373540987), 0.545497612205895);
+    }
+
+    public static void zeroAll() {
+        setArmKinematics(new Angle(0), 0);
     }
 
     public static void handleGround() {
-        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE){
-
-        }
+//        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE){
+        setArmKinematics(new Angle(2.1847833197051916), 0.20456099255847424);
+//        }
 
     }
 
     public static void handleHumanPlayer() {
-        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
-            setArmKinematics(new Angle(1.076542665084606), 0.1812776848238557);
+//        if (StateMachine.getInstance().getCurrentState() != StateMachine.State.NONE)
+            setArmKinematics(new Angle(1.113857105102662), 0.4490367646201602);
     }
 
     public static void incrementDistance(boolean extend) {
