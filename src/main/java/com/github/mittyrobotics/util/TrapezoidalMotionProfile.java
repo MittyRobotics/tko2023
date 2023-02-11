@@ -13,6 +13,14 @@ public class TrapezoidalMotionProfile {
         this.eps = eps;
     }
 
+    public void changeSetpoint(double setpoint, double curPos, double curVel) {
+        if(setpoint != this.endPos) {
+            this.endPos = setpoint;
+            this.startPos = curPos;
+            this.startVel = curVel;
+        }
+    }
+
     public void setSetpoint(double setpoint) {
         this.endPos = setpoint;
     }
@@ -46,12 +54,12 @@ public class TrapezoidalMotionProfile {
             output = Math.min(maxVel, getMaxVelFromStart(startPos - curPos) + dt * maxAccel);
             output = Math.min(output, getMaxVelFromEnd(endPos - curPos));
 
-            if (Math.abs(curPos - endPos) > eps) output = Math.max(output, minOutput);
+            if (Math.abs(curPos - startPos) < eps * Math.abs(endPos - startPos)) output = Math.max(output, minOutput);
         } else {
             output = Math.max(-maxVel, -getMaxVelFromStart(startPos - curPos) - dt * maxAccel);
             output = Math.max(output, -getMaxVelFromEnd(endPos - curPos));
 
-            if (Math.abs(curPos - endPos) > eps) output = Math.min(output, -minOutput);
+            if (Math.abs(curPos - startPos) < eps * Math.abs(endPos - startPos)) output = Math.min(output, -minOutput);
         }
 
         return output;
