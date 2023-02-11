@@ -336,10 +336,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public static class DiffDriveKinematics {
         protected double linearVelocity, angularVelocity, leftVelocity, rightVelocity, radius, trackWidth, trackLength;
-        private double linearVels[] = new double[4];
-        private double angles[] = new double[4];
-        private int radSigns[] = new int[]{-1, -1, 1, 1};
-        private int angSigns[] = new int[]{-1, 1, 1, -1};
+        private final double[] linearVels = new double[4];
+        private final double[] angles = new double[4];
+        private final int[] radSigns = new int[]{1, -1, -1, 1};
+        private final int[] angSigns = new int[]{1, 1, -1, -1};
 
         public DiffDriveKinematics(double trackWidth, double trackLength) {
             this.trackWidth = trackWidth;
@@ -347,23 +347,22 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
 
         public void updateFromLinearAndAngularVelocity(double linearVelocity, double angularVelocity) {
-            //left vel = angular vel * (radius - trackwidth / 2)
-            //right vel = angular vel * (radius + trackwidth / 2)
-            //radius = linear vel / w
             this.linearVelocity = linearVelocity;
             this.angularVelocity = angularVelocity;
 
             if(Math.abs(angularVelocity) < 2e-9) {
                 this.radius = Double.POSITIVE_INFINITY;
-                this.leftVelocity = linearVelocity;
-                this.rightVelocity = linearVelocity;
+                for(int i = 0; i < 4; ++i) {
+                    angles[i] = 0;
+                    linearVels[i] = linearVelocity;
+                }
             } else {
                 this.radius = linearVelocity / angularVelocity;
                 for(int i = 0; i < 4; ++i) {
-                    double l = radius + radSigns[i] * trackWidth/2;
-                    double w = trackLength / 2;
-                    angles[i] = angSigns[i] * Math.atan2(w, l);
-                    linearVels[i] = angularVelocity * Math.sqrt(w * w + l + l);
+                    double w = radius + radSigns[i] * trackWidth/2;
+                    double l = trackLength / 2;
+                    angles[i] = angSigns[i] * Math.atan2(l, w);
+                    linearVels[i] = angularVelocity * Math.sqrt(l * l + w * w);
                 }
             }
         }

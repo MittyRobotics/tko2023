@@ -61,7 +61,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
     public double getRadiusFromPoints(Pose robot, Point lookahead) {
         double radius;
 
-        Angle angleOfRadius = new Angle(robot.getHeading().getRadians() - Math.PI/2);
+        Angle angleOfRadius = new Angle(Math.PI/2 - (robot.getHeading().getRadians() - Math.PI/2));
         Line radius1 = new Line(angleOfRadius, robot.getPosition());
 
         Line lineThroughPoints = new Line(robot.getPosition(), lookahead);
@@ -81,7 +81,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
 
     public int orientationOfPoseAndPoint(Pose pose, Point point3) {
         Point point1 = pose.getPosition();
-        Point point2 = new Point(point1.getX() + Math.cos(pose.getHeading().getRadians()), point1.getY() + Math.sin(pose.getHeading().getRadians()));
+        Point point2 = new Point(point1.getX() + Math.cos(Math.PI/2 - pose.getHeading().getRadians()), point1.getY() + Math.sin(Math.PI/2 - pose.getHeading().getRadians()));
 
         double test = (point2.getY() - point1.getY()) * (point3.getX() - point2.getX()) -
                 (point2.getX() - point1.getX()) * (point3.getY() - point2.getY());
@@ -93,11 +93,11 @@ public class SwerveAutoPickupCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+        SwerveSubsystem.getInstance().setZero();
     }
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < threshold;
     }
 }

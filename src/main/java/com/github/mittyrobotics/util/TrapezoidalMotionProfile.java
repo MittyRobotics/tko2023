@@ -41,6 +41,10 @@ public class TrapezoidalMotionProfile {
         this.maxDecel = decel;
     }
 
+    public void setMinOutput(double minOutput) {
+        this.minOutput = minOutput;
+    }
+
     public TrapezoidalMotionProfile(double maxAccel, double maxVel, double endPos) {
         this(maxAccel, maxAccel, maxVel, 0, 0, endPos, 1, 0.5);
     }
