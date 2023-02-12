@@ -55,7 +55,7 @@ public class IntakeAnyLevelCommand extends CommandBase {
             avg += 1/k * val;
         } else {
             int n = q.size();
-            avg = (n / (n + 1)) * avg + (1 / (n + 1)) * val;
+            avg = ((double) n / (n + 1)) * avg + (1. / (n + 1)) * val;
         }
         q.add(val);
         return avg;
