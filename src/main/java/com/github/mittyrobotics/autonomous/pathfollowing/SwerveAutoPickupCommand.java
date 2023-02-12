@@ -3,6 +3,7 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveAutoPickupCommand extends CommandBase {
@@ -44,6 +45,10 @@ public class SwerveAutoPickupCommand extends CommandBase {
 
         double purePursuitRadius = getRadiusFromPoints(robot, lookahead);
 
+        SmartDashboard.putNumber("radius", purePursuitRadius);
+
+//        double purePursuitRadius = 1;
+        speed = 0.5;
 
         SwerveSubsystem.getInstance().setDiffDriveKinematics(speed, purePursuitRadius);
 
@@ -61,7 +66,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
     public double getRadiusFromPoints(Pose robot, Point lookahead) {
         double radius;
 
-        Angle angleOfRadius = new Angle(Math.PI/2 - (robot.getHeading().getRadians() - Math.PI/2));
+        Angle angleOfRadius = new Angle((Math.PI/2 + robot.getHeading().getRadians()) - Math.PI/2);
         Line radius1 = new Line(angleOfRadius, robot.getPosition());
 
         Line lineThroughPoints = new Line(robot.getPosition(), lookahead);
@@ -76,7 +81,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
             radius = Point.getDistance(center, lookahead);
         }
 
-        return radius * orientationOfPoseAndPoint(robot, lookahead);
+        return radius * -orientationOfPoseAndPoint(robot, lookahead);
     }
 
     public int orientationOfPoseAndPoint(Pose pose, Point point3) {

@@ -4,14 +4,17 @@ import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsystem {
-    public static CANSparkMax grabberSpark;
+    private CANSparkMax grabberSpark;
     private static ClawGrabberSubsystem instance;
     private double initialPosition = 0;
-    private static DigitalInput clawProxSensor;
-    private static boolean isCone = false;
+    private DigitalInput clawProxSensor;
+
+    private DutyCycleEncoder encoder;
+    private boolean isCone = false;
 
     private ClawGrabberSubsystem(){
         super();
@@ -35,9 +38,26 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
         grabberSpark.restoreFactoryDefaults();
         grabberSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         grabberSpark.setInverted(IntakeConstants.GRABBER_SPARK_INVERTED);
+        grabberSpark.setSmartCurrentLimit(40);
+
+//        encoder = new DutyCycleEncoder()
+
         grabberSpark.getPIDController().setFeedbackDevice(grabberSpark.getEncoder());
+        grabberSpark.getEncoder().setPosition(0);
 
         clawProxSensor = new DigitalInput(IntakeConstants.CLAW_PROX_SENSOR_CHANNEL);
+    }
+
+    public double getCurrent() {
+        return grabberSpark.getOutputCurrent();
+    }
+
+    public void setMotor(double percent) {
+        grabberSpark.set(percent);
+    }
+
+    public double rawVel() {
+        return grabberSpark.getEncoder().getVelocity();
     }
 
     @Override
@@ -69,6 +89,10 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     public boolean getProximitySensor() {
         //TODO: Check if opposite or not
         return !clawProxSensor.get();
+    }
+
+    public double getEncoderValue() {
+        return grabberSpark.getEncoder().getPosition();
     }
 
     /*  sets the current state of the ClawGrabberSubsystem to cone or cube, called in grab command, used above ^ to specify the thresholds

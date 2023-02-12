@@ -26,13 +26,17 @@ public class ClawRollerSubsystem extends SubsystemBase implements ISubsystem {
 
     }
 
+    public double getCurrent() {
+        return rollerSpark.getOutputCurrent();
+    }
+
     @Override
     public void initHardware() {
         rollerSpark = new CANSparkMax(IntakeConstants.ROLLER_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         rollerSpark.restoreFactoryDefaults();
         rollerSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         rollerSpark.setInverted(IntakeConstants.ROLLER_SPARK_INVERTED);
-        rollerSpark.getPIDController().setFeedbackDevice(rollerSpark.getEncoder());
+//        rollerSpark.getPIDController().setFeedbackDevice(rollerSpark.getEncoder());
     }
 
     //sets to intake speed if intaking true, 0 if false

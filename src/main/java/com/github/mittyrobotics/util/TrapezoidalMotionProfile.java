@@ -51,8 +51,8 @@ public class TrapezoidalMotionProfile {
 
     public double update(double dt, double curPos) {
         double output;
-        System.out.println("Distance from start: " + Math.abs(curPos - startPos) + "  Start Vel: " + getMaxVelFromStart(curPos - startPos)
-        + "\n" + "Distance from end: " + Math.abs(endPos - curPos) + "  End Vel: " + getMaxVelFromEnd(endPos - curPos));
+//        System.out.println("Distance from start: " + Math.abs(curPos - startPos) + "  Start Vel: " + getMaxVelFromStart(curPos - startPos)
+//        + "\n" + "Distance from end: " + Math.abs(endPos - curPos) + "  End Vel: " + getMaxVelFromEnd(endPos - curPos));
 
         if (curPos < endPos) {
             output = Math.min(maxVel, getMaxVelFromStart(startPos - curPos) + dt * maxAccel);
