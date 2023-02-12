@@ -29,21 +29,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-  TrapezoidalMotionProfile tpPivot, tpTelescope;
-  double lastTime;
-
-  DigitalInput[] inputs = new DigitalInput[10];
-//  DigitalInput special = new DigitalInput(4);
-
   @Override
   public void robotInit() {
-    // WORKS FOR PIVOT
-    tpPivot = new TrapezoidalMotionProfile(480 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
-
-    //WORKS FOR TELESCOPE
-    tpTelescope = new TrapezoidalMotionProfile(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2);
-
-
     SwerveSubsystem.getInstance().initHardware();
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
@@ -53,21 +40,12 @@ public class Robot extends TimedRobot {
     OI.getInstance().setUpTuningControls();
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
-
-//    for(int i = 0 ; i < 6; ++i) {
-//        inputs[i] = new DigitalInput(i);
-//    }
-
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
     SwerveSubsystem.getInstance().updateForwardKinematics();
-//    SmartDashboard.putNumber("Raw vel", PivotSubsystem.getInstance().rawVel());
-//    System.out.println(PivotSubsystem.getInstance().getPositionDegrees());
-
   }
 
   @Override
@@ -94,14 +72,14 @@ public class Robot extends TimedRobot {
 //    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
 
-    SwervePath path = new SwervePath(
-            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(-1, 1), new Angle(Math.PI/2)),
-            new Angle(0), new Angle(0),
-            0, 0, 6., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5
-    );
-
-    SwerveAutoPickupCommand command = new SwerveAutoPickupCommand(0.07, path);
-    SwerveSubsystem.getInstance().setDefaultCommand(command);
+//    SwervePath path = new SwervePath(
+//            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(-1, 1), new Angle(Math.PI/2)),
+//            new Angle(0), new Angle(0),
+//            0, 0, 6., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5
+//    );
+//
+//    SwerveAutoPickupCommand command = new SwerveAutoPickupCommand(0.07, path);
+//    SwerveSubsystem.getInstance().setDefaultCommand(command);
   }
 
   /** This function is called periodically during autonomous. */
@@ -116,31 +94,17 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
       OI.getInstance().setupControls();
       TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
-      lastTime = Timer.getFPGATimestamp();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
-    ClawGrabberSubsystem.getInstance().setMotor(0);  //NEGATIVE IS INWARDS POS IS OUTWARDS
+//    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
 
-    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
+//    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
 
-
-//    SmartDashboard.putNumber("Grabber vel", ClawGrabberSubsystem.getInstance().rawVel());
-//      System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
-//    String test = "";
-//
-//    for(int i = 0; i < 6; ++i) {
-//        test += inputs[i].get() + "  ";
-//    }
-
-//    System.out.println(TelescopeSubsystem.getInstance().getHalifaxMinContact());
-//    System.out.println(special.get());
-
-    System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
-    System.out.println(ClawGrabberSubsystem.getInstance().getEncoderValue());
+//    System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
+//    System.out.println(ClawGrabberSubsystem.getInstance().getEncoderValue());
 
   }
   /** This function is called once when the robot is disabled. */

@@ -97,16 +97,14 @@ public class OI {
     }
 
     public void setupControls() {
-        XboxController controller = getOperatorController();
+//        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
+//        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+//
+//        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
+//        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
 
-        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
-        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
-
-        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
-        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
-
-        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
-        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+//        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
+//        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
         groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
@@ -125,8 +123,7 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHumanPlayer));
 
-        Trigger intake = new Trigger(() -> TelescopeSubsystem.getInstance().withinThreshold() &&
-                PivotSubsystem.getInstance().withinThreshold() && getOperatorController().getAButton());
+        Trigger intake = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
 
         intake.whileTrue(new IntakeAnyLevelCommand());
 

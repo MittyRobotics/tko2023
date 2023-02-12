@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.intake;
 
+import com.github.mittyrobotics.intake.commands.GrabberTempCommand;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -38,14 +39,26 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
         grabberSpark.restoreFactoryDefaults();
         grabberSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         grabberSpark.setInverted(IntakeConstants.GRABBER_SPARK_INVERTED);
-        grabberSpark.setSmartCurrentLimit(40);
 
 //        encoder = new DutyCycleEncoder()
 
         grabberSpark.getPIDController().setFeedbackDevice(grabberSpark.getEncoder());
+        grabberSpark.getPIDController().setP(0.1);
+        grabberSpark.getPIDController().setD(0);
+        grabberSpark.getPIDController().setI(0);
         grabberSpark.getEncoder().setPosition(0);
 
         clawProxSensor = new DigitalInput(IntakeConstants.CLAW_PROX_SENSOR_CHANNEL);
+
+        setDefaultCommand(new GrabberTempCommand());
+    }
+
+    public void lock() {
+        grabberSpark.getPIDController().setReference(0, CANSparkMax.ControlType.kPosition);
+    }
+
+    public void open() {
+        grabberSpark.getPIDController().setReference(10, CANSparkMax.ControlType.kPosition);
     }
 
     public double getCurrent() {
