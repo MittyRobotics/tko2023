@@ -31,7 +31,7 @@ public class IntakeAnyLevelCommand extends CommandBase {
         lavg = updateAvg(lqueue, lavg, long_term_avg_k, ClawRollerSubsystem.getInstance().getCurrent());
         savg = updateAvg(squeue, savg, short_term_avg_k, ClawRollerSubsystem.getInstance().getCurrent());
 
-        if(lavg - savg > threshold || intook) {
+        if(savg - lavg > threshold || intook) {
             intook = true;
             ClawRollerSubsystem.getInstance().setRoller(0);
         } else {
