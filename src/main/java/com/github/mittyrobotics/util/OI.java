@@ -26,6 +26,8 @@ package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.StateMachine;
 import com.github.mittyrobotics.drivetrain.commands.SnapToAngle;
+import com.github.mittyrobotics.intake.ClawGrabberSubsystem;
+import com.github.mittyrobotics.intake.commands.GrabberTempCommand;
 import com.github.mittyrobotics.intake.commands.IntakeAnyLevelCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -107,9 +110,12 @@ public class OI {
 //        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-        groundKinematics.whileTrue(new InstantCommand(ArmKinematics::handleGround));
+        groundKinematics.whileTrue(new SequentialCommandGroup(
+                new InstantCommand(ArmKinematics::handleGround),
+                new InstantCommand(() -> ClawGrabberSubsystem.getInstance().setOverideOpen(true))
+        ));
 
-        Trigger zeroAll = new Trigger(getOperatorController()::getRightBumper);
+        Trigger zeroAll = new Trigger(getOperatorController()::getLeftBumper);
         zeroAll.whileTrue(new InstantCommand(ArmKinematics::zeroAll));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
@@ -121,11 +127,14 @@ public class OI {
 //        Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
 //                StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
-        humanPlayerKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHumanPlayer));
+        humanPlayerKinematics.whileTrue(new SequentialCommandGroup(
+                new InstantCommand(ArmKinematics::handleHumanPlayer),
+                new InstantCommand(() -> ClawGrabberSubsystem.getInstance().setOverideOpen(true))
+        ));
 
         Trigger intake = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
 
-        intake.whileTrue(new IntakeAnyLevelCommand());
+//        intake.whileTrue(new IntakeAnyLevelCommand());
 
         /*
         //incorporated into joystick throttle command

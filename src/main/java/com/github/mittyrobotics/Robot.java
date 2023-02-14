@@ -1,5 +1,6 @@
 package com.github.mittyrobotics;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
@@ -7,6 +8,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.ClawGrabberSubsystem;
 import com.github.mittyrobotics.intake.ClawRollerSubsystem;
 import com.github.mittyrobotics.pivot.PivotConstants;
@@ -52,25 +54,25 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     SwerveSubsystem.getInstance().resetPose();
 
-//    SwervePath[] paths = {
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(0, 0), new Angle(2.5*Math.PI/2),
-//                            new Point(-26/39.37, (-224+26)/39.37), new Angle(3*Math.PI/2)),
-//                    new Angle(0), new Angle(Math.PI),
-//                    0, 0, 6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
-//            ),
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(-26/39.37, (-224+26)/39.37), new Angle(Math.PI/2),
-//                            new Point(0, 0), new Angle(0.5*Math.PI/2)),
-//                    new Angle(Math.PI), new Angle(0),
-//                    0, 0, 6., 12., 1, 0.2, 0.4, 2.5, 0, 0.02, 0.5
-//            )
-//    };
+    SwervePath[] paths = {
+            new SwervePath(
+                    new QuinticHermiteSpline(
+                            new Point(0, 0), new Angle(3*Math.PI/2),
+                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
+                    new Angle(0), new Angle(Math.PI),
+                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+            ),
+            new SwervePath(
+                    new QuinticHermiteSpline(
+                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
+                            new Point(0, 0), new Angle(Math.PI/2)),
+                    new Angle(Math.PI), new Angle(0),
+                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+            )
+    };
 
-//    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
-//    SwerveSubsystem.getInstance().setDefaultCommand(command);
+    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+    SwerveSubsystem.getInstance().setDefaultCommand(command);
 
 //    SwervePath path = new SwervePath(
 //            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(-1, 1), new Angle(Math.PI/2)),
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
       OI.getInstance().setupControls();
       TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
+      SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
   }
 
   /** This function is called periodically during operator control. */
@@ -101,7 +104,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 //    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
 
-//    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
+//    ClawGrabberSubsystem.getInstance().setMotor(0.1);
+
+    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
 
 //    System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
 //    System.out.println(ClawGrabberSubsystem.getInstance().getEncoderValue());
@@ -112,6 +117,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     TelescopeSubsystem.getInstance().setCoastMode();
     PivotSubsystem.getInstance().setCoastMode();
+    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically when disabled. */

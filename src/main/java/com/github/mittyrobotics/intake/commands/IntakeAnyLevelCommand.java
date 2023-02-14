@@ -3,6 +3,7 @@ package com.github.mittyrobotics.intake.commands;
 import com.github.mittyrobotics.intake.ClawGrabberSubsystem;
 import com.github.mittyrobotics.intake.ClawRollerSubsystem;
 import com.github.mittyrobotics.util.OI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.PriorityQueue;
@@ -16,6 +17,12 @@ public class IntakeAnyLevelCommand extends CommandBase {
     private double lavg, savg;
     private PriorityQueue<Double> lqueue, squeue;
     private boolean intook;
+
+    public IntakeAnyLevelCommand() {
+        super();
+        setName("Intake any level");
+        addRequirements(ClawRollerSubsystem.getInstance());
+    }
 
     @Override
     public void initialize() {
@@ -31,11 +38,15 @@ public class IntakeAnyLevelCommand extends CommandBase {
         lavg = updateAvg(lqueue, lavg, long_term_avg_k, ClawRollerSubsystem.getInstance().getCurrent());
         savg = updateAvg(squeue, savg, short_term_avg_k, ClawRollerSubsystem.getInstance().getCurrent());
 
+        SmartDashboard.putNumber("lavg",lavg);
+        SmartDashboard.putNumber("savg", savg);
+
         if(savg - lavg > threshold || intook) {
             intook = true;
+            SmartDashboard.putBoolean("intook", intook);
             ClawRollerSubsystem.getInstance().setRoller(0);
         } else {
-            ClawRollerSubsystem.getInstance().setRoller(-0.4);
+            ClawRollerSubsystem.getInstance().setRoller(-0.3);
         }
     }
 

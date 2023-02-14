@@ -15,7 +15,7 @@ public class SwerveConstants {
 
 
 
-    public static final double MAX_LINEAR_VEL = 1.25;
+    public static final double MAX_LINEAR_VEL = 1.5;
 
     public static final double MAX_ANGULAR_VEL = 3.5;
 
@@ -29,9 +29,9 @@ public class SwerveConstants {
 
     public static final double ANGLE_LOCK_P = 0.1;
 
-    public static final double ANGLE_LOCK_I = 0.1;
+    public static final double ANGLE_LOCK_I = 0.0;
 
-    public static final double ANGLE_LOCK_D = 0.1;
+    public static final double ANGLE_LOCK_D = 0.0;
 
 //    public static final double LINEAR_VELOCITY_P = 0;
 //    public static final double LINEAR_VELOCITY_I = 0;
@@ -53,7 +53,7 @@ public class SwerveConstants {
     public static final double TRACK_WIDTH = 22.75 * 2.54 / 100.;
     public static final double LENGTH = 25.75 * 2.54 / 100.;
 
-    public static final double JOYSTICK_DEADZONE = 0.05;
+    public static final double JOYSTICK_DEADZONE = 0.03;
 
     public static final double ROTATION_TO_SPEED_RATIO = -13. / 30.;
 

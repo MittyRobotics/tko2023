@@ -12,6 +12,8 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
     private CANSparkMax grabberSpark;
     private static ClawGrabberSubsystem instance;
     private double initialPosition = 0;
+
+    private boolean overideOpen = false;
     private DigitalInput clawProxSensor;
 
     private DutyCycleEncoder encoder;
@@ -53,12 +55,20 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
         setDefaultCommand(new GrabberTempCommand());
     }
 
+    public boolean overriedOpen() {
+        return overideOpen;
+    }
+
+    public void setOverideOpen(boolean open) {
+        overideOpen = open;
+    }
+
     public void lock() {
         grabberSpark.getPIDController().setReference(0, CANSparkMax.ControlType.kPosition);
     }
 
     public void open() {
-        grabberSpark.getPIDController().setReference(10, CANSparkMax.ControlType.kPosition);
+        grabberSpark.getPIDController().setReference(30, CANSparkMax.ControlType.kPosition);
     }
 
     public double getCurrent() {
@@ -71,6 +81,10 @@ public class ClawGrabberSubsystem extends SubsystemBase implements IMotorSubsyst
 
     public double rawVel() {
         return grabberSpark.getEncoder().getVelocity();
+    }
+
+    public double rawPos() {
+        return grabberSpark.getEncoder().getPosition();
     }
 
     @Override

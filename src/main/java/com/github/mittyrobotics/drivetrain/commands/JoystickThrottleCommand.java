@@ -7,6 +7,7 @@ import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class JoystickThrottleCommand extends CommandBase {
@@ -55,7 +56,7 @@ public class JoystickThrottleCommand extends CommandBase {
 
         leftY = OI.getInstance().getPS4Controller().getLeftX();
         leftX = -OI.getInstance().getPS4Controller().getLeftY();
-        rightX = -OI.getInstance().getPS4Controller().getRightX();
+        rightX = -OI.getInstance().getDriveController().getRightX();
         rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
 
         notMoving = false;
@@ -103,6 +104,8 @@ public class JoystickThrottleCommand extends CommandBase {
             angularVel = -(Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL);
         } else angularVel = Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL;
         angularVel = -angularVel;
+        SmartDashboard.putNumber("rightx", rightX);
+        SmartDashboard.putNumber("angular vel", angularVel);
 
         if(y) {
             anglePreset = 0;

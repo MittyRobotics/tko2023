@@ -44,7 +44,11 @@ public class SwervePurePursuitCommand extends CommandBase {
         dt = Timer.getFPGATimestamp() - lastT;
         robot = SwerveSubsystem.getInstance().getPose();
 
-        if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.99) currentPathNumber++;
+        if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
+            currentPathNumber++;
+            SmartDashboard.putString("end pos" + currentPathNumber, SwerveSubsystem.getInstance().getPose().getPosition().toString());
+//            System.out.println("SHIFTED PATH TO " + currentPathNumber);
+        }
         if (currentPathNumber == paths.length) currentPathNumber--;
 
         currentPath = paths[currentPathNumber];
@@ -66,6 +70,9 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         Vector linearVel = new Vector(vectorToLookahead.getY(), vectorToLookahead.getX());
 
+        SmartDashboard.putNumber("current path", currentPathNumber);
+        SmartDashboard.putNumber("closest", closest);
+
         double heading = Gyro.getInstance().getHeadingRadians();
         double angle = Math.atan2(linearVel.getY(), linearVel.getX()) + heading;
         linearVel = new Vector(new Angle(angle), speed);
@@ -86,6 +93,8 @@ public class SwervePurePursuitCommand extends CommandBase {
             linearVel = new Vector(0, 0);
             angularVel = 0;
             SmartDashboard.putBoolean("Halted", true);
+        } else {
+            SmartDashboard.putBoolean("Halted", false);
         }
 
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);

@@ -49,6 +49,6 @@ public class Gyro extends SubsystemBase implements IMotorSubsystem {
 
     public double getHeadingRadians() {
 //        System.out.println(getHeadingAngle() * Math.PI / 180.);
-        return -getHeadingAngle() * Math.PI / 180.;
+        return -getHeadingAngle() * Math.PI / 180. + Math.PI;
     }
 }
