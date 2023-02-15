@@ -11,8 +11,6 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     private AddressableLED ledStrip;
     private AddressableLEDBuffer buffer;
-
-
     private LedSubsystem() {
         super();
         setName("Leds");
@@ -49,6 +47,12 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
         ledStrip.start();
     }
 
+    public void setNothing() {
+        for (int i = 0; i < buffer.getLength(); i++) {
+            buffer.setRGB(i, 0, 0, 0);
+            ledStrip.setData(buffer);
+        }
+    }
     public void setHsvIndividual(int index, int h, int s, int v) {
         buffer.setHSV(index, h, s, v);
         ledStrip.setData(buffer);

@@ -47,7 +47,7 @@ public class PurpleCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        LedSubsystem.getInstance().stopOutput();
+
     }
 
     @Override
