@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase implements ISubsystem {
-
+//TODO: need to find way to completely stop output (set blank)  
     private static LedSubsystem instance;
 
     private AddressableLED ledStrip;
