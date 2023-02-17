@@ -1,7 +1,6 @@
 package com.github.mittyrobotics;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
@@ -9,18 +8,12 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
-import com.github.mittyrobotics.intake.ClawGrabberSubsystem;
-import com.github.mittyrobotics.intake.ClawRollerSubsystem;
-import com.github.mittyrobotics.pivot.PivotConstants;
+import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
-import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
-import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -36,8 +29,7 @@ public class Robot extends TimedRobot {
     SwerveSubsystem.getInstance().initHardware();
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
-    ClawGrabberSubsystem.getInstance().initHardware();
-    ClawRollerSubsystem.getInstance().initHardware();
+    IntakeSubsystem.getInstance().initHardware();
     Gyro.getInstance().initHardware();
     OI.getInstance().setUpTuningControls();
     PivotSubsystem.getInstance().setBrakeMode();
@@ -106,7 +98,7 @@ public class Robot extends TimedRobot {
 
 //    ClawGrabberSubsystem.getInstance().setMotor(0.1);
 
-    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
+//    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
 
 //    System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
 //    System.out.println(ClawGrabberSubsystem.getInstance().getEncoderValue());

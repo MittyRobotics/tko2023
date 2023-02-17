@@ -2,7 +2,6 @@ package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.pivot.commands.PivotToKinematics;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -108,7 +107,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean withinThreshold() {
-        return Math.abs(ArmKinematics.getPivotDesiredCartesian().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_THRESHOLD;
+        return Math.abs(ArmKinematics.getPivotDesired().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_THRESHOLD;
     }
 
     public void resetAngleDegrees(double degrees) {

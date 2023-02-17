@@ -5,7 +5,6 @@ import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
-import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,7 +43,7 @@ public class PivotToKinematics extends CommandBase {
 //            }
 //        }
 
-        double desired = ArmKinematics.getPivotDesiredPolar().getRadians() / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
+        double desired = ArmKinematics.getPivotDesired().getRadians() / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
         tpPivot.changeSetpoint(desired, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);
 
         double currentExtension = TelescopeSubsystem.getInstance().getDistanceInches();

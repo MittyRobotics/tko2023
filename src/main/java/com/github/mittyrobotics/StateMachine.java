@@ -1,8 +1,13 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+
 public class StateMachine {
-    private State current = State.NONE;
-    private State lastState;
+    private RobotState currentRobotState = RobotState.STOWED;
+
+    private PieceState currentPieceState = PieceState.NONE;
+    private PieceState lastPieceState;
 
     public static StateMachine instance;
 
@@ -13,29 +18,65 @@ public class StateMachine {
         return instance;
     }
 
-    public State getCurrentState() {
-        return current;
+    public RobotState getCurrentRobotState() {
+        return currentRobotState;
     }
 
-    public State getLastState() {
-        return lastState;
+    public void setStateStowed() {
+        currentRobotState = RobotState.STOWED;
+    }
+
+    public void setStateGround() {
+        currentRobotState = RobotState.GROUND;
+    }
+
+    public void setStateMid() {
+        currentRobotState = RobotState.MID;
+    }
+
+    public void setStateHigh() {
+        currentRobotState = RobotState.HIGH;
+    }
+
+    public void setStateHP() {
+        currentRobotState = RobotState.HP;
+    }
+
+    public PieceState getCurrentPieceState() {
+        return currentPieceState;
+    }
+
+    public PieceState getLastPieceState() {
+        return lastPieceState;
     }
 
     public void setStateCube() {
-        current = State.CUBE;
-        lastState = State.CUBE;
+        currentPieceState = PieceState.CUBE;
+        lastPieceState = PieceState.CUBE;
     }
 
     public void setStateCone() {
-        current = State.CONE;
-        lastState = State.CONE;
+        currentPieceState = PieceState.CONE;
+        lastPieceState = PieceState.CONE;
     }
 
     public void setStateNone() {
-        current = State.NONE;
+        currentPieceState = PieceState.NONE;
     }
 
-    public enum State {
+    public boolean readyToShoot() {
+        return PivotSubsystem.getInstance().withinThreshold() && TelescopeSubsystem.getInstance().withinThreshold();
+    }
+
+    public enum RobotState {
+        GROUND,
+        MID,
+        HIGH,
+        HP,
+        STOWED
+    }
+
+    public enum PieceState {
         CONE,
         CUBE,
         NONE

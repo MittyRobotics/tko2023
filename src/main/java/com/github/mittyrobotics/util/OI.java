@@ -25,20 +25,12 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.StateMachine;
-import com.github.mittyrobotics.drivetrain.commands.SnapToAngle;
-import com.github.mittyrobotics.intake.ClawGrabberSubsystem;
-import com.github.mittyrobotics.intake.commands.GrabberTempCommand;
-import com.github.mittyrobotics.intake.commands.IntakeAnyLevelCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.pivot.ArmKinematics;
-import com.github.mittyrobotics.pivot.PivotSubsystem;
-import com.github.mittyrobotics.telescope.TelescopeSubsystem;
-import com.github.mittyrobotics.telescope.commands.ExtensionCommand;
-import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -47,32 +39,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class OI {
     private static OI instance;
 
-    private PS4Controller driverController;
+    private PS4Controller driverPS4Controller;
 
     private XboxController throttleWheel;
     private XboxController steeringWheel;
     private XboxController operatorController;
-    private XboxController driveTestingController;
+    private XboxController driverXboxController;
 
     public static OI getInstance() {
         if (instance == null) {
             instance = new OI();
         }
         return instance;
-    }
-
-    public XboxController getThrottleWheel() {
-        if (throttleWheel == null) {
-            throttleWheel = new XboxController(OIConstants.THROTTLE_WHEEL_ID);
-        }
-        return throttleWheel;
-    }
-
-    public XboxController getSteeringWheel() {
-        if (steeringWheel == null) {
-            steeringWheel = new XboxController(OIConstants.STEERING_WHEEL_ID);
-        }
-        return steeringWheel;
     }
 
     public XboxController getOperatorController() {
@@ -84,72 +62,74 @@ public class OI {
     }
 
     public XboxController getDriveController() {
-        if(driveTestingController == null){
-            driveTestingController = new XboxController(OIConstants.DRIVER_CONTROLLER);
+        if(driverXboxController == null){
+            driverXboxController = new XboxController(OIConstants.DRIVER_CONTROLLER);
         }
 
-        return driveTestingController;
+        return driverXboxController;
     }
 
     public PS4Controller getPS4Controller() {
-        if(driverController == null){
-            driverController = new PS4Controller(OIConstants.DRIVER_CONTROLLER);
+        if(driverPS4Controller == null){
+            driverPS4Controller = new PS4Controller(OIConstants.DRIVER_CONTROLLER);
         }
 
-        return driverController;
+        return driverPS4Controller;
+    }
+
+    public void zeroAll() {
+        ArmKinematics.setArmKinematics(new Angle(0), 0);
+        StateMachine.getInstance().setStateStowed();
+    }
+
+    public void handleGround() {
+        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        ArmKinematics.setArmKinematics(new Angle(2.1847833197051916), 0.20456099255847424);
+        StateMachine.getInstance().setStateGround();
+    }
+
+    public void handleMid() {
+        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        ArmKinematics.setArmKinematics(new Angle(1.173560373540987), 0.545497612205895 - 2 / 39.37);
+        StateMachine.getInstance().setStateMid();
+    }
+
+    public void handleHigh() {
+        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        ArmKinematics.setArmKinematics(new Angle(1.0933341743024654 - 0.04 - 0.035), 0.9712510524378655 - 2 / 39.27);
+        StateMachine.getInstance().setStateHigh();
+    }
+
+    public void handleHumanPlayer() {
+        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        ArmKinematics.setArmKinematics(new Angle(1.113857105102662 - 2 * Math.PI/180), 0.4490367646201602);
+        StateMachine.getInstance().setStateHP();
     }
 
     public void setupControls() {
-//        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
-//        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
-//
-//        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
-//        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
+        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
 
-//        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
-//        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
+        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+
+        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
+        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+
+        Trigger zeroAll = new Trigger(() -> StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE);
+        zeroAll.whileTrue(new InstantCommand(this::zeroAll));
 
         Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-        groundKinematics.whileTrue(new SequentialCommandGroup(
-                new InstantCommand(ArmKinematics::handleGround),
-                new InstantCommand(() -> ClawGrabberSubsystem.getInstance().setOverideOpen(true))
-        ));
-
-        Trigger zeroAll = new Trigger(getOperatorController()::getLeftBumper);
-        zeroAll.whileTrue(new InstantCommand(ArmKinematics::zeroAll));
+        groundKinematics.whileTrue(new InstantCommand(this::handleGround));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
-        midKinematics.whileTrue(new InstantCommand(ArmKinematics::handleMid));
+        midKinematics.whileTrue(new InstantCommand(this::handleMid));
 
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
-        highKinematics.whileTrue(new InstantCommand(ArmKinematics::handleHigh));
+        highKinematics.whileTrue(new InstantCommand(this::handleHigh));
 
-//        Trigger humanPlayerKinematics = new Trigger(() -> getOperatorController().getBButton() &&
-//                StateMachine.getInstance().getCurrentState() == StateMachine.State.CONE);
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
-        humanPlayerKinematics.whileTrue(new SequentialCommandGroup(
-                new InstantCommand(ArmKinematics::handleHumanPlayer),
-                new InstantCommand(() -> ClawGrabberSubsystem.getInstance().setOverideOpen(true))
-        ));
-
-        Trigger intake = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
-
-//        intake.whileTrue(new IntakeAnyLevelCommand());
-
-        /*
-        //incorporated into joystick throttle command
-        Trigger lock0 = new Trigger(getDriveController()::getYButton);
-        lock0.whileTrue(new SnapToAngle(0));
-
-        Trigger lock90 = new Trigger(getDriveController()::getBButton);
-        lock90.whileTrue(new SnapToAngle(3));
-
-        Trigger lock180 = new Trigger(getDriveController()::getAButton);
-        lock180.whileTrue(new SnapToAngle(2));
-
-        Trigger lock270 = new Trigger(getDriveController()::getXButton);
-        lock270.whileTrue(new SnapToAngle(1));
-        */
+        humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
     }
 
     public void setUpTuningControls() {
