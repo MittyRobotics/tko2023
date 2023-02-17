@@ -26,6 +26,8 @@ package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.intake.commands.IntakeCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -130,6 +132,13 @@ public class OI {
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
+
+        Trigger autoStow = new Trigger(() -> (
+                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND ||
+                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP) &&
+                IntakeSubsystem.getInstance().isIntakeFull()
+        );
+        autoStow.whileTrue(new InstantCommand(this::zeroAll));
     }
 
     public void setUpTuningControls() {
