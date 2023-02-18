@@ -90,6 +90,8 @@ public class JoystickThrottleCommand extends CommandBase {
 
         currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingAngle());
 
+
+
         if(currentAngle >= 3*Math.PI/2 && currentAngle < 2*Math.PI) {
             correctSP = quad1sp;
         } else if(currentAngle >= 0 && currentAngle < Math.PI/2) {

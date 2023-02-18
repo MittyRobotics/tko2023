@@ -1,4 +1,4 @@
-package com.github.mittyrobotics;
+package com.github.mittyrobotics.intake;
 
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;

@@ -1,6 +1,6 @@
 package com.github.mittyrobotics.intake.commands;
 
-import com.github.mittyrobotics.StateMachine;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.util.OI;

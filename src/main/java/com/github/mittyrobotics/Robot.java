@@ -31,9 +31,9 @@ public class Robot extends TimedRobot {
     PivotSubsystem.getInstance().initHardware();
     IntakeSubsystem.getInstance().initHardware();
     Gyro.getInstance().initHardware();
-    OI.getInstance().setUpTuningControls();
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
+    OI.getInstance().setupControls();
   }
 
   @Override
@@ -86,7 +86,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-      OI.getInstance().setupControls();
       TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
       SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
   }

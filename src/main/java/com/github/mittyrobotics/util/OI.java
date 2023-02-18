@@ -24,10 +24,11 @@
 
 package com.github.mittyrobotics.util;
 
-import com.github.mittyrobotics.StateMachine;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveDriverPurePursuitCommand;
+import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
-import com.github.mittyrobotics.intake.commands.IntakeCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -108,6 +109,13 @@ public class OI {
         StateMachine.getInstance().setStateHP();
     }
 
+    public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {
+        return (leftBumper && getOperatorController().getLeftBumper()) &&
+                (rightBumper && getOperatorController().getRightBumper()) &&
+                (leftTrigger && getOperatorController().getLeftTriggerAxis() > 0.5) &&
+                (rightTrigger && getOperatorController().getRightTriggerAxis() > 0.5);
+    }
+
     public void setupControls() {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
         coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
@@ -139,24 +147,24 @@ public class OI {
                 IntakeSubsystem.getInstance().isIntakeFull()
         );
         autoStow.whileTrue(new InstantCommand(this::zeroAll));
-    }
 
-    public void setUpTuningControls() {
-        setupControls();
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
+//        autoIntakeGround.whileTrue(new SwerveDriverPurePursuitCommand());
 
+        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false));
+//        autoIntakeHP.whileTrue(new SwerveDriverPurePursuitCommand());
 
-        Trigger pivotUp = new Trigger(() -> getOperatorController().getLeftY() < -0.1);
-        pivotUp.whileTrue(new RunCommand(() -> {ArmKinematics.incrementHeight(true);
-            System.out.println("Triggered");}));
+        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
+//        autoLeft.whileTrue(new SwerveDriverPurePursuitCommand());
 
-        Trigger pivotDown = new Trigger(() -> getOperatorController().getLeftY() > 0.1);
-        pivotDown.whileTrue(new RunCommand(() -> ArmKinematics.incrementHeight(false)));
+        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
+//        autoCenter.whileTrue(new SwerveDriverPurePursuitCommand());
 
-        Trigger extend = new Trigger(() -> getOperatorController().getRightY() > 0.1);
-        extend.whileTrue(new InstantCommand(() -> ArmKinematics.incrementDistance(true)));
+        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
+//        autoRight.whileTrue(new SwerveDriverPurePursuitCommand());
 
-        Trigger retract = new Trigger(() -> getOperatorController().getRightY() < -0.1);
-        retract.whileTrue(new InstantCommand(() -> ArmKinematics.incrementDistance(false)));
+        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
+        drive.whileTrue(new JoystickThrottleCommand());
     }
 
     private void triggerFunctionAfterTime(Runnable runnable, long time){

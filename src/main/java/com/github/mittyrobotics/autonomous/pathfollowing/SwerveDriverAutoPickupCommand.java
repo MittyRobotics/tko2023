@@ -1,12 +1,14 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class SwerveAutoPickupCommand extends CommandBase {
+public class SwerveDriverAutoPickupCommand extends CommandBase {
     private SwervePath path;
     private int currentPathNumber = 0;
     private double threshold;
@@ -14,7 +16,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
     private double speed = 0;
     private double dt, lastT = 0;
 
-    public SwerveAutoPickupCommand(double threshold, SwervePath paths) {
+    public SwerveDriverAutoPickupCommand(double threshold, SwervePath paths) {
         setName("Swerve Pure Pursuit");
         this.path = paths;
         this.threshold = threshold;
@@ -33,8 +35,10 @@ public class SwerveAutoPickupCommand extends CommandBase {
         dt = Timer.getFPGATimestamp() - lastT;
         robot = SwerveSubsystem.getInstance().getPose();
 
+        double leftY = OI.getInstance().getPS4Controller().getLeftX();
+        double leftX = -OI.getInstance().getPS4Controller().getLeftY();
         speed += path.getAccel() * dt;
-        speed = Math.min(speed, path.getMaxSpeed());
+        speed = Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL);
 
         double closest = path.getSpline().getClosestPoint(robot, 50, 10);
         double length = path.getSpline().getLength(closest, 1.0, 17);
@@ -63,7 +67,7 @@ public class SwerveAutoPickupCommand extends CommandBase {
     }
 
 
-    public static double getRadiusFromPoints(Pose robot, Point lookahead) {
+    public double getRadiusFromPoints(Pose robot, Point lookahead) {
         double radius;
 
         Angle angleOfRadius = new Angle((Math.PI/2 + robot.getHeading().getRadians()) - Math.PI/2);
@@ -84,9 +88,9 @@ public class SwerveAutoPickupCommand extends CommandBase {
         return radius * -orientationOfPoseAndPoint(robot, lookahead);
     }
 
-    public static int orientationOfPoseAndPoint(Pose pose, Point point3) {
+    public int orientationOfPoseAndPoint(Pose pose, Point point3) {
         Point point1 = pose.getPosition();
-        Point point2 = new Point(point1.getX() + Math.cos(Math.PI/2 + pose.getHeading().getRadians()), point1.getY() + Math.sin(Math.PI/2 + pose.getHeading().getRadians()));
+        Point point2 = new Point(point1.getX() + Math.cos(Math.PI/2 - pose.getHeading().getRadians()), point1.getY() + Math.sin(Math.PI/2 - pose.getHeading().getRadians()));
 
         double test = (point2.getY() - point1.getY()) * (point3.getX() - point2.getX()) -
                 (point2.getX() - point1.getX()) * (point3.getY() - point2.getY());
