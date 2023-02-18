@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RainbowIndividualCommand extends CommandBase {
 
-    int cur;
+    int cur, stripLength;
     double prevTime;
 
     public RainbowIndividualCommand() {
@@ -19,6 +19,7 @@ public class RainbowIndividualCommand extends CommandBase {
         LedSubsystem.getInstance().startOutput();
         cur = 0;
         prevTime = Timer.getFPGATimestamp();
+        stripLength = LedConstants.STRIP_LENGTH;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class RainbowIndividualCommand extends CommandBase {
 
             int prev = cur;
 
-            for (int i = 0; i < 255; i++) {
+            for (int i = 0; i < stripLength; i++) {
                 if(prev == 6) {
                     prev = 0;
                 }

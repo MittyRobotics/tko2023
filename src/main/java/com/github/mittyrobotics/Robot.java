@@ -4,6 +4,7 @@ package com.github.mittyrobotics;
 import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.led.commands.PurpleCommand;
 import com.github.mittyrobotics.led.commands.RainbowGroupCommand;
+import com.github.mittyrobotics.led.commands.RainbowIndividualCommand;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -107,7 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    CommandScheduler.getInstance().schedule(new RainbowGroupCommand());
+    CommandScheduler.getInstance().schedule(new RainbowIndividualCommand());
   }
 
   /** This function is called periodically during operator control. */
@@ -118,7 +119,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-      LedSubsystem.getInstance().stopOutput();
+//      LedSubsystem.getInstance().stopOutput();
   }
 
   /** This function is called periodically when disabled. */
