@@ -2,7 +2,6 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 
 import java.util.Arrays;
 
@@ -17,7 +16,7 @@ public class TestDiffDriveRadius {
 
 //        SwerveAutoPickupCommand command = new SwerveAutoPickupCommand(0.05, path);
         double radius = SwerveAutoPickupCommand.getRadiusFromPoints(new Pose(new Point(0.5, 0.3), new Angle(Math.PI/2)), path.getByT(0.55).getPosition());
-        kinematics.updateFromLinearVelocityAndRadius(5, radius);
+        kinematics.updateFromLinearVelocityAndRadius(5, 0.5);
         System.out.println(Arrays.toString(kinematics.linearVels));
         System.out.println(Arrays.toString(kinematics.angles));
     }
@@ -48,9 +47,10 @@ public class TestDiffDriveRadius {
                 for(int i = 0; i < 4; ++i) {
                     double w = radius + radSigns[i] * trackWidth/2;
                     double l = trackLength / 2;
+                    System.out.println("radius " + this.radius);
                     System.out.println("w " + w);
                     System.out.println("atan " + i + " " + Math.atan2(l, w));
-                    angles[i] = angSigns[i] * Math.atan(l / w);
+                    angles[i] = (radius > 0 ? -1 : 1) * angSigns[i] * Math.abs(Math.atan2(l, Math.abs(w)));
                     linearVels[i] = angularVelocity * Math.sqrt(l * l + w * w);
                 }
             }

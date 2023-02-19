@@ -361,8 +361,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
                 for(int i = 0; i < 4; ++i) {
                     double w = radius + radSigns[i] * trackWidth/2;
                     double l = trackLength / 2;
-                    angles[i] = angSigns[i] * Math.atan(l / w);
-                    linearVels[i] = angularVelocity * Math.sqrt(l * l + w * w);
+                    angles[i] = (radius > 0 ? -1 : 1) * angSigns[i] * Math.abs(Math.atan2(l, Math.abs(w)));
+//                    angles[i] = 0;
+                    linearVels[i] = angularVelocity * w;
                 }
             }
         }

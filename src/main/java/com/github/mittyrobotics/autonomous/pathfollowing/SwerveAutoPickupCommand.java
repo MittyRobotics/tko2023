@@ -50,7 +50,8 @@ public class SwerveAutoPickupCommand extends CommandBase {
 //        double purePursuitRadius = 1;
         speed = 0.5;
 
-        SwerveSubsystem.getInstance().setDiffDriveKinematics(speed, purePursuitRadius);
+//        SwerveSubsystem.getInstance().setDiffDriveKinematics(speed, purePursuitRadius);
+        SwerveSubsystem.getInstance().setDiffDriveKinematics(-0.5, 0.5);
 
         if (new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() > threshold) {
             SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().getDiffDriveVels());
