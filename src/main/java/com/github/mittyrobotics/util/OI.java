@@ -121,11 +121,9 @@ public class OI {
     public void setupControls() {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
         coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
-        coneMode.whileTrue(new YellowCommand());
 
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
         cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
-        cubeMode.whileTrue(new PurpleCommand());
 
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));

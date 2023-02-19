@@ -9,6 +9,8 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpli
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
@@ -26,13 +28,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
+    LedSubsystem.getInstance().initHardware();
     SwerveSubsystem.getInstance().initHardware();
-    TelescopeSubsystem.getInstance().initHardware();
-    PivotSubsystem.getInstance().initHardware();
-    IntakeSubsystem.getInstance().initHardware();
+//    TelescopeSubsystem.getInstance().initHardware();
+//    PivotSubsystem.getInstance().initHardware();
+//    IntakeSubsystem.getInstance().initHardware();
     Gyro.getInstance().initHardware();
-    PivotSubsystem.getInstance().setBrakeMode();
-    TelescopeSubsystem.getInstance().setBrakeMode();
+//    PivotSubsystem.getInstance().setBrakeMode();
+//    TelescopeSubsystem.getInstance().setBrakeMode();
     OI.getInstance().setupControls();
   }
 
@@ -79,14 +82,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
-    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
+//    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
+//    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-      TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
+//      TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
       SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
   }
 
@@ -106,8 +109,8 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    TelescopeSubsystem.getInstance().setCoastMode();
-    PivotSubsystem.getInstance().setCoastMode();
+//    TelescopeSubsystem.getInstance().setCoastMode();
+//    PivotSubsystem.getInstance().setCoastMode();
     SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
   }
 
