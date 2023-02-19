@@ -29,6 +29,8 @@ import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.led.commands.PurpleCommand;
+import com.github.mittyrobotics.led.commands.YellowCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -119,9 +121,11 @@ public class OI {
     public void setupControls() {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
         coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+        coneMode.whileTrue(new YellowCommand());
 
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
         cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+        cubeMode.whileTrue(new PurpleCommand());
 
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
