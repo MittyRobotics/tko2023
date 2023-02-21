@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    CommandScheduler.getInstance().schedule(new RainbowIndividualCommand());
+    CommandScheduler.getInstance().schedule(new PurpleCommand());
   }
 
   /** This function is called periodically during operator control. */
