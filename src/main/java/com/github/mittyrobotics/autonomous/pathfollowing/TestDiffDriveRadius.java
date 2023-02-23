@@ -15,7 +15,7 @@ public class TestDiffDriveRadius {
         );
 
 //        SwerveAutoPickupCommand command = new SwerveAutoPickupCommand(0.05, path);
-        double radius = SwerveAutoPickupCommand.getRadiusFromPoints(new Pose(new Point(0.5, 0.3), new Angle(Math.PI/2)), path.getByT(0.55).getPosition());
+//        double radius = SwerveAutoPickupCommand.getRadiusFromPoints(new Pose(new Point(0.5, 0.3), new Angle(Math.PI/2)), path.getByT(0.55).getPosition());
         kinematics.updateFromLinearVelocityAndRadius(5, 0.5);
         System.out.println(Arrays.toString(kinematics.linearVels));
         System.out.println(Arrays.toString(kinematics.angles));
