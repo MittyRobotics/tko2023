@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     LedSubsystem.getInstance().initHardware();
-    SwerveSubsystem.getInstance().initHardware();
+//    SwerveSubsystem.getInstance().initHardware();
 //    TelescopeSubsystem.getInstance().initHardware();
 //    PivotSubsystem.getInstance().initHardware();
 //    IntakeSubsystem.getInstance().initHardware();
@@ -42,32 +42,32 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    SwerveSubsystem.getInstance().updateForwardKinematics();
+//    SwerveSubsystem.getInstance().updateForwardKinematics();
   }
 
   @Override
   public void autonomousInit() {
-    SwerveSubsystem.getInstance().resetPose();
-
-    SwervePath[] paths = {
-            new SwervePath(
-                    new QuinticHermiteSpline(
-                            new Point(0, 0), new Angle(3*Math.PI/2),
-                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
-                    new Angle(0), new Angle(Math.PI),
-                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-            ),
-            new SwervePath(
-                    new QuinticHermiteSpline(
-                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
-                            new Point(0, 0), new Angle(Math.PI/2)),
-                    new Angle(Math.PI), new Angle(0),
-                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-            )
-    };
-
-    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
-    SwerveSubsystem.getInstance().setDefaultCommand(command);
+//    SwerveSubsystem.getInstance().resetPose();
+//
+//    SwervePath[] paths = {
+//            new SwervePath(
+//                    new QuinticHermiteSpline(
+//                            new Point(0, 0), new Angle(3*Math.PI/2),
+//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
+//                    new Angle(0), new Angle(Math.PI),
+//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+//            ),
+//            new SwervePath(
+//                    new QuinticHermiteSpline(
+//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
+//                            new Point(0, 0), new Angle(Math.PI/2)),
+//                    new Angle(Math.PI), new Angle(0),
+//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+//            )
+//    };
+//
+//    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+//    SwerveSubsystem.getInstance().setDefaultCommand(command);
 
 //    SwervePath path = new SwervePath(
 //            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(-1, 1), new Angle(Math.PI/2)),
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 //      TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
-      SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
+//      SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
   }
 
   /** This function is called periodically during operator control. */
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
 //    TelescopeSubsystem.getInstance().setCoastMode();
 //    PivotSubsystem.getInstance().setCoastMode();
-    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
+//    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically when disabled. */

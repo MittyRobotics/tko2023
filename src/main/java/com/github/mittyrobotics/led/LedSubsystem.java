@@ -1,6 +1,5 @@
 package com.github.mittyrobotics.led;
 
-import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.commands.DefaultCommand;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -11,8 +10,8 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     //TODO: need to find way to completely stop output (set blank)
     private static LedSubsystem instance;
 
-    private AddressableLED ledStrip;
-    private AddressableLEDBuffer buffer;
+    private AddressableLED ledStripOne, ledStripTwo;
+    private AddressableLEDBuffer bufferOne, bufferTwo;
     private LedSubsystem() {
         super();
         setName("Leds");
@@ -33,58 +32,67 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     @Override
     public void initHardware() {
-        ledStrip = new AddressableLED(LedConstants.STRIP_PWM_PORT);
-        buffer = new AddressableLEDBuffer(LedConstants.STRIP_LENGTH);
+        ledStripOne = new AddressableLED(LedConstants.STRIP_PWM_PORT_FIRST);
+        ledStripTwo = new AddressableLED(LedConstants.STRIP_PWM_PORT_SECOND);
 
-        ledStrip.setLength(buffer.getLength());
-        ledStrip.setData(buffer);
-        ledStrip.start();
+        bufferOne = new AddressableLEDBuffer(LedConstants.STRIP_LENGTH);
+        bufferTwo = new AddressableLEDBuffer(LedConstants.STRIP_LENGTH);
+
+        ledStripOne.setLength(bufferOne.getLength());
+        ledStripOne.setData(bufferOne);
+        ledStripTwo.setLength(bufferTwo.getLength());
+        ledStripTwo.setData(bufferTwo);
+        ledStripOne.start();
+        ledStripTwo.start();
 
         setDefaultCommand(new DefaultCommand());
     }
 
     public void stopOutput() {
-        ledStrip.stop();
+        ledStripOne.stop();
     }
 
     public void startOutput() {
-        ledStrip.start();
+        ledStripOne.start();
+        ledStripTwo.start();
     }
 
     public void setNothing() {
-        for (int i = 0; i < buffer.getLength(); i++) {
-            buffer.setRGB(i, 0, 0, 0);
-            ledStrip.setData(buffer);
+        for (int i = 0; i < bufferOne.getLength(); i++) {
+            bufferOne.setRGB(i, 0, 0, 0);
+            ledStripOne.setData(bufferOne);
         }
     }
 
     public void setHsvIndividual(int index, int h, int s, int v) {
-        buffer.setHSV(index, h, s, v);
-        ledStrip.setData(buffer);
+        bufferOne.setHSV(index, h, s, v);
+        ledStripOne.setData(bufferOne);
     }
 
     public void setHsvRange(int startIndex, int endIndex, int h, int s, int v) {
         //indexes from 0 | i.e. first led = 0, second led = 1, and so on
         for (int i = startIndex; i < endIndex; i++) {
-            buffer.setHSV(i, h, s, v);
+            bufferOne.setHSV(i, h, s, v);
         }
-        ledStrip.setData(buffer);
+        ledStripOne.setData(bufferOne);
     }
 
     public void setRgb(int index, int r, int g, int b) {
-        buffer.setRGB(index, r, g, b);
-        ledStrip.setData(buffer);
+        bufferOne.setRGB(index, r, g, b);
+        ledStripOne.setData(bufferOne);
     }
 
     public void setRgbRange(int startIndex, int endIndex, int r, int g, int b) {
         for (int i = startIndex; i < endIndex; i++) {
-            buffer.setRGB(i, r, g, b);
+            bufferOne.setRGB(i, r, g, b);
+            bufferTwo.setRGB(i, r, g, b);
         }
-        ledStrip.setData(buffer);
+        ledStripOne.setData(bufferOne);
+        ledStripTwo.setData(bufferTwo);
     }
 
     public void disable() {
-        ledStrip.close();
+        ledStripOne.close();
     }
 
 }
