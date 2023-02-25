@@ -3,8 +3,10 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,8 +46,10 @@ public class SwerveAutoPickupCommandv1 extends CommandBase {
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
+        double leftY = OI.getInstance().getPS4Controller().getLeftX();
+        double leftX = -OI.getInstance().getPS4Controller().getLeftY();
         speed += path.getAccel() * dt;
-        speed = Math.min(speed, path.getMaxSpeed());
+        speed = Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL);
 
         double closest = path.getSpline().getClosestPoint(robot, 50, 10);
         double length = path.getSpline().getLength(closest, 1.0, 17);
