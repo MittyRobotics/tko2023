@@ -6,7 +6,7 @@ import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class YellowCommand extends CommandBase {
-    int[] yellowHsv;
+    int[] yellowRgb;
 
     public YellowCommand() {
         super();
@@ -19,14 +19,14 @@ public class YellowCommand extends CommandBase {
         LedSubsystem.getInstance().startOutput();
 
         for (int i = 0; i < 3; i++) {
-            yellowHsv[i] = LedConstants.RGB_VALUES[2][i];
+            yellowRgb[i] = LedConstants.RGB_VALUES[2][i];
         }
     }
 
     @Override
     public void execute() {
-        LedSubsystem.getInstance().setHsvRange(0, LedConstants.STRIP_LENGTH,
-                yellowHsv[0], yellowHsv[1], yellowHsv[2]);
+        LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                yellowRgb[0], yellowRgb[1], yellowRgb[2]);
     }
 
     @Override

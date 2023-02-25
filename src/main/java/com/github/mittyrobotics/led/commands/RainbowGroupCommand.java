@@ -19,7 +19,7 @@ public class RainbowGroupCommand extends CommandBase {
     @Override
     public void initialize() {
         LedSubsystem.getInstance().startOutput();
-        block = LedConstants.STRIP_LENGTH / 6;
+        block = LedConstants.STRIP_ONE_LENGTH / 6;
         cur = 0;
         prevTime = Timer.getFPGATimestamp();
     }
@@ -65,7 +65,7 @@ public class RainbowGroupCommand extends CommandBase {
                         prev = 0;
                     }
                     if(i % 2 == 0) {
-                        if(i * block1 + block1 > LedConstants.STRIP_LENGTH) {
+                        if(i * block1 + block1 > LedConstants.STRIP_ONE_LENGTH) {
                             LedSubsystem.getInstance().setRgbRange(currentBlock,
                                     i * block1 + block1,
                                     LedConstants.RGB_VALUES[prev][0], LedConstants.RGB_VALUES[prev][1],
@@ -81,7 +81,7 @@ public class RainbowGroupCommand extends CommandBase {
                         }
                     }
                     if(i % 2 == 1) {
-                        if(i * block2 + block2 > LedConstants.STRIP_LENGTH) {
+                        if(i * block2 + block2 > LedConstants.STRIP_ONE_LENGTH) {
                             LedSubsystem.getInstance().setRgbRange(currentBlock,
                                     i * block2 + block2,
                                     LedConstants.RGB_VALUES[prev][0], LedConstants.RGB_VALUES[prev][1],

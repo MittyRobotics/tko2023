@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PurpleCommand extends CommandBase {
 
-    int[] purpleHsv;
+    int[] purpleRgb;
     boolean first = true;
 
     public PurpleCommand() {
@@ -19,16 +19,16 @@ public class PurpleCommand extends CommandBase {
     @Override
     public void initialize() {
         LedSubsystem.getInstance().startOutput();
-        purpleHsv = new int[3];
+        purpleRgb = new int[3];
 
         for (int i = 0; i < 3; i++) {
-            purpleHsv[i] = LedConstants.RGB_VALUES[5][i];
+            purpleRgb[i] = LedConstants.RGB_VALUES[5][i];
         }
     }
 
     @Override
     public void execute() {
-        LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_LENGTH, 255, 0, 255);
+        LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH, 255, 0, 255);
         // LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_LENGTH, purpleHsv[0], purpleHsv[1], purpleHsv[2]);
         /*
         for (int i = 0; i < 256; i++) {

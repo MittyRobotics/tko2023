@@ -37,10 +37,10 @@ public class DefaultCommand extends CommandBase {
         state = StateMachine.getInstance().getLastPieceState();
 
         if(state == StateMachine.PieceState.CONE) {
-            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_LENGTH,
+            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                     yellowHsv[0], yellowHsv[1], yellowHsv[2]);
         } else if (state == StateMachine.PieceState.CUBE){
-            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_LENGTH,
+            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                     purpleHsv[0], purpleHsv[1], purpleHsv[2]);
         } else if (state == StateMachine.PieceState.NONE) {
 

@@ -20,7 +20,7 @@ public class RainbowIndividualCommand extends CommandBase {
         LedSubsystem.getInstance().startOutput();
         cur = 0;
         prevTime = Timer.getFPGATimestamp();
-        stripLength = LedConstants.STRIP_LENGTH;
+        stripLength = LedConstants.STRIP_ONE_LENGTH;
     }
 
     @Override

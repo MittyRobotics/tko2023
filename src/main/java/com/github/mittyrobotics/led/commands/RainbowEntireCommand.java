@@ -25,7 +25,7 @@ public class RainbowEntireCommand extends CommandBase {
 
         if(Timer.getFPGATimestamp() - prevTime > 0.5) {
             for (int i = 0; i < 6; i++) {
-                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_LENGTH,
+                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                         LedConstants.RGB_VALUES[i][0], LedConstants.RGB_VALUES[i][1], LedConstants.RGB_VALUES[i][2]);
             }
 
