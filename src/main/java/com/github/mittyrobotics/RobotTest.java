@@ -110,8 +110,8 @@ public class RobotTest extends Robot {
     @Override
     public void teleopInit() {
 //        tp = new TrapezoidalMotionProfile(1, 10, 10);
-        spark.restoreFactoryDefaults();
-        spark.getEncoder().setPosition(0);
+//        spark.restoreFactoryDefaults();
+//        spark.getEncoder().setPosition(0);
 //        spark.getPIDController().setP(0.1);
 //        spark.getPIDController().setI(0.0);
 //        spark.getPIDController().setP(0.0);
@@ -123,7 +123,7 @@ public class RobotTest extends Robot {
     @Override
     public void teleopPeriodic() {
 
-        spark.set(1);
+//        spark.set(1);
 
 //        System.out.println(tp.getMaxVelFromPos(9.9));
 //        if (Math.abs(spark.getEncoder().getPosition() - 10) > 0.1) {

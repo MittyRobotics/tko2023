@@ -1,10 +1,13 @@
 package com.github.mittyrobotics.led;
 
 public class LedConstants {
-    //TODO: Update port
-    public static final int STRIP_PWM_PORT = 9;
+    public static final int STRIP_PWM_PORT_FIRST = 9;
 
-    public static final int STRIP_LENGTH = 200; //CHANGED FROM 150
+    public static final int STRIP_PWM_PORT_SECOND = 0;
+
+    public static final int STRIP_ONE_LENGTH = 60; //CHANGED FROM 150
+
+    public static final int STRIP_TWO_LENGTH = 60;
 
     //TODO: Tune last two vals
     //Order: Row = R-O-Y-G-B-I-V, Column = R-G-B
@@ -12,7 +15,7 @@ public class LedConstants {
             {
                     {255, 0, 0}, //Red
                     {230, 50, 0}, //Orange
-                    {255, 128, 0}, //Yellow\][
+                    {255, 128, 0}, //Yellow
                     {0, 255, 0}, //Green
                     {0, 0, 255}, //Blue
                     {255, 0, 255}, //Indigo  //Indigo and Violet are currently both the same  //CHANGED FROM 255, 0, 255

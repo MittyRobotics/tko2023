@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     LedSubsystem.getInstance().initHardware();
-    SwerveSubsystem.getInstance().initHardware();
+//    SwerveSubsystem.getInstance().initHardware();
 //    TelescopeSubsystem.getInstance().initHardware();
 //    PivotSubsystem.getInstance().initHardware();
 //    IntakeSubsystem.getInstance().initHardware();
@@ -45,6 +45,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
     SwerveSubsystem.getInstance().updateForwardKinematics();
 
     SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+//
 //    SwervePath[] paths = {
 //            new SwervePath(
 //                    new QuinticHermiteSpline(
@@ -122,7 +124,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
 //    TelescopeSubsystem.getInstance().setCoastMode();
 //    PivotSubsystem.getInstance().setCoastMode();
-    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
+//    SwerveSubsystem.getInstance().setAllControlMode(NeutralMode.Coast);
   }
 
   /** This function is called periodically when disabled. */
