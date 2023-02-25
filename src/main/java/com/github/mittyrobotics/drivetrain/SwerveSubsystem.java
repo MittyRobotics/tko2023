@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.ArrayList;
+
 public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     private static SwerveSubsystem instance;
@@ -40,7 +42,11 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public Pose getPose() {
-        return new Pose(forwardKinematics.getPose(), new Angle(Gyro.getInstance().getHeadingRadians()));
+        return new Pose(forwardKinematics.getLatestPose(), new Angle(Gyro.getInstance().getHeadingRadians()));
+    }
+
+    public Vector getVel() {
+        return forwardKinematics.vel;
     }
 
     public Angle getDirectionOfTravel() {
@@ -307,7 +313,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public void setPose(Point p) {
-        forwardKinematics.pose = p;
+        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() / 1000L, p));
     }
 
     public void resetPose() {
@@ -410,7 +416,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public static class ForwardKinematics {
         private final Vector r;
-        private Point pose = new Point(0, 0);
+        private ArrayList<Pair> pose = new ArrayList<>();
+
+        private Vector vel = new Vector(0, 0);
         private Angle directionOfTravel = new Angle(0);
 
 
@@ -424,17 +432,59 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
 
-            pose = Point.add(pose, new_);
+            pose.add(new Pair(System.currentTimeMillis() / 1000L, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
             directionOfTravel = new Angle(new Vector(new_).getAngle().getRadians() - Math.PI/2);
+        }
 
+        public Vector extrapolatePose(double time) {
+            return Vector.multiply(time, vel);
+        }
+
+        private int search(ArrayList<Pair> array, double value, boolean greater) {
+            int start = 0, end = array.size() - 1;
+
+            int ans = -1;
+            while (start <= end) {
+                int mid = (start + end) / 2;
+
+                if (greater) {
+                    if (array.get(mid).getKey() < value) {
+                        start = mid + 1;
+                    } else {
+                        ans = mid;
+                        end = mid - 1;
+                    }
+                } else {
+                    if (array.get(mid).getKey() > value) {
+                        end = mid - 1;
+                    } else {
+                        ans = mid;
+                        start = mid + 1;
+                    }
+                }
+            }
+            return ans;
+        }
+
+        public Point getPoseAtTime(double time) {
+            int left_index = search(pose, time, false);
+            int right_index = search(pose, time, true);
+            long tl = pose.get(left_index).getKey();
+            long tr = pose.get(right_index).getKey();
+            Point pl = pose.get(left_index).getValue();
+            Point pr = pose.get(right_index).getValue();
+
+            return Point.add(pl, new Point(Vector.multiply((time - tl) / (tr - tl), new Vector(pl, pr))));
+//            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
+//                    Point.add(pr, Point.multiply(-1, pl))));
         }
 
         public Vector getR(int i) {
             return new Vector(r.getX() * (i == 0 || i == 3 ? -1 : 1), r.getY() * (i > 1 ? -1 : 1));
         }
 
-        public Point getPose() {
-            return pose;
+        public Point getLatestPose() {
+            return pose.get(pose.size() - 1).getValue();
         }
 
         public Angle getDirectionOfTravel() {

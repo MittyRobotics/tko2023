@@ -46,10 +46,14 @@ public class SwerveAutoPickupCommandv1 extends CommandBase {
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
-        double leftY = OI.getInstance().getPS4Controller().getLeftX();
-        double leftX = -OI.getInstance().getPS4Controller().getLeftY();
+        double leftY = OI.getInstance().getDriveController().getLeftX();
+        double leftX = -OI.getInstance().getDriveController().getLeftY();
+        SmartDashboard.putNumber("leftx", leftX);
         speed += path.getAccel() * dt;
         speed = Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL);
+        SmartDashboard.putNumber("MAX", Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL));
+//        speed = Math.min(speed, path.getMaxSpeed());
+        SmartDashboard.putNumber("speed", speed);
 
         double closest = path.getSpline().getClosestPoint(robot, 50, 10);
         double length = path.getSpline().getLength(closest, 1.0, 17);

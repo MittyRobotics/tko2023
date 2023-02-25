@@ -46,8 +46,8 @@ public class SwerveAutoPickupCommandv2 extends CommandBase {
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
-        double leftY = OI.getInstance().getPS4Controller().getLeftX();
-        double leftX = -OI.getInstance().getPS4Controller().getLeftY();
+        double leftY = OI.getInstance().getDriveController().getLeftX();
+        double leftX = -OI.getInstance().getDriveController().getLeftY();
         speed += path.getAccel() * dt;
         speed = Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL);
 
@@ -69,7 +69,7 @@ public class SwerveAutoPickupCommandv2 extends CommandBase {
         double heading = Gyro.getInstance().getHeadingRadians();
         double angle = Math.atan2(linearVel.getY(), linearVel.getX()) + heading;
         double totalLength = path.getSpline().getLength(0, 1.0, 17);
-        double offset = (robot.getHeading().getRadians() - angle > 0 ? 1 : -1) * Math.PI/3 * (totalLength - length) / totalLength;
+        double offset = (robot.getHeading().getRadians() - angle > 0 ? 1 : -1) * 5 * Math.PI/180. * (totalLength - length) / totalLength;
         linearVel = new Vector(new Angle(angle + offset), speed);
 
         double angularVel = angularController.calculate(robot.getHeading().getRadians(), path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians());

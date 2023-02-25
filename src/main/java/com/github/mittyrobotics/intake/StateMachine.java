@@ -1,5 +1,8 @@
 package com.github.mittyrobotics.intake;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 
@@ -67,6 +70,22 @@ public class StateMachine {
 
     public boolean readyToShoot() {
         return PivotSubsystem.getInstance().withinThreshold() && TelescopeSubsystem.getInstance().withinThreshold();
+    }
+
+    public Pose getNearestConePose() {
+        return SwerveSubsystem.getInstance().getPose();
+    }
+
+    public Pose getNearestCubePose() {
+        return SwerveSubsystem.getInstance().getPose();
+    }
+
+    public Pose getNearestGamePiecePose() {
+        if (currentPieceState == PieceState.NONE) {
+            //FIX
+            return SwerveSubsystem.getInstance().getPose();
+        }
+        return currentPieceState == PieceState.CUBE ? getNearestCubePose() : getNearestConePose();
     }
 
     public enum RobotState {

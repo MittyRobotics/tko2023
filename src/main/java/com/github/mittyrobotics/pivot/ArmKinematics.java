@@ -1,6 +1,7 @@
 package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import org.ejml.simple.SimpleMatrix;
 
 public class ArmKinematics {
     private static Angle pitch = new Angle(0);
@@ -36,8 +37,26 @@ public class ArmKinematics {
         } else {
             setArmKinematics(tuningDistance-=incrementSpeed, tuningHeight);
         }
+    }
 
+    public SimpleMatrix getCameraRotationMatrix(double alpha, double beta, double gamma) {
+        SimpleMatrix Rz = new SimpleMatrix(new double[][]
+                {{Math.cos(alpha), -Math.sin(alpha), 0},
+                 {Math.sin(alpha), Math.cos(alpha), 0},
+                 {0, 0, 1}});
+        SimpleMatrix Ry = new SimpleMatrix(new double[][]
+                {{Math.cos(beta), 0, Math.sin(beta)},
+                 {0, 1, 0},
+                 {-Math.sin(beta), 0, Math.cos(beta)}});
+        SimpleMatrix Rx = new SimpleMatrix(new double[][]
+                {{1, 0, 0},
+                 {0, Math.cos(gamma), -Math.sin(gamma)},
+                 {0, Math.sin(gamma), Math.cos(gamma)}});
+        return Rz.mult(Ry).mult(Rx);
+    }
 
+    public SimpleMatrix getCameraRotationMatrix() {
+        return getCameraRotationMatrix(0, Math.PI/2 - PivotSubsystem.getInstance().getPositionRadians(), 0);
     }
 
     public static void incrementHeight(boolean up) {

@@ -24,7 +24,11 @@
 
 package com.github.mittyrobotics.util;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommandv1;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveDriverPurePursuitCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
@@ -37,6 +41,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.ejml.simple.SimpleMatrix;
 
 /**
  * OI Class to manage all controllers and input
@@ -151,19 +156,34 @@ public class OI {
         autoStow.whileTrue(new InstantCommand(this::zeroAll));
 
         Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
-//        autoIntakeGround.whileTrue(new SwerveDriverPurePursuitCommand());
+        autoIntakeGround.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
+                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
+                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
+                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
 
         Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false));
-//        autoIntakeHP.whileTrue(new SwerveDriverPurePursuitCommand());
+        autoIntakeHP.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
+                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
+                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
+                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
 
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-//        autoLeft.whileTrue(new SwerveDriverPurePursuitCommand());
+        autoLeft.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
+                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
+                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
+                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
 
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-//        autoCenter.whileTrue(new SwerveDriverPurePursuitCommand());
+        autoCenter.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
+                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
+                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
+                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
 
         Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-//        autoRight.whileTrue(new SwerveDriverPurePursuitCommand());
+        autoRight.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
+                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
+                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
+                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
 
         Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
         drive.whileTrue(new JoystickThrottleCommand());
