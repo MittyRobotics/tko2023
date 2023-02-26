@@ -34,30 +34,30 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     @Override
     public void initHardware() {
         ledStripOne = new AddressableLED(LedConstants.STRIP_PWM_PORT_FIRST);
-        ledStripTwo = new AddressableLED(LedConstants.STRIP_PWM_PORT_SECOND);
+//        ledStripTwo = new AddressableLED(LedConstants.STRIP_PWM_PORT_SECOND);
 
         bufferOne = new AddressableLEDBuffer(LedConstants.STRIP_ONE_LENGTH);
-        bufferTwo = new AddressableLEDBuffer(LedConstants.STRIP_TWO_LENGTH);
+//        bufferTwo = new AddressableLEDBuffer(LedConstants.STRIP_TWO_LENGTH);
 
         ledStripOne.setLength(bufferOne.getLength());
         ledStripOne.setData(bufferOne);
         ledStripOne.start();
 
-        ledStripTwo.setLength(bufferTwo.getLength());
-        ledStripTwo.setData(bufferTwo);
-        ledStripTwo.start();
+//        ledStripTwo.setLength(bufferTwo.getLength());
+//        ledStripTwo.setData(bufferTwo);
+//        ledStripTwo.start();
 
         setDefaultCommand(new DefaultCommand());
     }
 
     public void stopOutput() {
         ledStripOne.stop();
-        ledStripTwo.stop();
+//        ledStripTwo.stop();
     }
 
     public void startOutput() {
         ledStripOne.start();
-        ledStripTwo.start();
+//        ledStripTwo.start();
     }
 
     public void setNothing() {
@@ -65,49 +65,49 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
             bufferOne.setRGB(i, 0, 0, 0);
             ledStripOne.setData(bufferOne);
 
-            bufferTwo.setRGB(i, 0, 0, 0);
-            ledStripTwo.setData(bufferTwo);
+//            bufferTwo.setRGB(i, 0, 0, 0);
+//            ledStripTwo.setData(bufferTwo);
         }
     }
 
     public void setHsvIndividual(int index, int h, int s, int v) {
         bufferOne.setHSV(index, h, s, v);
         ledStripOne.setData(bufferOne);
-
-        bufferTwo.setHSV(index, h, s, v);
-        ledStripTwo.setData(bufferTwo);
+//
+//        bufferTwo.setHSV(index, h, s, v);
+//        ledStripTwo.setData(bufferTwo);
     }
 
     public void setHsvRange(int startIndex, int endIndex, int h, int s, int v) {
         //indexes from 0 | i.e. first led = 0, second led = 1, and so on
         for (int i = startIndex; i < endIndex; i++) {
             bufferOne.setHSV(i, h, s, v);
-            bufferTwo.setHSV(i, h, s, v);
+//            bufferTwo.setHSV(i, h, s, v);
         }
         ledStripOne.setData(bufferOne);
-        ledStripTwo.setData(bufferTwo);
+//        ledStripTwo.setData(bufferTwo);
     }
 
     public void setRgb(int index, int r, int g, int b) {
         bufferOne.setRGB(index, r, g, b);
-        bufferTwo.setRGB(index, r, g, b);
+//        bufferTwo.setRGB(index, r, g, b);
 
         ledStripOne.setData(bufferOne);
-        ledStripTwo.setData(bufferTwo);
+//        ledStripTwo.setData(bufferTwo);
     }
 
     public void setRgbRange(int startIndex, int endIndex, int r, int g, int b) {
         for (int i = startIndex; i < endIndex; i++) {
             bufferOne.setRGB(i, r, g, b);
-            bufferTwo.setRGB(i, r, g, b);
+//            bufferTwo.setRGB(i, r, g, b);
         }
         ledStripOne.setData(bufferOne);
-        ledStripTwo.setData(bufferTwo);
+//        ledStripTwo.setData(bufferTwo);
     }
 
     public void disable() {
         ledStripOne.close();
-        ledStripTwo.close();
+//        ledStripTwo.close();
     }
 
 }
