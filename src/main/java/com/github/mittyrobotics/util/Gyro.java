@@ -44,4 +44,8 @@ public class Gyro extends SubsystemBase {
 //        System.out.println(getHeadingAngle() * Math.PI / 180.);
         return -getHeadingAngle() * Math.PI / 180. + angleOffset;
     }
+
+    public double getAngularVel() {
+        return gyro.getRate() * Math.PI / 180;
+    }
 }
