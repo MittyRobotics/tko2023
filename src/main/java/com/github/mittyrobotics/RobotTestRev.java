@@ -5,6 +5,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -15,6 +18,8 @@ public class RobotTestRev extends TimedRobot {
 //    private RelativeEncoder m_encoder;
 //    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
+    public NetworkTableInstance nt;
+    public NetworkTable table;
     public LoggerInterface log;
 
 //    TrapezoidalMotionProfile tp;
@@ -25,6 +30,12 @@ public class RobotTestRev extends TimedRobot {
 
     @Override
     public void robotInit() {
+
+        nt = NetworkTableInstance.getDefault();
+        nt.setServerTeam(1351);
+        nt.startDSClient();
+
+        table = NetworkTableInstance.getDefault().getTable("dashboard");
 //        allowedErr = 0;
 //        // initialize motor
 //        m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -119,6 +130,7 @@ public class RobotTestRev extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+        table.putValue("test1", NetworkTableValue.makeDouble(Math.random() * 100));
 //        SmartDashboard.putNumber("VEL", m_motor.getEncoder().getVelocity());
 //        SmartDashboard.putNumber("OUTPUT", m_motor.getAppliedOutput());
 //        m_pidController.setReference(1500, CANSparkMax.ControlType.kSmartMotion);

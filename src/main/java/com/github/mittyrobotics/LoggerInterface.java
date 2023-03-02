@@ -13,6 +13,7 @@ public class LoggerInterface {
     private final NetworkTableInstance nt;
 //    private static final Map<String, Sendable> tablesToData = new HashMap<>();
     private final NetworkTable table;
+    private final DoubleArraySubscriber sub;
 
 //    private final HashMap<String, StringPublisher> pubs = new HashMap<>();
 
@@ -26,9 +27,11 @@ public class LoggerInterface {
         nt.setServerTeam(1351);
         nt.startDSClient();
 
-        table = NetworkTableInstance.getDefault().getTable("apriltags");
+        table = NetworkTableInstance.getDefault().getTable("apriltag");
 
-        table.setDefaultValue("seen", NetworkTableValue.makeBoolean(true));
+        sub = table.getDoubleArrayTopic("pose").subscribe(new double[]{}, PubSubOption.keepDuplicates(true));
+
+//        table.setDefaultValue("seen", NetworkTableValue.makeBoolean(true));
 
 //        table = nt.getTable("SmartDasboard");
 
@@ -99,19 +102,24 @@ public class LoggerInterface {
 
 
     public void print() {
-        if(!table.getValue("seen").getBoolean()) {
-            double[] pose_x = table.getValue("pose_x").getDoubleArray();
-            double[] pose_y = table.getValue("pose_y").getDoubleArray();
-            double[] pose_z = table.getValue("pose_z").getDoubleArray();
-            double[] pose_time = table.getValue("pose_time").getDoubleArray();
 
-            System.out.println("Pose X: " + Arrays.toString(pose_x));
-            System.out.println("Pose Y: " + Arrays.toString(pose_y));
-            System.out.println("Pose Z: " + Arrays.toString(pose_z));
-            System.out.println("Pose Time: " + Arrays.toString(pose_time));
-
-            table.putValue("seen", NetworkTableValue.makeBoolean(true));
+        for (double[] val : sub.readQueueValues()) {
+            System.out.println("pose changed value " + Arrays.toString(val));
         }
+
+//        if(!table.getValue("seen").getBoolean()) {
+//            double[] pose_x = table.getValue("pose_x").getDoubleArray();
+//            double[] pose_y = table.getValue("pose_y").getDoubleArray();
+//            double[] pose_z = table.getValue("pose_z").getDoubleArray();
+//            double[] pose_time = table.getValue("pose_time").getDoubleArray();
+//
+//            System.out.println("Pose X: " + Arrays.toString(pose_x));
+//            System.out.println("Pose Y: " + Arrays.toString(pose_y));
+//            System.out.println("Pose Z: " + Arrays.toString(pose_z));
+//            System.out.println("Pose Time: " + Arrays.toString(pose_time));
+//
+//            table.putValue("seen", NetworkTableValue.makeBoolean(true));
+//        }
 //        for(String key : table.getKeys()) System.out.println(key + ": " + Arrays.toString(table.getValue(key).getDoubleArray()));
     }
 }
