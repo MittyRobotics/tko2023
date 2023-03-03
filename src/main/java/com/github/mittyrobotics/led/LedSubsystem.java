@@ -10,8 +10,8 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     //TODO: need to find way to completely stop output (set blank)
     private static LedSubsystem instance;
 
-    private AddressableLED ledStripOne, ledStripTwo;
-    private AddressableLEDBuffer bufferOne, bufferTwo;
+    private AddressableLED ledStrip;
+    private AddressableLEDBuffer buffer;
 
     private LedSubsystem() {
         super();
@@ -33,15 +33,15 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     @Override
     public void initHardware() {
-        ledStripOne = new AddressableLED(LedConstants.STRIP_PWM_PORT_FIRST);
+        ledStrip = new AddressableLED(LedConstants.STRIP_PWM_PORT_FIRST);
 //        ledStripTwo = new AddressableLED(LedConstants.STRIP_PWM_PORT_SECOND);
 
-        bufferOne = new AddressableLEDBuffer(LedConstants.STRIP_ONE_LENGTH);
+        buffer = new AddressableLEDBuffer(LedConstants.STRIP_ONE_LENGTH);
 //        bufferTwo = new AddressableLEDBuffer(LedConstants.STRIP_TWO_LENGTH);
 
-        ledStripOne.setLength(bufferOne.getLength());
-        ledStripOne.setData(bufferOne);
-        ledStripOne.start();
+        ledStrip.setLength(buffer.getLength());
+        ledStrip.setData(buffer);
+        ledStrip.start();
 
 //        ledStripTwo.setLength(bufferTwo.getLength());
 //        ledStripTwo.setData(bufferTwo);
@@ -51,19 +51,19 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public void stopOutput() {
-        ledStripOne.stop();
+        ledStrip.stop();
 //        ledStripTwo.stop();
     }
 
     public void startOutput() {
-        ledStripOne.start();
+        ledStrip.start();
 //        ledStripTwo.start();
     }
 
     public void setNothing() {
-        for (int i = 0; i < bufferOne.getLength(); i++) {
-            bufferOne.setRGB(i, 0, 0, 0);
-            ledStripOne.setData(bufferOne);
+        for (int i = 0; i < buffer.getLength(); i++) {
+            buffer.setRGB(i, 0, 0, 0);
+            ledStrip.setData(buffer);
 
 //            bufferTwo.setRGB(i, 0, 0, 0);
 //            ledStripTwo.setData(bufferTwo);
@@ -71,8 +71,8 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public void setHsvIndividual(int index, int h, int s, int v) {
-        bufferOne.setHSV(index, h, s, v);
-        ledStripOne.setData(bufferOne);
+        buffer.setHSV(index, h, s, v);
+        ledStrip.setData(buffer);
 //
 //        bufferTwo.setHSV(index, h, s, v);
 //        ledStripTwo.setData(bufferTwo);
@@ -81,32 +81,49 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     public void setHsvRange(int startIndex, int endIndex, int h, int s, int v) {
         //indexes from 0 | i.e. first led = 0, second led = 1, and so on
         for (int i = startIndex; i < endIndex; i++) {
-            bufferOne.setHSV(i, h, s, v);
+            buffer.setHSV(i, h, s, v);
 //            bufferTwo.setHSV(i, h, s, v);
         }
-        ledStripOne.setData(bufferOne);
+        ledStrip.setData(buffer);
 //        ledStripTwo.setData(bufferTwo);
     }
 
     public void setRgb(int index, int r, int g, int b) {
-        bufferOne.setRGB(index, r, g, b);
+        buffer.setRGB(index, r, g, b);
 //        bufferTwo.setRGB(index, r, g, b);
 
-        ledStripOne.setData(bufferOne);
+        ledStrip.setData(buffer);
 //        ledStripTwo.setData(bufferTwo);
     }
 
     public void setRgbRange(int startIndex, int endIndex, int r, int g, int b) {
         for (int i = startIndex; i < endIndex; i++) {
-            bufferOne.setRGB(i, r, g, b);
+            buffer.setRGB(i, r, g, b);
 //            bufferTwo.setRGB(i, r, g, b);
         }
-        ledStripOne.setData(bufferOne);
+        ledStrip.setData(buffer);
 //        ledStripTwo.setData(bufferTwo);
     }
 
+    public void setAlternating(int startIndex, int endIndex, int r, int g, int b) {
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i % 2 == 0) {
+                buffer.setRGB(i, r, g, b);
+            }
+            ledStrip.setData(buffer);
+        }
+    }
+
+    public void turnOff() {
+        //try a few things:
+//        ledStrip.setData(null);
+//        buffer.setHSV(index, 0, 0, 0); ledstrip.setdata(buffer);
+//        create new blank buffer and set ledstrip to it
+    }
+
     public void disable() {
-        ledStripOne.close();
+        ledStrip.close();
+
 //        ledStripTwo.close();
     }
 

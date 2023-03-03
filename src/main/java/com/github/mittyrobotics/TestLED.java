@@ -1,4 +1,4 @@
-package com.github.mittyrobotics.util;
+package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedConstants;
