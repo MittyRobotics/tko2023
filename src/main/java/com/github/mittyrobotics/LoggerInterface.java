@@ -103,6 +103,8 @@ public class LoggerInterface {
 
     public void print() {
 
+        System.out.println(table.getValue("gamepieces").getValue());
+
         for (double[] val : sub.readQueueValues()) {
             System.out.println("pose changed value " + Arrays.toString(val));
         }
