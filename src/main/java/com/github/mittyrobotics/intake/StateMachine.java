@@ -1,6 +1,5 @@
 package com.github.mittyrobotics.intake;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
@@ -11,6 +10,9 @@ public class StateMachine {
 
     private PieceState currentPieceState = PieceState.NONE;
     private PieceState lastPieceState;
+
+    boolean isIntaking = false;
+    long time;
 
     public static StateMachine instance;
 
@@ -86,6 +88,23 @@ public class StateMachine {
             return SwerveSubsystem.getInstance().getPose();
         }
         return currentPieceState == PieceState.CUBE ? getNearestCubePose() : getNearestConePose();
+    }
+
+    public void update() {
+        if (isIntaking) {
+            if (IntakeSubsystem.getInstance().proxSensorTrigger()) {
+                time = System.currentTimeMillis();
+            }
+            isIntaking = !IntakeSubsystem.getInstance().proxSensorTrigger();
+        }
+    }
+
+    public void setIntaking(boolean isIntaking) {
+        this.isIntaking = isIntaking;
+    }
+
+    public boolean shouldBeIntaking() {
+        return System.currentTimeMillis() - time < 1000;
     }
 
     public enum RobotState {

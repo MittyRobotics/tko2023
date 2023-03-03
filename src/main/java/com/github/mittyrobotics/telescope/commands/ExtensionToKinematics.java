@@ -1,12 +1,12 @@
 package com.github.mittyrobotics.telescope.commands;
 
+import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeConstants;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
-import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -36,7 +36,8 @@ public class ExtensionToKinematics extends CommandBase {
 //            TelescopeSubsystem.getInstance().resetMeters(0);
 //        }
 
-        double desired = ArmKinematics.getTelescopeDesired() / TelescopeConstants.METERS_PER_MOTOR_REV;
+        double desired = (ArmKinematics.getTelescopeDesired() +
+                (StateMachine.getInstance().shouldBeIntaking() ? 1 / 39.37 : 0)) / TelescopeConstants.METERS_PER_MOTOR_REV;
         tpTelescope.changeSetpoint(desired, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
 
         boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();

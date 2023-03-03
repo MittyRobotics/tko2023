@@ -21,7 +21,7 @@ public class IntakeCommand extends CommandBase {
     public void execute() {
         if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP ||
                 StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND)
-            IntakeSubsystem.getInstance().setMotor(IntakeSubsystem.getInstance().isIntakeFull() ? 0 : IntakeConstants.INTAKE_SPEED);
+            IntakeSubsystem.getInstance().setMotor(StateMachine.getInstance().shouldBeIntaking() ? IntakeConstants.INTAKE_SPEED : 0);
 
         else if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID ||
                 StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH)

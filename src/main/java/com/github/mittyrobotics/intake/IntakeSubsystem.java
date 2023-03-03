@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
         spark.getPIDController().setD(d);
     }
 
-    public boolean isIntakeFull() {
+    public boolean proxSensorTrigger() {
         return !proximitySensor.get();
     }
 }

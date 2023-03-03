@@ -25,7 +25,6 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommandv1;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveDriverPurePursuitCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -33,15 +32,13 @@ import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
-import com.github.mittyrobotics.led.commands.PurpleCommand;
-import com.github.mittyrobotics.led.commands.YellowCommand;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.ejml.simple.SimpleMatrix;
+
+import javax.swing.plaf.nimbus.State;
 
 /**
  * OI Class to manage all controllers and input
@@ -96,6 +93,7 @@ public class OI {
         if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916), 0.20456099255847424);
         StateMachine.getInstance().setStateGround();
+        StateMachine.getInstance().setIntaking(true);
     }
 
     public void handleMid() {
@@ -114,6 +112,7 @@ public class OI {
         if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(1.113857105102662 - 2 * Math.PI/180), 0.4490367646201602);
         StateMachine.getInstance().setStateHP();
+        StateMachine.getInstance().setIntaking(true);
     }
 
     public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {
@@ -151,7 +150,7 @@ public class OI {
         Trigger autoStow = new Trigger(() -> (
                 StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND ||
                 StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP) &&
-                IntakeSubsystem.getInstance().isIntakeFull()
+                IntakeSubsystem.getInstance().proxSensorTrigger()
         );
         autoStow.whileTrue(new InstantCommand(this::zeroAll));
 
