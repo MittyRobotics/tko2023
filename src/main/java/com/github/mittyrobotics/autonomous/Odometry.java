@@ -1,7 +1,11 @@
 package com.github.mittyrobotics.autonomous;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import org.ejml.simple.SimpleMatrix;
 
@@ -29,20 +33,20 @@ public class Odometry {
 
 //    SimpleMatrix H;
 
-    public SimpleMatrix f(SimpleMatrix state, double v, double w, double dt) {
+    public SimpleMatrix f(SimpleMatrix state, Vector v, double w, double dt) {
         //FIXXXXXXX - done?
-        return state.plus(new SimpleMatrix(new double[] {v * Math.cos(state.get(2)) * dt, v * Math.sin(state.get(2)), w * dt}));
+        return state.plus(new SimpleMatrix(new double[] {v.getX() * dt, v.getY() * dt, w * dt}));
 //        return new SimpleMatrix(new double[][]
 //                {{1, 0, dt, 0, 0, 0},
 //                 {0, 1, 0, dt, 0, 0},
 //                 {0, 0, 0, 0, 1, dt}});
     }
 
-    public SimpleMatrix getJf(double v, double w, double dt) {
+    public SimpleMatrix getJf(double v, double angle, double w, double dt) {
         return new SimpleMatrix(new double[][]
                 {{1, 0, 0},
                  {0, 1, 0},
-                 {-v * Math.sin(state.get(2)) * dt, v * Math.cos(state.get(2)) * dt, 1}});
+                 {-v * Math.sin(angle) * dt, v * Math.cos(angle) * dt, 1}});
     }
 
     public SimpleMatrix getJh() {
@@ -52,7 +56,7 @@ public class Odometry {
                  {0, 0, 1}});
     }
 
-    public void stateExtrapolate(double dt, double v, double w) {
+    public void stateExtrapolate(double dt, Vector v, double w) {
         //REPLACE
         state = f(state, v, w, dt);
     }
@@ -60,17 +64,17 @@ public class Odometry {
     public void stateExtrapolate(double dt) {
         //REPLACE
         Vector vel = SwerveSubsystem.getInstance().getVel();
-        state = f(state, vel.getMagnitude(), Gyro.getInstance().getAngularVel(), dt);
+        state = f(state, vel, Gyro.getInstance().getAngularVel(), dt);
     }
 
     public void covarianceExtrapolate(double dt) {
         Vector vel = SwerveSubsystem.getInstance().getVel();
-        SimpleMatrix J = getJf(vel.getMagnitude(), Gyro.getInstance().getAngularVel(), dt);
+        SimpleMatrix J = getJf(vel.getMagnitude(), vel.getAngle().getRadians(), Gyro.getInstance().getAngularVel(), dt);
         covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
     }
 
-    public void covarianceExtrapolate(double dt, double v, double w) {
-        SimpleMatrix J = getJf(v, w, dt);
+    public void covarianceExtrapolate(double dt, Vector v, double w) {
+        SimpleMatrix J = getJf(v.getMagnitude(), v.getAngle().getRadians(), w, dt);
         covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
     }
 
@@ -92,7 +96,7 @@ public class Odometry {
                 .plus(kalmanGain.mult(R).mult(kalmanGain.transpose()));
     }
 
-    public void update(double dt, double v, double w, SimpleMatrix... z) {
+    public void update(double dt, Vector v, double w, SimpleMatrix... z) {
         stateExtrapolate(dt, v, w);
         covarianceExtrapolate(dt, v, w);
         for (int i = 0; i < z.length; i++) {
@@ -100,5 +104,13 @@ public class Odometry {
             stateUpdate(z[i]);
             covarianceUpdate();
         }
+    }
+
+    public Pose getCameraPose() {
+        return new Pose(
+                new Point(
+                        7.5625 * Math.sin(PivotSubsystem.getInstance().getPositionRadians()),
+                        25 + 1.87623032 + 7.5625 * Math.cos(PivotSubsystem.getInstance().getPositionRadians())),
+                new Angle(-PivotSubsystem.getInstance().getPositionRadians()));
     }
 }

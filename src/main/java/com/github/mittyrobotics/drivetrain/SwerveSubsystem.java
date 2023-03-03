@@ -45,6 +45,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         return new Pose(forwardKinematics.getLatestPose(), new Angle(Gyro.getInstance().getHeadingRadians()));
     }
 
+    public Pose getPoseAtTime(double time) {
+        return new Pose(forwardKinematics.getPoseAtTime(time), new Angle(Gyro.getInstance().getHeadingAngle()));
+    }
+
     public Vector getVel() {
         return forwardKinematics.vel;
     }

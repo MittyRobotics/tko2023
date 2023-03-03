@@ -1,6 +1,8 @@
 package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import org.ejml.simple.SimpleMatrix;
 
 public class ArmKinematics {
