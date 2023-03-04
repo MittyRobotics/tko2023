@@ -42,6 +42,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.json.JSONException;
 
+import javax.swing.plaf.nimbus.State;
+
 /**
  * OI Class to manage all controllers and input
  */
@@ -117,6 +119,13 @@ public class OI {
         StateMachine.getInstance().setIntaking(true);
     }
 
+    public void handleConeScore() {
+        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        double curRad = ArmKinematics.getTelescopeDesired();
+        double curAngle = ArmKinematics.getPivotDesired().getRadians();
+        ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);
+    }
+
     public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {
         return (leftBumper && getOperatorController().getLeftBumper()) &&
                 (rightBumper && getOperatorController().getRightBumper()) &&
@@ -145,6 +154,13 @@ public class OI {
 
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
         highKinematics.whileTrue(new InstantCommand(this::handleHigh));
+
+        Trigger readyToScore = new Trigger(() ->
+                (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) &&
+                (OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
+                (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH)
+        );
+        readyToScore.whileTrue(new InstantCommand(this::handleConeScore));
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
