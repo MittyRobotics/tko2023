@@ -5,7 +5,7 @@ public class LedConstants {
 
     public static final int STRIP_PWM_PORT_SECOND = 0;
 
-    public static final int STRIP_ONE_LENGTH = 120; //CHANGED FROM 150
+    public static final int STRIP_ONE_LENGTH = 60; //CHANGED FROM 120
 
     public static final int STRIP_TWO_LENGTH = 5;
 
