@@ -107,10 +107,14 @@ public class Odometry {
     }
 
     public Pose getCameraPose() {
+        return getCameraPose(PivotSubsystem.getInstance().getPositionRadians());
+    }
+
+    public Pose getCameraPose(double phi) {
         return new Pose(
                 new Point(
-                        7.5625 * Math.sin(PivotSubsystem.getInstance().getPositionRadians()),
-                        25 + 1.87623032 + 7.5625 * Math.cos(PivotSubsystem.getInstance().getPositionRadians())),
-                new Angle(-PivotSubsystem.getInstance().getPositionRadians()));
+                        7.5625 * Math.sin(phi),
+                        25 + 1.87623032 + 7.5625 * Math.cos(phi)),
+                new Angle(-phi));
     }
 }

@@ -30,15 +30,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
-    LedSubsystem.getInstance().initHardware();
+//    LedSubsystem.getInstance().initHardware();
 //    SwerveSubsystem.getInstance().initHardware();
 //    TelescopeSubsystem.getInstance().initHardware();
 //    PivotSubsystem.getInstance().initHardware();
 //    IntakeSubsystem.getInstance().initHardware();
-    Gyro.getInstance().initHardware();
+//    Gyro.getInstance().initHardware();
 //    PivotSubsystem.getInstance().setBrakeMode();
 //    TelescopeSubsystem.getInstance().setBrakeMode();
-    OI.getInstance().setupControls();
+//    OI.getInstance().setupControls();
 //    SwerveSubsystem.getInstance().resetPose();
   }
 
