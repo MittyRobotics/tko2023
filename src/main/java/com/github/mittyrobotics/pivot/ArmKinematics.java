@@ -96,13 +96,13 @@ public class ArmKinematics {
 //        return Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, getCameraPose().getPosition().getX()));
         Vector vector = Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, 0));
         return new double[] {dist * Math.sin(phi) * Math.sin(theta) + 0,
-                dist * Math.sin(phi) * Math.cos(theta) + 0
-                , dist * Math.cos(phi) + 0};
+                dist * Math.sin(phi) * Math.cos(theta) + getCameraPose().getPosition().getX(),
+                dist * Math.cos(phi) + 0};
     }
 
-    public static double[] getVectorToGamePiece(boolean isCube, int index) throws JSONException {
+    public static double[] getVectorToGamePiece(boolean isCone, int index) throws JSONException {
         JSONObject object = LoggerInterface.getInstance().getGamePiece()
-                .getJSONArray(isCube ? "cubes" : "cones").getJSONObject(index);
+                .getJSONArray(isCone ? "cones" : "cubes").getJSONObject(index);
         return getVectorToGamePiece(
                 object.getDouble("distance") / 100.,
                 object.getDouble("anglex") * Math.PI / 180,

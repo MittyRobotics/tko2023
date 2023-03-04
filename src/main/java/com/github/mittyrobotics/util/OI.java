@@ -24,7 +24,10 @@
 
 package com.github.mittyrobotics.util;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommandv1;
+import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoDriveToTargetCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -37,8 +40,7 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import javax.swing.plaf.nimbus.State;
+import org.json.JSONException;
 
 /**
  * OI Class to manage all controllers and input
@@ -122,7 +124,7 @@ public class OI {
                 (rightTrigger && getOperatorController().getRightTriggerAxis() > 0.5);
     }
 
-    public void setupControls() {
+    public void setupControls() throws JSONException {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
         coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
 
@@ -154,35 +156,22 @@ public class OI {
         );
         autoStow.whileTrue(new InstantCommand(this::zeroAll));
 
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
-        autoIntakeGround.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
-                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
-                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
-                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 
-        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false));
-        autoIntakeHP.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
-                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
-                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
-                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
+        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
+                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
-                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
-                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
-                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
+        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
 
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
-                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
-                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
-                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
+        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
 
         Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-        autoRight.whileTrue(new SwerveAutoPickupCommandv1(0.05, 0.05,
-                new SwervePath(new QuinticHermiteSpline(SwerveSubsystem.getInstance().getPose(), StateMachine.getInstance().getNearestGamePiecePose()),
-                        SwerveSubsystem.getInstance().getPose().getHeading(), SwerveSubsystem.getInstance().getPose().getHeading(),
-                        0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5)));
+        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
 
         Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
         drive.whileTrue(new JoystickThrottleCommand());

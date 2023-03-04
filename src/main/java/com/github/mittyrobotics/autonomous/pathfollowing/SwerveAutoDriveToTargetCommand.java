@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
-public class SwerveAutoPickupCommandv1 extends CommandBase {
+public class SwerveAutoDriveToTargetCommand extends CommandBase {
     private SwervePath path;
     private double linearThreshold, angularThreshold;
     private Pose robot;
@@ -22,7 +22,7 @@ public class SwerveAutoPickupCommandv1 extends CommandBase {
     private double speed = 0;
     private double dt, lastT = 0;
 
-    public SwerveAutoPickupCommandv1(double linearThreshold, double angularThreshold, SwervePath path) {
+    public SwerveAutoDriveToTargetCommand(double linearThreshold, double angularThreshold, SwervePath path) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
