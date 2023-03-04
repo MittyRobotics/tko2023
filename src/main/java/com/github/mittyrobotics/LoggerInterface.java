@@ -1,11 +1,8 @@
 package com.github.mittyrobotics;
 
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -13,7 +10,8 @@ public class LoggerInterface {
     private final NetworkTableInstance nt;
 //    private static final Map<String, Sendable> tablesToData = new HashMap<>();
     private final NetworkTable table;
-    private final DoubleArraySubscriber sub;
+    private final DoubleArraySubscriber poseSub;
+    private final StringSubscriber radarSub;
 
 //    private final HashMap<String, StringPublisher> pubs = new HashMap<>();
 
@@ -29,7 +27,8 @@ public class LoggerInterface {
 
         table = NetworkTableInstance.getDefault().getTable("apriltag");
 
-        sub = table.getDoubleArrayTopic("pose").subscribe(new double[]{}, PubSubOption.keepDuplicates(true));
+        poseSub = table.getDoubleArrayTopic("pose").subscribe(new double[]{}, PubSubOption.keepDuplicates(true));
+        radarSub = table.getStringTopic("gamepieces").subscribe(new String(), PubSubOption.keepDuplicates(true));
 
 //        table.setDefaultValue("seen", NetworkTableValue.makeBoolean(true));
 
@@ -100,12 +99,15 @@ public class LoggerInterface {
 //        return getEntry(key).getDouble(defaultValue);
 //    }
 
+    public JSONObject getGamePiece() throws JSONException {
+        return new JSONObject(radarSub.get());
+    }
 
     public void print() {
 
         System.out.println(table.getValue("gamepieces").getValue());
 
-        for (double[] val : sub.readQueueValues()) {
+        for (double[] val : poseSub.readQueueValues()) {
             System.out.println("pose changed value " + Arrays.toString(val));
         }
 
