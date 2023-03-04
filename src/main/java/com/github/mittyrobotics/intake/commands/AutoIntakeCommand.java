@@ -1,8 +1,10 @@
 package com.github.mittyrobotics.intake.commands;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -16,8 +18,12 @@ public class AutoIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (OI.getInstance().getOperatorController().getRightBumper()){
+        if (OI.getInstance().getOperatorController().getRightBumper()) {
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+            triggerFunctionAfterTime(() -> {
+                ArmKinematics.setArmKinematics(new Angle(0), 0);
+                StateMachine.getInstance().setStateStowed();
+            }, 1000);
         } else if (StateMachine.getInstance().getIntaking()) {
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
