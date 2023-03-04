@@ -1,9 +1,14 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import org.ejml.simple.SimpleMatrix;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ArmKinematics {
     private static Angle pitch = new Angle(0);
@@ -72,5 +77,30 @@ public class ArmKinematics {
 
     public static void incrementLinear(double joystickY, double joystickX) {
         setArmKinematics(0.75 * Math.pow(joystickX,4), Math.pow(joystickY, 4)*0.75);
+    }
+
+    public Pose getCameraPose() {
+        return getCameraPose(PivotSubsystem.getInstance().getPositionRadians());
+    }
+
+    public Pose getCameraPose(double phi) {
+        return new Pose(
+                new Point(
+                        7.5625 * Math.sin(phi) / 39.37,
+                        (25 + 1.87623032 + 7.5625 * Math.cos(phi)) / 39.37),
+                new Angle(-phi));
+    }
+
+    public Vector getVectorToGamePiece(double dist, double theta, double phi) {
+        return Vector.add(new Vector(dist * Math.sin(phi) * Math.cos(theta), dist * Math.sin(phi) * Math.sin(theta)), new Vector(getCameraPose().getPosition()));
+    }
+
+    public Vector getVectorToGamePiece(boolean isCube, int index) throws JSONException {
+        JSONObject object = LoggerInterface.getInstance().getGamePiece()
+                .getJSONArray(isCube ? "cubes" : "cones").getJSONObject(index);
+        return getVectorToGamePiece(
+                object.getDouble("distance") / 100.,
+                object.getDouble("anglex") * Math.PI / 180,
+                (90 - object.getDouble("angley")) * Math.PI / 180.);
     }
 }

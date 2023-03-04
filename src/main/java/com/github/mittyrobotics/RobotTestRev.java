@@ -30,7 +30,7 @@ public class RobotTestRev extends TimedRobot {
         m_motor = new CANSparkMax(deviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
         tp = new TrapezoidalMotionProfile(1000, 1000, 3000, 0, 0, 1000, 0, 0);
 
-        log = new LoggerInterface();
+//        log = new LoggerInterface();
 
         /**
          * The RestoreFactoryDefaults method can be used to reset the configuration parameters
@@ -97,7 +97,7 @@ public class RobotTestRev extends TimedRobot {
     @Override
     public void robotPeriodic() {
         super.robotPeriodic();
-        log.put("Test", m_motor.getEncoder().getPosition());
+//        log.put("Test", m_motor.getEncoder().getPosition());
     }
 
     @Override

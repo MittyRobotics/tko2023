@@ -22,6 +22,6 @@ public class TestOdometry {
 //        }
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
 
-        System.out.println(Odometry.getInstance().getCameraPose(90 * Math.PI/180));
+//        System.out.println(Odometry.getInstance().getCameraPose(90 * Math.PI/180));
     }
 }
