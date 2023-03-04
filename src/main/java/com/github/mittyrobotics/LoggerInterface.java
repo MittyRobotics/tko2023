@@ -105,8 +105,16 @@ public class LoggerInterface {
 //        return getEntry(key).getDouble(defaultValue);
 //    }
 
-    public JSONObject getGamePiece() throws JSONException {
-        return new JSONObject(radarSub.get());
+    public JSONObject getGamePiece() {
+        try {
+            return new JSONObject(radarSub.get());
+        } catch (Exception e) {
+            return new JSONObject();
+        }
+    }
+
+    public DoubleArraySubscriber getPoseSub() {
+        return poseSub;
     }
 
     public void print() {

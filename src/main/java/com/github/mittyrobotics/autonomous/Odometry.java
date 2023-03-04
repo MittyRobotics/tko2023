@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -7,14 +8,20 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.util.Gyro;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 import org.ejml.simple.SimpleMatrix;
 
 public class Odometry {
     private static Odometry instance;
+    private double last_time;
 
     public static Odometry getInstance() {
         if (instance == null) instance = new Odometry();
         return instance;
+    }
+
+    public Odometry() {
+        last_time = System.currentTimeMillis() * 1000000;
     }
 
     double offset = 20.873;
@@ -56,16 +63,65 @@ public class Odometry {
     SimpleMatrix state = new SimpleMatrix(3, 1);
     SimpleMatrix covariance = new SimpleMatrix(3, 3);
 
-    //INPUT DIMS
     SimpleMatrix kalmanGain = new SimpleMatrix(3,3);
-
-//    SimpleMatrix W;
-//
-//    SimpleMatrix V;
 
     SimpleMatrix R = SimpleMatrix.identity(3);
 
     SimpleMatrix Q = SimpleMatrix.identity(3);
+
+    public void setState(double x, double y, double t) {
+        state.set(0, 0, x);
+        state.set(1, 0, y);
+        state.set(2, 0, t);
+    }
+
+    public void update() {
+        DoubleArraySubscriber sub = LoggerInterface.getInstance().getPoseSub();
+
+        for(double[] measurement : sub.readQueueValues()) {
+            double x = measurement[0];
+            double y = measurement[1];
+            double theta = measurement[3];
+            double time = measurement[4];
+            double x_dist = measurement[5];
+
+            double dt = (time - last_time) / (1000000000.);
+
+            Point lastP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
+            Point curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
+
+            Angle lastA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(last_time);
+            Angle curA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(time);
+
+            Vector v = new Vector(Point.multiply(1/dt, Point.add(curP, Point.multiply(-1, lastP))));
+            double w = (1/dt) * (curA.getRadians() - lastA.getRadians());
+
+            stateExtrapolate(dt, v, w);
+            covarianceExtrapolate(dt, v, w);
+            updateCovarianceR(x_dist);
+
+            kalmanGain();
+            stateUpdate(new SimpleMatrix(new double[]{x, y, theta}));
+            covarianceUpdate();
+
+            last_time = time;
+
+        }
+    }
+
+    public void updateCovarianceR(double x) {
+        R = new SimpleMatrix(new double[][]{
+                {0.00001 * x * x - 0.0007 * x + 0.015, 0, 0},
+                {0, 0.00001 * x * x + 0.0006 * x, 0.001},
+                {0, 0.001, 0.00001}
+        });
+    }
+
+    //INPUT DIMS
+
+//    SimpleMatrix W;
+//
+//    SimpleMatrix V;
 
 //    SimpleMatrix H;
 
@@ -133,7 +189,7 @@ public class Odometry {
     }
 
     public void update(double dt, Vector v, double w, SimpleMatrix... z) {
-        stateExtrapolate(dt, v, w);
+        stateExtrapolate(dt);
         covarianceExtrapolate(dt, v, w);
         for (int i = 0; i < z.length; i++) {
             kalmanGain();
@@ -142,14 +198,18 @@ public class Odometry {
         }
     }
 
+//    public Pose getState() {
+//        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
+//    }
+
     public Pose getState() {
-        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
+        return SwerveSubsystem.getInstance().getPose();
     }
 
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;
         double min = Integer.MAX_VALUE;
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
             if (min > new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude()) {
                 min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
                 minIndex = i;

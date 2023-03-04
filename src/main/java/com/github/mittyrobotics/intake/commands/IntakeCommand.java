@@ -19,20 +19,22 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP ||
-                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND)
-            IntakeSubsystem.getInstance().setMotor(StateMachine.getInstance().shouldBeIntaking() ? IntakeConstants.INTAKE_SPEED : 0);
 
-        else if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID ||
-                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH)
-            IntakeSubsystem.getInstance().setMotor(StateMachine.getInstance().readyToShoot() &&
-                    OI.getInstance().getOperatorController().getRightBumper() ? IntakeConstants.OUTTAKE_SPEED : 0);
+        System.out.println("Running intake");
+        if (OI.getInstance().getOperatorController().getLeftBumper())
+//            IntakeSubsystem.getInstance().setMotor(StateMachine.getInstance().shouldBeIntaking() ? IntakeConstants.INTAKE_SPEED : 0);
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
 
-        else if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.STOWED)
-            IntakeSubsystem.getInstance().setMotor(0);
+        else if (OI.getInstance().getOperatorController().getRightBumper()) {
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+        }
+
+//        else if (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.STOWED)
+//            IntakeSubsystem.getInstance().setMotor(0);
 
         else
-            System.out.println("the fuck u manage to do dumb shit");
+            IntakeSubsystem.getInstance().setMotor(-0.1);
+//            System.out.println("the fuck u manage to do dumb shit");
     }
 
     @Override

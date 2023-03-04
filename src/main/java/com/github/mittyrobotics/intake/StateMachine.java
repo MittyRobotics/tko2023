@@ -94,8 +94,8 @@ public class StateMachine {
         if (isIntaking) {
             if (IntakeSubsystem.getInstance().proxSensorTrigger()) {
                 time = System.currentTimeMillis();
+                isIntaking = false;
             }
-            isIntaking = !IntakeSubsystem.getInstance().proxSensorTrigger();
         }
     }
 
