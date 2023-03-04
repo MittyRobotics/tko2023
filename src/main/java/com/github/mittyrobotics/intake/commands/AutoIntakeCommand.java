@@ -32,6 +32,10 @@ public class AutoIntakeCommand extends CommandBase {
                     StateMachine.getInstance().setIntaking(false);
                     indexing = false;
                 }, 1000);
+                triggerFunctionAfterTime(() -> {
+                    ArmKinematics.setArmKinematics(new Angle(0), 0);
+                    StateMachine.getInstance().setStateStowed();
+                }, 2000);
             }
         } else {
             IntakeSubsystem.getInstance().setMotor(-0.1);
