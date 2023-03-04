@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     StateMachine.getInstance().update();
+    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
 
 //    Odometry.getInstance().update();
 //
