@@ -79,11 +79,12 @@ public class ArmKinematics {
         setArmKinematics(0.75 * Math.pow(joystickX,4), Math.pow(joystickY, 4)*0.75);
     }
 
-    public Pose getCameraPose() {
-        return getCameraPose(PivotSubsystem.getInstance().getPositionRadians());
+    public static Pose getCameraPose() {
+//        return getCameraPose(PivotSubsystem.getInstance().getPositionRadians());
+        return getCameraPose(Math.PI/2);
     }
 
-    public Pose getCameraPose(double phi) {
+    public static Pose getCameraPose(double phi) {
         return new Pose(
                 new Point(
                         7.5625 * Math.sin(phi) / 39.37,
@@ -91,11 +92,15 @@ public class ArmKinematics {
                 new Angle(-phi));
     }
 
-    public Vector getVectorToGamePiece(double dist, double theta, double phi) {
-        return Vector.add(new Vector(dist * Math.sin(phi) * Math.cos(theta), dist * Math.sin(phi) * Math.sin(theta)), new Vector(getCameraPose().getPosition()));
+    public static double[] getVectorToGamePiece(double dist, double theta, double phi) {
+//        return Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, getCameraPose().getPosition().getX()));
+        Vector vector = Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, 0));
+        return new double[] {dist * Math.sin(phi) * Math.sin(theta) + 0,
+                dist * Math.sin(phi) * Math.cos(theta) + 0
+                , dist * Math.cos(phi) + 0};
     }
 
-    public Vector getVectorToGamePiece(boolean isCube, int index) throws JSONException {
+    public static double[] getVectorToGamePiece(boolean isCube, int index) throws JSONException {
         JSONObject object = LoggerInterface.getInstance().getGamePiece()
                 .getJSONArray(isCube ? "cubes" : "cones").getJSONObject(index);
         return getVectorToGamePiece(
