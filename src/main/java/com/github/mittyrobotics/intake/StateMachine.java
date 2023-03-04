@@ -91,16 +91,15 @@ public class StateMachine {
     }
 
     public void update() {
-        if (isIntaking) {
-            if (IntakeSubsystem.getInstance().proxSensorTrigger()) {
-                time = System.currentTimeMillis();
-                isIntaking = false;
-            }
-        }
+
     }
 
     public void setIntaking(boolean isIntaking) {
         this.isIntaking = isIntaking;
+    }
+
+    public boolean getIntaking() {
+        return isIntaking;
     }
 
     public boolean shouldBeIntaking() {

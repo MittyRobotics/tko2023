@@ -160,7 +160,7 @@ public class OI {
                 (OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
                 (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH)
         );
-        readyToScore.whileTrue(new InstantCommand(this::handleConeScore));
+        readyToScore.onTrue(new InstantCommand(this::handleConeScore));
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
