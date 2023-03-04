@@ -17,7 +17,43 @@ public class Odometry {
         return instance;
     }
 
-    public SimpleMatrix state = new SimpleMatrix(3, 1);
+    double offset = 20.873;
+    Pose[][] scoringZones = {
+            {
+                new Pose(new Point(610.77, 42.19 + offset), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 42.19), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 42.19 - 20.873), new Angle(Math.PI)),
+            },
+            {
+                new Pose(new Point(610.77, 108.19 + offset), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 108.19), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 108.19 - offset), new Angle(Math.PI)),
+            },
+            {
+                new Pose(new Point(610.77, 147.19 + offset), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 147.19), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 147.19 - offset), new Angle(Math.PI)),
+            },
+            {
+                new Pose(new Point(40.45, 147.19 + offset), new Angle(0)),
+                new Pose(new Point(40.45, 147.19), new Angle(0)),
+                new Pose(new Point(40.45, 147.19 - offset), new Angle(0)),
+            },
+            {
+                new Pose(new Point(40.45, 108.19 + offset), new Angle(0)),
+                new Pose(new Point(40.45, 108.19), new Angle(0)),
+                new Pose(new Point(40.45, 108.19 - offset), new Angle(0)),
+            },
+            {
+                new Pose(new Point(40.45, 42.19 + offset), new Angle(0)),
+                new Pose(new Point(40.45, 42.19), new Angle(0)),
+                new Pose(new Point(40.45, 42.19 - offset), new Angle(0)),
+            },
+    };
+    Pose rightHP = new Pose(new Point(636.96, 265.74), new Angle(Math.PI));
+    Pose leftHP = new Pose(new Point(14.25, 265.74), new Angle(0));
+
+    SimpleMatrix state = new SimpleMatrix(3, 1);
     SimpleMatrix covariance = new SimpleMatrix(3, 3);
 
     //INPUT DIMS
@@ -104,5 +140,21 @@ public class Odometry {
             stateUpdate(z[i]);
             covarianceUpdate();
         }
+    }
+
+    public Pose getState() {
+        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
+    }
+
+    public Pose[] getClosestScoringZone() {
+        int minIndex = 0;
+        double min = Integer.MAX_VALUE;
+        for (int i = 0; i < 7; i++) {
+            if (min > new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude()) {
+                min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
+                minIndex = i;
+            }
+        }
+        return scoringZones[minIndex];
     }
 }

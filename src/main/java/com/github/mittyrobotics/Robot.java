@@ -1,24 +1,6 @@
 package com.github.mittyrobotics;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommandv1;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommandv2;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
-import com.github.mittyrobotics.intake.IntakeSubsystem;
-import com.github.mittyrobotics.intake.StateMachine;
-import com.github.mittyrobotics.led.LedSubsystem;
-import com.github.mittyrobotics.pivot.PivotSubsystem;
-import com.github.mittyrobotics.telescope.TelescopeSubsystem;
-import com.github.mittyrobotics.util.Gyro;
-import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
