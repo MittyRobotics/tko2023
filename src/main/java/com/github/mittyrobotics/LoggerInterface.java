@@ -113,6 +113,10 @@ public class LoggerInterface {
         }
     }
 
+    public DoubleArraySubscriber getPoseSub() {
+        return poseSub;
+    }
+
     public void print() {
 
         System.out.println(table.getValue("gamepieces").getValue());

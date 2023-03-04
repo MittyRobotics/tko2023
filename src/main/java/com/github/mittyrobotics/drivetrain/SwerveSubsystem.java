@@ -24,7 +24,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     private static SwerveSubsystem instance;
 
     private InverseKinematics inverseKinematics;
-    private ForwardKinematics forwardKinematics;
+    public ForwardKinematics forwardKinematics;
     private DiffDriveKinematics diffDriveKinematics;
 
     private TalonFX[] driveFalcon = new TalonFX[4];
@@ -317,7 +317,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public void setPose(Point p) {
-        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() / 1000L, p));
+        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() * 1000000, p));
     }
 
     public void resetPose() {
@@ -421,6 +421,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     public static class ForwardKinematics {
         private final Vector r;
         private ArrayList<Pair> pose = new ArrayList<>();
+        private ArrayList<Pair> angles = new ArrayList<>();
 
         private Vector vel = new Vector(0, 0);
         private Angle directionOfTravel = new Angle(0);
@@ -432,12 +433,17 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
         public void updateForwardKinematics(Vector[] modules) {
 
+            long nanoTime = System.currentTimeMillis() * 1000000;
+
             Point new_ = new Point(0, 0);
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
 
-            pose.add(new Pair(System.currentTimeMillis() / 1000L, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
+            pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
             directionOfTravel = new Angle(new Vector(new_).getAngle().getRadians() - Math.PI/2);
+            angles.add(new Pair(nanoTime, new Point(Math.cos(directionOfTravel.getRadians()),
+                    Math.sin(directionOfTravel.getRadians()))));
+
         }
 
         public Vector extrapolatePose(double time) {
@@ -471,14 +477,49 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
 
         public Point getPoseAtTime(double time) {
+            long tl, tr;
+            Point pl, pr;
+
             int left_index = search(pose, time, false);
             int right_index = search(pose, time, true);
-            long tl = pose.get(left_index).getKey();
-            long tr = pose.get(right_index).getKey();
-            Point pl = pose.get(left_index).getValue();
-            Point pr = pose.get(right_index).getValue();
+
+            if(left_index == -1) return pose.get(right_index).getValue();
+            if(right_index == -1) return pose.get(left_index).getValue();
+
+            tl = pose.get(left_index).getKey();
+            tr = pose.get(right_index).getKey();
+            pl = pose.get(left_index).getValue();
+            pr = pose.get(right_index).getValue();
 
             return Point.add(pl, new Point(Vector.multiply((time - tl) / (tr - tl), new Vector(pl, pr))));
+//            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
+//                    Point.add(pr, Point.multiply(-1, pl))));
+        }
+
+        public Angle getAngleAtTime(double time) {
+            long tl, tr;
+            Point pl, pr;
+
+            int left_index = search(angles, time, false);
+            int right_index = search(angles, time, true);
+
+            if(left_index == -1) return new Angle(Math.atan2(angles.get(right_index).getValue().getY(),
+                    angles.get(right_index).getValue().getX()));
+            if(right_index == -1) return new Angle(Math.atan2(angles.get(left_index).getValue().getY(),
+                    angles.get(left_index).getValue().getX()));
+
+            tl = angles.get(left_index).getKey();
+            tr = angles.get(right_index).getKey();
+            pl = angles.get(left_index).getValue();
+            pr = angles.get(right_index).getValue();
+
+            double a1 = Math.atan2(angles.get(left_index).getValue().getY(),
+                    angles.get(left_index).getValue().getX());
+
+            double a2 = Math.atan2(angles.get(right_index).getValue().getY(),
+                    angles.get(right_index).getValue().getX());
+
+            return new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1));
 //            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
 //                    Point.add(pr, Point.multiply(-1, pl))));
         }

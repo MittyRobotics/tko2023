@@ -39,7 +39,6 @@ public class Robot extends TimedRobot {
     } catch (JSONException e) {
       throw new RuntimeException(e);
     }
-    SwerveSubsystem.getInstance().resetPose();
   }
 
   @Override
@@ -57,6 +56,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+
+    SwerveSubsystem.getInstance().resetPose();
+
+    Odometry.getInstance().setState(0, 0, Math.PI);
+
 //
 //    SwervePath[] paths = {
 //            new SwervePath(
@@ -91,6 +95,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
+    Odometry.getInstance().update();
 //    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
   }
