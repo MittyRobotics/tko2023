@@ -7,6 +7,7 @@ import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -133,7 +134,12 @@ public class JoystickThrottleCommand extends CommandBase {
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 
-        if(!disabled) {
+        //wheel angles positive clockwise
+        double[] FortyFive = new double[]{-Math.PI/4, Math.PI/4, -Math.PI/4, Math.PI/4};
+
+        if(disabled && DriverStation.getMatchTime() < 15.) {
+            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
+        } else if(!disabled) {
             SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         }
 
