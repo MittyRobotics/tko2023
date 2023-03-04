@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+//    CommandScheduler.getInstance().run();
     StateMachine.getInstance().update();
-    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
+//    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
 
 //    Odometry.getInstance().update();
 //
@@ -113,12 +113,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
-    try {
-      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
-    } catch (JSONException e) {
+//    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
+//    try {
+//      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
+//    } catch (JSONException e) {
 
-    }
+//    }
+    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
+    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
 //    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
 
 //    ClawGrabberSubsystem.getInstance().setMotor(0.1);
