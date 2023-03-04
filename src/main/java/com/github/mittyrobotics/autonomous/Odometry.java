@@ -142,14 +142,18 @@ public class Odometry {
         }
     }
 
+//    public Pose getState() {
+//        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
+//    }
+
     public Pose getState() {
-        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
+        return SwerveSubsystem.getInstance().getPose();
     }
 
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;
         double min = Integer.MAX_VALUE;
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 6; i++) {
             if (min > new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude()) {
                 min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
                 minIndex = i;

@@ -128,7 +128,8 @@ public class JoystickThrottleCommand extends CommandBase {
             angularVel = controller.calculate(currentAngle);
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
+//        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
 
 //        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0.2, 0.5), 0);
 
