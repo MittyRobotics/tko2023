@@ -1,7 +1,21 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.led.LedSubsystem;
+import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
+import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.json.JSONException;
+
+import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -12,21 +26,29 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
-//    LedSubsystem.getInstance().initHardware();
-//    SwerveSubsystem.getInstance().initHardware();
-//    TelescopeSubsystem.getInstance().initHardware();
-//    PivotSubsystem.getInstance().initHardware();
-//    IntakeSubsystem.getInstance().initHardware();
-//    Gyro.getInstance().initHardware();
-//    PivotSubsystem.getInstance().setBrakeMode();
-//    TelescopeSubsystem.getInstance().setBrakeMode();
-//    OI.getInstance().setupControls();
-//    SwerveSubsystem.getInstance().resetPose();
+    LedSubsystem.getInstance().initHardware();
+    SwerveSubsystem.getInstance().initHardware();
+    TelescopeSubsystem.getInstance().initHardware();
+    PivotSubsystem.getInstance().initHardware();
+    IntakeSubsystem.getInstance().initHardware();
+    Gyro.getInstance().initHardware();
+    PivotSubsystem.getInstance().setBrakeMode();
+    TelescopeSubsystem.getInstance().setBrakeMode();
+    try {
+      OI.getInstance().setupControls();
+    } catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+    SwerveSubsystem.getInstance().resetPose();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    StateMachine.getInstance().update();
+    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
+
+//    Odometry.getInstance().update();
 //
 //    SwerveSubsystem.getInstance().updateForwardKinematics();
 //
@@ -91,6 +113,12 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
+    try {
+      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
+    } catch (JSONException e) {
+
+    }
 //    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
 
 //    ClawGrabberSubsystem.getInstance().setMotor(0.1);

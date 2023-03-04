@@ -488,6 +488,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
 
         public Point getLatestPose() {
+            if (pose.size() == 0) return new Point(0, 0);
             return pose.get(pose.size() - 1).getValue();
         }
 

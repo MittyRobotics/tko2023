@@ -94,26 +94,26 @@ public class OI {
     }
 
     public void handleGround() {
-        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
-        ArmKinematics.setArmKinematics(new Angle(2.1847833197051916), 0.20456099255847424);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
+        ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
         StateMachine.getInstance().setStateGround();
         StateMachine.getInstance().setIntaking(true);
     }
 
     public void handleMid() {
-        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(1.173560373540987), 0.545497612205895 - 2 / 39.37);
         StateMachine.getInstance().setStateMid();
     }
 
     public void handleHigh() {
-        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(1.0933341743024654 - 0.04 - 0.035), 0.9712510524378655 - 2 / 39.27);
         StateMachine.getInstance().setStateHigh();
     }
 
     public void handleHumanPlayer() {
-        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(1.113857105102662 - 2 * Math.PI/180), 0.4490367646201602);
         StateMachine.getInstance().setStateHP();
         StateMachine.getInstance().setIntaking(true);
@@ -164,13 +164,13 @@ public class OI {
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
-
-        Trigger autoStow = new Trigger(() -> (
-                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND ||
-                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP) &&
-                IntakeSubsystem.getInstance().proxSensorTrigger()
-        );
-        autoStow.whileTrue(new InstantCommand(this::zeroAll));
+//
+//        Trigger autoStow = new Trigger(() -> (
+//                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND ||
+//                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP) &&
+//                IntakeSubsystem.getInstance().proxSensorTrigger()
+//        );
+//        autoStow.whileTrue(new InstantCommand(this::zeroAll));
 
         Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);

@@ -128,7 +128,8 @@ public class JoystickThrottleCommand extends CommandBase {
             angularVel = controller.calculate(currentAngle);
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
+//        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
 
 //        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0.2, 0.5), 0);
 
@@ -137,9 +138,12 @@ public class JoystickThrottleCommand extends CommandBase {
         //wheel angles positive clockwise
         double[] FortyFive = new double[]{-Math.PI/4, Math.PI/4, -Math.PI/4, Math.PI/4};
 
-        if(disabled && DriverStation.getMatchTime() < 15.) {
-            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
-        } else if(!disabled) {
+//        if(disabled && DriverStation.getMatchTime() < 15.) {
+//            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
+//        } else if(!disabled) {
+//            SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+//        }
+        if(!disabled) {
             SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         }
 

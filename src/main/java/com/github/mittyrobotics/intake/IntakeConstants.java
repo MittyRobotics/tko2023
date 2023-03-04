@@ -11,6 +11,6 @@ public class IntakeConstants {
     public static final double I = 0;
     public static final double D = 0;
 
-    public static final double INTAKE_SPEED = 0.1;
-    public static final double OUTTAKE_SPEED = -0.1;
+    public static final double INTAKE_SPEED = -0.7;
+    public static final double OUTTAKE_SPEED = 0.25;
 }
