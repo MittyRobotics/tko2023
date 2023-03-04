@@ -11,7 +11,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     private static LedSubsystem instance;
 
     private AddressableLED ledStrip;
-    private AddressableLEDBuffer buffer;
+    private AddressableLEDBuffer buffer, buffer2;
 
     private LedSubsystem() {
         super();
@@ -42,6 +42,8 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
         ledStrip.setLength(buffer.getLength());
         ledStrip.setData(buffer);
         ledStrip.start();
+
+        buffer2 = new AddressableLEDBuffer(LedConstants.STRIP_ONE_LENGTH);
 
 //        ledStripTwo.setLength(bufferTwo.getLength());
 //        ledStripTwo.setData(bufferTwo);
@@ -115,10 +117,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public void turnOff() {
-        //try a few things:
-//        ledStrip.setData(null);
-//        buffer.setHSV(index, 0, 0, 0); ledstrip.setdata(buffer);
-//        create new blank buffer and set ledstrip to it
+        ledStrip.setData(buffer2);
     }
 
     public void disable() {

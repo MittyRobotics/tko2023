@@ -1,32 +1,37 @@
-package com.github.mittyrobotics.led.commands;
+package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedConstants;
 import com.github.mittyrobotics.led.LedSubsystem;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.*;
 
-public class DefaultCommand extends CommandBase {
+public class RobotMatchTime extends TimedRobot {
+    AddressableLED ledStrip;
+    AddressableLEDBuffer buffer, buffer2;
+
+    XboxController controller;
+
+    int state = 0;
 
     int[] purpleHsv, yellowHsv, blueHsv, redHsv;
 
-    StateMachine.PieceState state;
-
     double time, prevTime, countTime;
 
-    public DefaultCommand() {
-        super();
-        addRequirements(LedSubsystem.getInstance());
-        setName("Default led");
-    }
+
 
     @Override
-    public void initialize() {
+    public void robotInit() {
+        controller = new XboxController(0);
+        ledStrip = new AddressableLED(9);
+        buffer = new AddressableLEDBuffer(60);
+        ledStrip.setLength(buffer.getLength());
+        ledStrip.setData(buffer);
+        ledStrip.start();
+        buffer2 = new AddressableLEDBuffer(60);
+
+
         prevTime = Timer.getFPGATimestamp();
         countTime = Timer.getFPGATimestamp();
-
-        LedSubsystem.getInstance().startOutput();
 
         yellowHsv = new int[3];
         purpleHsv = new int[3];
@@ -44,114 +49,151 @@ public class DefaultCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        state = StateMachine.getInstance().getLastPieceState();
+    public void disabledInit() {
+        super.disabledInit();
+    }
+
+    @Override
+    public void autonomousInit() {
+        super.autonomousInit();
+    }
+
+    @Override
+    public void teleopInit() {
+        super.teleopInit();
+    }
+
+    @Override
+    public void robotPeriodic() {
+
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        ledStrip.setData(buffer2);
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        super.autonomousPeriodic();
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        if (controller.getRightTriggerAxis() > 0.5) {
+            state = 1;
+        } else if (controller.getLeftTriggerAxis() > 0.5) {
+            state = 2;
+        } else if (controller.getAButton()) {
+            state = 0;
+        }
+
 
         time = Timer.getFPGATimestamp();
 
-        if (state == StateMachine.PieceState.CONE) {
+        if (state == 1) {
             if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
             {
-                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                         yellowHsv[0], yellowHsv[1], yellowHsv[2]);
 
                 prevTime = Timer.getFPGATimestamp();
             }
             else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
             {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
+                if (time - prevTime < 0.3)
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             yellowHsv[0], yellowHsv[1], yellowHsv[2]);
                     countTime = Timer.getFPGATimestamp();
                 }
                 else
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             blueHsv[0], blueHsv[1], blueHsv[2]);
                 }
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
+                if (time - countTime > 0.3) {
                     prevTime = Timer.getFPGATimestamp();
                 }
             }
             else if(DriverStation.getMatchTime() < 15.) {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
+                if (time - prevTime < 0.3)
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             yellowHsv[0], yellowHsv[1], yellowHsv[2]);
                     countTime = Timer.getFPGATimestamp();
                 }
                 else
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             redHsv[0], redHsv[1], redHsv[2]);
                 }
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
+                if (time - countTime > 0.3) {
                     prevTime = Timer.getFPGATimestamp();
                 }
             }
         }
 
-        else if (state == StateMachine.PieceState.CUBE) {
+        else if (state == 2) {
             if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
             {
-                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                         purpleHsv[0], purpleHsv[1], purpleHsv[2]);
 
                 prevTime = Timer.getFPGATimestamp();
             }
             else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
             {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
+                if (time - prevTime < 0.3)
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             purpleHsv[0], purpleHsv[1], purpleHsv[2]);
                     countTime = Timer.getFPGATimestamp();
                 }
                 else
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             blueHsv[0], blueHsv[1], blueHsv[2]);
                 }
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
+                if (time - countTime > 0.3) {
                     prevTime = Timer.getFPGATimestamp();
                 }
             }
             else if(DriverStation.getMatchTime() < 15.) {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
+                if (time - prevTime < 0.3)
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             purpleHsv[0], purpleHsv[1], purpleHsv[2]);
                     countTime = Timer.getFPGATimestamp();
                 }
                 else
                 {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                             redHsv[0], redHsv[1], redHsv[2]);
                 }
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
+                if (time - countTime > 0.3) {
                     prevTime = Timer.getFPGATimestamp();
                 }
             }
         }
 
-        else if (state == StateMachine.PieceState.NONE)
+        else if (state == 0)
         {
-
+            ledStrip.setData(buffer2);
         }
+
+
+
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        LedSubsystem.getInstance().stopOutput();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
+    public void setRgbRange(int startIndex, int endIndex, int r, int g, int b) {
+        for (int i = startIndex; i < endIndex; i++) {
+            buffer.setRGB(i, r, g, b);
+        }
+        ledStrip.setData(buffer);
     }
 }
