@@ -32,6 +32,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
+import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -124,6 +125,16 @@ public class OI {
         double curRad = ArmKinematics.getTelescopeDesired();
         double curAngle = ArmKinematics.getPivotDesired().getRadians();
         ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);
+
+        IntakeSubsystem.getInstance().setDefaultState(false);
+        IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+
+        triggerFunctionAfterTime(() -> {
+            zeroAll();
+            triggerFunctionAfterTime(() -> {
+                IntakeSubsystem.getInstance().setDefaultState(true);
+            }, 500);
+        }, 300);
     }
 
     public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {

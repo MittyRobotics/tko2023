@@ -33,7 +33,7 @@ public class IntakeCommand extends CommandBase {
 //            IntakeSubsystem.getInstance().setMotor(0);
 
         else
-            IntakeSubsystem.getInstance().setMotor(-0.1);
+            IntakeSubsystem.getInstance().defaultState();
 //            System.out.println("the fuck u manage to do dumb shit");
     }
 

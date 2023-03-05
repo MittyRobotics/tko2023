@@ -31,7 +31,7 @@ public class Odometry {
             {
                 new Pose(new Point(610.77, 42.19 + offset), new Angle(Math.PI)),
                 new Pose(new Point(610.77, 42.19), new Angle(Math.PI)),
-                new Pose(new Point(610.77, 42.19 - 20.873), new Angle(Math.PI)),
+                new Pose(new Point(610.77, 42.19 - offset), new Angle(Math.PI)),
             },
             {
                 new Pose(new Point(610.77, 108.19 + offset), new Angle(Math.PI)),
@@ -214,7 +214,7 @@ public class Odometry {
         int minIndex = 0;
         double min = Integer.MAX_VALUE;
         for (int i = 0; i < 6; i++) {
-            if (min > new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude()) {
+            if (new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude() < min) {
                 min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
                 minIndex = i;
             }

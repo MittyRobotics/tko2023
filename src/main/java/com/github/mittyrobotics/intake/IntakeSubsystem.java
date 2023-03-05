@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
     private static IntakeSubsystem instance;
+    private boolean defaultState = true;
 
     public static IntakeSubsystem getInstance() {
         if (instance == null) {
@@ -33,6 +34,14 @@ public class IntakeSubsystem extends SubsystemBase {
         proximitySensor = new DigitalInput(IntakeConstants.PROX_SENSOR_ID);
 
         setDefaultCommand(new IntakeCommand());
+    }
+
+    public void defaultState() {
+        if (defaultState) spark.set(-0.1);
+    }
+
+    public void setDefaultState(boolean dfs) {
+        defaultState = dfs;
     }
 
     public void setMotor(double val) {
