@@ -11,6 +11,8 @@ import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import org.ejml.simple.SimpleMatrix;
 
+import java.util.Arrays;
+
 public class Odometry {
     private static Odometry instance;
     private double last_time;
@@ -105,6 +107,8 @@ public class Odometry {
             covarianceUpdate();
 
             last_time = time;
+
+            state.transpose().print();
 
         }
     }
