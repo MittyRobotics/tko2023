@@ -50,98 +50,46 @@ public class DefaultCommand extends CommandBase {
         time = Timer.getFPGATimestamp();
 
         if (state == StateMachine.PieceState.CONE) {
-            if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
-            {
-                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                        yellowHsv[0], yellowHsv[1], yellowHsv[2]);
-
-                prevTime = Timer.getFPGATimestamp();
-            }
-            else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
-            {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            yellowHsv[0], yellowHsv[1], yellowHsv[2]);
-                    countTime = Timer.getFPGATimestamp();
-                }
-                else
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            blueHsv[0], blueHsv[1], blueHsv[2]);
-                }
-
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
-                    prevTime = Timer.getFPGATimestamp();
-                }
-            }
-            else if(DriverStation.getMatchTime() < 15.) {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            yellowHsv[0], yellowHsv[1], yellowHsv[2]);
-                    countTime = Timer.getFPGATimestamp();
-                }
-                else
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            redHsv[0], redHsv[1], redHsv[2]);
-                }
-
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
-                    prevTime = Timer.getFPGATimestamp();
-                }
-            }
+            runLed(yellowHsv);
         }
 
         else if (state == StateMachine.PieceState.CUBE) {
-            if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
-            {
-                LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                        purpleHsv[0], purpleHsv[1], purpleHsv[2]);
+            runLed(purpleHsv);
+        }
+    }
 
-                prevTime = Timer.getFPGATimestamp();
-            }
-            else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
-            {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            purpleHsv[0], purpleHsv[1], purpleHsv[2]);
-                    countTime = Timer.getFPGATimestamp();
-                }
-                else
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            blueHsv[0], blueHsv[1], blueHsv[2]);
-                }
+    private void runLed(int[] hsv) {
+        if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
+        {
+            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    hsv[0], hsv[1], hsv[2]);
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
-                    prevTime = Timer.getFPGATimestamp();
-                }
-            }
-            else if(DriverStation.getMatchTime() < 15.) {
-                if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            purpleHsv[0], purpleHsv[1], purpleHsv[2]);
-                    countTime = Timer.getFPGATimestamp();
-                }
-                else
-                {
-                    LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                            redHsv[0], redHsv[1], redHsv[2]);
-                }
+            prevTime = Timer.getFPGATimestamp();
+        }
+        else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
+        {
+            ledSwitch(hsv, blueHsv);
+        }
+        else if(DriverStation.getMatchTime() < 15.) {
+            ledSwitch(hsv, redHsv);
+        }
+    }
 
-                if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
-                    prevTime = Timer.getFPGATimestamp();
-                }
-            }
+    private void ledSwitch(int[] hsv, int[] altHsv) {
+        if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
+        {
+            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    hsv[0], hsv[1], hsv[2]);
+            countTime = Timer.getFPGATimestamp();
+        }
+        else
+        {
+            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
+                    altHsv[0], altHsv[1], altHsv[2]);
         }
 
-        else if (state == StateMachine.PieceState.NONE)
-        {
-
+        if (time - countTime > LedConstants.TIME_BETWEEN_SWITCH) {
+            prevTime = Timer.getFPGATimestamp();
         }
     }
 
