@@ -174,8 +174,8 @@ public class OI {
 
         Trigger readyToScore = new Trigger(() ->
                 (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) &&
-                (OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
-                (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH)
+                        ((OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
+                (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH))
         );
         readyToScore.onTrue(new InstantCommand(this::handleConeScore));
 

@@ -17,7 +17,7 @@ public class SwerveConstants {
 
     public static final double MAX_LINEAR_VEL = 1.5;
 
-    public static final double MAX_ANGULAR_VEL = 2.5; // was 3.5
+    public static final double MAX_ANGULAR_VEL = 3; // was 3.5
 
     public static final double BUMPER_ANGULAR_VEL = 2;
 

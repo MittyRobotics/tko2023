@@ -523,6 +523,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
             double a2 = Math.atan2(pr.getY(), pr.getX());
 
+            if (tl == tr) return new Angle(a1);
+
             return new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1));
 //            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
 //                    Point.add(pr, Point.multiply(-1, pl))));

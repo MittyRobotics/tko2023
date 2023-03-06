@@ -41,7 +41,7 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setP(TelescopeConstants.DEFAULT_P);
         telescopeNeo.getPIDController().setI(TelescopeConstants.DEFAULT_I);
         telescopeNeo.getPIDController().setD(TelescopeConstants.DEFAULT_D);
-        telescopeNeo.getPIDController().setFF(0.1/450);
+        telescopeNeo.getPIDController().setFF(0.1/450 * 0.8);
         telescopeNeo.getPIDController().setOutputRange(-0.5, 0.5);
         telescopeNeo.getEncoder().setPosition(0);
         telescopeNeo.getPIDController().setFeedbackDevice(telescopeNeo.getEncoder());

@@ -22,7 +22,7 @@ public class ExtensionToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-        tpTelescope = new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2);
+        tpTelescope = new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2);
         velTelescope = 0;
         lastTime = Timer.getFPGATimestamp();
 

@@ -22,7 +22,7 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-        tpPivot = new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 180 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
+        tpPivot = new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
         velPivot = 0;
         lastTime = Timer.getFPGATimestamp();
     }

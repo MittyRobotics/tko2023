@@ -62,7 +62,7 @@ public class JoystickThrottleCommand extends CommandBase {
 
         notMoving = false;
 
-        if(rightTrigger < 0.001 && leftX < 0.001 && leftY < 0.001 && !OI.getInstance().getPS4Controller().getCircleButton()) {
+        if(rightTrigger < SwerveConstants.JOYSTICK_DEADZONE && leftX < SwerveConstants.JOYSTICK_DEADZONE && leftY < SwerveConstants.JOYSTICK_DEADZONE && !OI.getInstance().getPS4Controller().getCircleButton()) {
             notMoving = true;
         }
 
@@ -79,8 +79,16 @@ public class JoystickThrottleCommand extends CommandBase {
 
         heading = Gyro.getInstance().getHeadingRadians();
 
+        double input = Math.sqrt(leftY * leftY + leftX * leftX);
+        double throttle;
+
+        double speed75 = 0.35;
+        if (input < 0.75) throttle = (input / 0.75) * SwerveConstants.MAX_LINEAR_VEL * speed75;
+        else throttle = SwerveConstants.MAX_LINEAR_VEL * speed75 +
+                (Math.pow(input - 0.75, 1.5) / Math.pow(0.25, 1.5)) * SwerveConstants.MAX_ANGULAR_VEL * (1 - speed75);
+
         double angle = Math.atan2(leftY, leftX) + heading;
-        double throttle = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+//        double throttle = Math.pow(Math.sqrt(leftY * leftY + leftX * leftX), 2) * SwerveConstants.MAX_LINEAR_VEL;
         if (OI.getInstance().getPS4Controller().getCircleButton())
             throttle /= 5;
         if(disabled) throttle = 0;
@@ -104,8 +112,8 @@ public class JoystickThrottleCommand extends CommandBase {
         }
 
         if(rightX < 0) {
-            angularVel = -(Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL);
-        } else angularVel = Math.pow(rightX, 4) * SwerveConstants.MAX_ANGULAR_VEL;
+            angularVel = -(Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL);
+        } else angularVel = Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL;
         angularVel = -angularVel;
         SmartDashboard.putNumber("rightx", rightX);
         SmartDashboard.putNumber("angular vel", angularVel);
@@ -139,7 +147,7 @@ public class JoystickThrottleCommand extends CommandBase {
         double[] FortyFive = new double[]{-Math.PI/4, Math.PI/4, -Math.PI/4, Math.PI/4};
 
         if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
-            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
+//            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
         } else if(!disabled) {
             SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         }
