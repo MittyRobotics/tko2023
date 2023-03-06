@@ -103,25 +103,31 @@ public class OI {
 
     public void handleMid() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
-        ArmKinematics.setArmKinematics(new Angle(1.173560373540987), 0.545497612205895 - 2 / 39.37);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
+            ArmKinematics.setArmKinematics(new Angle(1.16), 0.527);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
+            ArmKinematics.setArmKinematics(new Angle(1.304), 0);
         StateMachine.getInstance().setStateMid();
     }
 
     public void handleHigh() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
-        ArmKinematics.setArmKinematics(new Angle(1.0933341743024654 - 0.04 - 0.035), 0.9712510524378655 - 2 / 39.27);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
+            ArmKinematics.setArmKinematics(new Angle(1.12), 0.9513);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
+            ArmKinematics.setArmKinematics(new Angle(1.263 - 0.2), 0.494);
         StateMachine.getInstance().setStateHigh();
     }
 
     public void handleHumanPlayer() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
-        ArmKinematics.setArmKinematics(new Angle(1.113857105102662 - 2 * Math.PI/180), 0.4490367646201602);
+        ArmKinematics.setArmKinematics(new Angle(1.071 - 0.05), 0.479);
         StateMachine.getInstance().setStateHP();
         StateMachine.getInstance().setIntaking(true);
     }
 
     public void handleConeScore() {
-        if (StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE) return;
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         double curRad = ArmKinematics.getTelescopeDesired();
         double curAngle = ArmKinematics.getPivotDesired().getRadians();
         ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);

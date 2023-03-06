@@ -54,6 +54,9 @@ public class LoggerInterface {
         return poseSub;
     }
 
+    public void putDesiredCamera(int i) {
+        table.putValue("dcam", NetworkTableValue.makeInteger(i));
+    }
     public void print() {
 
         System.out.println(table.getValue("gamepieces").getValue());

@@ -28,10 +28,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     LedSubsystem.getInstance().initHardware();
     SwerveSubsystem.getInstance().initHardware();
+    Gyro.getInstance().initHardware();
+
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
     IntakeSubsystem.getInstance().initHardware();
-    Gyro.getInstance().initHardware();
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
     try {
@@ -43,8 +44,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-//    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
     StateMachine.getInstance().update();
+
+
 //    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
 
 //    Odometry.getInstance().update();
@@ -58,8 +61,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
 
     SwerveSubsystem.getInstance().resetPose();
-
-    Odometry.getInstance().setState(0, 0, Math.PI);
+//
+//    Odometry.getInstance().setState(162, 75, Math.PI);
 
 //
 //    SwervePath[] paths = {
@@ -96,7 +99,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    Odometry.getInstance().update();
+//    Odometry.getInstance().update();
 //    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
   }

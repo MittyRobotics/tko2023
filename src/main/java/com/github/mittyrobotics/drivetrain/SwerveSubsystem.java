@@ -439,8 +439,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
 
+            new_ = new Point(-new_.getY(), new_.getX());
+
             pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
-            directionOfTravel = new Angle(new Vector(new_).getAngle().getRadians() - Math.PI/2);
+            directionOfTravel = new Angle(Gyro.getInstance().getHeadingAngle());
+//            System.out.println("GYRO: " + directionOfTravel.getRadians());
+
             angles.add(new Pair(nanoTime, new Point(Math.cos(directionOfTravel.getRadians()),
                     Math.sin(directionOfTravel.getRadians()))));
 
@@ -491,7 +495,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             pl = pose.get(left_index).getValue();
             pr = pose.get(right_index).getValue();
 
-            return Point.add(pl, new Point(Vector.multiply((time - tl) / (tr - tl), new Vector(pl, pr))));
+            if (tr == tl) return pl;
+
+            return Point.add(pl, Point.multiply((time - tl) / (tr - tl), Point.add(pr, Point.multiply(-1, pl))));
 //            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
 //                    Point.add(pr, Point.multiply(-1, pl))));
         }
@@ -513,11 +519,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             pl = angles.get(left_index).getValue();
             pr = angles.get(right_index).getValue();
 
-            double a1 = Math.atan2(angles.get(left_index).getValue().getY(),
-                    angles.get(left_index).getValue().getX());
+            double a1 = Math.atan2(pl.getY(), pl.getX());
 
-            double a2 = Math.atan2(angles.get(right_index).getValue().getY(),
-                    angles.get(right_index).getValue().getX());
+            double a2 = Math.atan2(pr.getY(), pr.getX());
 
             return new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1));
 //            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),

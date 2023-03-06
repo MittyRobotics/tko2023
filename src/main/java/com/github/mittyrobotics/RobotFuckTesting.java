@@ -47,7 +47,7 @@ public class RobotFuckTesting extends TimedRobot {
 
     SwerveSubsystem.getInstance().resetPose();
 
-    Odometry.getInstance().setState(0, 0, Math.PI);
+    Odometry.getInstance().setState(134, 38, Math.PI);
 
   }
 
@@ -59,6 +59,9 @@ public class RobotFuckTesting extends TimedRobot {
 //    System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestPose());
 
     Odometry.getInstance().update();
+
+    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+
 //    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
   }
