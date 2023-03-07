@@ -145,11 +145,11 @@ public class OI {
         }
     }
 
-    public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {
-        return (leftBumper && getOperatorController().getLeftBumper()) &&
-                (rightBumper && getOperatorController().getRightBumper()) &&
-                (leftTrigger && getOperatorController().getLeftTriggerAxis() > 0.5) &&
-                (rightTrigger && getOperatorController().getRightTriggerAxis() > 0.5);
+    public boolean driverControls(boolean xButton, boolean bButton, boolean leftTrigger, boolean rightTrigger) {
+        return (xButton == getOperatorController().getXButton()) &&
+                (bButton == getOperatorController().getBButton()) &&
+                (leftTrigger == getOperatorController().getLeftTriggerAxis() > 0.5) &&
+                (rightTrigger == getOperatorController().getRightTriggerAxis() > 0.5);
     }
 
     public void setupControls() {
@@ -183,11 +183,11 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 
-        Trigger autoIntakeGround = new Trigger(() -> getDriveController().getXButton()
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
         autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 
-        Trigger autoIntakeHP = new Trigger(() -> getDriveController().getBButton()
+        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
         autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 

@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -42,7 +43,7 @@ public class SwervePurePursuitCommand extends CommandBase {
     @Override
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
-        robot = SwerveSubsystem.getInstance().getPose();
+        robot = Odometry.getInstance().getState();
 
         if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
             currentPathNumber++;
@@ -68,7 +69,7 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
 
-        Vector linearVel = new Vector(vectorToLookahead.getY(), vectorToLookahead.getX());
+        Vector linearVel = new Vector(vectorToLookahead.getX(), vectorToLookahead.getY());
 
         SmartDashboard.putNumber("current path", currentPathNumber);
         SmartDashboard.putNumber("closest", closest);
@@ -83,7 +84,7 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         if(Math.abs(angularVel) < currentPath.getMinAngular()) {
             angularVel = (angularVel > 0) ? currentPath.getMinAngular() : -currentPath.getMinAngular();
-            angularVel = ((desiredAngle - currentAngle) > angularThreshold/closest) ? angularVel : 0;
+            angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
         //Can probably be removed
