@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -42,7 +43,7 @@ public class SwerveAutoDriveToTargetCommand extends CommandBase {
     @Override
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
-        robot = SwerveSubsystem.getInstance().getPose();
+        robot = Odometry.getInstance().getState();
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
@@ -66,12 +67,12 @@ public class SwerveAutoDriveToTargetCommand extends CommandBase {
 
         Vector vectorToEnd = new Vector(robot.getPosition(), path.getByT(1.0).getPosition());
 
-        Vector linearVel = new Vector(vectorToEnd.getY(), vectorToEnd.getX());
+        Vector linearVel = new Vector(vectorToEnd.getX(), vectorToEnd.getY());
 
         SmartDashboard.putNumber("closest", closest);
 
         double heading = Gyro.getInstance().getHeadingRadians();
-        double angle = Math.atan2(linearVel.getY(), linearVel.getX()) + heading;
+        double angle = Math.atan2(linearVel.getY(), linearVel.getX()) - heading;
         linearVel = new Vector(new Angle(angle), speed);
 
         double angularVel = angularController.calculate(robot.getHeading().getRadians(), path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians());
@@ -80,7 +81,7 @@ public class SwerveAutoDriveToTargetCommand extends CommandBase {
 
         if (Math.abs(angularVel) < path.getMinAngular()) {
             angularVel = (angularVel > 0) ? path.getMinAngular() : -path.getMinAngular();
-            angularVel = ((desiredAngle - currentAngle) > angularThreshold/closest) ? angularVel : 0;
+            angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
         //Can probably be removed

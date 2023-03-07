@@ -486,8 +486,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             double a2 = pr.getHeading().getRadians();
 
             return new Pose(
-                    Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
-                    Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition())))),
+                    Point.multiply(39.37, Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
+                            Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition()))))),
 
                     new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1))
             );
@@ -500,7 +500,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
         public Pose getLatestPose() {
             if (poses.size() == 0) return new Pose(new Point(0, 0), new Angle(0));
-            return poses.get(poses.size() - 1).getValue();
+            return new Pose(Point.multiply(39.37, poses.get(poses.size() - 1).getValue().getPosition()), poses.get(poses.size() - 1).getValue().getHeading());
         }
 
         public Angle getCurHeading() {
