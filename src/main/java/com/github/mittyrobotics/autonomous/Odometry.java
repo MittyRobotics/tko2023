@@ -18,8 +18,7 @@ public class Odometry {
     private double last_time;
     public boolean FIELD_LEFT_SIDE = true;
     public double FIELD_HALF_X = 325.61;
-    private Point lastPose;
-    private Angle lastAngle;
+    private Pose lastPose;
 
     public static Odometry getInstance() {
         if (instance == null) instance = new Odometry();
@@ -29,7 +28,6 @@ public class Odometry {
     public Odometry() {
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
-        lastAngle = null;
     }
 
     double offset = 20.873;
@@ -102,13 +100,11 @@ public class Odometry {
             double dt = (time - last_time) / (1000000000.);
 
             if (lastPose == null) lastPose = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
-            Point curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
+            Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
 
-            if (lastAngle == null) lastAngle = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(last_time);
-            Angle curA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(time);
-
-            Vector v = new Vector(Point.multiply(1/dt, Point.add(curP, Point.multiply(-1, lastPose))));
-            double w = (1/dt) * (curA.getRadians() - lastAngle.getRadians());
+            Vector v = new Vector(Point.multiply(1/dt, Point.add(curP.getPosition(),
+                    Point.multiply(-1, lastPose.getPosition()))));
+            double w = (1/dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
 
             try {
                 stateExtrapolate(dt, v, w);
@@ -125,11 +121,10 @@ public class Odometry {
                 stateUpdate(new SimpleMatrix(new double[]{x, y, theta}));
                 covarianceUpdate();
 
-                LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
-
                 last_time = time;
                 lastPose = curP;
-                lastAngle = curA;
+
+                LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
 
 //                state.transpose().print();
             } catch (Exception e) {
@@ -139,11 +134,10 @@ public class Odometry {
     }
 
     public double[] getPose() {
-        Point curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
-        Angle curA = SwerveSubsystem.getInstance().forwardKinematics.getLatestAngle();
+        Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
 
-        Point pos = Point.add(curP, Point.multiply(-1, lastPose));
-        double angle = curA.getRadians() - lastAngle.getRadians();
+        Point pos = Point.add(curP.getPosition(), Point.multiply(-1, lastPose.getPosition()));
+        double angle = curP.getHeading().getRadians() - lastPose.getHeading().getRadians();
 
         return new double[]{pos.getX() + state.get(0, 0), pos.getY() + state.get(1, 0), angle + state.get(2, 0)};
     }
@@ -248,8 +242,12 @@ public class Odometry {
     }
 
     public Pose getState() {
-        return SwerveSubsystem.getInstance().getPose();
+        return new Pose(new Point(state.get(0, 0), state.get(1, 0)), new Angle(state.get(2, 0)));
     }
+//
+//    public Pose getState() {
+//        return SwerveSubsystem.getInstance().getPose();
+//    }
 
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;
