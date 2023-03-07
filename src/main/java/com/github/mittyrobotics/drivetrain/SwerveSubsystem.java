@@ -14,7 +14,6 @@ import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public Angle getDirectionOfTravel() {
-        return forwardKinematics.getDirectionOfTravel();
+        return forwardKinematics.getCurHeading();
     }
 
     public static SwerveSubsystem getInstance() {
@@ -414,7 +413,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         private ArrayList<Pair> angles = new ArrayList<>();
 
         private Vector vel = new Vector(0, 0);
-        private Angle directionOfTravel = new Angle(0);
+        private Angle curHeading = new Angle(0);
 
 
         public ForwardKinematics(double width, double length) {
@@ -433,10 +432,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             new_ = new Point(-new_.getY(), new_.getX());
 
             pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
-            directionOfTravel = new Angle(Gyro.getInstance().getHeadingRadians());
+            curHeading = new Angle(Gyro.getInstance().getHeadingRadians());
 
-            angles.add(new Pair(nanoTime, new Point(Math.cos(directionOfTravel.getRadians()),
-                    Math.sin(directionOfTravel.getRadians()))));
+            angles.add(new Pair(nanoTime, curHeading));
 
         }
 
@@ -494,30 +492,25 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
         public Angle getAngleAtTime(double time) {
             long tl, tr;
-            Point pl, pr;
+            Angle pl, pr;
 
             int left_index = search(angles, time, false);
             int right_index = search(angles, time, true);
 
-            if(left_index == -1) return new Angle(Math.atan2(angles.get(right_index).getValue().getY(),
-                    angles.get(right_index).getValue().getX()));
-            if(right_index == -1) return new Angle(Math.atan2(angles.get(left_index).getValue().getY(),
-                    angles.get(left_index).getValue().getX()));
+            if(left_index == -1) return angles.get(right_index).getAltValue();
+            if(right_index == -1) return angles.get(left_index).getAltValue();
 
             tl = angles.get(left_index).getKey();
             tr = angles.get(right_index).getKey();
-            pl = angles.get(left_index).getValue();
-            pr = angles.get(right_index).getValue();
+            pl = angles.get(left_index).getAltValue();
+            pr = angles.get(right_index).getAltValue();
 
-            double a1 = Math.atan2(pl.getY(), pl.getX());
-
-            double a2 = Math.atan2(pr.getY(), pr.getX());
+            double a1 = pl.getRadians();
+            double a2 = pr.getRadians();
 
             if (tl == tr) return new Angle(a1);
 
             return new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1));
-//            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
-//                    Point.add(pr, Point.multiply(-1, pl))));
         }
 
         public Vector getR(int i) {
@@ -529,8 +522,13 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             return pose.get(pose.size() - 1).getValue();
         }
 
-        public Angle getDirectionOfTravel() {
-            return directionOfTravel;
+        public Angle getLatestAngle() {
+            if (angles.size() == 0) return new Angle(0);
+            return angles.get(angles.size() - 1).getAltValue();
+        }
+
+        public Angle getCurHeading() {
+            return curHeading;
         }
     }
 }

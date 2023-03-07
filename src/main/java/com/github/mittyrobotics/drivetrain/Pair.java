@@ -15,6 +15,7 @@
  */
 package com.github.mittyrobotics.drivetrain;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 
 import java.io.Serializable;
@@ -28,10 +29,18 @@ import java.util.Objects;
 public class Pair implements Serializable {
     private final Long first;
     private final Point second;
+    private final Angle second_alt;
 
     public Pair(Long first, Point second) {
         this.first = first;
         this.second = second;
+        this.second_alt = null;
+    }
+
+    public Pair(Long first, Angle second) {
+        this.first = first;
+        this.second = null;
+        this.second_alt = second;
     }
 
     public long getKey() {
@@ -40,6 +49,10 @@ public class Pair implements Serializable {
 
     public Point getValue() {
         return second;
+    }
+
+    public Angle getAltValue() {
+        return second_alt;
     }
 
     @Override
