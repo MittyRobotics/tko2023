@@ -149,7 +149,11 @@ public class Odometry {
     }
 
     public int getIdealCamera() {
-        return 2;
+        if(getPose()[0] <= FIELD_HALF_X) {
+            return 2;
+        } else {
+            return 0;
+        }
     }
 
     public void updateCovarianceR(double x) {
@@ -242,10 +246,6 @@ public class Odometry {
             covarianceUpdate();
         }
     }
-
-//    public Pose getState() {
-//        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
-//    }
 
     public Pose getState() {
         return SwerveSubsystem.getInstance().getPose();
