@@ -17,6 +17,8 @@ public class Odometry {
     private static Odometry instance;
     private double last_time;
     public boolean FIELD_LEFT_SIDE = true;
+    public double FIELD_HALF_X = 325.61;
+    private Pose lastPose;
 
     public static Odometry getInstance() {
         if (instance == null) instance = new Odometry();
@@ -25,6 +27,7 @@ public class Odometry {
 
     public Odometry() {
         last_time = System.currentTimeMillis() * 1000000;
+        lastPose = null;
     }
 
     double offset = 20.873;
@@ -96,14 +99,12 @@ public class Odometry {
 
             double dt = (time - last_time) / (1000000000.);
 
-            Point lastP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
-            Point curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
+            if (lastPose == null) lastPose = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
+            Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
 
-            Angle lastA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(last_time);
-            Angle curA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(time);
-
-            Vector v = new Vector(Point.multiply(1/dt, Point.add(curP, Point.multiply(-1, lastP))));
-            double w = (1/dt) * (curA.getRadians() - lastA.getRadians());
+            Vector v = new Vector(Point.multiply(1/dt, Point.add(curP.getPosition(),
+                    Point.multiply(-1, lastPose.getPosition()))));
+            double w = (1/dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
 
             try {
                 stateExtrapolate(dt, v, w);
@@ -120,9 +121,10 @@ public class Odometry {
                 stateUpdate(new SimpleMatrix(new double[]{x, y, theta}));
                 covarianceUpdate();
 
-                LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
-
                 last_time = time;
+                lastPose = curP;
+
+                LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
 
 //                state.transpose().print();
             } catch (Exception e) {
@@ -132,24 +134,20 @@ public class Odometry {
     }
 
     public double[] getPose() {
-        double time = System.currentTimeMillis() * 1000000.;
+        Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
 
-        Point lastP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
-        Point curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
-
-        Angle lastA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(last_time);
-        Angle curA = SwerveSubsystem.getInstance().forwardKinematics.getAngleAtTime(time);
-
-        Point pos = Point.add(curP, Point.multiply(-1, lastP));
-        double angle = curA.getRadians() - lastA.getRadians();
-
-//        System.out.println(pos + " a: " + angle);
+        Point pos = Point.add(curP.getPosition(), Point.multiply(-1, lastPose.getPosition()));
+        double angle = curP.getHeading().getRadians() - lastPose.getHeading().getRadians();
 
         return new double[]{pos.getX() + state.get(0, 0), pos.getY() + state.get(1, 0), angle + state.get(2, 0)};
     }
 
     public int getIdealCamera() {
-        return 2;
+        if(getPose()[0] <= FIELD_HALF_X) {
+            return 2;
+        } else {
+            return 0;
+        }
     }
 
     public void updateCovarianceR(double x) {
@@ -243,13 +241,13 @@ public class Odometry {
         }
     }
 
-//    public Pose getState() {
-//        return new Pose(new Point(state.get(0), state.get(1)), new Angle(state.get(2)));
-//    }
-
     public Pose getState() {
-        return SwerveSubsystem.getInstance().getPose();
+        return new Pose(new Point(state.get(0, 0), state.get(1, 0)), new Angle(state.get(2, 0)));
     }
+//
+//    public Pose getState() {
+//        return SwerveSubsystem.getInstance().getPose();
+//    }
 
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;

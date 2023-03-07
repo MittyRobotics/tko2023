@@ -15,7 +15,9 @@
  */
 package com.github.mittyrobotics.drivetrain;
 
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,9 +29,9 @@ import java.util.Objects;
  */
 public class Pair implements Serializable {
     private final Long first;
-    private final Point second;
+    private final Pose second;
 
-    public Pair(Long first, Point second) {
+    public Pair(Long first, Pose second) {
         this.first = first;
         this.second = second;
     }
@@ -38,7 +40,7 @@ public class Pair implements Serializable {
         return first;
     }
 
-    public Point getValue() {
+    public Pose getValue() {
         return second;
     }
 

@@ -15,7 +15,6 @@ import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public Pose getPose() {
-        return new Pose(forwardKinematics.getLatestPose(), new Angle(Gyro.getInstance().getHeadingRadians()));
+        return forwardKinematics.getLatestPose();
     }
 
     public Vector getVel() {
@@ -51,7 +50,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public Angle getDirectionOfTravel() {
-        return forwardKinematics.getDirectionOfTravel();
+        return forwardKinematics.getCurHeading();
     }
 
     public static SwerveSubsystem getInstance() {
@@ -314,10 +313,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public void setPose(Pose p) {
-        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() * 1000000, p.getPosition()));
-        forwardKinematics.angles.add(new Pair(System.currentTimeMillis() * 1000000, new Point(
-                Math.cos(p.getHeading().getRadians()),
-                Math.sin(p.getHeading().getRadians()))));
+        forwardKinematics.poses.add(new Pair(System.currentTimeMillis() * 1000000, p));
     }
 
     public void resetPose() {
@@ -417,11 +413,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public static class ForwardKinematics {
         private final Vector r;
-        private ArrayList<Pair> pose = new ArrayList<>();
-        private ArrayList<Pair> angles = new ArrayList<>();
+        private ArrayList<Pair> poses = new ArrayList<>();
 
         private Vector vel = new Vector(0, 0);
-        private Angle directionOfTravel = new Angle(0);
+        private Angle curHeading = new Angle(0);
 
 
         public ForwardKinematics(double width, double length) {
@@ -439,16 +434,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             // TODO: check this
             new_ = new Point(new_.getX(), new_.getY());
 
-            pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
-            directionOfTravel = new Angle(Gyro.getInstance().getHeadingRadians());
+            curHeading = new Angle(Gyro.getInstance().getHeadingRadians());
+            poses.add(new Pair(nanoTime, new Pose(Point.add(poses.get(poses.size() - 1).getValue().getPosition(), new_), curHeading)));
 
-            angles.add(new Pair(nanoTime, new Point(Math.cos(directionOfTravel.getRadians()),
-                    Math.sin(directionOfTravel.getRadians()))));
-
-        }
-
-        public Vector extrapolatePose(double time) {
-            return Vector.multiply(time, vel);
         }
 
         private int search(ArrayList<Pair> array, double value, boolean greater) {
@@ -477,67 +465,46 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             return ans;
         }
 
-        public Point getPoseAtTime(double time) {
+        public Pose getPoseAtTime(double time) {
             long tl, tr;
-            Point pl, pr;
+            Pose pl, pr;
 
-            int left_index = search(pose, time, false);
-            int right_index = search(pose, time, true);
+            int left_index = search(poses, time, false);
+            int right_index = search(poses, time, true);
 
-            if(left_index == -1) return pose.get(right_index).getValue();
-            if(right_index == -1) return pose.get(left_index).getValue();
+            if(left_index == -1) return poses.get(right_index).getValue();
+            if(right_index == -1) return poses.get(left_index).getValue();
 
-            tl = pose.get(left_index).getKey();
-            tr = pose.get(right_index).getKey();
-            pl = pose.get(left_index).getValue();
-            pr = pose.get(right_index).getValue();
+            tl = poses.get(left_index).getKey();
+            tr = poses.get(right_index).getKey();
+            pl = poses.get(left_index).getValue();
+            pr = poses.get(right_index).getValue();
 
             if (tr == tl) return pl;
 
-            return Point.add(pl, Point.multiply((time - tl) / (tr - tl), Point.add(pr, Point.multiply(-1, pl))));
-//            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
-//                    Point.add(pr, Point.multiply(-1, pl))));
-        }
+            double a1 = pl.getHeading().getRadians();
+            double a2 = pr.getHeading().getRadians();
 
-        public Angle getAngleAtTime(double time) {
-            long tl, tr;
-            Point pl, pr;
+            return new Pose(
+                    Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
+                    Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition())))),
 
-            int left_index = search(angles, time, false);
-            int right_index = search(angles, time, true);
+                    new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1))
+            );
 
-            if(left_index == -1) return new Angle(Math.atan2(angles.get(right_index).getValue().getY(),
-                    angles.get(right_index).getValue().getX()));
-            if(right_index == -1) return new Angle(Math.atan2(angles.get(left_index).getValue().getY(),
-                    angles.get(left_index).getValue().getX()));
-
-            tl = angles.get(left_index).getKey();
-            tr = angles.get(right_index).getKey();
-            pl = angles.get(left_index).getValue();
-            pr = angles.get(right_index).getValue();
-
-            double a1 = Math.atan2(pl.getY(), pl.getX());
-
-            double a2 = Math.atan2(pr.getY(), pr.getX());
-
-            if (tl == tr) return new Angle(a1);
-
-            return new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1));
-//            return Point.add(pl, Point.multiply((time - tl) / (tr - tl),
-//                    Point.add(pr, Point.multiply(-1, pl))));
         }
 
         public Vector getR(int i) {
             return new Vector(r.getX() * (i == 0 || i == 3 ? -1 : 1), r.getY() * (i > 1 ? -1 : 1));
         }
 
-        public Point getLatestPose() {
-            if (pose.size() == 0) return new Point(0, 0);
-            return pose.get(pose.size() - 1).getValue();
+        public Pose getLatestPose() {
+            if (poses.size() == 0) return new Pose(new Point(0, 0), new Angle(0));
+            return poses.get(poses.size() - 1).getValue();
         }
 
-        public Angle getDirectionOfTravel() {
-            return directionOfTravel;
+        public Angle getCurHeading() {
+            return curHeading;
         }
     }
 }

@@ -22,10 +22,8 @@ public class ExtensionToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-        tpTelescope = new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2);
         velTelescope = 0;
         lastTime = Timer.getFPGATimestamp();
-
     }
 
     @Override
@@ -35,6 +33,8 @@ public class ExtensionToKinematics extends CommandBase {
 //        } else if(TelescopeSubsystem.getInstance().getHalifaxMinContact()) {
 //            TelescopeSubsystem.getInstance().resetMeters(0);
 //        }
+
+        tpTelescope = TelescopeConstants.TELESCOPE_MPS.get(StateMachine.getInstance().getProfile());
 
         double desired = (ArmKinematics.getTelescopeDesired() +
                 (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.INTAKE ? 1 / 39.37 : 0)) / TelescopeConstants.METERS_PER_MOTOR_REV;
