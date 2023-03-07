@@ -396,10 +396,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             this.linearVel = linearVel;
             this.angularVel = angularVel;
 
-            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getY(), this.angularVel*r.getX());
-            tangentialVelocityVector[1] = new Vector(this.angularVel*r.getY(), this.angularVel*r.getX());
-            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getY(), -this.angularVel*r.getX());
-            tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getY(), -this.angularVel*r.getX());
+            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
+            tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
+            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
 
 
             for(int i = 0; i < 4; i++) {
@@ -430,7 +430,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             new_ = Point.multiply(0.25, new_);
 
             // TODO: check this
-            new_ = new Point(-new_.getY(), new_.getX());
+            new_ = new Point(new_.getX(), new_.getY());
 
             pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
             directionOfTravel = new Angle(Gyro.getInstance().getHeadingRadians());

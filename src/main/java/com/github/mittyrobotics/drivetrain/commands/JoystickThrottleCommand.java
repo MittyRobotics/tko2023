@@ -49,9 +49,9 @@ public class JoystickThrottleCommand extends CommandBase {
         x = OI.getInstance().getPS4Controller().getSquareButton();
         y = OI.getInstance().getPS4Controller().getTriangleButton();
 
-        leftY = OI.getInstance().getPS4Controller().getLeftX();
-        leftX = -OI.getInstance().getPS4Controller().getLeftY();
-        rightX = -OI.getInstance().getDriveController().getRightX();
+        leftY = -OI.getInstance().getPS4Controller().getLeftY();
+        leftX = OI.getInstance().getPS4Controller().getLeftX();
+        rightX = OI.getInstance().getDriveController().getRightX();
         rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
 
         notMoving = false;
@@ -79,7 +79,7 @@ public class JoystickThrottleCommand extends CommandBase {
         throttle = Math.pow(input, 2) * (OI.getInstance().getDriveController().getLeftBumper() ? SwerveConstants.MAX_BOOST_LINEAR_VEL :
                         SwerveConstants.MAX_LINEAR_VEL);
 
-        double angle = Math.atan2(leftY, leftX) + heading;
+        double angle = Math.atan2(leftY, leftX) - heading;
 
         if(disabled) throttle = 0;
 
@@ -90,7 +90,7 @@ public class JoystickThrottleCommand extends CommandBase {
         if(rightX < 0) {
             angularVel = -(Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL);
         } else angularVel = Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL;
-        angularVel = -angularVel;
+
         SmartDashboard.putNumber("rightx", rightX);
         SmartDashboard.putNumber("angular vel", angularVel);
 
@@ -126,8 +126,8 @@ public class JoystickThrottleCommand extends CommandBase {
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 
-        //wheel angles positive clockwise
-        double[] FortyFive = new double[]{-Math.PI/4, Math.PI/4, -Math.PI/4, Math.PI/4};
+        //wheel angles positive CCW
+        double[] FortyFive = new double[]{Math.PI/4, -Math.PI/4, Math.PI/4, -Math.PI/4};
 
         if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
 //            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
