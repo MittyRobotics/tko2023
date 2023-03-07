@@ -6,10 +6,12 @@ import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.util.Util;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoIntakeCommand extends CommandBase {
     boolean indexing = false;
+    boolean outtaking = false;
 
     @Override
     public void initialize() {
@@ -19,26 +21,36 @@ public class AutoIntakeCommand extends CommandBase {
     @Override
     public void execute() {
         if (OI.getInstance().getOperatorController().getRightBumper()) {
-            IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
-            triggerFunctionAfterTime(() -> {
-                ArmKinematics.setArmKinematics(new Angle(0), 0);
-                StateMachine.getInstance().setStateStowed();
-            }, 1000);
-        } else if (StateMachine.getInstance().getIntaking()) {
+            //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+            StateMachine.getInstance().setIntakeOff();
+        } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
+            //Outtake override
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+            StateMachine.getInstance().setIntakeStowing();
+        } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
+            //Outtake
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+        } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.INTAKE) {
+            //Intake
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+
+            //If prox sensor detected index for another second then stow
             if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
                 indexing = true;
-                triggerFunctionAfterTime(() -> {
-                    StateMachine.getInstance().setIntaking(false);
-                    indexing = false;
-                }, 1000);
-                triggerFunctionAfterTime(() -> {
+                Util.triggerFunctionAfterTime(() -> {
                     ArmKinematics.setArmKinematics(new Angle(0), 0);
                     StateMachine.getInstance().setStateStowed();
-                }, 2000);
+                    StateMachine.getInstance().setIntakeStowing();
+                    indexing = false;
+                }, 1000);
             }
-        } else {
-            IntakeSubsystem.getInstance().setMotor(-0.1);
+        } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
+            //Piece stowed
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.STOW_SPEED);
+        } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OFF) {
+            //Intake off
+            IntakeSubsystem.getInstance().setMotor(0);
         }
     }
 
@@ -50,17 +62,5 @@ public class AutoIntakeCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         return false;
-    }
-
-    private void triggerFunctionAfterTime(Runnable runnable, long time){
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        runnable.run();
-                    }
-                },
-                time
-        );
     }
 }

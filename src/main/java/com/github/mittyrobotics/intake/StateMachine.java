@@ -1,19 +1,12 @@
 package com.github.mittyrobotics.intake;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.pivot.PivotSubsystem;
-import com.github.mittyrobotics.telescope.TelescopeSubsystem;
-
 public class StateMachine {
     private RobotState currentRobotState = RobotState.STOWED;
 
     private PieceState currentPieceState = PieceState.NONE;
     private PieceState lastPieceState;
-
-    boolean isIntaking = false;
-    long time;
-
+    private IntakeState intakeState = IntakeState.STOW;
+    
     public static StateMachine instance;
 
     public static StateMachine getInstance() {
@@ -70,40 +63,24 @@ public class StateMachine {
         currentPieceState = PieceState.NONE;
     }
 
-    public boolean readyToShoot() {
-        return PivotSubsystem.getInstance().withinThreshold() && TelescopeSubsystem.getInstance().withinThreshold();
+    public void setIntaking() {
+        intakeState = IntakeState.INTAKE;
     }
 
-    public Pose getNearestConePose() {
-        return SwerveSubsystem.getInstance().getPose();
+    public void setIntakeStowing() {
+        intakeState = IntakeState.STOW;
     }
 
-    public Pose getNearestCubePose() {
-        return SwerveSubsystem.getInstance().getPose();
+    public void setIntakeOff() {
+        intakeState = IntakeState.OFF;
     }
 
-    public Pose getNearestGamePiecePose() {
-        if (currentPieceState == PieceState.NONE) {
-            //FIX
-            return SwerveSubsystem.getInstance().getPose();
-        }
-        return currentPieceState == PieceState.CUBE ? getNearestCubePose() : getNearestConePose();
+    public void setOuttaking() {
+        intakeState = IntakeState.OUTTAKE;
     }
 
-    public void update() {
-
-    }
-
-    public void setIntaking(boolean isIntaking) {
-        this.isIntaking = isIntaking;
-    }
-
-    public boolean getIntaking() {
-        return isIntaking;
-    }
-
-    public boolean shouldBeIntaking() {
-        return System.currentTimeMillis() - time < 1000;
+    public IntakeState getIntakingState() {
+        return intakeState;
     }
 
     public enum RobotState {
@@ -118,6 +95,13 @@ public class StateMachine {
         CONE,
         CUBE,
         NONE
+    }
+    
+    public enum IntakeState {
+        INTAKE,
+        STOW,
+        OUTTAKE,
+        OFF
     }
 
 }

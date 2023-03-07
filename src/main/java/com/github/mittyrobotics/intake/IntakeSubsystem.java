@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.intake;
 
+import com.github.mittyrobotics.intake.commands.AutoIntakeCommand;
 import com.github.mittyrobotics.intake.commands.IntakeCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -33,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         proximitySensor = new DigitalInput(IntakeConstants.PROX_SENSOR_ID);
 
-        setDefaultCommand(new IntakeCommand());
+        setDefaultCommand(new AutoIntakeCommand());
     }
 
     public void defaultState() {

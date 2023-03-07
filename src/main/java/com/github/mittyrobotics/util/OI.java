@@ -25,25 +25,16 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoDriveToTargetCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
-import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.json.JSONException;
-
-import javax.swing.plaf.nimbus.State;
 
 /**
  * OI Class to manage all controllers and input
@@ -95,14 +86,12 @@ public class OI {
     }
 
     public void handleGround() {
-        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
         StateMachine.getInstance().setStateGround();
-        StateMachine.getInstance().setIntaking(true);
+        StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
-        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
             ArmKinematics.setArmKinematics(new Angle(1.16), 0.527);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
@@ -111,7 +100,6 @@ public class OI {
     }
 
     public void handleHigh() {
-        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
             ArmKinematics.setArmKinematics(new Angle(1.12), 0.9513);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
@@ -120,27 +108,36 @@ public class OI {
     }
 
     public void handleHumanPlayer() {
-        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
         ArmKinematics.setArmKinematics(new Angle(1.071 - 0.05), 0.479);
         StateMachine.getInstance().setStateHP();
-        StateMachine.getInstance().setIntaking(true);
+        StateMachine.getInstance().setIntaking();
     }
+    
+    public void handleScore() {
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE) {
+            StateMachine.getInstance().setOuttaking();
 
-    public void handleConeScore() {
-        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
-        double curRad = ArmKinematics.getTelescopeDesired();
-        double curAngle = ArmKinematics.getPivotDesired().getRadians();
-        ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);
+            Util.triggerFunctionAfterTime(() -> {
+                zeroAll();
+                Util.triggerFunctionAfterTime(() -> {
+                    StateMachine.getInstance().setIntakeOff();
+                }, 200);
+            }, 300);
+        } else {
+            if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
+            double curRad = ArmKinematics.getTelescopeDesired();
+            double curAngle = ArmKinematics.getPivotDesired().getRadians();
+            ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);
 
-        IntakeSubsystem.getInstance().setDefaultState(false);
-        IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+            StateMachine.getInstance().setOuttaking();
 
-        triggerFunctionAfterTime(() -> {
-            zeroAll();
-            triggerFunctionAfterTime(() -> {
-                IntakeSubsystem.getInstance().setDefaultState(true);
-            }, 500);
-        }, 300);
+            Util.triggerFunctionAfterTime(() -> {
+                zeroAll();
+                Util.triggerFunctionAfterTime(() -> {
+                    StateMachine.getInstance().setIntakeOff();
+                }, 500);
+            }, 300);
+        }
     }
 
     public boolean driverControls(boolean leftBumper, boolean rightBumper, boolean leftTrigger, boolean rightTrigger) {
@@ -150,44 +147,36 @@ public class OI {
                 (rightTrigger && getOperatorController().getRightTriggerAxis() > 0.5);
     }
 
-    public void setupControls() throws JSONException {
+    public void setupControls() {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
-        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+        coneMode.onTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
 
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
-        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+        cubeMode.onTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
 
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
-        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+        none.onTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger zeroAll = new Trigger(() -> StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE);
-        zeroAll.whileTrue(new InstantCommand(this::zeroAll));
+        zeroAll.onTrue(new InstantCommand(this::zeroAll));
 
         Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-        groundKinematics.whileTrue(new InstantCommand(this::handleGround));
+        groundKinematics.onTrue(new InstantCommand(this::handleGround));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
-        midKinematics.whileTrue(new InstantCommand(this::handleMid));
+        midKinematics.onTrue(new InstantCommand(this::handleMid));
 
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
-        highKinematics.whileTrue(new InstantCommand(this::handleHigh));
+        highKinematics.onTrue(new InstantCommand(this::handleHigh));
 
         Trigger readyToScore = new Trigger(() ->
-                (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) &&
-                        ((OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
+                ((OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
                 (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH))
         );
-        readyToScore.onTrue(new InstantCommand(this::handleConeScore));
+        readyToScore.onTrue(new InstantCommand(this::handleScore));
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
-        humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
-//
-//        Trigger autoStow = new Trigger(() -> (
-//                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.GROUND ||
-//                StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HP) &&
-//                IntakeSubsystem.getInstance().proxSensorTrigger()
-//        );
-//        autoStow.whileTrue(new InstantCommand(this::zeroAll));
+        humanPlayerKinematics.onTrue(new InstantCommand(this::handleHumanPlayer));
 
         Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
@@ -208,17 +197,5 @@ public class OI {
 
         Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
         drive.whileTrue(new JoystickThrottleCommand());
-    }
-
-    private void triggerFunctionAfterTime(Runnable runnable, long time){
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        runnable.run();
-                    }
-                },
-                time
-        );
     }
 }

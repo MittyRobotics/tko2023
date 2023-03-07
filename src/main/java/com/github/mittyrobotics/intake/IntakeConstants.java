@@ -13,4 +13,5 @@ public class IntakeConstants {
 
     public static final double INTAKE_SPEED = -0.7;
     public static final double OUTTAKE_SPEED = 0.25;
+    public static final double STOW_SPEED = -0.1;
 }

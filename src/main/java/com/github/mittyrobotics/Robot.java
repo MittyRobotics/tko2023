@@ -27,33 +27,38 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     LedSubsystem.getInstance().initHardware();
-    SwerveSubsystem.getInstance().initHardware();
     Gyro.getInstance().initHardware();
+    SwerveSubsystem.getInstance().initHardware();
 
     TelescopeSubsystem.getInstance().initHardware();
     PivotSubsystem.getInstance().initHardware();
     IntakeSubsystem.getInstance().initHardware();
+
     PivotSubsystem.getInstance().setBrakeMode();
     TelescopeSubsystem.getInstance().setBrakeMode();
-    try {
-      OI.getInstance().setupControls();
-    } catch (JSONException e) {
-      throw new RuntimeException(e);
-    }
+
+    OI.getInstance().setupControls();
+
+
+    SwerveSubsystem.getInstance().resetPose();
+    Odometry.getInstance().setState(134, 38, Math.PI);
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    StateMachine.getInstance().update();
+
+    SwerveSubsystem.getInstance().updateForwardKinematics();
+    Odometry.getInstance().update();
 
 
+    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
+    LoggerInterface.getInstance().put("Intake State", StateMachine.getInstance().getIntakingState());
+    LoggerInterface.getInstance().put("Robot State", StateMachine.getInstance().getCurrentRobotState());
 //    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
-
 //    Odometry.getInstance().update();
-//
 //    SwerveSubsystem.getInstance().updateForwardKinematics();
-//
 //    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
   }
 
@@ -63,7 +68,6 @@ public class Robot extends TimedRobot {
     SwerveSubsystem.getInstance().resetPose();
 //
 //    Odometry.getInstance().setState(162, 75, Math.PI);
-
 //
 //    SwervePath[] paths = {
 //            new SwervePath(
@@ -107,14 +111,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-//      TelescopeSubsystem.getInstance().getNeo().getEncoder().setPosition(0);
-//      SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
-//    SwervePath path = new SwervePath(
-//            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(0.5, 0.5), new Angle(Math.PI/2)),
-//            new Angle(0), new Angle(0),
-//            0, 0, 3., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5
-//    );
-//
 //    SwerveAutoPickupCommandv2 command = new SwerveAutoPickupCommandv2(0.05, 0.05, path);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
   }
@@ -130,20 +126,10 @@ public class Robot extends TimedRobot {
 //    }
     System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
     System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
-//    ClawRollerSubsystem.getInstance().setRoller(-0.4);  //NEGATIVE IS ROLLER INWARDS
-
-//    ClawGrabberSubsystem.getInstance().setMotor(0.1);
-
-//    SmartDashboard.putNumber("Neo Current", ClawRollerSubsystem.getInstance().getCurrent());
-
-//    System.out.println(ClawGrabberSubsystem.getInstance().getProximitySensor());
-//    System.out.println(ClawGrabberSubsystem.getInstance().getEncoderValue());
-
   }
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-
     LedSubsystem.getInstance().turnOff();
   }
 
