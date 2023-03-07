@@ -242,7 +242,8 @@ public class Odometry {
     }
 
     public Pose getState() {
-        return new Pose(new Point(state.get(0, 0), state.get(1, 0)), new Angle(state.get(2, 0)));
+        double[] pose = getPose();
+        return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2]));
     }
 //
 //    public Pose getState() {
