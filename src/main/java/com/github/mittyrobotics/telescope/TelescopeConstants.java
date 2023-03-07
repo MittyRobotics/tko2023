@@ -1,5 +1,10 @@
 package com.github.mittyrobotics.telescope;
 
+import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
+
+import java.util.HashMap;
+
 public class TelescopeConstants {
     //TODO: Fill in all except meters per rev conversion
     public static final int TELESCOPE_SPARK_ID = 10;
@@ -20,7 +25,7 @@ public class TelescopeConstants {
 
     public static final double MAX_EXTENSION_METERS = 1.0111647328053874;
 
-
+    public static final HashMap<StateMachine.ProfileState, TrapezoidalMotionProfile> TELESCOPE_MPS = new HashMap<>();
     //2.75 inches every MOTOR rotation
     //4 motor rotations for 5.5 inches (times 2, since 2 stage)
 }

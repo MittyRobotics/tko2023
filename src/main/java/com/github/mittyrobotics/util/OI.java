@@ -82,11 +82,13 @@ public class OI {
 
     public void zeroAll() {
         ArmKinematics.setArmKinematics(new Angle(0), 0);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
     }
 
     public void handleGround() {
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
         StateMachine.getInstance().setIntaking();
     }
@@ -96,6 +98,7 @@ public class OI {
             ArmKinematics.setArmKinematics(new Angle(1.16), 0.527);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
             ArmKinematics.setArmKinematics(new Angle(1.304), 0);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.MID);
         StateMachine.getInstance().setStateMid();
     }
 
@@ -104,11 +107,13 @@ public class OI {
             ArmKinematics.setArmKinematics(new Angle(1.12), 0.9513);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
             ArmKinematics.setArmKinematics(new Angle(1.263 - 0.2), 0.494);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HIGH);
         StateMachine.getInstance().setStateHigh();
     }
 
     public void handleHumanPlayer() {
         ArmKinematics.setArmKinematics(new Angle(1.071 - 0.05), 0.479);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
         StateMachine.getInstance().setIntaking();
     }

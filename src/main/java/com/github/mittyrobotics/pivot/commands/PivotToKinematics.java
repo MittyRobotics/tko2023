@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.pivot.commands;
 
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
@@ -22,7 +23,6 @@ public class PivotToKinematics extends CommandBase {
 
     @Override
     public void initialize() {
-        tpPivot = new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3);
         velPivot = 0;
         lastTime = Timer.getFPGATimestamp();
     }
@@ -42,6 +42,7 @@ public class PivotToKinematics extends CommandBase {
 //                PivotSubsystem.getInstance().resetAngleDegrees(-5.024293928730245);
 //            }
 //        }
+        tpPivot = PivotConstants.PIVOT_MPS.get(StateMachine.getInstance().getProfile());
 
         double desired = ArmKinematics.getPivotDesired().getRadians() / (2 * Math.PI) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO;
         tpPivot.changeSetpoint(desired, PivotSubsystem.getInstance().rawPos(), PivotSubsystem.getInstance().rawVel() / 60);

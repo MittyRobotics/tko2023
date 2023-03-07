@@ -1,13 +1,17 @@
 package com.github.mittyrobotics.telescope;
 
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotConstants;
 import com.github.mittyrobotics.telescope.commands.ExtensionToKinematics;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static com.github.mittyrobotics.intake.StateMachine.ProfileState.*;
 
 public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     CANSparkMax telescopeNeo;
@@ -67,6 +71,29 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
         setDefaultCommand(new ExtensionToKinematics());
         System.out.println("AFTER SET DEFAULT");
+    }
+
+    private void createMPs() {
+        TelescopeConstants.TELESCOPE_MPS.put(DEFAULT,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_MID,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HIGH,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HP,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(GROUND_TO_STOWED,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(MID_TO_STOWED,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(HIGH_TO_STOWED,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(HP_TO_STOWED,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(MID_TO_HIGH,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+        TelescopeConstants.TELESCOPE_MPS.put(HIGH_TO_MID,
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
     }
 
     public void setMotor(double percentOutput) {

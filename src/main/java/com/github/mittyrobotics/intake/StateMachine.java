@@ -6,6 +6,8 @@ public class StateMachine {
     private PieceState currentPieceState = PieceState.NONE;
     private PieceState lastPieceState;
     private IntakeState intakeState = IntakeState.STOW;
+
+    private ProfileState profileState = ProfileState.STOWED_TO_HIGH;
     
     public static StateMachine instance;
 
@@ -83,6 +85,56 @@ public class StateMachine {
         return intakeState;
     }
 
+    public ProfileState getProfile() {
+        return profileState;
+    }
+
+    public void setProfile(RobotState source, RobotState target) {
+        if (source == RobotState.STOWED) setProfileFromStowed(target);
+        else if (target == RobotState.STOWED) setProfileToStowed(source);
+        else if (source == RobotState.MID && target == RobotState.HIGH) profileState = ProfileState.MID_TO_HIGH;
+        else if (target == RobotState.MID && source == RobotState.HIGH) profileState = ProfileState.HIGH_TO_MID;
+        else profileState = ProfileState.DEFAULT;
+    }
+
+    private void setProfileToStowed(RobotState source) {
+        switch (source) {
+            case GROUND:
+                profileState = ProfileState.GROUND_TO_STOWED;
+                break;
+            case MID:
+                profileState = ProfileState.MID_TO_STOWED;
+                break;
+            case HIGH:
+                profileState = ProfileState.HIGH_TO_STOWED;
+                break;
+            case HP:
+                profileState = ProfileState.HP_TO_STOWED;
+                break;
+            default:
+                profileState = ProfileState.DEFAULT;
+        }
+    }
+
+    private void setProfileFromStowed(RobotState target) {
+        switch (target) {
+            case GROUND:
+                profileState = ProfileState.STOWED_TO_GROUND;
+                break;
+            case MID:
+                profileState = ProfileState.STOWED_TO_MID;
+                break;
+            case HIGH:
+                profileState = ProfileState.STOWED_TO_HIGH;
+                break;
+            case HP:
+                profileState = ProfileState.STOWED_TO_HP;
+                break;
+            default:
+                profileState = ProfileState.DEFAULT;
+        }
+    }
+
     public enum RobotState {
         GROUND,
         MID,
@@ -104,4 +156,17 @@ public class StateMachine {
         OFF
     }
 
+    public enum ProfileState {
+        STOWED_TO_GROUND,
+        STOWED_TO_MID,
+        STOWED_TO_HIGH,
+        STOWED_TO_HP,
+        GROUND_TO_STOWED,
+        MID_TO_STOWED,
+        HIGH_TO_STOWED,
+        HP_TO_STOWED,
+        MID_TO_HIGH,
+        HIGH_TO_MID,
+        DEFAULT
+    }
 }

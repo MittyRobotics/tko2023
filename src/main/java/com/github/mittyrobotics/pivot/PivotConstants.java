@@ -1,5 +1,10 @@
 package com.github.mittyrobotics.pivot;
 
+import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
+
+import java.util.HashMap;
+
 public class PivotConstants {
     public static final int[] PIVOT_ID = {8, 9};
 
@@ -35,4 +40,6 @@ public class PivotConstants {
 
     public static final double SOFT_LIMIT_TOP_RADIANS = Math.PI/4;
     public static final double SOFT_LIMIT_BOTTOM_RADIANS = -Math.PI/4;
+
+    public static final HashMap<StateMachine.ProfileState, TrapezoidalMotionProfile> PIVOT_MPS = new HashMap<>();
 }
