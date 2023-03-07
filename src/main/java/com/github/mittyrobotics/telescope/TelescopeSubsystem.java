@@ -69,6 +69,8 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         halifaxMax = new DigitalInput(TelescopeConstants.HALIFAX_MAX_CHANNEL);
         halifaxMin = new DigitalInput(TelescopeConstants.HALIFAX_MIN_CHANNEL);
 
+        createMPs();
+
         setDefaultCommand(new ExtensionToKinematics());
         System.out.println("AFTER SET DEFAULT");
     }
