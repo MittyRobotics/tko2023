@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -123,6 +124,9 @@ public class JoystickThrottleCommand extends CommandBase {
 
             angularVel = controller.calculate(dist * (right ? 1 : -1));
         }
+
+        LoggerInterface.getInstance().put("Desired linear velocity", linearVel.toString());
+        LoggerInterface.getInstance().put("Desired angular velocity", angularVel);
 
         SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
 

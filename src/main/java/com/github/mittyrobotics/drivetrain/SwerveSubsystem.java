@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -262,6 +263,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
             double normDes = standardize(desiredAngles[i]);
 
+            LoggerInterface.getInstance().put("Module " + i + " desired angle", normDes);
+            LoggerInterface.getInstance().put("Module " + i + " current angle", norm);
+
             boolean right;
             double diff;
 
@@ -326,6 +330,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         for (int i = 0; i < 4; i++) {
             double cur = driveFalcon[i].getSelectedSensorPosition();
 
+            LoggerInterface.getInstance().put("Module " + i + " field angle", -angle(i) + Gyro.getInstance().getHeadingRadians());
             modules[i] = new Vector(new Angle(-angle(i) + Gyro.getInstance().getHeadingRadians()), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
 //            System.out.println(i + ": " + angle(i));
 
@@ -404,6 +409,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
 
             for(int i = 0; i < 4; i++) {
+                LoggerInterface.getInstance().put("Module " + i + " Angular", tangentialVelocityVector[i]);
                 swerveModule[i] = Vector.add(linearVel, tangentialVelocityVector[i]);
             }
         }
