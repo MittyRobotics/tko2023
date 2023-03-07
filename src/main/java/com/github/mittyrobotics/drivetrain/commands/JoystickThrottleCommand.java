@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class JoystickThrottleCommand extends CommandBase {
 
-    double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger;
+    double fieldX, fieldY, rightX, rightY, leftTrigger, rightTrigger;
 
     boolean a, b, x, y;
 
@@ -49,42 +49,44 @@ public class JoystickThrottleCommand extends CommandBase {
         x = OI.getInstance().getPS4Controller().getSquareButton();
         y = OI.getInstance().getPS4Controller().getTriangleButton();
 
-        leftY = -OI.getInstance().getPS4Controller().getLeftY();
-        leftX = OI.getInstance().getPS4Controller().getLeftX();
+        fieldY = OI.getInstance().getPS4Controller().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
+        fieldX = -OI.getInstance().getPS4Controller().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);
+
         rightX = OI.getInstance().getDriveController().getRightX();
         rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
 
         notMoving = false;
 
-        if(rightTrigger < SwerveConstants.JOYSTICK_DEADZONE && leftX < SwerveConstants.JOYSTICK_DEADZONE && leftY < SwerveConstants.JOYSTICK_DEADZONE && !OI.getInstance().getPS4Controller().getCircleButton()) {
+        if(rightTrigger < SwerveConstants.JOYSTICK_DEADZONE && fieldX < SwerveConstants.JOYSTICK_DEADZONE && fieldY < SwerveConstants.JOYSTICK_DEADZONE && !OI.getInstance().getPS4Controller().getCircleButton()) {
             notMoving = true;
         }
 
-        if (Math.abs(leftX) < SwerveConstants.JOYSTICK_DEADZONE) leftX = 0;
-        if (Math.abs(leftY) < SwerveConstants.JOYSTICK_DEADZONE) leftY = 0;
+        if (Math.abs(fieldX) < SwerveConstants.JOYSTICK_DEADZONE) fieldX = 0;
+        if (Math.abs(fieldY) < SwerveConstants.JOYSTICK_DEADZONE) fieldY = 0;
         if (Math.abs(rightX) < SwerveConstants.JOYSTICK_DEADZONE) rightX = 0;
         if (Math.abs(rightY) < SwerveConstants.JOYSTICK_DEADZONE) rightY = 0;
         if (Math.abs(rightTrigger) < SwerveConstants.TRIGGER_THRESHOLD) rightTrigger = 0;
 
         disabled = false;
-        if ((leftX == 0 && leftY == 0) && rightX == 0 && !OI.getInstance().getPS4Controller().getCircleButton()) {
+        if ((fieldX == 0 && fieldY == 0) && rightX == 0 && !OI.getInstance().getPS4Controller().getCircleButton()) {
             disabled = true;
         }
 
         heading = Gyro.getInstance().getHeadingRadians();
 
-        double input = Math.sqrt(leftY * leftY + leftX * leftX);
+        double input = Math.sqrt(fieldY * fieldY + fieldX * fieldX);
         double throttle;
 
         throttle = Math.pow(input, 2) * (OI.getInstance().getDriveController().getLeftBumper() ? SwerveConstants.MAX_BOOST_LINEAR_VEL :
                         SwerveConstants.MAX_LINEAR_VEL);
 
-        double angle = Math.atan2(leftY, leftX) - heading;
+        double angle_field = Math.atan2(fieldY, fieldX);
+        double robot_relative_angle = angle_field - heading;
 
         if(disabled) throttle = 0;
 
         linearVel = new Vector(
-                new Angle(angle), throttle
+                new Angle(robot_relative_angle), throttle
         );
 
         if(rightX < 0) {

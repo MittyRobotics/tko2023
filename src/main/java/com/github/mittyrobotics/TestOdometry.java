@@ -12,6 +12,8 @@ public class TestOdometry {
         return (radians %= (Math.PI * 2)) >= 0 ? radians : (radians + 2 * Math.PI);
     }
     public static void main(String[] args) throws InterruptedException {
-        System.out.println(standardize(1.5 * Math.PI));
+//        System.out.println(standardize(1.5 * Math.PI));
+
+        System.out.println(Math.atan2(-1, -3));
     }
 }
