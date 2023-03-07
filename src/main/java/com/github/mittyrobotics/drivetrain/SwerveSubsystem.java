@@ -83,6 +83,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i] = new WPI_TalonFX(SwerveConstants.ROTATION_FALCON[i]);
             rotationFalcon[i].configFactoryDefault();
             rotationFalcon[i].setNeutralMode(NeutralMode.Coast);
+            rotationFalcon[i].setInverted(SwerveConstants.ROTATION_FALCON_INVERT);
             rotationFalcon[i].setSelectedSensorPosition(0);
             rotationFalcon[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             rotationFalcon[i].config_kP(0, SwerveConstants.ANGULAR_POSITION_P);
@@ -325,7 +326,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         for (int i = 0; i < 4; i++) {
             double cur = driveFalcon[i].getSelectedSensorPosition();
 
-            modules[i] = new Vector(new Angle(-angle(i) + Gyro.getInstance().getHeadingRadians() + Math.PI/2.), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
+            modules[i] = new Vector(new Angle(-angle(i) + Gyro.getInstance().getHeadingRadians()), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;
@@ -396,10 +397,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             this.linearVel = linearVel;
             this.angularVel = angularVel;
 
-            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
-            tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
-            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
-            tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
+            tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
 
 
             for(int i = 0; i < 4; i++) {

@@ -13,6 +13,8 @@ public class SwerveConstants {
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6,7}};
 
+    public static boolean ROTATION_FALCON_INVERT = true;
+
 
 
     public static final double MAX_LINEAR_VEL = 10 / 3.28084; //10 ft/s

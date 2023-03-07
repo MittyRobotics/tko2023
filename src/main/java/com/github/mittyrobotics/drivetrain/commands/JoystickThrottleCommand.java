@@ -98,7 +98,7 @@ public class JoystickThrottleCommand extends CommandBase {
 
         if(y || a) {
             currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingRadians());
-            currentDesired = SwerveSubsystem.standardize(y ? 0 : Math.PI + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
+            currentDesired = SwerveSubsystem.standardize((y ? 0 : Math.PI) + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
 
             boolean right;
             double dist;
