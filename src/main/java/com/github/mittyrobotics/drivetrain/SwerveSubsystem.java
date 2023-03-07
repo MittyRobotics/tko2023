@@ -326,8 +326,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         for (int i = 0; i < 4; i++) {
             double cur = driveFalcon[i].getSelectedSensorPosition();
 
-            LoggerInterface.getInstance().put("Module " + i + " field angle", -angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(-angle(i) + Gyro.getInstance().getHeadingRadians()), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
+            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
+            modules[i] = new Vector(new Angle(angle(i) + Gyro.getInstance().getHeadingRadians()), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;
@@ -398,9 +398,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             this.linearVel = linearVel;
             this.angularVel = angularVel;
 
-            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[0] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
             tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
-            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
+            tangentialVelocityVector[2] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
             tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
 
 
