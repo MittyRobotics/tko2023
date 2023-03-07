@@ -37,7 +37,7 @@ public class ExtensionToKinematics extends CommandBase {
 //        }
 
         double desired = (ArmKinematics.getTelescopeDesired() +
-                (StateMachine.getInstance().shouldBeIntaking() ? 1 / 39.37 : 0)) / TelescopeConstants.METERS_PER_MOTOR_REV;
+                (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.INTAKE ? 1 / 39.37 : 0)) / TelescopeConstants.METERS_PER_MOTOR_REV;
         tpTelescope.changeSetpoint(desired, TelescopeSubsystem.getInstance().rawPos(), TelescopeSubsystem.getInstance().rawVel() / 60);
 
         boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();
@@ -51,10 +51,8 @@ public class ExtensionToKinematics extends CommandBase {
         TelescopeSubsystem.getInstance().setFF(telescopeFF);
 
         velTelescope = 0;
-//        if(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2)
-            velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
+        velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
 
-//        TelescopeSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getLeftTriggerAxis() > 0.2 ? velTelescope : 0);
         TelescopeSubsystem.getInstance().setRaw(velTelescope);
 
         lastTime = Timer.getFPGATimestamp();

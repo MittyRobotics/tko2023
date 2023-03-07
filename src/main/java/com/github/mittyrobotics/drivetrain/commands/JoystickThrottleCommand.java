@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.util.Gyro;
@@ -29,14 +30,7 @@ public class JoystickThrottleCommand extends CommandBase {
             SwerveConstants.ANGLE_LOCK_I, SwerveConstants.ANGLE_LOCK_D);
 
     int anglePreset = 2;
-    double currentAngle = 0;
-
-    double[] quad2sp = {0, Math.PI/2, Math.PI, -Math.PI/2};
-    double[] quad3sp = {0, Math.PI/2, Math.PI, 3*Math.PI/2};
-    double[] quad4sp = {2*Math.PI, Math.PI/2, Math.PI, 3*Math.PI/2};
-    double[] quad1sp = {2*Math.PI, 5*Math.PI/2, Math.PI, 3*Math.PI/2};
-
-    double[] correctSP = quad2sp;
+    double currentAngle = 0, currentDesired = 0;
 
     public JoystickThrottleCommand() {
         this.anglePreset = anglePreset;
@@ -45,7 +39,7 @@ public class JoystickThrottleCommand extends CommandBase {
 
     @Override
     public void initialize() {
-
+        controller.setSetpoint(0);
     }
 
     @Override
@@ -82,34 +76,16 @@ public class JoystickThrottleCommand extends CommandBase {
         double input = Math.sqrt(leftY * leftY + leftX * leftX);
         double throttle;
 
-        double speed75 = 0.35;
-        if (input < 0.75) throttle = (input / 0.75) * SwerveConstants.MAX_LINEAR_VEL * speed75;
-        else throttle = SwerveConstants.MAX_LINEAR_VEL * speed75 +
-                (Math.pow(input - 0.75, 1.5) / Math.pow(0.25, 1.5)) * SwerveConstants.MAX_ANGULAR_VEL * (1 - speed75);
+        throttle = Math.pow(input, 2) * (OI.getInstance().getDriveController().getLeftBumper() ? SwerveConstants.MAX_BOOST_LINEAR_VEL :
+                        SwerveConstants.MAX_LINEAR_VEL);
 
         double angle = Math.atan2(leftY, leftX) + heading;
-//        double throttle = Math.pow(Math.sqrt(leftY * leftY + leftX * leftX), 2) * SwerveConstants.MAX_LINEAR_VEL;
-        if (OI.getInstance().getPS4Controller().getCircleButton())
-            throttle /= 5;
+
         if(disabled) throttle = 0;
 
         linearVel = new Vector(
                 new Angle(angle), throttle
         );
-
-        currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingAngle());
-
-
-
-        if(currentAngle >= 3*Math.PI/2 && currentAngle < 2*Math.PI) {
-            correctSP = quad1sp;
-        } else if(currentAngle >= 0 && currentAngle < Math.PI/2) {
-            correctSP = quad2sp;
-        } else if(currentAngle >= Math.PI/2 && currentAngle < Math.PI) {
-            correctSP = quad3sp;
-        } else {
-            correctSP = quad4sp;
-        }
 
         if(rightX < 0) {
             angularVel = -(Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL);
@@ -118,28 +94,35 @@ public class JoystickThrottleCommand extends CommandBase {
         SmartDashboard.putNumber("rightx", rightX);
         SmartDashboard.putNumber("angular vel", angularVel);
 
-        if(y) {
-            anglePreset = 0;
-            controller.setSetpoint(correctSP[anglePreset]);
-            angularVel = controller.calculate(currentAngle);
-        } else if(b) {
-            anglePreset = 1;
-            controller.setSetpoint(correctSP[anglePreset]);
-            angularVel = controller.calculate(currentAngle);
-        } else if(a) {
-            anglePreset = 2;
-            controller.setSetpoint(correctSP[anglePreset]);
-            angularVel = controller.calculate(currentAngle);
-        } else if(x) {
-            anglePreset = 3;
-            controller.setSetpoint(correctSP[anglePreset]);
-            angularVel = controller.calculate(currentAngle);
+        if(y || a) {
+            currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingRadians());
+            currentDesired = SwerveSubsystem.standardize(y ? 0 : Math.PI + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
+
+            boolean right;
+            double dist;
+
+            if (currentDesired == Math.PI) {
+                if (currentAngle < Math.PI) {
+                    right = true;
+                    dist = Math.PI - currentAngle;
+                } else {
+                    right = false;
+                    dist = currentAngle - Math.PI;
+                }
+            } else {
+                if (currentAngle > Math.PI) {
+                    right = true;
+                    dist = 2 * Math.PI - currentAngle;
+                } else {
+                    right = false;
+                    dist = currentAngle;
+                }
+            }
+
+            angularVel = controller.calculate(dist * (right ? 1 : -1));
         }
 
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? SwerveConstants.BOOST_THROTTLE : 1, linearVel), angularVel);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
-
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0.2, 0.5), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 

@@ -149,25 +149,25 @@ public class OI {
 
     public void setupControls() {
         Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
-        coneMode.onTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
 
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
-        cubeMode.onTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
 
         Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
-        none.onTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
+        none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger zeroAll = new Trigger(() -> StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE);
-        zeroAll.onTrue(new InstantCommand(this::zeroAll));
+        zeroAll.whileTrue(new InstantCommand(this::zeroAll));
 
         Trigger groundKinematics = new Trigger(getOperatorController()::getAButton);
-        groundKinematics.onTrue(new InstantCommand(this::handleGround));
+        groundKinematics.whileTrue(new InstantCommand(this::handleGround));
 
         Trigger midKinematics = new Trigger(getOperatorController()::getXButton);
-        midKinematics.onTrue(new InstantCommand(this::handleMid));
+        midKinematics.whileTrue(new InstantCommand(this::handleMid));
 
         Trigger highKinematics = new Trigger(getOperatorController()::getYButton);
-        highKinematics.onTrue(new InstantCommand(this::handleHigh));
+        highKinematics.whileTrue(new InstantCommand(this::handleHigh));
 
         Trigger readyToScore = new Trigger(() ->
                 ((OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
@@ -176,13 +176,13 @@ public class OI {
         readyToScore.onTrue(new InstantCommand(this::handleScore));
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
-        humanPlayerKinematics.onTrue(new InstantCommand(this::handleHumanPlayer));
+        humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+        Trigger autoIntakeGround = new Trigger(() -> getDriveController().getXButton()
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
         autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 
-        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
+        Trigger autoIntakeHP = new Trigger(() -> getDriveController().getBButton()
                 && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
         autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 

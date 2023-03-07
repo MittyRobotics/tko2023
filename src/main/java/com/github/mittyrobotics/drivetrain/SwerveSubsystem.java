@@ -45,10 +45,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         return new Pose(forwardKinematics.getLatestPose(), new Angle(Gyro.getInstance().getHeadingRadians()));
     }
 
-    public Pose getPoseAtTime(double time) {
-        return new Pose(forwardKinematics.getPoseAtTime(time), new Angle(Gyro.getInstance().getHeadingAngle()));
-    }
-
     public Vector getVel() {
         return forwardKinematics.vel;
     }
@@ -159,10 +155,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public double[] getDiffDriveAngles() {
         return diffDriveKinematics.angles;
-    }
-
-    public double getPigeonHeading() {
-        return Gyro.getInstance().getHeadingAngle();
     }
 
     public double[] desiredVelocities() {
@@ -316,12 +308,15 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         return driveFalcon[1].getSelectedSensorVelocity();
     }
 
-    public void setPose(Point p) {
-        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() * 1000000, p));
+    public void setPose(Pose p) {
+        forwardKinematics.pose.add(new Pair(System.currentTimeMillis() * 1000000, p.getPosition()));
+        forwardKinematics.angles.add(new Pair(System.currentTimeMillis() * 1000000, new Point(
+                Math.cos(p.getHeading().getRadians()),
+                Math.sin(p.getHeading().getRadians()))));
     }
 
     public void resetPose() {
-        setPose(new Point(0, 0));
+        setPose(new Pose(new Point(0, 0), new Angle(0)));
     }
 
     public void updateForwardKinematics() {
@@ -336,11 +331,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             prevEnc[i] = cur;
         }
 
-        SmartDashboard.putNumber("module angle", angle(0));
-
-//        for(int i = 0; i < 4; i++) {
-//            System.out.println(modules[i].toStringMetric());
-//        }
         forwardKinematics.updateForwardKinematics(modules);
     }
 
@@ -439,11 +429,11 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
 
+            // TODO: check this
             new_ = new Point(-new_.getY(), new_.getX());
 
             pose.add(new Pair(nanoTime, Point.add(pose.get(pose.size() - 1).getValue(), new_)));
-            directionOfTravel = new Angle(Gyro.getInstance().getHeadingAngle());
-//            System.out.println("GYRO: " + directionOfTravel.getRadians());
+            directionOfTravel = new Angle(Gyro.getInstance().getHeadingRadians());
 
             angles.add(new Pair(nanoTime, new Point(Math.cos(directionOfTravel.getRadians()),
                     Math.sin(directionOfTravel.getRadians()))));

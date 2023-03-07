@@ -16,6 +16,7 @@ import java.util.Arrays;
 public class Odometry {
     private static Odometry instance;
     private double last_time;
+    public boolean FIELD_LEFT_SIDE = true;
 
     public static Odometry getInstance() {
         if (instance == null) instance = new Odometry();

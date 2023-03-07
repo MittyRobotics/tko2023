@@ -1,6 +1,10 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.drivetrain.Pair;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -40,7 +44,11 @@ public class Robot extends TimedRobot {
     OI.getInstance().setupControls();
 
 
-    SwerveSubsystem.getInstance().resetPose();
+    // TODO: check this
+    Odometry.getInstance().FIELD_LEFT_SIDE = true;
+    Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+
+    SwerveSubsystem.getInstance().setPose(new Pose(new Point(134, 38), new Angle(Math.PI)));
     Odometry.getInstance().setState(134, 38, Math.PI);
 
   }
