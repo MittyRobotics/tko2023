@@ -45,11 +45,11 @@ public class Robot extends TimedRobot {
 
 
     // TODO: check this
-    Odometry.getInstance().FIELD_LEFT_SIDE = true;
+    Odometry.getInstance().FIELD_LEFT_SIDE = false;
     Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 
-    SwerveSubsystem.getInstance().setPose(new Pose(new Point(134, 38), new Angle(Math.PI)));
-    Odometry.getInstance().setState(134, 38, Math.PI);
+    SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
+    Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 
   }
 
@@ -57,12 +57,12 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    SwerveSubsystem.getInstance().updateForwardKinematics();
-    Odometry.getInstance().update();
+//    SwerveSubsystem.getInstance().updateForwardKinematics();
+//    Odometry.getInstance().update();
 
-
-    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
-    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
+//    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
+//    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
+//    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
 //    LoggerInterface.getInstance().put("Intake State", StateMachine.getInstance().getIntakingState());
 //    LoggerInterface.getInstance().put("Robot State", StateMachine.getInstance().getCurrentRobotState());
 //    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    SwerveSubsystem.getInstance().resetPose();
+//    SwerveSubsystem.getInstance().resetPose();
 //
 //    Odometry.getInstance().setState(162, 75, Math.PI);
 //
@@ -139,6 +139,8 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+      TelescopeSubsystem.getInstance().setCoastMode();
+      PivotSubsystem.getInstance().setCoastMode();
     LedSubsystem.getInstance().turnOff();
   }
 
