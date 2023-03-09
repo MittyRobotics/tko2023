@@ -17,8 +17,8 @@ public class SwerveConstants {
 
 
 
-    public static final double MAX_LINEAR_VEL = 10 / 3.28084; //10 ft/s
-    public static final double MAX_BOOST_LINEAR_VEL = 18 / 3.28084; //18 ft/s
+    public static final double MAX_LINEAR_VEL = 7 / 3.28084; //10 ft/s
+    public static final double MAX_BOOST_LINEAR_VEL = 15 / 3.28084; //18 ft/s
 
 
     public static final double MAX_ANGULAR_VEL = 3; // was 3.5

@@ -55,7 +55,7 @@ public class LoggerInterface {
     }
 
     public void putDesiredCamera(int i) {
-        table.putValue("dcam", NetworkTableValue.makeInteger(i));
+        table.putValue("idealcam", NetworkTableValue.makeInteger(i));
     }
     public void print() {
 

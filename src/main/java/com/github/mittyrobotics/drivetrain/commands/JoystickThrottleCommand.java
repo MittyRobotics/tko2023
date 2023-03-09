@@ -45,16 +45,16 @@ public class JoystickThrottleCommand extends CommandBase {
 
     @Override
     public void execute() {
-        a = OI.getInstance().getPS4Controller().getCrossButton();
-        b = OI.getInstance().getPS4Controller().getCircleButton();
-        x = OI.getInstance().getPS4Controller().getSquareButton();
-        y = OI.getInstance().getPS4Controller().getTriangleButton();
+        a = OI.getInstance().getDriveController().getAButton();
+//        b = OI.getInstance().getPS4Controller().getCircleButton();
+//        x = OI.getInstance().getPS4Controller().getSquareButton();
+        y = OI.getInstance().getDriveController().getYButton();
 
-        fieldY = OI.getInstance().getPS4Controller().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
-        fieldX = -OI.getInstance().getPS4Controller().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);
+        fieldY = OI.getInstance().getDriveController().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
+        fieldX = -OI.getInstance().getDriveController().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);
 
         rightX = OI.getInstance().getDriveController().getRightX();
-        rightTrigger = (OI.getInstance().getPS4Controller().getR2Axis() + 1) / 2.;
+        rightTrigger = OI.getInstance().getDriveController().getRightTriggerAxis();
 
         notMoving = false;
 
@@ -91,8 +91,8 @@ public class JoystickThrottleCommand extends CommandBase {
         );
 
         if(rightX < 0) {
-            angularVel = -(Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL);
-        } else angularVel = Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL;
+            angularVel = (Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL);
+        } else angularVel = -Math.pow(rightX, 2) * SwerveConstants.MAX_ANGULAR_VEL;
 
         SmartDashboard.putNumber("rightx", rightX);
         SmartDashboard.putNumber("angular vel", angularVel);

@@ -82,7 +82,9 @@ public class OI {
 
     public void zeroAll() {
         ArmKinematics.setArmKinematics(new Angle(0), 0);
-        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
+//        System.out.println("\n\n\n\n" + StateMachine.getInstance().getCurrentRobotState());
+        if (StateMachine.getInstance().getProfile() != StateMachine.ProfileState.HIGH_TO_STOWED)
+            StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
     }
 
@@ -90,12 +92,12 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
-        StateMachine.getInstance().setIntaking();
+//        StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
-            ArmKinematics.setArmKinematics(new Angle(1.16), 0.527);
+            ArmKinematics.setArmKinematics(new Angle(1.16 - 0.1), 0.527);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
             ArmKinematics.setArmKinematics(new Angle(1.304), 0);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.MID);
@@ -104,44 +106,51 @@ public class OI {
 
     public void handleHigh() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
-            ArmKinematics.setArmKinematics(new Angle(1.12), 0.9513);
+            ArmKinematics.setArmKinematics(new Angle(1.12 - 0.15), 0.9513 + 0.15);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
-            ArmKinematics.setArmKinematics(new Angle(1.263 - 0.2), 0.494);
+            ArmKinematics.setArmKinematics(new Angle(1.263 - 0.2 - 0.1), 0.494);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HIGH);
         StateMachine.getInstance().setStateHigh();
     }
 
     public void handleHumanPlayer() {
-        ArmKinematics.setArmKinematics(new Angle(1.071 - 0.05), 0.479);
+        ArmKinematics.setArmKinematics(new Angle(1.071), 0.479);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
-        StateMachine.getInstance().setIntaking();
+//        StateMachine.getInstance().setIntaking();
     }
     
     public void handleScore() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE) {
             StateMachine.getInstance().setOuttaking();
 
+            StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
             Util.triggerFunctionAfterTime(() -> {
                 zeroAll();
                 Util.triggerFunctionAfterTime(() -> {
                     StateMachine.getInstance().setIntakeOff();
+                    StateMachine.getInstance().setStateNone();
+                    Odometry.getInstance().setScoringCam(false);
                 }, 200);
             }, 300);
         } else {
             if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
             double curRad = ArmKinematics.getTelescopeDesired();
             double curAngle = ArmKinematics.getPivotDesired().getRadians();
-            ArmKinematics.setArmKinematics(new Angle(curAngle + 5 * Math.PI/180), curRad);
+            ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
 
-            StateMachine.getInstance().setOuttaking();
-
+            StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
             Util.triggerFunctionAfterTime(() -> {
-                zeroAll();
+                StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
-                    StateMachine.getInstance().setIntakeOff();
-                }, 500);
-            }, 300);
+                    zeroAll();
+                    Util.triggerFunctionAfterTime(() -> {
+                        StateMachine.getInstance().setIntakeOff();
+                        StateMachine.getInstance().setStateNone();
+                        Odometry.getInstance().setScoringCam(false);
+                    }, 500);
+                }, 100);
+            }, 400);
         }
     }
 
@@ -159,7 +168,11 @@ public class OI {
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
         cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
 
-        Trigger none = new Trigger(() -> getOperatorController().getRightTriggerAxis() < 0.5 && getOperatorController().getLeftTriggerAxis() < 0.5);
+        Trigger none = new Trigger(() -> (getOperatorController().getRightTriggerAxis() < 0.5 &&
+                getOperatorController().getLeftTriggerAxis() < 0.5) && (
+                        StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.HIGH &&
+                                StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.MID
+                ));
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger zeroAll = new Trigger(() -> StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE);
@@ -175,32 +188,34 @@ public class OI {
         highKinematics.whileTrue(new InstantCommand(this::handleHigh));
 
         Trigger readyToScore = new Trigger(() ->
-                ((OI.getInstance().getOperatorController().getXButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID) ||
-                (OI.getInstance().getOperatorController().getYButtonReleased() && StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH))
+                (StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.MID ||
+                        StateMachine.getInstance().getCurrentRobotState() == StateMachine.RobotState.HIGH) &&
+                        (getOperatorController().getRightTriggerAxis() < 0.5 &&
+                                getOperatorController().getLeftTriggerAxis() < 0.5)
         );
         readyToScore.onTrue(new InstantCommand(this::handleScore));
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
-                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
-
-        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
-                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
-
-        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
-
-        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
-
-        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
-
-        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
-        drive.whileTrue(new JoystickThrottleCommand());
+//        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+//        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
+//
+//        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
+//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+//        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
+//
+//        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
+//        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
+//
+//        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
+//        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
+//
+//        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
+//        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
+//
+//        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
+//        drive.whileTrue(new JoystickThrottleCommand());
     }
 }

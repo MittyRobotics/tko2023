@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.intake.commands;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -25,6 +26,7 @@ public class AutoIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
+        System.out.println(StateMachine.getInstance().getProfile());
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
@@ -33,23 +35,29 @@ public class AutoIntakeCommand extends CommandBase {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             StateMachine.getInstance().setIntakeStowing();
+            Odometry.getInstance().setScoringCam(true);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
             //Outtake
-            IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+            if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) {
+                IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED_CONE);
+            } else {
+                IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+            }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.INTAKE) {
             //Intake
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
 
             //If prox sensor detected index for another second then stow
-            if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
-                indexing = true;
-                Util.triggerFunctionAfterTime(() -> {
-                    ArmKinematics.setArmKinematics(new Angle(0), 0);
-                    StateMachine.getInstance().setStateStowed();
-                    StateMachine.getInstance().setIntakeStowing();
-                    indexing = false;
-                }, 1000);
-            }
+//            if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
+//                indexing = true;
+//                Util.triggerFunctionAfterTime(() -> {
+//                    ArmKinematics.setArmKinematics(new Angle(0), 0);
+//                    StateMachine.getInstance().setStateStowed();
+//                    StateMachine.getInstance().setIntakeStowing();
+//                    Odometry.getInstance().setScoringCam(true);
+//                    indexing = false;
+//                }, 1000);
+//            }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.STOW_SPEED);
