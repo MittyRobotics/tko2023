@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.intake.commands;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -34,6 +35,7 @@ public class AutoIntakeCommand extends CommandBase {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             StateMachine.getInstance().setIntakeStowing();
+            Odometry.getInstance().setScoringCam(true);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
             //Outtake
             if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) {
@@ -52,6 +54,7 @@ public class AutoIntakeCommand extends CommandBase {
 //                    ArmKinematics.setArmKinematics(new Angle(0), 0);
 //                    StateMachine.getInstance().setStateStowed();
 //                    StateMachine.getInstance().setIntakeStowing();
+//                    Odometry.getInstance().setScoringCam(true);
 //                    indexing = false;
 //                }, 1000);
 //            }

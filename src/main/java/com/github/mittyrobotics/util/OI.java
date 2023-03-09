@@ -130,6 +130,7 @@ public class OI {
                 Util.triggerFunctionAfterTime(() -> {
                     StateMachine.getInstance().setIntakeOff();
                     StateMachine.getInstance().setStateNone();
+                    Odometry.getInstance().setScoringCam(false);
                 }, 200);
             }, 300);
         } else {
@@ -146,6 +147,7 @@ public class OI {
                     Util.triggerFunctionAfterTime(() -> {
                         StateMachine.getInstance().setIntakeOff();
                         StateMachine.getInstance().setStateNone();
+                        Odometry.getInstance().setScoringCam(false);
                     }, 500);
                 }, 100);
             }, 400);

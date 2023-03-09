@@ -6,18 +6,19 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import org.ejml.simple.SimpleMatrix;
-
-import java.util.Arrays;
 
 public class Odometry {
     private static Odometry instance;
     private double last_time;
     public boolean FIELD_LEFT_SIDE = true;
-    public double FIELD_HALF_X = 325.61;
+    public final double FIELD_HALF_X = 325.61;
+    public final double MID_TAG_Y = 108.19;
+    private boolean scoringCam;
+    private boolean useCustomCam;
+    private int customCam;
     private Pose lastPose;
 
     public static Odometry getInstance() {
@@ -28,6 +29,7 @@ public class Odometry {
     public Odometry() {
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
+        scoringCam = true;
     }
 
     double offset = 20.873;
@@ -136,18 +138,40 @@ public class Odometry {
     public double[] getPose() {
         Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
 
-        if (lastPose == null) lastPose = curP;
+        if (lastPose == null) {
+            last_time = System.currentTimeMillis() * 1000000;
+            lastPose = curP;
+        }
         Point pos = Point.add(curP.getPosition(), Point.multiply(-1, lastPose.getPosition()));
         double angle = curP.getHeading().getRadians() - lastPose.getHeading().getRadians();
 
         return new double[]{pos.getX() + state.get(0, 0), pos.getY() + state.get(1, 0), angle + state.get(2, 0)};
     }
 
+    public void setScoringCam(boolean scoring) {
+        scoringCam = scoring;
+    }
+
+    public void setCustomCam(int cam) {
+        customCam = cam;
+        useCustomCam = true;
+    }
+
+    public void disableCustomCam() {
+        useCustomCam = false;
+    }
+
     public int getIdealCamera() {
-        if(getPose()[0] <= FIELD_HALF_X) {
-            return 2;
+        if (useCustomCam) return customCam;
+        if (scoringCam) {
+            double curPoseY = getPose()[1];
+            if(FIELD_LEFT_SIDE) {
+                return curPoseY < MID_TAG_Y ? 2 : 0; //right vs left front cam
+            } else {
+                return curPoseY < MID_TAG_Y ? 0 : 2; //left vs right front cam
+            }
         } else {
-            return 0;
+            return FIELD_LEFT_SIDE ? 0 : 2; //left vs right front cam
         }
     }
 
@@ -161,21 +185,8 @@ public class Odometry {
 
     //INPUT DIMS
 
-//    SimpleMatrix W;
-//
-//    SimpleMatrix V;
-
-//    SimpleMatrix H;
-
     public SimpleMatrix f(SimpleMatrix state, Vector v, double w, double dt) {
-        //FIXXXXXXX - done?
-//        System.out.println(v);
-//        System.out.println(v.getX() * dt + "   " + v.getY() * dt + "    " + w * dt);
         return state.plus(new SimpleMatrix(new double[] {v.getX() * dt, v.getY() * dt, w * dt}));
-//        return new SimpleMatrix(new double[][]
-//                {{1, 0, dt, 0, 0, 0},
-//                 {0, 1, 0, dt, 0, 0},
-//                 {0, 0, 0, 0, 1, dt}});
     }
 
     public SimpleMatrix getJf(double v, double angle, double w, double dt) {
@@ -246,10 +257,6 @@ public class Odometry {
         double[] pose = getPose();
         return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2]));
     }
-//
-//    public Pose getState() {
-//        return SwerveSubsystem.getInstance().getPose();
-//    }
 
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;
