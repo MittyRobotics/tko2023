@@ -136,6 +136,7 @@ public class Odometry {
     public double[] getPose() {
         Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
 
+        if (lastPose == null) return new double[]{0, 0, 0};
         Point pos = Point.add(curP.getPosition(), Point.multiply(-1, lastPose.getPosition()));
         double angle = curP.getHeading().getRadians() - lastPose.getHeading().getRadians();
 
@@ -239,6 +240,14 @@ public class Odometry {
             stateUpdate(z[i]);
             covarianceUpdate();
         }
+    }
+
+    public void setLastPose(Pose p) {
+        lastPose = p;
+    }
+
+    public void setLastTime(double t) {
+        last_time = t;
     }
 
     public Pose getState() {

@@ -13,6 +13,11 @@ public class AutoIntakeCommand extends CommandBase {
     boolean indexing = false;
     boolean outtaking = false;
 
+    public AutoIntakeCommand() {
+        setName("auto intake");
+        addRequirements(IntakeSubsystem.getInstance());
+    }
+
     @Override
     public void initialize() {
         super.initialize();
@@ -22,7 +27,7 @@ public class AutoIntakeCommand extends CommandBase {
     public void execute() {
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Intake override
-            IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
             StateMachine.getInstance().setIntakeOff();
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
             //Outtake override

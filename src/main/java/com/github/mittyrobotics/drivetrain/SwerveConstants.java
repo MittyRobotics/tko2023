@@ -31,11 +31,11 @@ public class SwerveConstants {
 
     public static final double LINEAR_VELOCITY_D = 0.001;
 
-    public static final double ANGLE_LOCK_P = 0.1;
+    public static final double ANGLE_LOCK_P = 2.5;
 
     public static final double ANGLE_LOCK_I = 0.0;
 
-    public static final double ANGLE_LOCK_D = 0.0;
+    public static final double ANGLE_LOCK_D = 0.02;
 
 //    public static final double LINEAR_VELOCITY_P = 0;
 //    public static final double LINEAR_VELOCITY_I = 0;
