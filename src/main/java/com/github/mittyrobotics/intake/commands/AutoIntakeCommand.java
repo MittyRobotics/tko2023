@@ -47,17 +47,17 @@ public class AutoIntakeCommand extends CommandBase {
             //Intake
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
 
-            //If prox sensor detected index for another second then stow
-//            if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
-//                indexing = true;
-//                Util.triggerFunctionAfterTime(() -> {
-//                    ArmKinematics.setArmKinematics(new Angle(0), 0);
-//                    StateMachine.getInstance().setStateStowed();
-//                    StateMachine.getInstance().setIntakeStowing();
-//                    Odometry.getInstance().setScoringCam(true);
-//                    indexing = false;
-//                }, 1000);
-//            }
+//            If prox sensor detected index for another second then stow
+            if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
+                indexing = true;
+                Util.triggerFunctionAfterTime(() -> {
+                    ArmKinematics.setArmKinematics(new Angle(0), 0);
+                    StateMachine.getInstance().setStateStowed();
+                    StateMachine.getInstance().setIntakeStowing();
+                    Odometry.getInstance().setScoringCam(true);
+                    indexing = false;
+                }, 1000);
+            }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.STOW_SPEED);

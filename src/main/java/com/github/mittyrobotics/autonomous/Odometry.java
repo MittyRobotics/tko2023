@@ -167,15 +167,18 @@ public class Odometry {
     public int getIdealCamera() {
         if (useCustomCam) return customCam;
         if (scoringCam) {
-            double curPoseY = getPose()[1];
             if(FIELD_LEFT_SIDE) {
-                return curPoseY < MID_TAG_Y ? 2 : 0; //right vs left front cam
+                return belowMiddleY() ? 1 : 2; //right vs left front cam
             } else {
-                return curPoseY < MID_TAG_Y ? 0 : 2; //left vs right front cam
+                return belowMiddleY() ? 2 : 1; //left vs right front cam
             }
         } else {
-            return FIELD_LEFT_SIDE ? 0 : 2; //left vs right front cam
+            return FIELD_LEFT_SIDE ? 2 : 1; //left vs right front cam
         }
+    }
+
+    public boolean belowMiddleY() {
+        return getPose()[1] < MID_TAG_Y;
     }
 
     public void updateCovarianceR(double x) {

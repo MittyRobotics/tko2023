@@ -79,6 +79,10 @@ public class SwervePath {
         return Pose.doSigmoidInterpolation(startHeading, endHeading, fraction);
     }
 
+    public Angle getEndHeading() {
+        return endHeading;
+    }
+
     public double getCurvature(double t) {
         return spline.curvature(t);
     }

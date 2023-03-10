@@ -82,9 +82,7 @@ public class OI {
 
     public void zeroAll() {
         ArmKinematics.setArmKinematics(new Angle(0), 0);
-//        System.out.println("\n\n\n\n" + StateMachine.getInstance().getCurrentRobotState());
-        if (StateMachine.getInstance().getProfile() != StateMachine.ProfileState.HIGH_TO_STOWED)
-            StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
+        StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
     }
 
@@ -92,7 +90,7 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
-//        StateMachine.getInstance().setIntaking();
+        StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
@@ -117,14 +115,15 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(1.071), 0.479);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
-//        StateMachine.getInstance().setIntaking();
+        StateMachine.getInstance().setIntaking();
     }
     
     public void handleScore() {
+        StateMachine.getInstance().setStateScoring();
+
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE) {
             StateMachine.getInstance().setOuttaking();
 
-            StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
             Util.triggerFunctionAfterTime(() -> {
                 zeroAll();
                 Util.triggerFunctionAfterTime(() -> {
@@ -134,12 +133,10 @@ public class OI {
                 }, 200);
             }, 300);
         } else {
-            if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
             double curRad = ArmKinematics.getTelescopeDesired();
             double curAngle = ArmKinematics.getPivotDesired().getRadians();
             ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
 
-            StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
@@ -168,11 +165,12 @@ public class OI {
         Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
         cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
 
-        Trigger none = new Trigger(() -> (getOperatorController().getRightTriggerAxis() < 0.5 &&
-                getOperatorController().getLeftTriggerAxis() < 0.5) && (
-                        StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.HIGH &&
-                                StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.MID
-                ));
+        Trigger none = new Trigger(() ->
+                (getOperatorController().getRightTriggerAxis() < 0.5 &&
+                getOperatorController().getLeftTriggerAxis() < 0.5) &&
+                StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.HIGH &&
+                StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.MID &&
+                StateMachine.getInstance().getCurrentRobotState() != StateMachine.RobotState.SCORING);
         none.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateNone));
 
         Trigger zeroAll = new Trigger(() -> StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE);

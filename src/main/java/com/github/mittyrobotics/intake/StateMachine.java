@@ -42,6 +42,10 @@ public class StateMachine {
         currentRobotState = RobotState.HP;
     }
 
+    public void setStateScoring() {
+        currentRobotState = RobotState.SCORING;
+    }
+
     public PieceState getCurrentPieceState() {
         return currentPieceState;
     }
@@ -111,6 +115,9 @@ public class StateMachine {
             case HP:
                 profileState = ProfileState.HP_TO_STOWED;
                 break;
+            case SCORING:
+                profileState = ProfileState.SCORING_TO_STOWED;
+                break;
             default:
                 profileState = ProfileState.DEFAULT;
         }
@@ -140,7 +147,8 @@ public class StateMachine {
         MID,
         HIGH,
         HP,
-        STOWED
+        STOWED,
+        SCORING
     }
 
     public enum PieceState {
@@ -167,6 +175,7 @@ public class StateMachine {
         HP_TO_STOWED,
         MID_TO_HIGH,
         HIGH_TO_MID,
+        SCORING_TO_STOWED,
         DEFAULT
     }
 }
