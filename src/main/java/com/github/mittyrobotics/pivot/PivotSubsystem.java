@@ -30,9 +30,9 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i].restoreFactoryDefaults();
             spark[i].getEncoder().setPosition(0);
             spark[i].setIdleMode(CANSparkMax.IdleMode.kBrake);
-            spark[i].getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
-            spark[i].getPIDController().setSmartMotionMaxAccel(30. / 360 * 60, 0);
-            spark[i].getPIDController().setSmartMotionMaxVelocity(40. / 360 * 60, 0);
+//            spark[i].getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
+//            spark[i].getPIDController().setSmartMotionMaxAccel(30. / 360 * 60, 0);
+//            spark[i].getPIDController().setSmartMotionMaxVelocity(40. / 360 * 60, 0);
             spark[i].getPIDController().setFeedbackDevice(spark[i].getEncoder());
 //            spark[i].getPIDController().setFF();
 //            spark[i].getPIDController().setOutputRange(-0.1, 0.1);
@@ -52,29 +52,29 @@ public class PivotSubsystem extends SubsystemBase {
 
     private void createMPs() {
         PivotConstants.PIVOT_MPS.put(DEFAULT,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_GROUND,
-                new TrapezoidalMotionProfile(1200 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1200 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_MID,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_HIGH,
-                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_HP,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(GROUND_TO_STOWED,
-                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(MID_TO_STOWED,
-                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(HIGH_TO_STOWED,
-                new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(HP_TO_STOWED,
-                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(MID_TO_HIGH,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(HIGH_TO_MID,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(SCORING_TO_STOWED,
-                new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 15 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
     }
 
     public void setBrakeMode() {
