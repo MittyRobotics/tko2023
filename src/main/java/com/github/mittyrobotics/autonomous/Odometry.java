@@ -30,6 +30,8 @@ public class Odometry {
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
         scoringCam = true;
+
+        LoggerInterface.getInstance().putDesiredCamera(2);
     }
 
     double offset = 20.873;
@@ -137,6 +139,7 @@ public class Odometry {
 
     public double[] getPose() {
         Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getLatestPose();
+//        System.out.println("     - " + curP);
 
         if (lastPose == null) {
             last_time = System.currentTimeMillis() * 1000000;

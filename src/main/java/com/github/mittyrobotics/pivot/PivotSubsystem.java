@@ -62,7 +62,7 @@ public class PivotSubsystem extends SubsystemBase {
         PivotConstants.PIVOT_MPS.put(STOWED_TO_HP,
                 new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(GROUND_TO_STOWED,
-                new TrapezoidalMotionProfile(1200 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(MID_TO_STOWED,
                 new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 360 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(HIGH_TO_STOWED,

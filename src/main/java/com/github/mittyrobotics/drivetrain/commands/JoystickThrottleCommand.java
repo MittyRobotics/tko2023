@@ -122,7 +122,8 @@ public class JoystickThrottleCommand extends CommandBase {
                 }
             }
 
-            angularVel = controller.calculate(dist * (right ? 1 : -1));
+            angularVel = -controller.calculate(dist * (right ? 1 : -1));
+            disabled = false;
         }
 
 //        LoggerInterface.getInstance().put("Desired linear velocity", linearVel.toString());
@@ -136,9 +137,11 @@ public class JoystickThrottleCommand extends CommandBase {
         //wheel angles positive CCW
         double[] FortyFive = new double[]{Math.PI/4, -Math.PI/4, Math.PI/4, -Math.PI/4};
 
-        if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
+//        if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
 //            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
-        } else if(!disabled) {
+
+//        } else if(!disabled) {
+        if (!disabled) {
             SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         }
     }

@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 
 
     // TODO: check this
-    Odometry.getInstance().FIELD_LEFT_SIDE = false;
+    Odometry.getInstance().FIELD_LEFT_SIDE = true;
     Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 
     SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
@@ -57,8 +57,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-//    SwerveSubsystem.getInstance().updateForwardKinematics();
-//    Odometry.getInstance().update();
+    SwerveSubsystem.getInstance().updateForwardKinematics();
+    Odometry.getInstance().update();
 
     LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
     LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
@@ -134,14 +134,16 @@ public class Robot extends TimedRobot {
 //    } catch (JSONException e) {
 
 //    }
-    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
-    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
+
+//    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
+//    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
   }
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
       TelescopeSubsystem.getInstance().setCoastMode();
       PivotSubsystem.getInstance().setCoastMode();
+
     LedSubsystem.getInstance().turnOff();
   }
 
