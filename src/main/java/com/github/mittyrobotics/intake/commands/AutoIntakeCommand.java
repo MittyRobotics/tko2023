@@ -26,7 +26,7 @@ public class AutoIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        System.out.println(StateMachine.getInstance().getProfile());
+//        System.out.println(StateMachine.getInstance().getProfile());
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
@@ -52,6 +52,8 @@ public class AutoIntakeCommand extends CommandBase {
                 indexing = true;
                 Util.triggerFunctionAfterTime(() -> {
                     ArmKinematics.setArmKinematics(new Angle(0), 0);
+                    System.out.println(StateMachine.getInstance().getCurrentRobotState());
+                    StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
                     StateMachine.getInstance().setStateStowed();
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);

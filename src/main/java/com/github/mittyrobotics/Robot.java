@@ -60,10 +60,12 @@ public class Robot extends TimedRobot {
     SwerveSubsystem.getInstance().updateForwardKinematics();
     Odometry.getInstance().update();
 
-    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
-    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
-    System.out.println(Gyro.getInstance().getHeadingRadians());
+//    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
+//    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
+//    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+//    System.out.println(Gyro.getInstance().getHeadingRadians());
+
+//    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
 //    LoggerInterface.getInstance().put("Intake State", StateMachine.getInstance().getIntakingState());
 //    LoggerInterface.getInstance().put("Robot State", StateMachine.getInstance().getCurrentRobotState());
 //    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());

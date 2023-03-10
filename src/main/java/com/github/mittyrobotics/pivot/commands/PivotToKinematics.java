@@ -56,7 +56,7 @@ public class PivotToKinematics extends CommandBase {
                 0.8 + 0.2 / 12. * currentExtension);
         PivotSubsystem.getInstance().setFF(pivotFF);
 
-        PivotSubsystem.getInstance().configPID(0.00002, 0, 0);
+        PivotSubsystem.getInstance().configPID(0.0000, 0, 0);
 
         tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
                 1 - 0 / 12. * currentExtension :

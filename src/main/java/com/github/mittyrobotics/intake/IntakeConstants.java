@@ -2,7 +2,7 @@ package com.github.mittyrobotics.intake;
 
 public class IntakeConstants {
     public static final int INTAKE_SPARK_ID = 11;
-    public static final int PROX_SENSOR_ID = 4;
+    public static final int PROX_SENSOR_ID = 1;
 
     public static final double INTAKE_TO_NEO_GEAR_RATIO = 1/4.;
 
