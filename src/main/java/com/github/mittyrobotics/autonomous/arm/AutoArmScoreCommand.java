@@ -18,9 +18,12 @@ public class AutoArmScoreCommand extends CommandBase {
     private boolean scoring;
     private boolean ran;
     private StateMachine.RobotState level;
+    private boolean auto;
 
-    public AutoArmScoreCommand(StateMachine.RobotState level) {
+
+    public AutoArmScoreCommand(StateMachine.RobotState level, boolean auto) {
         this.level = level;
+        this.auto = auto;
     }
 
     @Override
@@ -58,12 +61,11 @@ public class AutoArmScoreCommand extends CommandBase {
                         Util.triggerFunctionAfterTime(() -> {
                             StateMachine.getInstance().setIntakeOff();
                             StateMachine.getInstance().setStateNone();
-                            Odometry.getInstance().setCustomCam(3);
+                            switchCam();
                             scoring = false;
                         }, 200);
                     }, 300);
                 } else {
-                    if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
                     double curRad = ArmKinematics.getTelescopeDesired();
                     double curAngle = ArmKinematics.getPivotDesired().getRadians();
                     ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
@@ -76,7 +78,7 @@ public class AutoArmScoreCommand extends CommandBase {
                             Util.triggerFunctionAfterTime(() -> {
                                 StateMachine.getInstance().setIntakeOff();
                                 StateMachine.getInstance().setStateNone();
-                                Odometry.getInstance().setCustomCam(3);
+                                switchCam();
                                 scoring = false;
                             }, 500);
                         }, 100);
@@ -84,6 +86,13 @@ public class AutoArmScoreCommand extends CommandBase {
                 }
                 ran = true;
             }
+        }
+    }
+    public void switchCam() {
+        if(auto) {
+            Odometry.getInstance().setCustomCam(3);
+        } else {
+            Odometry.getInstance().setScoringCam(false);
         }
     }
 
