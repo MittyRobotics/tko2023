@@ -5,8 +5,9 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,15 +16,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
-public class SwerveAutoDriveToTargetCommand extends CommandBase {
+public class SwerveAutoDriveToScoreCommand extends CommandBase {
     private SwervePath path;
     private double linearThreshold, angularThreshold;
     private Pose robot;
     private PIDController angularController;
-    private double speed = 0;
-    private double dt, lastT = 0;
+    private double speed = 0, targetAngle;
 
-    public SwerveAutoDriveToTargetCommand(double linearThreshold, double angularThreshold, SwervePath path) {
+    public SwerveAutoDriveToScoreCommand(double linearThreshold, double angularThreshold, SwervePath path) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
@@ -37,43 +37,25 @@ public class SwerveAutoDriveToTargetCommand extends CommandBase {
     public void initialize() {
         super.initialize();
         speed = path.getInitSpeed();
-        lastT = Timer.getFPGATimestamp();
+        targetAngle = path.getEndHeading().getRadians();
     }
 
     @Override
     public void execute() {
-        dt = Timer.getFPGATimestamp() - lastT;
         robot = Odometry.getInstance().getState();
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
         double leftY = OI.getInstance().getDriveController().getLeftX();
         double leftX = -OI.getInstance().getDriveController().getLeftY();
-        SmartDashboard.putNumber("leftx", leftX);
-        speed += path.getAccel() * dt;
-        speed = Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL);
-        SmartDashboard.putNumber("MAX", Math.min(speed, Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL));
-//        speed = Math.min(speed, path.getMaxSpeed());
-        SmartDashboard.putNumber("speed", speed);
+        speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
 
         double closest = path.getSpline().getClosestPoint(robot, 50, 10);
-        double length = path.getSpline().getLength(closest, 1.0, 17);
 
-        double vi = Math.sqrt(
-                path.getEndSpeed() * path.getEndSpeed() + 2 * path.getDecel() * length
-        );
-
-        speed = Math.min(vi, speed);
-
-        Vector vectorToEnd = new Vector(robot.getPosition(), path.getByT(1.0).getPosition());
-
-        Vector linearVel = new Vector(vectorToEnd.getX(), vectorToEnd.getY());
-
-        SmartDashboard.putNumber("closest", closest);
-
-        double heading = Gyro.getInstance().getHeadingRadians();
-        double angle = Math.atan2(linearVel.getY(), linearVel.getX()) - heading;
-        linearVel = new Vector(new Angle(angle), speed);
+        double heading = robot.getHeading().getRadians();
+        targetAngle = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getAngle().getRadians();
+        double angle = targetAngle - heading;
+        Vector linearVel = new Vector(new Angle(angle), speed);
 
         double angularVel = angularController.calculate(robot.getHeading().getRadians(), path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians());
         double currentAngle = robot.getHeading().getRadians();
@@ -84,24 +66,10 @@ public class SwerveAutoDriveToTargetCommand extends CommandBase {
             angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
-        //Can probably be removed
-        if (new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold &&
-                Math.abs(path.getByT(1.0).getHeading().getRadians() - robot.getHeading().getRadians()) < angularThreshold) {
-            linearVel = new Vector(0, 0);
-            angularVel = 0;
-            SmartDashboard.putBoolean("Halted", true);
-        } else {
-            SmartDashboard.putBoolean("Halted", false);
-        }
-
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0, 0), angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
-
-        lastT = Timer.getFPGATimestamp();
     }
 
     @Override
