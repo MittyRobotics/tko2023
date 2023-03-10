@@ -90,7 +90,13 @@ public class AutoArmScoreCommand extends CommandBase {
     }
     public void switchCam() {
         if(auto) {
-            Odometry.getInstance().setCustomCam(3);
+            int des;
+            if(Odometry.getInstance().FIELD_LEFT_SIDE) {
+                des = Odometry.getInstance().belowMiddleY() ? 3 : 0; //right vs left front cam
+            } else {
+                des = Odometry.getInstance().belowMiddleY() ? 0 : 3; //left vs right front cam
+            }
+            Odometry.getInstance().setCustomCam(des);
         } else {
             Odometry.getInstance().setScoringCam(false);
         }
