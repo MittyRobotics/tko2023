@@ -253,6 +253,14 @@ public class Odometry {
         }
     }
 
+    public void setLastPose(Pose p) {
+        lastPose = p;
+    }
+
+    public void setLastTime(double t) {
+        last_time = t;
+    }
+
     public Pose getState() {
         double[] pose = getPose();
         return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2]));

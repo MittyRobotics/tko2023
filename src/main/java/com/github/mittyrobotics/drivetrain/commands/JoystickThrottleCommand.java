@@ -78,7 +78,7 @@ public class JoystickThrottleCommand extends CommandBase {
         double input = Math.sqrt(fieldY * fieldY + fieldX * fieldX);
         double throttle;
 
-        throttle = Math.pow(input, 2) * (OI.getInstance().getDriveController().getLeftBumper() ? SwerveConstants.MAX_BOOST_LINEAR_VEL :
+        throttle = Math.pow(input, 2) * (OI.getInstance().getDriveController().getRightBumper() ? SwerveConstants.MAX_BOOST_LINEAR_VEL :
                         SwerveConstants.MAX_LINEAR_VEL);
 
         double angle_field = Math.atan2(fieldY, fieldX);
@@ -125,9 +125,10 @@ public class JoystickThrottleCommand extends CommandBase {
             angularVel = controller.calculate(dist * (right ? 1 : -1));
         }
 
-        LoggerInterface.getInstance().put("Desired linear velocity", linearVel.toString());
-        LoggerInterface.getInstance().put("Desired angular velocity", angularVel);
+//        LoggerInterface.getInstance().put("Desired linear velocity", linearVel.toString());
+//        LoggerInterface.getInstance().put("Desired angular velocity", angularVel);
 
+//        System.out.println("Linear: " + linearVel);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());

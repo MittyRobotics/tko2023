@@ -7,7 +7,7 @@ public class StateMachine {
     private PieceState lastPieceState;
     private IntakeState intakeState = IntakeState.OFF;
 
-    private ProfileState profileState = ProfileState.STOWED_TO_HIGH;
+    private ProfileState profileState = ProfileState.DEFAULT;
     
     public static StateMachine instance;
 

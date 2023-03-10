@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.LoggerInterface;
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -84,6 +85,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i].configFactoryDefault();
             rotationFalcon[i].setNeutralMode(NeutralMode.Coast);
             rotationFalcon[i].setInverted(SwerveConstants.ROTATION_FALCON_INVERT);
+            driveFalcon[i].setInverted(false);
             rotationFalcon[i].setSelectedSensorPosition(0);
             rotationFalcon[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             rotationFalcon[i].config_kP(0, SwerveConstants.ANGULAR_POSITION_P);
@@ -313,7 +315,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     }
 
     public void setPose(Pose p) {
-        forwardKinematics.poses.add(new Pair(System.currentTimeMillis() * 1000000, p));
+        long nano = System.currentTimeMillis() * 1000000;
+        forwardKinematics.poses.add(new Pair(nano, p));
+        Odometry.getInstance().setLastPose(p);
+        Odometry.getInstance().setLastTime(nano);
     }
 
     public void resetPose() {
@@ -327,7 +332,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             double cur = driveFalcon[i].getSelectedSensorPosition();
 
             LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(angle(i) + Gyro.getInstance().getHeadingRadians()), (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
+            modules[i] = new Vector(new Angle(angle(i) + Gyro.getInstance().getHeadingRadians()), 39.37 * (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;
@@ -430,9 +435,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             Point new_ = new Point(0, 0);
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
-
-            // TODO: check this
-            new_ = new Point(new_.getX(), new_.getY());
+//            new_ = new Point(new_.getX(), new_.getY());
 
             curHeading = new Angle(Gyro.getInstance().getHeadingRadians());
             poses.add(new Pair(nanoTime, new Pose(Point.add(poses.get(poses.size() - 1).getValue().getPosition(), new_), curHeading)));
@@ -486,8 +489,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             double a2 = pr.getHeading().getRadians();
 
             return new Pose(
-                    Point.multiply(39.37, Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
-                            Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition()))))),
+                    Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
+                            Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition())))),
 
                     new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1))
             );
@@ -500,7 +503,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
         public Pose getLatestPose() {
             if (poses.size() == 0) return new Pose(new Point(0, 0), new Angle(0));
-            return new Pose(Point.multiply(39.37, poses.get(poses.size() - 1).getValue().getPosition()), poses.get(poses.size() - 1).getValue().getHeading());
+            return new Pose(poses.get(poses.size() - 1).getValue().getPosition(), poses.get(poses.size() - 1).getValue().getHeading());
         }
 
         public Angle getCurHeading() {
