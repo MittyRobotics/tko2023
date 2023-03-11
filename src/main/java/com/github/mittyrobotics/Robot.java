@@ -1,9 +1,16 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
+import com.github.mittyrobotics.autonomous.arm.AutoScoreCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoDriveToScoreCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.Pair;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -23,63 +30,64 @@ import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
-6trt * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * 6trt * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
-  @Override
-  public void robotInit() {
-    LedSubsystem.getInstance().initHardware();
-    Gyro.getInstance().initHardware();
-    SwerveSubsystem.getInstance().initHardware();
+    @Override
+    public void robotInit() {
+        LedSubsystem.getInstance().initHardware();
+        Gyro.getInstance().initHardware();
+        SwerveSubsystem.getInstance().initHardware();
 
-    TelescopeSubsystem.getInstance().initHardware();
-    PivotSubsystem.getInstance().initHardware();
-    IntakeSubsystem.getInstance().initHardware();
+        TelescopeSubsystem.getInstance().initHardware();
+        PivotSubsystem.getInstance().initHardware();
+        IntakeSubsystem.getInstance().initHardware();
 
-    PivotSubsystem.getInstance().setBrakeMode();
-    TelescopeSubsystem.getInstance().setBrakeMode();
+        PivotSubsystem.getInstance().setBrakeMode();
+        TelescopeSubsystem.getInstance().setBrakeMode();
 
-    OI.getInstance().setupControls();
+//    OI.getInstance().setupControls();
 
 
-    // TODO: check this
-    Odometry.getInstance().FIELD_LEFT_SIDE = true;
-    Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+        // TODO: check this
+        Odometry.getInstance().FIELD_LEFT_SIDE = true;
+        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 
-    SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
-    Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
+        Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+        Odometry.getInstance().setScoringCam(true);
 
-  }
+    }
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
 
-    SwerveSubsystem.getInstance().updateForwardKinematics();
-    Odometry.getInstance().update();
+        SwerveSubsystem.getInstance().updateForwardKinematics();
+        Odometry.getInstance().update();
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-//    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
 
 //    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
 //    LoggerInterface.getInstance().put("Intake State", StateMachine.getInstance().getIntakingState());
 //    LoggerInterface.getInstance().put("Robot State", StateMachine.getInstance().getCurrentRobotState());
 //    System.out.println("mode:" + StateMachine.getInstance().getCurrentPieceState());
-//    Odometry.getInstance().update();
-//    SwerveSubsystem.getInstance().updateForwardKinematics();
+//    System.out.println("FROM SWERVE: " + SwerveSubsystem.getInstance().getPose());
+//    System.out.println("FROM ODOMETRY: " + Odometry.getInstance().getState());
 //    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
-  }
+    }
 
-  @Override
-  public void autonomousInit() {
+    @Override
+    public void autonomousInit() {
 
 //    SwerveSubsystem.getInstance().resetPose();
 //
-//    Odometry.getInstance().setState(162, 75, Math.PI);
+//    Odometry.getInstance().setState(103, 6, Math.PI);
 //
 //    SwervePath[] paths = {
 //            new SwervePath(
@@ -109,27 +117,74 @@ public class Robot extends TimedRobot {
 //
 //    SwerveAutoPickupCommandv1 command = new SwerveAutoPickupCommandv1(0.07, 0.05, path);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
-  }
+//    StateMachine.getInstance().setIntakeStowing();
+//    CommandScheduler.getInstance().schedule(new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE, false));
+//    CommandScheduler.getInstance().schedule(new AutoScoreCommand(new Pose(new Point(5, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)),
+//            StateMachine.RobotState.HIGH, true));
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
+//        SwervePath path = new SwervePath(
+//                new QuinticHermiteSpline(
+//                        Odometry.getInstance().getState(),
+//                        new Pose(new Point(30, 30), new Angle(Math.PI))
+////                        new Pose(Point.add(Odometry.getInstance().getState().getPosition(), new Point(24, 0)), new Angle(Math.PI))
+//                ),
+//                new Angle(0), new Angle(0),
+//                0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+//        );
+//
+//        SwerveAutoDriveToScoreCommand command = new SwerveAutoDriveToScoreCommand(0.05, 0.07, path);
+////        System.out.println(path.getSpline().getLength(1.0, 17));
+//        SwerveSubsystem.getInstance().setDefaultCommand(command);
+    }
+
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
 
 //    Odometry.getInstance().update();
 //    System.out.println("RAD: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("EXT: " + TelescopeSubsystem.getInstance().getDistanceMeters());
-  }
+    }
 
-  /** This function is called once when teleop is enabled. */
-  @Override
-  public void teleopInit() {
+    /**
+     * This function is called once when teleop is enabled.
+     */
+    @Override
+    public void teleopInit() {
+//    Odometry.getInstance().setState(103, 6, Math.PI);
+//    OI.getInstance().setupControls();
 //    SwerveAutoPickupCommandv2 command = new SwerveAutoPickupCommandv2(0.05, 0.05, path);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
-  }
+//    SwerveSubsystem.getInstance().setDefaultCommand(null);
+    CommandScheduler.getInstance().schedule(new SwerveAutoScoreCommand(
+            new Pose(
+                    Point.add(Odometry.getInstance().getScoringZone(8)[0].getPosition(), new Point(30, 0)),
+                    new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
+            ))
+    );
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
+//        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Math.PI)));
+//
+//        SwerveSubsystem.getInstance().updateForwardKinematics();
+//        Odometry.getInstance().update();
+
+
+//        CommandScheduler.getInstance().schedule(new SwerveAutoScoreCommand(
+//                new Pose(
+//                        new Point(-80, 20),
+//                        new Angle(Math.PI)
+//                ))
+//        );
+
+    }
+
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
 //    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
 //    try {
 //      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
@@ -139,33 +194,51 @@ public class Robot extends TimedRobot {
 
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
-  }
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {
-      TelescopeSubsystem.getInstance().setCoastMode();
-      PivotSubsystem.getInstance().setCoastMode();
+    }
 
-    LedSubsystem.getInstance().turnOff();
-  }
+    /**
+     * This function is called once when the robot is disabled.
+     */
+    @Override
+    public void disabledInit() {
+        TelescopeSubsystem.getInstance().setCoastMode();
+        PivotSubsystem.getInstance().setCoastMode();
 
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {}
+        LedSubsystem.getInstance().turnOff();
+    }
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
+    /**
+     * This function is called periodically when disabled.
+     */
+    @Override
+    public void disabledPeriodic() {
+    }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+    /**
+     * This function is called once when test mode is enabled.
+     */
+    @Override
+    public void testInit() {
+    }
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
 
-  /** This function is called periodically whilst in simulation. */
-  @Override
-  public void simulationPeriodic() {}
+    /**
+     * This function is called once when the robot is first started up.
+     */
+    @Override
+    public void simulationInit() {
+    }
+
+    /**
+     * This function is called periodically whilst in simulation.
+     */
+    @Override
+    public void simulationPeriodic() {
+    }
 }

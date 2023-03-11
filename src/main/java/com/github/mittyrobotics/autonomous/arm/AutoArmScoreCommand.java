@@ -19,15 +19,21 @@ public class AutoArmScoreCommand extends CommandBase {
     private boolean ran;
     private StateMachine.RobotState level;
     private boolean auto;
+    private StateMachine.PieceState type;
 
 
-    public AutoArmScoreCommand(StateMachine.RobotState level, boolean auto) {
+    public AutoArmScoreCommand(StateMachine.RobotState level, StateMachine.PieceState type, boolean auto) {
         this.level = level;
         this.auto = auto;
+        this.type = type;
     }
 
     @Override
     public void initialize() {
+        if(type == StateMachine.PieceState.CONE)
+            StateMachine.getInstance().setStateCone();
+        if(type == StateMachine.PieceState.CUBE)
+            StateMachine.getInstance().setStateCube();
         extendingArm = true;
         scoring = false;
         ran = false;
@@ -44,14 +50,15 @@ public class AutoArmScoreCommand extends CommandBase {
                 }
                 ran = true;
             }
-
             if (PivotSubsystem.getInstance().withinThreshold() && TelescopeSubsystem.getInstance().withinThreshold()) {
                 extendingArm = false;
                 ran = false;
                 scoring = true;
             }
-        } else if (scoring) {
+        }
+        else if (scoring) {
             if(!ran) {
+                StateMachine.getInstance().setStateScoring();
                 if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE) {
                     StateMachine.getInstance().setOuttaking();
 
@@ -109,6 +116,7 @@ public class AutoArmScoreCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+//        System.out.println((!extendingArm && !scoring) ? "ENDED\n\n\n\n\n\n" : "");
         return !extendingArm && !scoring;
     }
 }

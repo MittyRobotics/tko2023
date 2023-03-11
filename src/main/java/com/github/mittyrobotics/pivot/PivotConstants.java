@@ -29,7 +29,7 @@ public class PivotConstants {
     public static final double HIGH_HEIGHT = 0;
     public static final double HP_HEIGHT = 0;
 
-    public static final double PIVOT_THRESHOLD = 0;
+    public static final double PIVOT_THRESHOLD = 0.05;
 
 
     public static final int HALIFAX_TOP_CHANNEL = 7;

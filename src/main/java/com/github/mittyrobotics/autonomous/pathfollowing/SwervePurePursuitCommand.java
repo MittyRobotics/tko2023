@@ -43,7 +43,8 @@ public class SwervePurePursuitCommand extends CommandBase {
     @Override
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
-        robot = Odometry.getInstance().getState();
+//        robot = Odometry.getInstance().getState();
+        robot = SwerveSubsystem.getInstance().getPose();
 
         if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
             currentPathNumber++;
@@ -75,7 +76,7 @@ public class SwervePurePursuitCommand extends CommandBase {
         SmartDashboard.putNumber("closest", closest);
 
         double heading = Gyro.getInstance().getHeadingRadians();
-        double angle = Math.atan2(linearVel.getY(), linearVel.getX()) + heading;
+        double angle = Math.atan2(linearVel.getY(), linearVel.getX()) - heading;
         linearVel = new Vector(new Angle(angle), speed);
 
         double angularVel = angularController.calculate(robot.getHeading().getRadians(), currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians());

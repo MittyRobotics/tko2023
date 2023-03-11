@@ -33,7 +33,7 @@ public class QuinticHermiteSpline extends Parametric {
     }
 
     public QuinticHermiteSpline(Pose start, Pose end) {
-        this(start.getPosition(), start.getHeading(), start.getPosition(), start.getHeading());
+        this(start.getPosition(), start.getHeading(), end.getPosition(), end.getHeading());
     }
 
     static class BasisFunctions {

@@ -14,6 +14,6 @@ public class TestOdometry {
     public static void main(String[] args) throws InterruptedException {
 //        System.out.println(standardize(1.5 * Math.PI));
 
-        System.out.println(Math.atan2(-1, -3));
+        System.out.println(System.currentTimeMillis() * 1000000);
     }
 }

@@ -51,10 +51,7 @@ public class AutoIntakeCommand extends CommandBase {
             if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
                 indexing = true;
                 Util.triggerFunctionAfterTime(() -> {
-                    ArmKinematics.setArmKinematics(new Angle(0), 0);
-                    System.out.println(StateMachine.getInstance().getCurrentRobotState());
-                    StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
-                    StateMachine.getInstance().setStateStowed();
+                    OI.getInstance().zeroAll();
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);
                     indexing = false;

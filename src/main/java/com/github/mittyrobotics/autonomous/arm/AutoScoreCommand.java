@@ -14,7 +14,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
         this.level = level;
         addCommands(
                 new SwerveAutoScoreCommand(target),
-                new AutoArmScoreCommand(level, auto)
+                new AutoArmScoreCommand(level, StateMachine.PieceState.CUBE, auto)
         );
     }
 }

@@ -36,6 +36,7 @@ public class LoggerInterface {
         poseSub = table.getDoubleArrayTopic("pose").subscribe(new double[]{}, PubSubOption.keepDuplicates(true));
         radarSub = table.getStringTopic("gamepieces").subscribe(new String(), PubSubOption.keepDuplicates(true));
 
+//        System.out.println(poseSub.getAtomic().timestamp);
     }
 
     public void put(String key, Object o) {
