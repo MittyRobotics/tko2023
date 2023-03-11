@@ -7,7 +7,7 @@ public class LedConstants {
 
     public static final int STRIP_ONE_LENGTH = 120; //CHANGED FROM 120
 
-    public static final int STRIP_TWO_LENGTH = 5;
+    public static final int STRIP_TWO_LENGTH = 120;
 
     //TODO: Tune last two vals
     //Order: Row = R-O-Y-G-B-I-V, Column = R-G-B

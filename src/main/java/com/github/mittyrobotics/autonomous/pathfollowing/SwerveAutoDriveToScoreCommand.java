@@ -23,12 +23,16 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
     private PIDController angularController;
     private double speed = 0, targetAngle;
 
-    public SwerveAutoDriveToScoreCommand(double linearThreshold, double angularThreshold, SwervePath path) {
+    boolean zeroOnEnd;
+
+    public SwerveAutoDriveToScoreCommand(double linearThreshold, double angularThreshold, boolean zeroOnEnd, SwervePath path) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
         this.angularThreshold = angularThreshold;
         this.angularController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
+
+        this.zeroOnEnd = zeroOnEnd;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
@@ -38,11 +42,15 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
         super.initialize();
         speed = path.getInitSpeed();
         targetAngle = path.getEndHeading().getRadians();
+        robot = Odometry.getInstance().getState();
+
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSTARTED");
     }
 
     @Override
     public void execute() {
         robot = Odometry.getInstance().getState();
+        System.out.println("Target: " + path.getByT(1.0).getPosition());
 
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
@@ -55,6 +63,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
         double heading = robot.getHeading().getRadians();
         targetAngle = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getAngle().getRadians();
         double angle = targetAngle - heading;
+        System.out.println("SPEED: " + speed);
         Vector linearVel = new Vector(new Angle(angle), speed);
 
         double angularVel = angularController.calculate(robot.getHeading().getRadians(), path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians());
@@ -66,7 +75,9 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
             angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
+        System.out.println(linearVel + " " + (-angularVel));
+        if (Double.isNaN(angularVel)) angularVel = 0;
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -74,13 +85,15 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setZero();
+        if (zeroOnEnd) SwerveSubsystem.getInstance().setZero();
         SmartDashboard.putBoolean("Halted", true);
+//        System.out.println("FINISHED COMMAND\n\n\n\n\n");
     }
 
     @Override
     public boolean isFinished() {
-        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold &&
-                Math.abs(path.getByT(1.0).getHeading().getRadians() - robot.getHeading().getRadians()) < angularThreshold;
+        System.out.println(new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() + "-error");
+//        System.out.println(path.getByT(1.0).getPosition());
+        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
 }

@@ -95,9 +95,9 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         TelescopeConstants.TELESCOPE_MPS.put(HP_TO_STOWED,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(MID_TO_HIGH,
-                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV,  5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(HIGH_TO_MID,
-                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(SCORING_TO_STOWED,
                 new TrapezoidalMotionProfile(50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
     }
@@ -165,6 +165,7 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public boolean withinThreshold() {
+//        System.out.println(ArmKinematics.getTelescopeDesired() + " " + getDistanceMeters());
         return Math.abs(ArmKinematics.getTelescopeDesired() - getDistanceMeters()) < TelescopeConstants.EXTENSION_THRESHOLD;
     }
 

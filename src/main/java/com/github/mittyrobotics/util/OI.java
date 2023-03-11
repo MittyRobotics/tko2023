@@ -84,6 +84,7 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(0), 0);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
+        System.out.println("SENT TO 0\n\n\n\n\n\n\n");
     }
 
     public void handleGround() {
@@ -104,7 +105,7 @@ public class OI {
 
     public void handleHigh() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
-            ArmKinematics.setArmKinematics(new Angle(1.12 - 0.15), 0.9513 + 0.15);
+            ArmKinematics.setArmKinematics(new Angle(1.12 - 0.15), 0.9513 + 0.06);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
             ArmKinematics.setArmKinematics(new Angle(1.263 - 0.2 - 0.1), 0.494);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HIGH);

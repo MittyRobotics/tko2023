@@ -35,7 +35,8 @@ public class SwervePath {
     public Pose getByT(double t) {
         return new Pose(
                 spline.get(t),
-                Pose.doSigmoidInterpolation(startHeading, endHeading, t)
+//                Pose.doSigmoidInterpolation(startHeading, endHeading, t)
+                spline.getVelocityVector(t).getAngle()
         );
     }
 

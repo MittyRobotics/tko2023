@@ -8,7 +8,7 @@ public class RobotProxTesting extends TimedRobot {
 
     @Override
     public void robotInit() {
-        prox = new DigitalInput(1);
+        prox = new DigitalInput(6);
     }
 
     @Override

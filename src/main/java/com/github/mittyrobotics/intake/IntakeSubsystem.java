@@ -19,8 +19,8 @@ public class IntakeSubsystem extends SubsystemBase {
         return instance;
     }
 
-    CANSparkMax spark;
-    DigitalInput proximitySensor;
+    private CANSparkMax spark;
+    private DigitalInput proximitySensor;
 
     public void initHardware() {
         spark = new CANSparkMax(IntakeConstants.INTAKE_SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
