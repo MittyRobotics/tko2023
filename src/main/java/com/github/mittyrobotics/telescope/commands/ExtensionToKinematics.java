@@ -34,7 +34,7 @@ public class ExtensionToKinematics extends CommandBase {
 //            TelescopeSubsystem.getInstance().resetMeters(0);
 //        }
 
-        System.out.println(StateMachine.getInstance().getProfile());
+//        System.out.println(StateMachine.getInstance().getProfile());
         tpTelescope = TelescopeConstants.TELESCOPE_MPS.get(StateMachine.getInstance().getProfile());
 
         double desired = (ArmKinematics.getTelescopeDesired() +

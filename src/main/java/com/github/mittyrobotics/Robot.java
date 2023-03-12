@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-        System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+//        System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
 
 //    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
@@ -174,12 +174,12 @@ public class Robot extends TimedRobot {
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
 //    SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
 //
-    CommandScheduler.getInstance().schedule(new SwerveAutoScoreCommand(
-            new Pose(
-                    Point.add(Odometry.getInstance().getScoringZone(8)[1].getPosition(), new Point(30, 0)),
-                    new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
-            ))
-    );
+//    CommandScheduler.getInstance().schedule(new SwerveAutoScoreCommand(
+//            new Pose(
+//                    Point.add(Odometry.getInstance().getScoringZone(8)[1].getPosition(), new Point(30, 0)),
+//                    new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
+//            ))
+//    );
 
 //        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Math.PI)));
 //

@@ -37,6 +37,10 @@ public class IntakeSubsystem extends SubsystemBase {
         setDefaultCommand(new AutoIntakeCommand());
     }
 
+    public double getCurrent() {
+        return spark.getOutputCurrent();
+    }
+
     public void defaultState() {
         if (defaultState) spark.set(-0.1);
     }
