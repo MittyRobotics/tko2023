@@ -6,6 +6,8 @@ import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
+import com.github.mittyrobotics.pivot.PivotSubsystem;
+import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.Util;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -30,7 +32,9 @@ public class AutoIntakeCommand extends CommandBase {
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
+//            OI.getInstance().zeroAll();
             StateMachine.getInstance().setIntakeOff();
+            Odometry.getInstance().setScoringCam(false);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
@@ -48,14 +52,16 @@ public class AutoIntakeCommand extends CommandBase {
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
 
 //            If prox sensor detected index for another second then stow
-            if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
-                indexing = true;
-                Util.triggerFunctionAfterTime(() -> {
-                    OI.getInstance().zeroAll();
-                    StateMachine.getInstance().setIntakeStowing();
-                    Odometry.getInstance().setScoringCam(true);
-                    indexing = false;
-                }, 1000);
+            if(TelescopeSubsystem.getInstance().withinThreshold() && PivotSubsystem.getInstance().withinThreshold()) {
+                if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
+                    indexing = true;
+                    Util.triggerFunctionAfterTime(() -> {
+                        OI.getInstance().zeroAll();
+                        StateMachine.getInstance().setIntakeStowing();
+                        Odometry.getInstance().setScoringCam(true);
+                        indexing = false;
+                    }, 300);
+                }
             }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed

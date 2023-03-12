@@ -13,6 +13,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.Pair;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
@@ -53,11 +54,26 @@ public class Robot extends TimedRobot {
 
         // TODO: check this
         Odometry.getInstance().FIELD_LEFT_SIDE = true;
-        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 
-        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
-        Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+//        double x = 0;
+//        double y = 0;
+//        double t = 0;
+        double x = 118;
+        double y = 71;
+        double t = 3.36;
+
+//        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+//
+//        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
+//        Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+        Gyro.getInstance().setAngleOffset(t);
+        Odometry.getInstance().setState(x, y, t);
+        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
+                new Angle(Gyro.getInstance().getHeadingRadians())));
+
         Odometry.getInstance().setScoringCam(true);
+
+
 
     }
 
@@ -70,7 +86,7 @@ public class Robot extends TimedRobot {
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-    System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+        System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
 
 //    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
@@ -153,14 +169,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-//    Odometry.getInstance().setState(103, 6, Math.PI);
-//    OI.getInstance().setupControls();
+    OI.getInstance().setupControls();
 //    SwerveAutoPickupCommandv2 command = new SwerveAutoPickupCommandv2(0.05, 0.05, path);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
-//    SwerveSubsystem.getInstance().setDefaultCommand(null);
+//    SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
+//
     CommandScheduler.getInstance().schedule(new SwerveAutoScoreCommand(
             new Pose(
-                    Point.add(Odometry.getInstance().getScoringZone(8)[0].getPosition(), new Point(30, 0)),
+                    Point.add(Odometry.getInstance().getScoringZone(8)[1].getPosition(), new Point(30, 0)),
                     new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
             ))
     );

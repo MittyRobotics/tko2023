@@ -2,6 +2,7 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
@@ -50,33 +51,29 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
     @Override
     public void execute() {
         robot = Odometry.getInstance().getState();
-        System.out.println("Target: " + path.getByT(1.0).getPosition());
-
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
         double leftY = OI.getInstance().getDriveController().getLeftX();
         double leftX = -OI.getInstance().getDriveController().getLeftY();
         speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
 
-        double closest = path.getSpline().getClosestPoint(robot, 50, 10);
 
-        double heading = robot.getHeading().getRadians();
-        targetAngle = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getAngle().getRadians();
-        double angle = targetAngle - heading;
-        System.out.println("SPEED: " + speed);
-        Vector linearVel = new Vector(new Angle(angle), speed);
+        double heading = Gyro.getInstance().getHeadingRadians();
+        //difference vector between goal point and robot, in world coordinates
+        Point diff = Point.add(path.getByT(1.0).getPosition(),
+                Point.multiply(-1, robot.getPosition()));
+        //world angle of vector
+        double diffA = Math.atan2(diff.getY(), diff.getX());
+        //angle of vector relative to robot - desired minus current
+        double goalA = diffA - heading;
 
-        double angularVel = angularController.calculate(robot.getHeading().getRadians(), path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians());
-        double currentAngle = robot.getHeading().getRadians();
-        double desiredAngle = path.getHeadingAtLookahead(robot, path.getLookahead()).getRadians();
+//        System.out.println(goalA);
 
-        if (Math.abs(angularVel) < path.getMinAngular()) {
-            angularVel = (angularVel > 0) ? path.getMinAngular() : -path.getMinAngular();
-            angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
-        }
+        Vector linearVel = new Vector(new Angle(goalA), speed);
 
-        System.out.println(linearVel + " " + (-angularVel));
-        if (Double.isNaN(angularVel)) angularVel = 0;
+        double angularVel = angularController.calculate(Gyro.getInstance().getHeadingRadians(), path.getByT(1.0).getHeading().getRadians());
+
+//        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
@@ -85,15 +82,20 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if (zeroOnEnd) SwerveSubsystem.getInstance().setZero();
+        SwerveSubsystem.getInstance().setZero();
         SmartDashboard.putBoolean("Halted", true);
 //        System.out.println("FINISHED COMMAND\n\n\n\n\n");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println(new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() + "-error");
+//        System.out.println(new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() + "-error");
 //        System.out.println(path.getByT(1.0).getPosition());
+        if(!zeroOnEnd) {
+            System.out.println("\nFIRST PATH\n");
+            return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
+        }
+        System.out.println("\nSECOND PATH\n");
         return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
 }

@@ -107,7 +107,10 @@ public class Odometry {
             double time = System.currentTimeMillis() * 1000000 - Math.abs(Timer.getFPGATimestamp() * 1000000 - tda.timestamp) * 1000 - mt;
             double x_dist = measurement[5];
 
+            System.out.println("measurement: " + x + ", " + y + ", " + theta);
+
             if (time <= last_time || Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(theta)) {
+                System.out.println("Invalid input");
                 continue;
             }
 //            System.out.println(time);
@@ -124,14 +127,14 @@ public class Odometry {
             double w = (1 / dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
 
             try {
+                if (Math.sqrt((state.get(0, 0) - x) * (state.get(0, 0) - x) +
+                        (state.get(1, 0) - y) * (state.get(1, 0) - y)) > ERROR_MARGIN) {
+                    System.out.println("Bad input");
+                    continue;
+                }
+
                 stateExtrapolate(dt, v, w);
                 covarianceExtrapolate(dt, v, w);
-
-                //                if (Math.sqrt((state.get(0, 0) - x) * (state.get(0, 0) - x) +
-                //                        (state.get(1, 0) - y) * (state.get(1, 0) - y)) > ERROR_MARGIN) {
-                //                    System.out.println("Bad input");
-                //                    continue;
-                //                }
 
                 updateCovarianceR(x_dist);
                 kalmanGain();
@@ -198,7 +201,7 @@ public class Odometry {
         R = new SimpleMatrix(new double[][]{
                 {0.00001 * x * x - 0.0007 * x + 0.015, 0, 0},
                 {0, 0.00001 * x * x + 0.0006 * x, 0.001},
-                {0, 0.001, 0.001}
+                {0, 0.001, 0.1}
         }).scale(R_SCALE);
     }
 

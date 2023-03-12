@@ -89,17 +89,17 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         TelescopeConstants.TELESCOPE_MPS.put(GROUND_TO_STOWED,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(MID_TO_STOWED,
-                new TrapezoidalMotionProfile(50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(HIGH_TO_STOWED,
-                new TrapezoidalMotionProfile(50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(HP_TO_STOWED,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(MID_TO_HIGH,
-                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV,  5 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(70 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV,  10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(HIGH_TO_MID,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(SCORING_TO_STOWED,
-                new TrapezoidalMotionProfile(50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(80 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 160 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
     }
 
     public void setMotor(double percentOutput) {

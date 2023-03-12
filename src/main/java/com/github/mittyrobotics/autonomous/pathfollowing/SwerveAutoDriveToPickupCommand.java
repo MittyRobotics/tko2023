@@ -57,22 +57,18 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
 
         double closest = path.getSpline().getClosestPoint(robot, 50, 10);
 
-        double heading = robot.getHeading().getRadians();
         double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
         if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
-        double angle = targetAngle - heading;
-        Vector linearVel = new Vector(new Angle(angle), speed);
+        Vector linearVel = new Vector(new Angle(-targetAngle), speed);
 
-        double angularVel = angularController.calculate(robot.getHeading().getRadians(), targetAngle);
-        double currentAngle = robot.getHeading().getRadians();
-        double desiredAngle = targetAngle;
+        double angularVel = angularController.calculate(-targetAngle);
 
         if (Math.abs(angularVel) < path.getMinAngular()) {
             angularVel = (angularVel > 0) ? path.getMinAngular() : -path.getMinAngular();
-            angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
+            angularVel = (Math.abs(targetAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

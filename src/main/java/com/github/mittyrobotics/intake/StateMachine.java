@@ -98,7 +98,8 @@ public class StateMachine {
         else if (target == RobotState.STOWED) setProfileToStowed(source);
         else if (source == RobotState.MID && target == RobotState.HIGH) profileState = ProfileState.MID_TO_HIGH;
         else if (target == RobotState.MID && source == RobotState.HIGH) profileState = ProfileState.HIGH_TO_MID;
-        else profileState = ProfileState.DEFAULT;
+//        else profileState = ProfileState.DEFAULT;
+        else                 System.out.println("\n\n\n\n\n" + "DEFAULTTTT 0");
     }
 
     private void setProfileToStowed(RobotState source) {
@@ -116,10 +117,12 @@ public class StateMachine {
                 profileState = ProfileState.HP_TO_STOWED;
                 break;
             case SCORING:
+                System.out.println("\n\n\n\n\n" + source);
                 profileState = ProfileState.SCORING_TO_STOWED;
                 break;
             default:
-                profileState = ProfileState.DEFAULT;
+                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 1");
+//                profileState = ProfileState.DEFAULT;
         }
     }
 
@@ -138,7 +141,8 @@ public class StateMachine {
                 profileState = ProfileState.STOWED_TO_HP;
                 break;
             default:
-                profileState = ProfileState.DEFAULT;
+                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 2");
+//                profileState = ProfileState.DEFAULT;
         }
     }
 

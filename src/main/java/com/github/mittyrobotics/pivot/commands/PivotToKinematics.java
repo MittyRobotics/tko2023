@@ -51,7 +51,8 @@ public class PivotToKinematics extends CommandBase {
 
         boolean pivotMovingDown = tpPivot.getSetpoint() > PivotSubsystem.getInstance().rawPos();
 
-        double pivotFF = 0.3/(1765.) * (pivotMovingDown ?
+        //1765
+        double pivotFF = 0.3/(1765) * (pivotMovingDown ?
                 0.6 - 0 / 12. * currentExtension :
                 0.8 + 0.2 / 12. * currentExtension);
         PivotSubsystem.getInstance().setFF(pivotFF);

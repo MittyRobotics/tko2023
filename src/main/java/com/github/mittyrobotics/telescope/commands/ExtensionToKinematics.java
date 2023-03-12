@@ -34,6 +34,7 @@ public class ExtensionToKinematics extends CommandBase {
 //            TelescopeSubsystem.getInstance().resetMeters(0);
 //        }
 
+        System.out.println(StateMachine.getInstance().getProfile());
         tpTelescope = TelescopeConstants.TELESCOPE_MPS.get(StateMachine.getInstance().getProfile());
 
         double desired = (ArmKinematics.getTelescopeDesired() +
@@ -46,8 +47,8 @@ public class ExtensionToKinematics extends CommandBase {
         double telescopeP = Math.max(0.00005, pidmax - (pidmax - 0.00005) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
         TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? 0 : 0, 0, 0);
 
-        double telescopeFF = (0.25 / (300 + (800 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
-                (telescopeMovingDown ? 1 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4);
+        double telescopeFF = (0.25 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
+                (telescopeMovingDown ? 1.4 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4);
         TelescopeSubsystem.getInstance().setFF(telescopeFF);
 
         velTelescope = 0;

@@ -18,7 +18,7 @@ public class TelescopeConstants {
     public static final double MIN_VELOCITY = 0;
     public static final double MAX_ACCEL = 0;
 
-    public static final double EXTENSION_THRESHOLD = 0.02;
+    public static final double EXTENSION_THRESHOLD = 0.05;
 
     public static final int HALIFAX_MAX_CHANNEL = 6;
     public static final int HALIFAX_MIN_CHANNEL = 8;

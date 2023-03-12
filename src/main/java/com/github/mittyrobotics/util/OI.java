@@ -91,7 +91,8 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
-        StateMachine.getInstance().setIntaking();
+//        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
+//            StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
@@ -116,7 +117,7 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(1.071), 0.479);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
-        StateMachine.getInstance().setIntaking();
+//        StateMachine.getInstance().setIntaking();
     }
     
     public void handleScore() {
@@ -141,13 +142,18 @@ public class OI {
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
-                    zeroAll();
+//                    System.out.println(StateMachine.getInstance().getCurrentRobotState());
+//                    zeroAll();
+                    ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.5);
+                    StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
+                        zeroAll();
+                        StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                         StateMachine.getInstance().setIntakeOff();
                         StateMachine.getInstance().setStateNone();
                         Odometry.getInstance().setScoringCam(false);
-                    }, 500);
-                }, 100);
+                    }, 600);
+                }, 10);
             }, 400);
         }
     }

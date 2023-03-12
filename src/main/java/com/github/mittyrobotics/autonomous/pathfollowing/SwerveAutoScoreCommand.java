@@ -15,15 +15,15 @@ public class SwerveAutoScoreCommand extends SequentialCommandGroup {
         Pose init = Odometry.getInstance().getState();
         Pose mid = new Pose(Point.add(target.getPosition(), new Point((Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * 30, 0)), target.getHeading());
         addCommands(
-                new SwerveAutoDriveToScoreCommand(5, 0.05, false,
+                new SwerveAutoDriveToScoreCommand(2, 0.02, false,
                         new SwervePath(new QuinticHermiteSpline(init, mid),
-                                init.getHeading(), mid.getHeading(),
-                                0, 0, 0, 0, 0, 0.2, 0.4, 2.5, 0, 0.02, 0.5)),
-                new SwerveAutoDriveToScoreCommand(10, 0.05, true,
+                                init.getHeading(), target.getHeading(),
+                                0, 0, 0, 0, 0, 0.1, 0.4, 1, 0, 0.02, 0.5))
+                ,
+                new SwerveAutoDriveToScoreCommand(2, 0.02, true,
                         new SwervePath(new QuinticHermiteSpline(mid, target),
                                 mid.getHeading(), target.getHeading(),
-                                0, 0, 0, 0, 0, 0.2, 0.4, 2.5, 0, 0.02, 0.5)),
-                new JoystickThrottleCommand()
+                                0, 0, 0, 0, 0, 0.1, 0.4, 1, 0, 0.02, 0.5))
         );
     }
 }

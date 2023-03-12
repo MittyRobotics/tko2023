@@ -51,10 +51,10 @@ public class DefaultCommand extends CommandBase {
 
         if (state == StateMachine.PieceState.CONE) {
             runLed(yellowHsv);
-        }
-
-        else if (state == StateMachine.PieceState.CUBE) {
+        } else if (state == StateMachine.PieceState.CUBE) {
             runLed(purpleHsv);
+        } else {
+            LedSubsystem.getInstance().turnOff();
         }
     }
 
