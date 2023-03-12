@@ -92,7 +92,7 @@ public class OI {
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
 //        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
-//            StateMachine.getInstance().setIntaking();
+            StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
@@ -117,7 +117,7 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(1.071), 0.479);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
-//        StateMachine.getInstance().setIntaking();
+        StateMachine.getInstance().setIntaking();
     }
     
     public void handleScore() {

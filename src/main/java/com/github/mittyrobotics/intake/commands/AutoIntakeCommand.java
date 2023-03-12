@@ -10,20 +10,23 @@ import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.Util;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class AutoIntakeCommand extends CommandBase {
     boolean indexing = false;
     boolean outtaking = false;
 
-    private final double threshold = 15;
+    private final double threshold = 70;
 
     private final double long_term_avg_k = 20;
     private final double short_term_avg_k = 5;
     private double lavg, savg;
-    private PriorityQueue<Double> lqueue, squeue;
+    private ArrayList<Double> lqueue, squeue;
     private boolean intook;
 
     public AutoIntakeCommand() {
@@ -34,8 +37,8 @@ public class AutoIntakeCommand extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
-        lqueue = new PriorityQueue<>();
-        squeue = new PriorityQueue<>();
+        lqueue = new ArrayList<>();
+        squeue = new ArrayList<>();
         lavg = 0;
         savg = 0;
         intook = false;
@@ -43,6 +46,7 @@ public class AutoIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
+        IntakeSubsystem.getInstance().updateCurrent();
 //        System.out.println(StateMachine.getInstance().getProfile());
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Intake override
@@ -51,16 +55,19 @@ public class AutoIntakeCommand extends CommandBase {
             StateMachine.getInstance().setIntakeOff();
             Odometry.getInstance().setScoringCam(false);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
+//            if(Math.abs(savg - lavg) > threshold || intook) {
+            System.out.println(IntakeSubsystem.getInstance().getAveragedCurrent());
 
-            lavg = updateAvg(lqueue, lavg, long_term_avg_k, IntakeSubsystem.getInstance().getCurrent());
-            savg = updateAvg(squeue, savg, short_term_avg_k, IntakeSubsystem.getInstance().getCurrent());
+            if (IntakeSubsystem.getInstance().getAveragedCurrent() > threshold) {
+                Util.triggerFunctionAfterTime(() -> {
+                    intook = true;
+                }, 500);
+            }
 
-            System.out.println(lavg + " " + savg);
-
-            if(Math.abs(savg - lavg) > threshold || intook) {
-                intook = true;
+            if (intook) {
                 IntakeSubsystem.getInstance().setMotor(0);
             } else {
+                System.out.println(IntakeSubsystem.getInstance().getCurrent());
                 IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             }
 
@@ -79,16 +86,14 @@ public class AutoIntakeCommand extends CommandBase {
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
 
 //            If prox sensor detected index for another second then stow
-            if(TelescopeSubsystem.getInstance().withinThreshold() && PivotSubsystem.getInstance().withinThreshold()) {
-                if (IntakeSubsystem.getInstance().proxSensorTrigger() && !indexing) {
-                    indexing = true;
-                    Util.triggerFunctionAfterTime(() -> {
-                        OI.getInstance().zeroAll();
-                        StateMachine.getInstance().setIntakeStowing();
-                        Odometry.getInstance().setScoringCam(true);
-                        indexing = false;
-                    }, 300);
-                }
+            if(IntakeSubsystem.getInstance().getAveragedCurrent() >= threshold && !indexing) {
+                indexing = true;
+                Util.triggerFunctionAfterTime(() -> {
+                    OI.getInstance().zeroAll();
+                    StateMachine.getInstance().setIntakeStowing();
+                    Odometry.getInstance().setScoringCam(true);
+                    indexing = false;
+                }, 100);
             }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed
@@ -109,15 +114,22 @@ public class AutoIntakeCommand extends CommandBase {
         return false;
     }
 
-    public double updateAvg(PriorityQueue<Double> q, double avg, double k, double val) {
-        if(q.size() == k) {
-            avg -= 1/k * q.poll();
-            avg += 1/k * val;
-        } else {
-            int n = q.size();
-            avg = (n / (n + 1)) * avg + (1 / (n + 1)) * val;
-        }
+    public double updateAvg(ArrayList<Double> q, double avg, double k, double val) {
+//        if(q.size() == k) {
+//            avg -= (1/k) * q.poll();
+//            avg += (1/k) * val;
+//        } else {
+//            double n = q.size();
+//            avg = (n / (n + 1)) * avg + (1. / (n + 1)) * val;
+//        }
         q.add(val);
-        return avg;
+        if(q.size() > k) q.remove(0);
+
+        double sum = 0;
+        for (double i : q) {
+            sum += i;
+        }
+//        System.out.println(k);
+        return sum / k;
     }
 }

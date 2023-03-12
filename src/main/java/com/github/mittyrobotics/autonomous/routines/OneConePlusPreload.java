@@ -23,7 +23,7 @@ public class OneConePlusPreload extends SequentialCommandGroup {
         super();
 
         addCommands(
-                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, true),
+                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE, true),
 //                new SwervePurePursuitCommand(2, 0.05, ),
                 new InstantCommand(OI.getInstance()::handleGround),
                 new SwerveAutoPickupCommand(true, 0),

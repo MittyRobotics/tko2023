@@ -81,8 +81,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
-        SwerveSubsystem.getInstance().updateForwardKinematics();
-        Odometry.getInstance().update();
+//        SwerveSubsystem.getInstance().updateForwardKinematics();
+//        Odometry.getInstance().update();
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));

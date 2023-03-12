@@ -7,9 +7,13 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.ArrayList;
+
 public class IntakeSubsystem extends SubsystemBase {
     private static IntakeSubsystem instance;
     private boolean defaultState = true;
+    private ArrayList<Double> currents = new ArrayList<>();
+    private double currentKLimit = 20;
 
     public static IntakeSubsystem getInstance() {
         if (instance == null) {
@@ -35,6 +39,18 @@ public class IntakeSubsystem extends SubsystemBase {
         proximitySensor = new DigitalInput(IntakeConstants.PROX_SENSOR_ID);
 
         setDefaultCommand(new AutoIntakeCommand());
+    }
+
+    public void updateCurrent() {
+        currents.add(spark.getOutputCurrent());
+        if(currents.size() > currentKLimit)
+            currents.remove(0);
+    }
+
+    public double getAveragedCurrent() {
+        double sum = 0;
+        for (double i : currents) sum += i;
+        return sum / currentKLimit;
     }
 
     public double getCurrent() {
