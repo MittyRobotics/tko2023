@@ -223,4 +223,12 @@ public class OI {
 //        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
 //        drive.whileTrue(new JoystickThrottleCommand());
     }
+
+    public void setupTestLEDControls() {
+        Trigger coneMode = new Trigger(() -> getOperatorController().getRightTriggerAxis() > 0.5);
+        coneMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCone));
+
+        Trigger cubeMode = new Trigger(() -> getOperatorController().getLeftTriggerAxis() > 0.5);
+        cubeMode.whileTrue(new InstantCommand(StateMachine.getInstance()::setStateCube));
+    }
 }
