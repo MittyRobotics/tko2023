@@ -63,12 +63,13 @@ public class PivotToKinematics extends CommandBase {
                 1 - 0 / 12. * currentExtension :
                 1 + 0.1 / 12. * currentExtension));
 
-        velPivot = 0;
 //        if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
-            velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
+        velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
 
 //        PivotSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2 ? velPivot : 0);
-        PivotSubsystem.getInstance().setRaw(velPivot);
+        if (ArmKinematics.getPivotDesired().getRadians() == 0 && PivotSubsystem.getInstance().withinThreshold())
+            PivotSubsystem.getInstance().setMotor(0);
+        else PivotSubsystem.getInstance().setRaw(velPivot);
 
         lastTime = Timer.getFPGATimestamp();
 

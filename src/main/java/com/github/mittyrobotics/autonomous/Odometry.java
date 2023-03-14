@@ -87,6 +87,7 @@ public class Odometry {
     SimpleMatrix Q = SimpleMatrix.identity(3).scale(Q_SCALE);
 
     private final double ERROR_MARGIN = 30;
+    private final double MIN_DISTANCE = 30;
 
     public void setState(double x, double y, double t) {
         state.set(0, 0, x);
@@ -105,7 +106,11 @@ public class Odometry {
             double theta = measurement[3];
             double mt = measurement[4];
             double time = System.currentTimeMillis() * 1000000 - Math.abs(Timer.getFPGATimestamp() * 1000000 - tda.timestamp) * 1000 - mt;
-            double x_dist = measurement[5];
+            double y_dist = Math.abs(measurement[5]);
+            double x_dist = Math.abs(measurement[6]);
+
+            if (x_dist < MIN_DISTANCE) continue;
+
 
             System.out.println("measurement: " + x + ", " + y + ", " + theta);
 

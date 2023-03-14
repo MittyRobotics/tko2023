@@ -79,7 +79,7 @@ public class AutoArmScoreCommand extends CommandBase {
                     Util.triggerFunctionAfterTime(() -> {
                         StateMachine.getInstance().setOuttaking();
                         Util.triggerFunctionAfterTime(() -> {
-                            ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.5);
+                            ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.4);
                             StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                             Util.triggerFunctionAfterTime(() -> {
                                 OI.getInstance().zeroAll();
