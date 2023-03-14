@@ -88,6 +88,7 @@ public class Odometry {
 
     private final double ERROR_MARGIN = 30;
     private final double MIN_DISTANCE = 30;
+    private final double MAX_DISTANCE = 180;
 
     public void setState(double x, double y, double t) {
         state.set(0, 0, x);
@@ -109,7 +110,10 @@ public class Odometry {
             double y_dist = Math.abs(measurement[5]);
             double x_dist = Math.abs(measurement[6]);
 
-            if (x_dist < MIN_DISTANCE) continue;
+            if (x_dist < MIN_DISTANCE || x_dist > MAX_DISTANCE) {
+                System.out.println("Bad X distance: " + x_dist);
+                continue;
+            }
 
 
             System.out.println("measurement: " + x + ", " + y + ", " + theta);
