@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DefaultCommand extends CommandBase {
+public class LEDDefaultCommand extends CommandBase {
 
-    int[] purpleHsv, yellowHsv, blueHsv, redHsv;
+    int[] purpleHsv, yellowHsv, blueHsv, redHsv, greenHsv;
 
     StateMachine.PieceState state;
 
     double time, prevTime, countTime;
 
-    public DefaultCommand() {
+    public LEDDefaultCommand() {
         super();
         addRequirements(LedSubsystem.getInstance());
         setName("Default led");
@@ -28,19 +28,11 @@ public class DefaultCommand extends CommandBase {
 
         LedSubsystem.getInstance().startOutput();
 
-        yellowHsv = new int[3];
-        purpleHsv = new int[3];
-        blueHsv = new int[3];
-        redHsv = new int[3];
-
-
-        for (int i = 0; i < 3; i++) {
-            purpleHsv[i] = LedConstants.RGB_VALUES[5][i];
-            yellowHsv[i] = LedConstants.RGB_VALUES[2][i];
-            blueHsv[i] = LedConstants.RGB_VALUES[4][i];
-            redHsv[i] = LedConstants.RGB_VALUES[0][i];
-        }
-
+        yellowHsv = LedConstants.RGB_VALUES[5];
+        purpleHsv = LedConstants.RGB_VALUES[2];
+        greenHsv = LedConstants.RGB_VALUES[3];
+        blueHsv = LedConstants.RGB_VALUES[4];
+        redHsv = LedConstants.RGB_VALUES[0];
     }
 
     @Override
@@ -49,41 +41,33 @@ public class DefaultCommand extends CommandBase {
 
         time = Timer.getFPGATimestamp();
 
-        if (state == StateMachine.PieceState.CONE) {
+        if (LedSubsystem.getInstance().getBlinkOuttaking()) {
+            ledSwitch(state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv, greenHsv);
+        } else if (state == StateMachine.PieceState.CONE) {
             runLed(yellowHsv);
         } else if (state == StateMachine.PieceState.CUBE) {
             runLed(purpleHsv);
-        } else {
-            LedSubsystem.getInstance().turnOff();
         }
     }
 
     private void runLed(int[] hsv) {
-        if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.)
-        {
+        if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.) {
             LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                     hsv[0], hsv[1], hsv[2]);
-
             prevTime = Timer.getFPGATimestamp();
-        }
-        else if(DriverStation.getMatchTime() < 30. && DriverStation.getMatchTime() > 15.)
-        {
-            ledSwitch(hsv, blueHsv);
-        }
-        else if(DriverStation.getMatchTime() < 15.) {
+        } else if (DriverStation.getMatchTime() < 15.) {
             ledSwitch(hsv, redHsv);
+        } else {
+            ledSwitch(hsv, blueHsv);
         }
     }
 
     private void ledSwitch(int[] hsv, int[] altHsv) {
-        if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH)
-        {
+        if (time - prevTime < LedConstants.TIME_BETWEEN_SWITCH) {
             LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                     hsv[0], hsv[1], hsv[2]);
             countTime = Timer.getFPGATimestamp();
-        }
-        else
-        {
+        } else {
             LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
                     altHsv[0], altHsv[1], altHsv[2]);
         }

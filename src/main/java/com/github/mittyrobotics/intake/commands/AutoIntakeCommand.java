@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
@@ -47,12 +48,14 @@ public class AutoIntakeCommand extends CommandBase {
     @Override
     public void execute() {
         IntakeSubsystem.getInstance().updateCurrent();
-//        System.out.println(StateMachine.getInstance().getProfile());
+        LedSubsystem.getInstance().setBlinkOuttaking(false);
+
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
             StateMachine.getInstance().setIntakeOff();
             Odometry.getInstance().setScoringCam(false);
+            LedSubsystem.getInstance().setBlinkOuttaking(true);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);

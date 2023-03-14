@@ -168,6 +168,7 @@ public class Odometry {
     }
 
     public void setScoringCam(boolean scoring) {
+        disableCustomCam();
         scoringCam = scoring;
     }
 

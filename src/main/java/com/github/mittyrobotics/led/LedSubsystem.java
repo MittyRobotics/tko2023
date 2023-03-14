@@ -1,6 +1,6 @@
 package com.github.mittyrobotics.led;
 
-import com.github.mittyrobotics.led.commands.DefaultCommand;
+import com.github.mittyrobotics.led.commands.LEDDefaultCommand;
 import com.github.mittyrobotics.util.interfaces.ISubsystem;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -12,6 +12,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     private AddressableLED ledStrip;
     private AddressableLEDBuffer buffer, buffer2;
+    private boolean outtaking;
 
     private LedSubsystem() {
         super();
@@ -25,6 +26,13 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
         return instance;
     }
 
+    public void setBlinkOuttaking(boolean blink) {
+        outtaking = blink;
+    }
+
+    public boolean getBlinkOuttaking() {
+        return outtaking;
+    }
 
     @Override
     public void updateDashboard() {
@@ -49,7 +57,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 //        ledStripTwo.setData(bufferTwo);
 //        ledStripTwo.start();
 
-        setDefaultCommand(new DefaultCommand());
+        setDefaultCommand(new LEDDefaultCommand());
     }
 
     public void stopOutput() {
