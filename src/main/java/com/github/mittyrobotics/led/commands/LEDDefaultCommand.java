@@ -42,7 +42,7 @@ public class LEDDefaultCommand extends CommandBase {
         time = Timer.getFPGATimestamp();
 
         if (LedSubsystem.getInstance().getBlinkOuttaking()) {
-            ledSwitch(state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv, greenHsv);
+            ledSwitch(greenHsv, state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv);
         } else if (state == StateMachine.PieceState.CONE) {
             runLed(yellowHsv);
         } else if (state == StateMachine.PieceState.CUBE) {
