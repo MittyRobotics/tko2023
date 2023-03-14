@@ -49,31 +49,15 @@ public class AutoIntakeCommand extends CommandBase {
         IntakeSubsystem.getInstance().updateCurrent();
 //        System.out.println(StateMachine.getInstance().getProfile());
         if (OI.getInstance().getOperatorController().getRightBumper()) {
-            //Intake override
+            //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
-//            OI.getInstance().zeroAll();
             StateMachine.getInstance().setIntakeOff();
             Odometry.getInstance().setScoringCam(false);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
-//            if(Math.abs(savg - lavg) > threshold || intook) {
-            System.out.println(IntakeSubsystem.getInstance().getAveragedCurrent());
-
-            if (IntakeSubsystem.getInstance().getAveragedCurrent() > threshold) {
-                Util.triggerFunctionAfterTime(() -> {
-                    intook = true;
-                }, 500);
-            }
-
-            if (intook) {
-                IntakeSubsystem.getInstance().setMotor(0);
-            } else {
-                System.out.println(IntakeSubsystem.getInstance().getCurrent());
-                IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
-            }
-
-            //Outtake override
-//            StateMachine.getInstance().setIntakeStowing();
-//            Odometry.getInstance().setScoringCam(true);
+            //Intake override
+            IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+            StateMachine.getInstance().setIntakeStowing();
+            Odometry.getInstance().setScoringCam(true);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
             //Outtake
             if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) {

@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -55,20 +56,13 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
         double leftX = -OI.getInstance().getDriveController().getLeftY();
         speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
 
-        double closest = path.getSpline().getClosestPoint(robot, 50, 10);
-
         double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
         if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
         Vector linearVel = new Vector(new Angle(-targetAngle), speed);
 
         double angularVel = angularController.calculate(-targetAngle);
 
-        if (Math.abs(angularVel) < path.getMinAngular()) {
-            angularVel = (angularVel > 0) ? path.getMinAngular() : -path.getMinAngular();
-            angularVel = (Math.abs(targetAngle) > angularThreshold * closest) ? angularVel : 0;
-        }
-
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -82,7 +76,6 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold &&
-                Math.abs(path.getByT(1.0).getHeading().getRadians() - robot.getHeading().getRadians()) < angularThreshold;
+        return StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW;
     }
 }

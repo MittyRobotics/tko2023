@@ -142,8 +142,6 @@ public class OI {
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
-//                    System.out.println(StateMachine.getInstance().getCurrentRobotState());
-//                    zeroAll();
                     ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.5);
                     StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
@@ -152,9 +150,9 @@ public class OI {
                         StateMachine.getInstance().setIntakeOff();
                         StateMachine.getInstance().setStateNone();
                         Odometry.getInstance().setScoringCam(false);
-                    }, 600);
+                    }, 300);
                 }, 10);
-            }, 400);
+            }, 200);
         }
     }
 

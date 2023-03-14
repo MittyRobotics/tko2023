@@ -62,7 +62,6 @@ public class AutoArmScoreCommand extends CommandBase {
                 if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE) {
                     StateMachine.getInstance().setOuttaking();
 
-                    StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
                         OI.getInstance().zeroAll();
                         Util.triggerFunctionAfterTime(() -> {
@@ -77,19 +76,21 @@ public class AutoArmScoreCommand extends CommandBase {
                     double curAngle = ArmKinematics.getPivotDesired().getRadians();
                     ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
 
-                    StateMachine.getInstance().setProfile(StateMachine.RobotState.HIGH, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
                         StateMachine.getInstance().setOuttaking();
                         Util.triggerFunctionAfterTime(() -> {
-                            OI.getInstance().zeroAll();
+                            ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.5);
+                            StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                             Util.triggerFunctionAfterTime(() -> {
+                                OI.getInstance().zeroAll();
+                                StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                                 StateMachine.getInstance().setIntakeOff();
                                 StateMachine.getInstance().setStateNone();
                                 switchCam();
                                 scoring = false;
-                            }, 500);
-                        }, 100);
-                    }, 400);
+                            }, 300);
+                        }, 10);
+                    }, 200);
                 }
                 ran = true;
             }

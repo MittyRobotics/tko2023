@@ -9,12 +9,12 @@ public class AutoScoreCommand extends SequentialCommandGroup {
     private StateMachine.RobotState level;
     private boolean auto;
 
-    public AutoScoreCommand(Pose target, StateMachine.RobotState level, boolean auto) {
+    public AutoScoreCommand(Pose target, StateMachine.RobotState level, StateMachine.PieceState piece, boolean auto) {
         super();
         this.level = level;
         addCommands(
                 new SwerveAutoScoreCommand(target),
-                new AutoArmScoreCommand(level, StateMachine.PieceState.CUBE, auto)
+                new AutoArmScoreCommand(level, piece, auto)
         );
     }
 }
