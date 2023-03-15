@@ -2,6 +2,7 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.util.Gyro;
@@ -44,7 +45,7 @@ public class SwervePurePursuitCommand extends CommandBase {
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
 //        robot = Odometry.getInstance().getState();
-        robot = SwerveSubsystem.getInstance().getPose();
+        robot = Odometry.getInstance().getState();
 
         if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
             currentPathNumber++;
@@ -68,7 +69,14 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         speed = Math.min(vi, speed);
 
-        Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
+        Vector vectorToLookahead;
+        if (currentPath.getLookahead() < length) vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
+        else vectorToLookahead = new Vector(
+                robot.getPosition(),
+                Point.add(currentPath.getByT(1.0).getPosition(),
+                        Point.multiply((currentPath.getLookahead() - length) / currentPath.getSpline().getVelocityVector(1.0).getMagnitude(),
+                                new Point(currentPath.getSpline().getVelocityVector(1.0))))
+        );
 
         Vector linearVel = new Vector(vectorToLookahead.getX(), vectorToLookahead.getY());
 
