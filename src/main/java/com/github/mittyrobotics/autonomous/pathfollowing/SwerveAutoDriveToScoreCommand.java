@@ -108,7 +108,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     public double maxVelocityFromDistance(double dist) {
         double dist_m = dist / 39.3701;
-        return Math.sqrt(2 * path.getDecel() * dist);
+        return Math.sqrt(2 * path.getDecel() * dist_m);
     }
 
 }

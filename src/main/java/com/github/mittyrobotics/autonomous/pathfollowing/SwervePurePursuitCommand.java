@@ -44,33 +44,30 @@ public class SwervePurePursuitCommand extends CommandBase {
     @Override
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
-//        robot = Odometry.getInstance().getState();
+
         robot = Odometry.getInstance().getState();
 
         if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
             currentPathNumber++;
             SmartDashboard.putString("end pos" + currentPathNumber, SwerveSubsystem.getInstance().getPose().getPosition().toString());
-//            System.out.println("SHIFTED PATH TO " + currentPathNumber);
         }
         if (currentPathNumber == paths.length) currentPathNumber--;
 
         currentPath = paths[currentPathNumber];
         angularController = new PIDController(currentPath.getKp(), currentPath.getKi(), currentPath.getKd());
 
-        speed += currentPath.getAccel() * dt;
-        speed = Math.min(speed, currentPath.getMaxSpeed());
 
+        speed = Math.min(speed + currentPath.getAccel() * dt, currentPath.getMaxSpeed());
         double closest = currentPath.getSpline().getClosestPoint(robot, 50, 10);
         double length = currentPath.getSpline().getLength(closest, 1.0, 17);
 
         double vi = Math.sqrt(
-                currentPath.getEndSpeed() * currentPath.getEndSpeed() + 2 * currentPath.getDecel() * length
+                currentPath.getEndSpeed() * currentPath.getEndSpeed() + 2 * currentPath.getDecel() * length / 39.3701
         );
-
         speed = Math.min(vi, speed);
 
         Vector vectorToLookahead;
-        if (currentPath.getLookahead() < length) vectorToLookahead = currentPath.getVectorToLookahead(robot, currentPath.getLookahead());
+        if (currentPath.getLookahead() < length) vectorToLookahead = currentPath.getVectorToLookahead(robot, length, currentPath.getLookahead());
         else vectorToLookahead = new Vector(
                 robot.getPosition(),
                 Point.add(currentPath.getByT(1.0).getPosition(),
@@ -87,29 +84,16 @@ public class SwervePurePursuitCommand extends CommandBase {
         double angle = Math.atan2(linearVel.getY(), linearVel.getX()) - heading;
         linearVel = new Vector(new Angle(angle), speed);
 
-        double angularVel = angularController.calculate(robot.getHeading().getRadians(), currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians());
-        double currentAngle = robot.getHeading().getRadians();
-        double desiredAngle = currentPath.getHeadingAtLookahead(robot, currentPath.getLookahead()).getRadians();
+        double currentAngle = Gyro.getInstance().getHeadingRadians();
+        double desiredAngle = currentPath.getCurrentDesiredHeading(length).getRadians();
+        double angularVel = angularController.calculate(currentAngle, desiredAngle);
 
         if(Math.abs(angularVel) < currentPath.getMinAngular()) {
             angularVel = (angularVel > 0) ? currentPath.getMinAngular() : -currentPath.getMinAngular();
             angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
-        //Can probably be removed
-        if (new Vector(robot.getPosition(), paths[paths.length - 1].getByT(1.0).getPosition()).getMagnitude() < linearThreshold &&
-                Math.abs(paths[paths.length - 1].getByT(1.0).getHeading().getRadians() - robot.getHeading().getRadians()) < angularThreshold &&
-                currentPathNumber == paths.length - 1) {
-            linearVel = new Vector(0, 0);
-            angularVel = 0;
-            SmartDashboard.putBoolean("Halted", true);
-        } else {
-            SmartDashboard.putBoolean("Halted", false);
-        }
-
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
-//        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(0, 0), angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

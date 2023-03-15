@@ -25,7 +25,7 @@ public class SwerveAutoPickupCommand extends SequentialCommandGroup {
                 new SwerveAutoDriveToPickupCommand(2, 0.05, isCone, index,
                         new SwervePath(new QuinticHermiteSpline(init, end), init.getHeading(), new Angle(angle),
                                 0, 0, 3, 6, 6,
-                                0.2, 1, 0.0, 0, 0.00, 0.5
+                                0, 0, 0.0, 0, 0.00, 0.5
                         ), auto
                 ),
                 new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor())

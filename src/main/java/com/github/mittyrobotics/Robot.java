@@ -55,9 +55,6 @@ public class Robot extends TimedRobot {
         // TODO: check this
         Odometry.getInstance().FIELD_LEFT_SIDE = true;
 
-//        double x = 0;
-//        double y = 0;
-//        double t = 0;
         double x = 137;
         double y = 153;
         double t = 3.08;
@@ -108,25 +105,25 @@ public class Robot extends TimedRobot {
 //
 //    Odometry.getInstance().setState(103, 6, Math.PI);
 //
-//    SwervePath[] paths = {
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(0, 0), new Angle(3*Math.PI/2),
-//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
-//                    new Angle(0), new Angle(Math.PI),
-//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-//            ),
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
-//                            new Point(0, 0), new Angle(Math.PI/2)),
-//                    new Angle(Math.PI), new Angle(0),
-//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-//            )
-//    };
+    SwervePath[] paths = {
+            new SwervePath(
+                    new QuinticHermiteSpline(
+                            new Point(0, 0), new Angle(3*Math.PI/2),
+                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
+                    new Angle(0), new Angle(Math.PI),
+                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+            ),
+            new SwervePath(
+                    new QuinticHermiteSpline(
+                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
+                            new Point(0, 0), new Angle(Math.PI/2)),
+                    new Angle(Math.PI), new Angle(0),
+                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
+            )
+    };
 //
-//    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
-//    SwerveSubsystem.getInstance().setDefaultCommand(command);
+    SwervePurePursuitCommand command = new SwervePurePursuitCommand(0.05, 0.07, paths);
+    CommandScheduler.getInstance().schedule(command);
 
 //    SwervePath path = new SwervePath(
 //            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(1, 1), new Angle(Math.PI/2)),
