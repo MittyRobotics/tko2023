@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class LEDDefaultCommand extends CommandBase {
 
-    int[] purpleHsv, yellowHsv, blueHsv, redHsv, greenHsv, whiteHsv;
-
     StateMachine.PieceState state;
 
     double time, prevTime, countTime;
@@ -27,13 +25,6 @@ public class LEDDefaultCommand extends CommandBase {
         countTime = Timer.getFPGATimestamp();
 
         LedSubsystem.getInstance().startOutput();
-
-        yellowHsv = LedConstants.RGB_VALUES[2];
-        purpleHsv = LedConstants.RGB_VALUES[5];
-        greenHsv = LedConstants.RGB_VALUES[3];
-        blueHsv = LedConstants.RGB_VALUES[4];
-        redHsv = LedConstants.RGB_VALUES[0];
-        whiteHsv = LedConstants.RGB_VALUES[7];
     }
 
     @Override
@@ -42,26 +33,24 @@ public class LEDDefaultCommand extends CommandBase {
 
         time = Timer.getFPGATimestamp();
 
-        if (LedSubsystem.getInstance().getBlinkIntaking()) {
-            ledSwitch(whiteHsv, state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv);
-        } if (LedSubsystem.getInstance().getBlinkOuttaking()) {
-            ledSwitch(greenHsv, state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv);
-        } else if (state == StateMachine.PieceState.CONE) {
-            runLed(yellowHsv);
-        } else if (state == StateMachine.PieceState.CUBE) {
-            runLed(purpleHsv);
+        if (state == StateMachine.PieceState.NONE) {
+            if (LedSubsystem.getInstance().getAltColor() != -1) {
+                ledSwitch(LedConstants.RGB_VALUES[LedSubsystem.getInstance().getAltColor()],
+                        LedConstants.RGB_VALUES[LedSubsystem.getInstance().getAltColor()]);
+            }
         }
-    }
 
-    private void runLed(int[] hsv) {
-        if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.) {
-            LedSubsystem.getInstance().setRgbRange(0, LedConstants.STRIP_ONE_LENGTH,
-                    hsv[0], hsv[1], hsv[2]);
-            prevTime = Timer.getFPGATimestamp();
+        int[] mainHsv = state == StateMachine.PieceState.CONE ? LedConstants.RGB_VALUES[LedSubsystem.Color.YELLOW.index]
+                : LedConstants.RGB_VALUES[LedSubsystem.Color.PURPLE.index];
+
+        if (LedSubsystem.getInstance().getAltColor() != -1) {
+            ledSwitch(mainHsv, LedConstants.RGB_VALUES[LedSubsystem.getInstance().getAltColor()]);
+        } else if (DriverStation.getMatchTime() > 30. || DriverStation.getMatchTime() == -1.) {
+            ledSwitch(mainHsv, mainHsv);
         } else if (DriverStation.getMatchTime() < 15.) {
-            ledSwitch(hsv, redHsv);
+            ledSwitch(mainHsv, LedConstants.RGB_VALUES[LedSubsystem.Color.RED.index]);
         } else {
-            ledSwitch(hsv, blueHsv);
+            ledSwitch(mainHsv, LedConstants.RGB_VALUES[LedSubsystem.Color.ORANGE.index]);
         }
     }
 

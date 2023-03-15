@@ -11,6 +11,7 @@ public class LedConstants {
 
     //TODO: Tune last two vals
     //Order: Row = R-O-Y-G-B-I-V, Column = R-G-B
+    //RED, ORANGE, YELLOW, GREEN, LIGHTBLUE, BLUE, PURPLE, WHITE
     public static final int[][] RGB_VALUES = new int[][]
             {
                     {255, 0, 0}, //Red
@@ -18,8 +19,8 @@ public class LedConstants {
                     {255, 128, 0}, //Yellow
                     {0, 255, 0}, //Green
                     {0, 0, 255}, //Blue
-                    {255, 0, 255}, //Indigo  //Indigo and Violet are currently both the same  //CHANGED FROM 255, 0, 255
-                    {255, 0, 255}, //Violet
+                    {150, 150, 255}, //Light blue
+                    {255, 0, 255}, //Purple
                     {255, 255, 255} //White
             };
     public static final double TIME_BETWEEN_SWITCH = 0.3;

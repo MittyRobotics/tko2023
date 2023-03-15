@@ -6,13 +6,17 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.SortedSet;
+
 public class LedSubsystem extends SubsystemBase implements ISubsystem {
     //TODO: need to find way to completely stop output (set blank)
     private static LedSubsystem instance;
 
     private AddressableLED ledStrip;
     private AddressableLEDBuffer buffer, buffer2;
-    private boolean outtaking, intaking;
+    private ArrayList<Color> desiredAltColors;
 
     private LedSubsystem() {
         super();
@@ -26,20 +30,30 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
         return instance;
     }
 
-    public void setBlinkOuttaking(boolean blink) {
-        outtaking = blink;
+    public void setAltColor(Color c) {
+        if (!desiredAltColors.contains(c))
+            desiredAltColors.add(c);
     }
 
-    public boolean getBlinkOuttaking() {
-        return outtaking;
+    public void disableIntakeAltColor() {
+        desiredAltColors.remove(Color.GREEN);
+        desiredAltColors.remove(Color.WHITE);
     }
 
-    public void setBlinkIntaking(boolean blink) {
-        intaking = blink;
+    public void disableDriveAltColor() {
+        desiredAltColors.remove(Color.BLUE);
     }
 
-    public boolean getBlinkIntaking() {
-        return intaking;
+    public int getAltColor() {
+        Color res = Color.NONE;
+        int ord = Integer.MIN_VALUE;
+        for (Color c : desiredAltColors) {
+            if (c.order > ord) {
+                ord = c.order;
+                res = c;
+            }
+        }
+        return res.index;
     }
 
     @Override
@@ -140,6 +154,25 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
         ledStrip.close();
 
 //        ledStripTwo.close();
+    }
+
+    public enum Color {
+        RED(0, -1),
+        ORANGE(1, -1),
+        YELLOW(2, 0),
+        GREEN(3, 3),
+        LIGHTBLUE(4, 0),
+        BLUE(5, 2),
+        PURPLE(6, 0),
+        WHITE(7, 1),
+        NONE(-1, -2);
+
+        public final Integer index;
+        public final Integer order;
+        Color(final Integer index, final Integer order) {
+            this.index = index;
+            this.order = order;
+        }
     }
 
 }

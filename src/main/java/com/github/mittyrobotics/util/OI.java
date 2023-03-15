@@ -30,6 +30,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -157,10 +158,10 @@ public class OI {
     }
 
     public boolean driverControls(boolean xButton, boolean bButton, boolean leftTrigger, boolean rightTrigger) {
-        return (xButton == getOperatorController().getXButton()) &&
-                (bButton == getOperatorController().getBButton()) &&
-                (leftTrigger == getOperatorController().getLeftTriggerAxis() > 0.5) &&
-                (rightTrigger == getOperatorController().getRightTriggerAxis() > 0.5);
+        return (xButton == getDriveController().getXButton()) &&
+                (bButton == getDriveController().getBButton()) &&
+                (leftTrigger == getDriveController().getLeftTriggerAxis() > 0.5) &&
+                (rightTrigger == getDriveController().getRightTriggerAxis() > 0.5);
     }
 
     public void setupControls() {
@@ -209,14 +210,18 @@ public class OI {
 //                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
 //        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 //
-//        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-//        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
-//
-//        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-//        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
-//
-//        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-//        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
+        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
+        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
+        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+
+        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
+        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
+        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+
+        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
+        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
+        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+
 //
 //        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
 //        drive.whileTrue(new JoystickThrottleCommand());

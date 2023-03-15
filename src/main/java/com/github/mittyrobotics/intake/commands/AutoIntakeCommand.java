@@ -1,22 +1,15 @@
 package com.github.mittyrobotics.intake.commands;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.intake.IntakeConstants;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
-import com.github.mittyrobotics.pivot.ArmKinematics;
-import com.github.mittyrobotics.pivot.PivotSubsystem;
-import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.Util;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 public class AutoIntakeCommand extends CommandBase {
     boolean indexing = false;
@@ -47,20 +40,24 @@ public class AutoIntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
+        //Update current counter for intake detection
         IntakeSubsystem.getInstance().updateCurrent();
-        LedSubsystem.getInstance().setBlinkOuttaking(false);
 
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
             StateMachine.getInstance().setIntakeOff();
             Odometry.getInstance().setScoringCam(false);
-            LedSubsystem.getInstance().setBlinkOuttaking(true);
+            LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             StateMachine.getInstance().setIntakeStowing();
+            //Disable LEDs once released
+            LedSubsystem.getInstance().disableIntakeAltColor();
             Odometry.getInstance().setScoringCam(true);
+            //But set to white while not released
+            LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.WHITE);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
             //Outtake
             if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE) {
@@ -68,21 +65,26 @@ public class AutoIntakeCommand extends CommandBase {
             } else {
                 IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
             }
+            LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.INTAKE) {
             //Intake
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
+            LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.WHITE);
 
 //            If prox sensor detected index for another second then stow
             if(IntakeSubsystem.getInstance().getAveragedCurrent() >= threshold && !indexing) {
+                // BLink green
                 indexing = true;
-                LedSubsystem.getInstance().setBlinkIntaking(true);
+                LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
                 Util.triggerFunctionAfterTime(() -> {
                     OI.getInstance().zeroAll();
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);
                     indexing = false;
+
+                    //Disable LED
                     Util.triggerFunctionAfterTime(() -> {
-                        LedSubsystem.getInstance().setBlinkIntaking(false);
+                        LedSubsystem.getInstance().disableIntakeAltColor();
                     }, 1200);
                 }, 100);
             }
@@ -92,6 +94,7 @@ public class AutoIntakeCommand extends CommandBase {
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OFF) {
             //Intake off
             IntakeSubsystem.getInstance().setMotor(0);
+            LedSubsystem.getInstance().disableIntakeAltColor();
         }
     }
 
