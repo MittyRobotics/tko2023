@@ -96,7 +96,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if(firstPath) SwerveSubsystem.getInstance().setZero();
+        if (!firstPath) SwerveSubsystem.getInstance().setZero();
         SmartDashboard.putBoolean("Halted", true);
     }
 

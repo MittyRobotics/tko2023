@@ -88,7 +88,7 @@ public class Odometry {
 
     private final double ERROR_MARGIN = 30;
     private final double MIN_DISTANCE = 30;
-    private final double MAX_DISTANCE = 180;
+    private final double MAX_DISTANCE = 120;
 
     public void setState(double x, double y, double t) {
         state.set(0, 0, x);
@@ -118,13 +118,12 @@ public class Odometry {
                 continue;
             }
 
-
             System.out.println("measurement: " + x + ", " + y + ", " + theta);
 
-//            if (time <= last_time) {
-//                System.out.println("Invalid input");
-//                continue;
-//            }
+            if (time < last_time) {
+                System.out.println("Invalid input");
+                continue;
+            }
 //            System.out.println(time);
 //            System.out.println("System: " + System.currentTimeMillis() * 1000000);
 
