@@ -93,7 +93,7 @@ public class OI {
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
 //        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
-            StateMachine.getInstance().setIntaking();
+        StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
@@ -202,14 +202,16 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 
-//        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
-//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-//        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
-//
-//        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
-//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-//        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
-//
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
+        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+
+        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
+                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
+        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
         autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0], false));
         autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));

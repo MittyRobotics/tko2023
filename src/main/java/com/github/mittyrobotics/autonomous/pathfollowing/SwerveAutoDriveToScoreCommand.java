@@ -42,9 +42,10 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
+        angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
+
         speed = path.getInitSpeed();
         targetAngle = path.getEndHeading().getRadians();
-        robot = Odometry.getInstance().getState();
         lastT = Timer.getFPGATimestamp();
     }
 
@@ -53,7 +54,6 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
         dt = Timer.getFPGATimestamp() - lastT;
 
         robot = Odometry.getInstance().getState();
-        angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
         if (!auto) {
             double leftY = OI.getInstance().getDriveController().getLeftX();
@@ -62,7 +62,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
         } else {
             double curSpeed = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
             double distanceToEnd = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude();
-            
+
             speed = Math.min(
                     firstPath ? Double.MAX_VALUE : maxVelocityFromDistance(distanceToEnd),
                     Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed())

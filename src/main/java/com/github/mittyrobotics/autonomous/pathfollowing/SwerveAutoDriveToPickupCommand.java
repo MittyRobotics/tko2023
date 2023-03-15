@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
+import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.Gyro;
@@ -24,10 +25,11 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
     private PIDController angularController;
     private double speed = 0, targetAngle;
 
-    boolean isCone;
-    int index;
+    private boolean isCone, auto;
+    private int index;
+    private double dt, lastT;
 
-    public SwerveAutoDriveToPickupCommand(double linearThreshold, double angularThreshold, boolean isCone, int index, SwervePath path) {
+    public SwerveAutoDriveToPickupCommand(double linearThreshold, double angularThreshold, boolean isCone, int index, SwervePath path, boolean auto) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
@@ -35,6 +37,7 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
         this.isCone = isCone;
         this.index = index;
         this.angularController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
+        this.auto = auto;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
@@ -42,19 +45,27 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
+        angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
+
         speed = path.getInitSpeed();
         targetAngle = path.getEndHeading().getRadians();
+        lastT = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
+        dt = Timer.getFPGATimestamp() - lastT;
+
         robot = Odometry.getInstance().getState();
 
-        angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
-
-        double leftY = OI.getInstance().getDriveController().getLeftX();
-        double leftX = -OI.getInstance().getDriveController().getLeftY();
-        speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+        if (!auto) {
+            double leftY = OI.getInstance().getDriveController().getLeftX();
+            double leftX = -OI.getInstance().getDriveController().getLeftY();
+            speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+        } else {
+            double curSpeed = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
+            speed = Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed());
+        }
 
         double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
         if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
@@ -66,6 +77,8 @@ public class SwerveAutoDriveToPickupCommand extends CommandBase {
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+
+        lastT = Timer.getFPGATimestamp();
     }
 
     @Override

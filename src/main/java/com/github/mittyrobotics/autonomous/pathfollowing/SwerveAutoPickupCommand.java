@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class SwerveAutoPickupCommand extends SequentialCommandGroup {
 
-    public SwerveAutoPickupCommand(boolean isCone, int index) {
+    public SwerveAutoPickupCommand(boolean isCone, int index, boolean auto) {
         super();
         Pose init = Odometry.getInstance().getState();
         double angle = ArmKinematics.getAngleToGamePiece(isCone, index);
@@ -23,9 +23,11 @@ public class SwerveAutoPickupCommand extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
                 new SwerveAutoDriveToPickupCommand(2, 0.05, isCone, index,
-                new SwervePath(new QuinticHermiteSpline(init, end),
-                        init.getHeading(), new Angle(angle),
-                        0, 0, 0, 0, 0, 0.2, 1, 0.0, 0, 0.00, 0.5)),
+                        new SwervePath(new QuinticHermiteSpline(init, end), init.getHeading(), new Angle(angle),
+                                0, 0, 3, 6, 6,
+                                0.2, 1, 0.0, 0, 0.00, 0.5
+                        ), auto
+                ),
                 new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor())
         );
     }
