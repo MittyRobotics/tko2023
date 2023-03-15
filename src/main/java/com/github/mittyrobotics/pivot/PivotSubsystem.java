@@ -142,6 +142,10 @@ public class PivotSubsystem extends SubsystemBase {
         return Math.abs(ArmKinematics.getPivotDesired().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_THRESHOLD;
     }
 
+    public boolean withinDeadzoneThreshold() {
+        return Math.abs(ArmKinematics.getPivotDesired().getRadians() - getPositionRadians()) < PivotConstants.PIVOT_DEADZONE_THRESHOLD;
+    }
+
     public void resetAngleDegrees(double degrees) {
         spark[0].getEncoder().setPosition((degrees / 360) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
         spark[1].getEncoder().setPosition((degrees / 360) / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO);
