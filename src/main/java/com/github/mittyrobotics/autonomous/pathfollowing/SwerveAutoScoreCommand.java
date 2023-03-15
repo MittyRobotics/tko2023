@@ -18,12 +18,12 @@ public class SwerveAutoScoreCommand extends SequentialCommandGroup {
                 new SwerveAutoDriveToScoreCommand(2, 0.02, false,
                         new SwervePath(new QuinticHermiteSpline(init, mid),
                                 init.getHeading(), target.getHeading(),
-                                0, 0, 0, 0, 0, 0.1, 0.4, 1, 0, 0.02, 0.5))
+                                0, 0, 0, 0, 0, 0.1, 0.4, 2, 0, 0.02, 0.5))
                 ,
                 new SwerveAutoDriveToScoreCommand(2, 0.02, true,
                         new SwervePath(new QuinticHermiteSpline(mid, target),
                                 mid.getHeading(), target.getHeading(),
-                                0, 0, 0, 0, 0, 0.1, 0.4, 1, 0, 0.02, 0.5))
+                                0, 0, 0, 0, 0, 0.1, 0.4, 2, 0, 0.02, 0.5))
         );
     }
 }

@@ -88,7 +88,7 @@ public class AutoArmScoreCommand extends CommandBase {
                                 StateMachine.getInstance().setStateNone();
                                 switchCam();
                                 scoring = false;
-                            }, 300);
+                            }, 600);
                         }, 10);
                     }, 200);
                 }

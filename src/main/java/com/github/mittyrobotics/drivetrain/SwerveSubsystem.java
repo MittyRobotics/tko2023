@@ -506,6 +506,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             return new Pose(poses.get(poses.size() - 1).getValue().getPosition(), poses.get(poses.size() - 1).getValue().getHeading());
         }
 
+        public long getLatestTime() {
+            return poses.get(0).getKey();
+        }
+
         public Angle getCurHeading() {
             return curHeading;
         }

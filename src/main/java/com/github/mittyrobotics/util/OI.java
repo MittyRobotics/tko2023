@@ -150,7 +150,7 @@ public class OI {
                         StateMachine.getInstance().setIntakeOff();
                         StateMachine.getInstance().setStateNone();
                         Odometry.getInstance().setScoringCam(false);
-                    }, 300);
+                    }, 600);
                 }, 10);
             }, 200);
         }

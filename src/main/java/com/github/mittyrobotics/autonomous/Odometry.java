@@ -106,9 +106,12 @@ public class Odometry {
             double y = measurement[1];
             double theta = measurement[3];
             double mt = measurement[4];
+//            System.out.println(Timer.getFPGATimestamp() * 1000000 + " " + tda.timestamp);
             double time = System.currentTimeMillis() * 1000000 - Math.abs(Timer.getFPGATimestamp() * 1000000 - tda.timestamp) * 1000 - mt;
-            double y_dist = Math.abs(measurement[5]);
-            double x_dist = Math.abs(measurement[6]);
+            double y_dist = Math.abs(measurement[6]);
+            double x_dist = Math.abs(measurement[5]);
+
+//            System.out.println("Odometry TIme " + (System.currentTimeMillis() * 1000000));
 
             if (x_dist < MIN_DISTANCE || x_dist > MAX_DISTANCE) {
                 System.out.println("Bad X distance: " + x_dist);
@@ -118,10 +121,10 @@ public class Odometry {
 
             System.out.println("measurement: " + x + ", " + y + ", " + theta);
 
-            if (time <= last_time || Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(theta)) {
-                System.out.println("Invalid input");
-                continue;
-            }
+//            if (time <= last_time) {
+//                System.out.println("Invalid input");
+//                continue;
+//            }
 //            System.out.println(time);
 //            System.out.println("System: " + System.currentTimeMillis() * 1000000);
 
