@@ -6,15 +6,12 @@ import com.github.mittyrobotics.intake.StateMachine;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class AutoScoreCommand extends SequentialCommandGroup {
-    private StateMachine.RobotState level;
-    private boolean auto;
 
-    public AutoScoreCommand(Pose target, StateMachine.RobotState level, StateMachine.PieceState piece, boolean auto) {
+    public AutoScoreCommand(Pose target, StateMachine.RobotState level, StateMachine.PieceState piece) {
         super();
-        this.level = level;
         addCommands(
-                new SwerveAutoScoreCommand(target),
-                new AutoArmScoreCommand(level, piece, auto)
+                new SwerveAutoScoreCommand(target, true),
+                new AutoArmScoreCommand(level, piece, true)
         );
     }
 }

@@ -321,6 +321,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         Odometry.getInstance().setLastTime(nano);
     }
 
+    public Vector getDesiredVel() {
+        return inverseKinematics.linearVel;
+    }
+
     public void resetPose() {
         setPose(new Pose(new Point(0, 0), new Angle(0)));
     }

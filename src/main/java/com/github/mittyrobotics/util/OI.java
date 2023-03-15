@@ -211,15 +211,15 @@ public class OI {
 //        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0));
 //
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0]));
+        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0], false));
         autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1]));
+        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1], false));
         autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
         Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2]));
+        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2], false));
         autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
 //

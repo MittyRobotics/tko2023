@@ -172,7 +172,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-//    OI.getInstance().setupControls();
+    OI.getInstance().setupControls();
 //    SwerveAutoPickupCommandv2 command = new SwerveAutoPickupCommandv2(0.05, 0.05, path);
 //    SwerveSubsystem.getInstance().setDefaultCommand(command);
 //    SwerveSubsystem.getInstance().setDefaultCommand(new JoystickThrottleCommand());
@@ -183,15 +183,15 @@ public class Robot extends TimedRobot {
 //                    new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
 //            ))
 //    );
-
-        StateMachine.getInstance().setIntakeStowing();
-
-    CommandScheduler.getInstance().schedule(new AutoScoreCommand(
-            new Pose(
-            Point.add(Odometry.getInstance().getScoringZone(6)[1].getPosition(), new Point(32, 0)),
-            new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
-    ), StateMachine.RobotState.MID, StateMachine.PieceState.CUBE, false
-            ));
+//
+//        StateMachine.getInstance().setIntakeStowing();
+//
+//    CommandScheduler.getInstance().schedule(new AutoScoreCommand(
+//            new Pose(
+//            Point.add(Odometry.getInstance().getScoringZone(6)[1].getPosition(), new Point(32, 0)),
+//            new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)
+//    ), StateMachine.RobotState.MID, StateMachine.PieceState.CUBE, false
+//            ));
 
 //        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Math.PI)));
 //

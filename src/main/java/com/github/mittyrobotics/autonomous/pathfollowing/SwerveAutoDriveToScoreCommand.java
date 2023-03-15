@@ -7,7 +7,6 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,16 +23,18 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
     private PIDController angularController;
     private double speed = 0, targetAngle;
 
-    boolean zeroOnEnd;
+    private boolean firstPath, auto;
+    private double dt, lastT;
 
-    public SwerveAutoDriveToScoreCommand(double linearThreshold, double angularThreshold, boolean zeroOnEnd, SwervePath path) {
+    public SwerveAutoDriveToScoreCommand(double linearThreshold, double angularThreshold, boolean firstPath, SwervePath path, boolean auto) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
         this.angularThreshold = angularThreshold;
         this.angularController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
 
-        this.zeroOnEnd = zeroOnEnd;
+        this.firstPath = firstPath;
+        this.auto = auto;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
@@ -44,18 +45,29 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
         speed = path.getInitSpeed();
         targetAngle = path.getEndHeading().getRadians();
         robot = Odometry.getInstance().getState();
-
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSTARTED");
+        lastT = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
+        dt = Timer.getFPGATimestamp() - lastT;
+
         robot = Odometry.getInstance().getState();
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
-        double leftY = OI.getInstance().getDriveController().getLeftX();
-        double leftX = -OI.getInstance().getDriveController().getLeftY();
-        speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+        if (!auto) {
+            double leftY = OI.getInstance().getDriveController().getLeftX();
+            double leftX = -OI.getInstance().getDriveController().getLeftY();
+            speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+        } else {
+            double curSpeed = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
+            double distanceToEnd = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude();
+            
+            speed = Math.min(
+                    firstPath ? Double.MAX_VALUE : maxVelocityFromDistance(distanceToEnd),
+                    Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed())
+            );
+        }
 
 
         double heading = Gyro.getInstance().getHeadingRadians();
@@ -78,24 +90,25 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+
+        lastT = Timer.getFPGATimestamp();
     }
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setZero();
+        if(firstPath) SwerveSubsystem.getInstance().setZero();
         SmartDashboard.putBoolean("Halted", true);
-//        System.out.println("FINISHED COMMAND\n\n\n\n\n");
     }
 
     @Override
     public boolean isFinished() {
-//        System.out.println(new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() + "-error");
-//        System.out.println(path.getByT(1.0).getPosition());
-        if(!zeroOnEnd) {
-            System.out.println("\nFIRST PATH\n");
-            return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
-        }
-        System.out.println("\nSECOND PATH\n");
+        if(!firstPath) return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
         return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
+
+    public double maxVelocityFromDistance(double dist) {
+        double dist_m = dist / 39.3701;
+        return Math.sqrt(2 * path.getDecel() * dist);
+    }
+
 }

@@ -18,8 +18,8 @@ public class LedConstants {
                     {230, 50, 0}, //Orange
                     {255, 128, 0}, //Yellow
                     {0, 255, 0}, //Green
-                    {0, 0, 255}, //Blue
                     {150, 150, 255}, //Light blue
+                    {0, 0, 255}, //Blue
                     {255, 0, 255}, //Purple
                     {255, 255, 255} //White
             };
