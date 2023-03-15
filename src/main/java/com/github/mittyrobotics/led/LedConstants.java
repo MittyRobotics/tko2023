@@ -20,6 +20,7 @@ public class LedConstants {
                     {0, 0, 255}, //Blue
                     {255, 0, 255}, //Indigo  //Indigo and Violet are currently both the same  //CHANGED FROM 255, 0, 255
                     {255, 0, 255}, //Violet
+                    {255, 255, 255} //White
             };
     public static final double TIME_BETWEEN_SWITCH = 0.3;
 }

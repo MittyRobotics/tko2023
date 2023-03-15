@@ -165,8 +165,11 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
     }
 
     public boolean withinThreshold() {
-//        System.out.println(ArmKinematics.getTelescopeDesired() + " " + getDistanceMeters());
         return Math.abs(ArmKinematics.getTelescopeDesired() - getDistanceMeters()) < TelescopeConstants.EXTENSION_THRESHOLD;
+    }
+
+    public boolean withinDeadzoneThreshold() {
+        return Math.abs(ArmKinematics.getTelescopeDesired() - getDistanceMeters()) < TelescopeConstants.EXTENSION_DEADZONE_THRESHOLD;
     }
 
     public boolean getHalifaxMaxContact() {

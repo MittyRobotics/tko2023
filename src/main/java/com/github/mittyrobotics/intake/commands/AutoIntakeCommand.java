@@ -75,11 +75,15 @@ public class AutoIntakeCommand extends CommandBase {
 //            If prox sensor detected index for another second then stow
             if(IntakeSubsystem.getInstance().getAveragedCurrent() >= threshold && !indexing) {
                 indexing = true;
+                LedSubsystem.getInstance().setBlinkIntaking(true);
                 Util.triggerFunctionAfterTime(() -> {
                     OI.getInstance().zeroAll();
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);
                     indexing = false;
+                    Util.triggerFunctionAfterTime(() -> {
+                        LedSubsystem.getInstance().setBlinkIntaking(false);
+                    }, 1200);
                 }, 100);
             }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {

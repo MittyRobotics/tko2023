@@ -12,7 +12,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     private AddressableLED ledStrip;
     private AddressableLEDBuffer buffer, buffer2;
-    private boolean outtaking;
+    private boolean outtaking, intaking;
 
     private LedSubsystem() {
         super();
@@ -32,6 +32,14 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     public boolean getBlinkOuttaking() {
         return outtaking;
+    }
+
+    public void setBlinkIntaking(boolean blink) {
+        intaking = blink;
+    }
+
+    public boolean getBlinkIntaking() {
+        return intaking;
     }
 
     @Override

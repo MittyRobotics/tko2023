@@ -54,7 +54,7 @@ public class ExtensionToKinematics extends CommandBase {
         velTelescope = 0;
         velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
 
-        if (ArmKinematics.getTelescopeDesired() == 0 && TelescopeSubsystem.getInstance().withinThreshold())
+        if (ArmKinematics.getTelescopeDesired() == 0 && TelescopeSubsystem.getInstance().withinDeadzoneThreshold())
             TelescopeSubsystem.getInstance().setMotor(0);
         else TelescopeSubsystem.getInstance().setRaw(velTelescope);
 

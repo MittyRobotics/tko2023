@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class LEDDefaultCommand extends CommandBase {
 
-    int[] purpleHsv, yellowHsv, blueHsv, redHsv, greenHsv;
+    int[] purpleHsv, yellowHsv, blueHsv, redHsv, greenHsv, whiteHsv;
 
     StateMachine.PieceState state;
 
@@ -28,11 +28,12 @@ public class LEDDefaultCommand extends CommandBase {
 
         LedSubsystem.getInstance().startOutput();
 
-        yellowHsv = LedConstants.RGB_VALUES[5];
-        purpleHsv = LedConstants.RGB_VALUES[2];
+        yellowHsv = LedConstants.RGB_VALUES[2];
+        purpleHsv = LedConstants.RGB_VALUES[5];
         greenHsv = LedConstants.RGB_VALUES[3];
         blueHsv = LedConstants.RGB_VALUES[4];
         redHsv = LedConstants.RGB_VALUES[0];
+        whiteHsv = LedConstants.RGB_VALUES[7];
     }
 
     @Override
@@ -41,7 +42,9 @@ public class LEDDefaultCommand extends CommandBase {
 
         time = Timer.getFPGATimestamp();
 
-        if (LedSubsystem.getInstance().getBlinkOuttaking()) {
+        if (LedSubsystem.getInstance().getBlinkIntaking()) {
+            ledSwitch(whiteHsv, state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv);
+        } if (LedSubsystem.getInstance().getBlinkOuttaking()) {
             ledSwitch(greenHsv, state == StateMachine.PieceState.CONE ? yellowHsv : purpleHsv);
         } else if (state == StateMachine.PieceState.CONE) {
             runLed(yellowHsv);
