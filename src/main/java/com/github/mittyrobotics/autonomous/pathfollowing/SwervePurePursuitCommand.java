@@ -47,18 +47,19 @@ public class SwervePurePursuitCommand extends CommandBase {
 
         robot = Odometry.getInstance().getState();
 
-        if (paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10) >= 0.98) {
-            currentPathNumber++;
+        double closest = paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10);
+        if (closest >= 0.98) {
+            if (currentPathNumber < paths.length - 1) {
+                currentPathNumber++;
+                closest = paths[currentPathNumber].getSpline().getClosestPoint(robot, 50, 10);
+            }
             SmartDashboard.putString("end pos" + currentPathNumber, SwerveSubsystem.getInstance().getPose().getPosition().toString());
         }
-        if (currentPathNumber == paths.length) currentPathNumber--;
 
         currentPath = paths[currentPathNumber];
         angularController = new PIDController(currentPath.getKp(), currentPath.getKi(), currentPath.getKd());
 
-
         speed = Math.min(speed + currentPath.getAccel() * dt, currentPath.getMaxSpeed());
-        double closest = currentPath.getSpline().getClosestPoint(robot, 50, 10);
         double length = currentPath.getSpline().getLength(closest, 1.0, 17);
 
         double vi = Math.sqrt(
