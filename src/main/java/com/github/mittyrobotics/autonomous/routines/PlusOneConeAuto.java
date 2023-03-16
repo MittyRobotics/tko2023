@@ -2,6 +2,7 @@ package com.github.mittyrobotics.autonomous.routines;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
+import com.github.mittyrobotics.autonomous.arm.AutoScoreCommandGroup;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
@@ -70,7 +71,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoScoreCommand(scoring_second, true),
+                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
