@@ -64,7 +64,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
             double distanceToEnd = new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude();
 
             speed = Math.min(
-                    firstPath ? Double.MAX_VALUE : maxVelocityFromDistance(distanceToEnd),
+                    maxVelocityFromDistance(distanceToEnd),
                     Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed())
             );
         }
@@ -108,7 +108,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     public double maxVelocityFromDistance(double dist) {
         double dist_m = dist / 39.3701;
-        return Math.sqrt(2 * path.getDecel() * dist_m);
+        return Math.sqrt(path.getEndSpeed() * path.getEndSpeed() + 2 * path.getDecel() * dist_m);
     }
 
 }

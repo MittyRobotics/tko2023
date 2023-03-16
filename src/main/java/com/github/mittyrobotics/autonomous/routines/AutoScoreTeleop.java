@@ -10,21 +10,8 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
     public AutoScoreTeleop(int index) {
         super();
 
-//        LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE);
-
         addCommands(
-//                new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE))
               new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[index], false)
         );
-
-//        try {
-//            Odometry.getInstance().getClosestScoringZone();
-//            addCommands(
-//                    new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE))
-////                    new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[index], false)
-//            );
-//        } catch (Exception ignored) {
-//            System.out.println("\n\n\n\n\n\n\nTESTKHESJKHSEJKFSEF");
-//        }
     }
 }

@@ -32,6 +32,10 @@ public class Gyro extends SubsystemBase {
         gyro.reset();
     }
 
+    public void reset() {
+        gyro.reset();
+    }
+
     public void setAngleOffset(double offset) {
         angleOffset = offset;
     }

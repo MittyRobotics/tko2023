@@ -13,7 +13,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private static IntakeSubsystem instance;
     private boolean defaultState = true;
     private ArrayList<Double> currents = new ArrayList<>();
-    private double currentKLimit = 20;
+    private double currentKLimit = 10;
 
     public static IntakeSubsystem getInstance() {
         if (instance == null) {

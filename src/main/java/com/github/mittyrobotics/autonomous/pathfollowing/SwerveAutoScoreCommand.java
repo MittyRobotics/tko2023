@@ -16,17 +16,17 @@ public class SwerveAutoScoreCommand extends SequentialCommandGroup {
         super();
         Pose init = Odometry.getInstance().getState();
         target = new Pose(Point.add(target.getPosition(), new Point(Odometry.getInstance().FIELD_LEFT_SIDE ? 32 : -32, 0)), target.getHeading());
-        Pose mid = new Pose(Point.add(target.getPosition(), new Point((Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * 6, 0)), target.getHeading());
+        Pose mid = new Pose(Point.add(target.getPosition(), new Point((Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * 9, 0)), target.getHeading());
         addCommands(
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
-                new SwerveAutoDriveToScoreCommand(1.5, 0.02, true,
+                new SwerveAutoDriveToScoreCommand(2, 0.02, true,
                         new SwervePath(new QuinticHermiteSpline(init, mid),
                                 init.getHeading(), target.getHeading(),
-                                0, 0, 0.5, 0.5, 0,
+                                0, 0.5, 3, 3, 1,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         ), auto
                 ),
-                new SwerveAutoDriveToScoreCommand(2, 0.02, false,
+                new SwerveAutoDriveToScoreCommand(1.5, 0.02, false,
                         new SwervePath(new QuinticHermiteSpline(mid, target),
                                 mid.getHeading(), target.getHeading(),
                                 0, 0, 0.5, 0.5, 0.5,

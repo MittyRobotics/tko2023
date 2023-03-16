@@ -227,8 +227,8 @@ public class OI {
         autoRight.whileTrue(new AutoScoreTeleop(0));
         autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
-//        Trigger zeroModules = new Trigger(() -> getDriveController().getStartButton());
-//        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
+        Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
+        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
 
 //        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
 //        drive.whileTrue(new JoystickThrottleCommand());

@@ -43,6 +43,9 @@ public class AutoIntakeCommand extends CommandBase {
         //Update current counter for intake detection
         IntakeSubsystem.getInstance().updateCurrent();
 
+        if(OI.getInstance().getOperatorController().getLeftBumperReleased())
+            LedSubsystem.getInstance().disableIntakeAltColor();
+
         if (OI.getInstance().getOperatorController().getRightBumper()) {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
@@ -53,8 +56,6 @@ public class AutoIntakeCommand extends CommandBase {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             StateMachine.getInstance().setIntakeStowing();
-            //Disable LEDs once released
-            LedSubsystem.getInstance().disableIntakeAltColor();
             Odometry.getInstance().setScoringCam(true);
             //But set to white while not released
             LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.WHITE);
@@ -76,17 +77,15 @@ public class AutoIntakeCommand extends CommandBase {
                 // BLink green
                 indexing = true;
                 LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
-                Util.triggerFunctionAfterTime(() -> {
-                    OI.getInstance().zeroAll();
-                    StateMachine.getInstance().setIntakeStowing();
-                    Odometry.getInstance().setScoringCam(true);
-                    indexing = false;
+                OI.getInstance().zeroAll();
+                StateMachine.getInstance().setIntakeStowing();
+                Odometry.getInstance().setScoringCam(true);
+                indexing = false;
 
-                    //Disable LED
-                    Util.triggerFunctionAfterTime(() -> {
-                        LedSubsystem.getInstance().disableIntakeAltColor();
-                    }, 1200);
-                }, 100);
+                //Disable LED
+                Util.triggerFunctionAfterTime(() -> {
+                    LedSubsystem.getInstance().disableIntakeAltColor();
+                }, 1200);
             }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed
