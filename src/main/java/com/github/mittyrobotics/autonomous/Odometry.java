@@ -88,7 +88,7 @@ public class Odometry {
 
     private final double ERROR_MARGIN = 30;
     private final double MIN_DISTANCE = 20;
-    private final double MAX_DISTANCE = 180;
+    private final double MAX_DISTANCE = 220;
 
     public void setState(double x, double y, double t) {
         state.set(0, 0, x);

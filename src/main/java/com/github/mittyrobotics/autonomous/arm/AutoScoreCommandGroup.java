@@ -10,8 +10,9 @@ public class AutoScoreCommandGroup extends SequentialCommandGroup {
     public AutoScoreCommandGroup(Pose target, StateMachine.RobotState level, StateMachine.PieceState piece) {
         super();
         addCommands(
+                new AutoArmScorePart1(level, piece),
                 new AutoScoreCommand(target, true),
-                new AutoArmScoreCommand(level, piece, true)
+                new AutoArmScorePart2(piece)
         );
     }
 }

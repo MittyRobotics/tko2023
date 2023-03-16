@@ -45,7 +45,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
 
         addCommands(
                 new InitAutoCommand(starting),
-                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE, true),
+                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
