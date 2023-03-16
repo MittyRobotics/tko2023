@@ -80,7 +80,6 @@ public class AutoIntakeCommand extends CommandBase {
                 OI.getInstance().zeroAll();
                 StateMachine.getInstance().setIntakeStowing();
                 Odometry.getInstance().setScoringCam(true);
-                indexing = false;
 
                 //Disable LED
                 Util.triggerFunctionAfterTime(() -> {

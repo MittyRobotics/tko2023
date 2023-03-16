@@ -122,7 +122,7 @@ public class JoystickThrottleCommand extends CommandBase {
                 }
             }
 
-            angularVel = controller.calculate(dist * (right ? 1 : -1));
+            angularVel = -controller.calculate(dist * (right ? 1 : -1));
             disabled = false;
         }
 

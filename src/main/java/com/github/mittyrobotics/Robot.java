@@ -17,6 +17,7 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.Arrays;
 
@@ -57,19 +58,24 @@ public class Robot extends TimedRobot {
 
         Odometry.getInstance().setScoringCam(true);
 
+        Odometry.getInstance().setCustomCam(Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2);
+
     }
 
     @Override
     public void robotPeriodic() {
 //        System.out.println(LoggerInterface.getInstance().getGamePiece());
         SwerveSubsystem.getInstance().updateForwardKinematics();
+
+        Odometry.getInstance().setCustomCam(Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2);
+
 //        System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestTime());
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
         Odometry.getInstance().update();
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-        System.out.println(Odometry.getInstance().getState());
+//        System.out.println(Odometry.getInstance().getState());
 //        System.out.println(Arrays.toString(Odometry.getInstance().getClosestScoringZone(2)));
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();

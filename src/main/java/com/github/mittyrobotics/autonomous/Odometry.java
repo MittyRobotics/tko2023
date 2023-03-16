@@ -86,7 +86,7 @@ public class Odometry {
 
     SimpleMatrix Q = SimpleMatrix.identity(3).scale(Q_SCALE);
 
-    private final double ERROR_MARGIN = 30;
+    private final double ERROR_MARGIN = 100;
     private final double MIN_DISTANCE = 20;
     private final double MAX_DISTANCE = 220;
 
@@ -157,6 +157,7 @@ public class Odometry {
                 lastPose = curP;
 
                 LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
+                System.out.println(getState() + "    " + getIdealCamera());
 
                 //                state.transpose().print();
             } catch (Exception e) {
@@ -180,7 +181,7 @@ public class Odometry {
     }
 
     public void setScoringCam(boolean scoring) {
-        disableCustomCam();
+//        disableCustomCam();
         scoringCam = scoring;
     }
 

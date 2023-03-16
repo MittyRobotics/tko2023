@@ -12,6 +12,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -64,6 +65,11 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
+                new InstantCommand(() -> {
+                    OI.getInstance().zeroAll();
+                    StateMachine.getInstance().setIntakeStowing();
+                    Odometry.getInstance().setScoringCam(true);
+                }),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
@@ -72,40 +78,40 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
-//                new AutoLineDrive(4, 0.05,
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
-//                                beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
-//                                0, 1, 1, 1, 1,
-//                                0, 0, 2.5, 0, 0.02, 0.5
-//                        )
-//                ),
-//                new AutoLineDrive(4, 0.05,
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(beforeAutoScore, mid),
-//                                beforeAutoScore.getHeading(), mid.getHeading(),
-//                                0, 1, 1, 1, 1,
-//                                0, 0, 2.5, 0, 0.02, 0.5
-//                        )
-//                ),
-//                new AutoLineDrive(4, 0.05,
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(mid, mid_up),
-//                                mid.getHeading(), mid_up.getHeading(),
-//                                0, 1, 1, 1, 1,
-//                                0, 0, 2.5, 0, 0.02, 0.5
-//                        )
-//                ),
-//                new AutoLineDrive(2, 0.05,
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(mid_up, balance),
-//                                mid_up.getHeading(), balance.getHeading(),
-//                                0, 0, 0.8, 1, 0.5,
-//                                0, 0, 2.5, 0, 0.02, 0.5
-//                        )
-//                ),
-//                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
+                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                new AutoLineDrive(4, 0.05,
+                        new SwervePath(
+                                new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
+                                beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
+                                0, 1, 1, 1, 1,
+                                0, 0, 0.5, 0, 0.02, 0.5
+                        )
+                ),
+                new AutoLineDrive(4, 0.05,
+                        new SwervePath(
+                                new QuinticHermiteSpline(beforeAutoScore, mid),
+                                beforeAutoScore.getHeading(), mid.getHeading(),
+                                0, 1, 1, 1, 1,
+                                0, 0, 2.5, 0, 0.02, 0.5
+                        )
+                ),
+                new AutoLineDrive(4, 0.05,
+                        new SwervePath(
+                                new QuinticHermiteSpline(mid, mid_up),
+                                mid.getHeading(), mid_up.getHeading(),
+                                0, 1, 1, 1, 1,
+                                0, 0, 2.5, 0, 0.02, 0.5
+                        )
+                ),
+                new AutoLineDrive(2, 0.05,
+                        new SwervePath(
+                                new QuinticHermiteSpline(mid_up, balance),
+                                mid_up.getHeading(), balance.getHeading(),
+                                0, 0, 0.8, 1, 0.5,
+                                0, 0, 2.5, 0, 0.02, 0.5
+                        )
+                ),
+                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
         );
     }
 }

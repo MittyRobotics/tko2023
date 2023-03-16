@@ -73,13 +73,13 @@ public class AutoArmScorePart2 extends CommandBase {
     }
 
     public void switchCam() {
-        int des;
-        if(Odometry.getInstance().FIELD_LEFT_SIDE) {
-            des = Odometry.getInstance().belowMiddleY() ? 3 : 0; //right vs left front cam
-        } else {
-            des = Odometry.getInstance().belowMiddleY() ? 0 : 3; //left vs right front cam
-        }
-        Odometry.getInstance().setCustomCam(des);
+//        int des;
+//        if(Odometry.getInstance().FIELD_LEFT_SIDE) {
+//            des = Odometry.getInstance().belowMiddleY() ? 3 : 0; //right vs left front cam
+//        } else {
+//            des = Odometry.getInstance().belowMiddleY() ? 0 : 3; //left vs right front cam
+//        }
+//        Odometry.getInstance().setCustomCam(des);
     }
 
     @Override
