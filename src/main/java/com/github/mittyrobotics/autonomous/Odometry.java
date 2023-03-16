@@ -42,9 +42,9 @@ public class Odometry {
     double offset = 20.873;
     Pose[][] scoringZones = {
             {
-                    new Pose(new Point(610.77, 42.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 42.19), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 42.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(610.77, 42.19 + offset), new Angle(0)),
+                    new Pose(new Point(610.77, 42.19), new Angle(0)),
+                    new Pose(new Point(610.77, 42.19 - offset), new Angle(0)),
             },
             {
                     new Pose(new Point(610.77, 108.19 + offset), new Angle(0)),
@@ -307,15 +307,34 @@ public class Odometry {
     }
 
     public Pose[] getClosestScoringZone(int ind) {
-        int minIndex = 0;
-        double min = Double.MAX_VALUE;
-        for (int i = 0; i < 8; i++) {
-            if (i == 3 || i == 4) continue;
-            if (new Vector(scoringZones[i][ind].getPosition(), getState().getPosition()).getMagnitude() < min) {
-                min = new Vector(scoringZones[i][ind].getPosition(), getState().getPosition()).getMagnitude();
-                minIndex = i;
+        int minIndex;
+        double min;
+        double dist;
+        Point robot = getState().getPosition();
+
+        int minIndexRight = 0;
+        min = Double.MAX_VALUE;
+        for (int i = 0; i < 3; i++) {
+            dist = Math.abs(scoringZones[i][ind].getPosition().getY() - robot.getY());
+            if (dist < min) {
+                min = dist;
+                minIndexRight = i;
             }
         }
+        int minIndexLeft = 0;
+        min = Double.MAX_VALUE;
+        for (int i = 5; i < 8; i++) {
+            dist = Math.abs(scoringZones[i][ind].getPosition().getY() - robot.getY());
+            if (dist < min) {
+                min = dist;
+                minIndexLeft = i;
+            }
+        }
+        minIndex = 0;
+        if (Math.abs(scoringZones[minIndexLeft][ind].getPosition().getX() - robot.getX()) <
+                Math.abs(scoringZones[minIndexRight][ind].getPosition().getX() - robot.getX())) minIndex = minIndexLeft;
+        else minIndex = minIndexRight;
+
         return scoringZones[minIndex];
     }
 }

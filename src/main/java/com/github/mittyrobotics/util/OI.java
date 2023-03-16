@@ -212,7 +212,7 @@ public class OI {
 ////
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, false, true));
 //        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
-        autoLeft.whileTrue(new AutoScoreTeleop(2));
+        autoLeft.whileTrue(new AutoScoreTeleop(Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 0));
         autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
@@ -220,7 +220,7 @@ public class OI {
         autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoRight = new Trigger(() -> driverControls(false, false, true, false));
-        autoRight.whileTrue(new AutoScoreTeleop(0));
+        autoRight.whileTrue(new AutoScoreTeleop(Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : 2));
         autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
         Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
