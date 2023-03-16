@@ -1,33 +1,19 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
-import com.github.mittyrobotics.autonomous.arm.AutoScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoDriveToScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePurePursuitCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.drivetrain.Pair;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
-import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.json.JSONException;
-
-import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -57,7 +43,7 @@ public class Robot extends TimedRobot {
 
         double x = 0;
         double y = 0;
-        double t = Math.PI;
+        double t = 0;
 
         Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
@@ -65,8 +51,6 @@ public class Robot extends TimedRobot {
                 new Angle(Gyro.getInstance().getHeadingRadians())));
 
         Odometry.getInstance().setScoringCam(true);
-
-
 
     }
 
@@ -90,8 +74,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        Gyro.getInstance().reset();
-
         double x = Odometry.getInstance().FIELD_LEFT_SIDE ? 40.45 + 32 : 610.77 - 32;
         double y = 42.19 - 20.873;
         double t = Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0;
@@ -100,6 +82,7 @@ public class Robot extends TimedRobot {
 //
 //        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
 //        Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
+        Gyro.getInstance().reset();
         Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
         SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
@@ -154,7 +137,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-    OI.getInstance().setupControls();
+        OI.getInstance().setupControls();
+        Odometry.getInstance().setScoringCam(false);
+        OI.getInstance().zeroAll();
+        StateMachine.getInstance().setIntakeOff();
 
 //        StateMachine.getInstance().setIntakeStowing();
 //

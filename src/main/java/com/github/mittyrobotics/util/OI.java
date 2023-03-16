@@ -25,11 +25,8 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
-import com.github.mittyrobotics.autonomous.routines.AutoScoreTeleop;
+import com.github.mittyrobotics.autonomous.arm.AutoScoreTeleop;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.led.LedSubsystem;
@@ -87,7 +84,6 @@ public class OI {
         ArmKinematics.setArmKinematics(new Angle(0), 0);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
-        System.out.println("SENT TO 0\n\n\n\n\n\n\n");
     }
 
     public void handleGround() {

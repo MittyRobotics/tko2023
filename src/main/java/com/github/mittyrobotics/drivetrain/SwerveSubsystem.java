@@ -72,12 +72,13 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             driveFalcon[i] = new WPI_TalonFX(SwerveConstants.DRIVE_FALCON[i]);
             driveFalcon[i].configFactoryDefault();
             driveFalcon[i].setNeutralMode(NeutralMode.Coast);
+            driveFalcon[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             driveFalcon[i].setSelectedSensorPosition(0);
-//            driveFalcon[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             driveFalcon[i].config_kP(0, SwerveConstants.LINEAR_VELOCITY_P);
             driveFalcon[i].config_kI(0, SwerveConstants.LINEAR_VELOCITY_I);
             driveFalcon[i].config_kD(0, SwerveConstants.LINEAR_VELOCITY_D);
             driveFalcon[i].config_kF(0, SwerveConstants.SPEED_FEED_FORWARD);
+            driveFalcon[i].setInverted(false);
 
             driveFalcon[i].configClosedloopRamp(0.5);
 
@@ -85,9 +86,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i].configFactoryDefault();
             rotationFalcon[i].setNeutralMode(NeutralMode.Coast);
             rotationFalcon[i].setInverted(SwerveConstants.ROTATION_FALCON_INVERT);
-            driveFalcon[i].setInverted(false);
-            rotationFalcon[i].setSelectedSensorPosition(0);
             rotationFalcon[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+            rotationFalcon[i].setSelectedSensorPosition(0);
             rotationFalcon[i].config_kP(0, SwerveConstants.ANGULAR_POSITION_P);
             rotationFalcon[i].config_kI(0, SwerveConstants.ANGULAR_POSITION_I);
             rotationFalcon[i].config_kD(0, SwerveConstants.ANGULAR_POSITION_D);
@@ -116,8 +116,11 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 //                / SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER;
 //    }
 
-    public void resetMagEncoder(int i) {
-//        encoder[i].reset();
+    public void resetEncoders() {
+        for(int i = 0; i < 4; i++) {
+            driveFalcon[i].setSelectedSensorPosition(0);
+            rotationFalcon[i].setSelectedSensorPosition(0);
+        }
     }
 
     public void resetMagEncoderAll() {
@@ -232,6 +235,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     public double diff(double a1, double a2) {
         double df = (a2 - a1 + Math.PI) % (2 * Math.PI) - Math.PI;
         return df < -Math.PI ? df + 2 * Math.PI : df;
+    }
+
+    public void fortyFiveAngle() {
+        setSwerveAngle(new double[]{Math.PI/4, -Math.PI/4, Math.PI/4, -Math.PI/4});
     }
 
     public void setSwerveAngle(double[] desiredAngles) {

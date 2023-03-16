@@ -1,7 +1,6 @@
 package com.github.mittyrobotics.autonomous.arm;
 
-import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,7 +17,7 @@ public class AutoIntakeCommand extends SequentialCommandGroup {
                         OI.getInstance().handleHumanPlayer();
                     }
                 }),
-                new SwerveAutoPickupCommand(
+                new AutoPickupCommand(
                         piece == StateMachine.PieceState.CONE, 0, true
                 )
         );

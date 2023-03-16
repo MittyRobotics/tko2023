@@ -134,14 +134,9 @@ public class JoystickThrottleCommand extends CommandBase {
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 
-        //wheel angles positive CCW
-        double[] FortyFive = new double[]{Math.PI/4, -Math.PI/4, Math.PI/4, -Math.PI/4};
-
-//        if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
-//            SwerveSubsystem.getInstance().setSwerveAngle(FortyFive);
-
-//        } else if(!disabled) {
-        if (!disabled) {
+        if(disabled && DriverStation.getMatchTime() < 15. && DriverStation.getMatchTime() != -1.) {
+            SwerveSubsystem.getInstance().fortyFiveAngle();
+        } else if(!disabled) {
             SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
         }
     }
