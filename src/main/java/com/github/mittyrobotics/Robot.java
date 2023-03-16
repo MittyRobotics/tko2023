@@ -58,8 +58,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-
 //        System.out.println(LoggerInterface.getInstance().getGamePiece());
         SwerveSubsystem.getInstance().updateForwardKinematics();
 //        System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestTime());
@@ -70,6 +68,8 @@ public class Robot extends TimedRobot {
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
         System.out.println(Odometry.getInstance().getState());
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
+        CommandScheduler.getInstance().run();
+
 
     }
 
