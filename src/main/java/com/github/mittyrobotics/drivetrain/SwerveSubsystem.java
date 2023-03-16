@@ -395,8 +395,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
         private Vector r;
 
-        private Vector linearVel;
-        private double angularVel;
+        private Vector linearVel = new Vector(0, 0);
+        private double angularVel = 0;
 
         public InverseKinematics(double width, double length) {
             r = new Vector(width/2, length/2);

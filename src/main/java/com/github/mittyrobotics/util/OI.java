@@ -27,6 +27,7 @@ package com.github.mittyrobotics.util;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwerveAutoScoreCommand;
+import com.github.mittyrobotics.autonomous.routines.AutoScoreTeleop;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -202,31 +203,32 @@ public class OI {
 
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
-
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
-                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
-        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-
-        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
-                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
-        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-
+//
+//        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+//        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
+//        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//
+//        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
+//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+//        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
+//        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+////
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, false, true));
-        autoLeft.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[0], false));
+//        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
+        autoLeft.whileTrue(new AutoScoreTeleop(2));
         autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-
+//
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[1], false));
+        autoCenter.whileTrue(new AutoScoreTeleop(1));
         autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-
+//
         Trigger autoRight = new Trigger(() -> driverControls(false, false, true, false));
-        autoRight.whileTrue(new SwerveAutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2], false));
+        autoRight.whileTrue(new AutoScoreTeleop(0));
         autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
-        Trigger zeroModules = new Trigger(() -> getDriveController().getStartButton());
-        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
+//        Trigger zeroModules = new Trigger(() -> getDriveController().getStartButton());
+//        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
 
 //        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
 //        drive.whileTrue(new JoystickThrottleCommand());

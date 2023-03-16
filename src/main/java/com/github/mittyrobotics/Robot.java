@@ -55,9 +55,9 @@ public class Robot extends TimedRobot {
         // TODO: check this
         Odometry.getInstance().FIELD_LEFT_SIDE = true;
 
-        double x = 137;
-        double y = 153;
-        double t = 3.08;
+        double x = 0;
+        double y = 0;
+        double t = Math.PI;
 
 //        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 //
@@ -82,11 +82,14 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().updateForwardKinematics();
 //        System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestTime());
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
-        Odometry.getInstance().update();
+//        Odometry.getInstance().update();
+
+//        System.out.println(OI.getInstance().getDriveController().getRightTriggerAxis());
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-        System.out.println(Arrays.toString(Odometry.getInstance().getPose()));
+        System.out.println(Odometry.getInstance().getState());
+//        System.out.println(Odometry.getInstance().getClosestScoringZone()[1]);
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
 
 //    System.out.println(IntakeSubsystem.getInstance().proxSensorTrigger());
@@ -106,33 +109,24 @@ public class Robot extends TimedRobot {
 //    Odometry.getInstance().setState(103, 6, Math.PI);
 
         Pose init = Odometry.getInstance().getState();
-//
+
         SwervePath[] paths = {
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(0, 0), new Angle(3*Math.PI/2),
-//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(3*Math.PI/2)),
-//                    new Angle(0), new Angle(Math.PI),
-//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-//            ),
-//            new SwervePath(
-//                    new QuinticHermiteSpline(
-//                            new Point(-15/39.37, (-224+25)/39.37), new Angle(Math.PI/2),
-//                            new Point(0, 0), new Angle(Math.PI/2)),
-//                    new Angle(Math.PI), new Angle(0),
-//                    0, 0, 6., 8., 3, 0.2, 0.4, 2.5, 0, 0.02, 0.3
-//            )
             new SwervePath(
-                    new QuinticHermiteSpline(init, new Pose(Point.add(init.getPosition(), new Point(2 * 39.37, 1 * 39.37)), init.getHeading())),
+                    new QuinticHermiteSpline(init, new Pose(Point.add(init.getPosition(), new Point(-2 * 39.37, 1 * 39.37)), init.getHeading())),
                     new Angle(Math.PI),
                     new Angle(0),
-                    0, 0, 3, 6, 6,
+                    0, 0, 0.5, 0.5, 0.5,
                     0.2, 15, 2.5, 0, 0.02, 0.6
             )
-    };
-//
-    SwervePurePursuitCommand command = new SwervePurePursuitCommand(2, 0.05, paths);
-    CommandScheduler.getInstance().schedule(command);
+        };
+
+        SwervePurePursuitCommand command = new SwervePurePursuitCommand(5, 0.05, paths);
+        CommandScheduler.getInstance().schedule(command);
+
+//        StateMachine.getInstance().setIntakeStowing();
+//        CommandScheduler.getInstance().schedule(
+//                new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[2], StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
+//        );
 
 //    SwervePath path = new SwervePath(
 //            new QuinticHermiteSpline(new Point(0, 0), new Angle(Math.PI/2), new Point(1, 1), new Angle(Math.PI/2)),

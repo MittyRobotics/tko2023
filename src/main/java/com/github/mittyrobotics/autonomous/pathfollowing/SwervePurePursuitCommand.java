@@ -67,14 +67,14 @@ public class SwervePurePursuitCommand extends CommandBase {
         );
         speed = Math.min(vi, speed);
 
-        Vector vectorToLookahead;
-        if (currentPath.getLookahead() < length) vectorToLookahead = currentPath.getVectorToLookahead(robot, length, currentPath.getLookahead());
-        else vectorToLookahead = new Vector(
-                robot.getPosition(),
-                Point.add(currentPath.getByT(1.0).getPosition(),
-                        Point.multiply((currentPath.getLookahead() - length) / currentPath.getSpline().getVelocityVector(1.0).getMagnitude(),
-                                new Point(currentPath.getSpline().getVelocityVector(1.0))))
-        );
+        Vector vectorToLookahead = currentPath.getVectorToLookahead(robot, length, currentPath.getLookahead());
+//        if (currentPath.getLookahead() < length) vectorToLookahead = currentPath.getVectorToLookahead(robot, length, currentPath.getLookahead());
+//        else vectorToLookahead = new Vector(
+//                robot.getPosition(),
+//                Point.add(currentPath.getByT(1.0).getPosition(),
+//                        Point.multiply((currentPath.getLookahead() - length) / currentPath.getSpline().getVelocityVector(1.0).getMagnitude(),
+//                                new Point(currentPath.getSpline().getVelocityVector(1.0))))
+//        );
 
         Vector linearVel = new Vector(vectorToLookahead.getX(), vectorToLookahead.getY());
 
@@ -94,7 +94,7 @@ public class SwervePurePursuitCommand extends CommandBase {
             angularVel = ((desiredAngle - currentAngle) > angularThreshold * closest) ? angularVel : 0;
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, -angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

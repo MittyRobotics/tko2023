@@ -24,6 +24,7 @@ public class ExtensionToKinematics extends CommandBase {
     public void initialize() {
         velTelescope = 0;
         lastTime = Timer.getFPGATimestamp();
+        TelescopeSubsystem.getInstance().setPID(0, 0, 0);
     }
 
     @Override
@@ -43,9 +44,9 @@ public class ExtensionToKinematics extends CommandBase {
 
         boolean telescopeMovingDown = tpTelescope.getSetpoint() < TelescopeSubsystem.getInstance().rawPos();
 
-        double pidmax = 0.0001;
-        double telescopeP = Math.max(0.00005, pidmax - (pidmax - 0.00005) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
-        TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? 0 : 0, 0, 0);
+//        double pidmax = 0.0001;
+//        double telescopeP = Math.max(0.00005, pidmax - (pidmax - 0.00005) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
+//        TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? 0 : 0, 0, 0);
 
         double telescopeFF = (0.25 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
                 (telescopeMovingDown ? 1 - 0.85 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.4);
@@ -60,8 +61,8 @@ public class ExtensionToKinematics extends CommandBase {
 
         lastTime = Timer.getFPGATimestamp();
 
-        SmartDashboard.putNumber("Telescope meters", TelescopeSubsystem.getInstance().getDistanceMeters());
-        SmartDashboard.putNumber("Telescope vel", TelescopeSubsystem.getInstance().rawVel());
+//        SmartDashboard.putNumber("Telescope meters", TelescopeSubsystem.getInstance().getDistanceMeters());
+//        SmartDashboard.putNumber("Telescope vel", TelescopeSubsystem.getInstance().rawVel());
     }
 
     @Override

@@ -16,7 +16,7 @@ public class LedSubsystem extends SubsystemBase implements ISubsystem {
 
     private AddressableLED ledStrip;
     private AddressableLEDBuffer buffer, buffer2;
-    private ArrayList<Color> desiredAltColors;
+    private ArrayList<Color> desiredAltColors = new ArrayList<>();
 
     private LedSubsystem() {
         super();

@@ -102,7 +102,7 @@ public class SwerveAutoDriveToScoreCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if(!firstPath) return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
+        if (firstPath) return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
         return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
 

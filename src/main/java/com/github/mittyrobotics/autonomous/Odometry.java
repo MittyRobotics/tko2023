@@ -47,31 +47,31 @@ public class Odometry {
                     new Pose(new Point(610.77, 42.19 - offset), new Angle(Math.PI)),
             },
             {
-                    new Pose(new Point(610.77, 108.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 108.19), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 108.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(610.77, 108.19 + offset), new Angle(0)),
+                    new Pose(new Point(610.77, 108.19), new Angle(0)),
+                    new Pose(new Point(610.77, 108.19 - offset), new Angle(0)),
             },
             {
-                    new Pose(new Point(610.77, 147.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 147.19), new Angle(Math.PI)),
-                    new Pose(new Point(610.77, 147.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(610.77, 147.19 + offset), new Angle(0)),
+                    new Pose(new Point(610.77, 147.19), new Angle(0)),
+                    new Pose(new Point(610.77, 147.19 - offset), new Angle(0)),
             },
             {},
             {},
             {
-                    new Pose(new Point(40.45, 147.19 + offset), new Angle(0)),
-                    new Pose(new Point(40.45, 147.19), new Angle(0)),
-                    new Pose(new Point(40.45, 147.19 - offset), new Angle(0)),
+                    new Pose(new Point(40.45, 147.19 + offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 147.19), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 147.19 - offset), new Angle(Math.PI)),
             },
             {
-                    new Pose(new Point(40.45, 108.19 + offset), new Angle(0)),
-                    new Pose(new Point(40.45, 108.19), new Angle(0)),
-                    new Pose(new Point(40.45, 108.19 - offset), new Angle(0)),
+                    new Pose(new Point(40.45, 108.19 + offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 108.19), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 108.19 - offset), new Angle(Math.PI)),
             },
             {
-                    new Pose(new Point(40.45, 42.19 + offset), new Angle(0)),
-                    new Pose(new Point(40.45, 42.19), new Angle(0)),
-                    new Pose(new Point(40.45, 42.19 - offset), new Angle(0)),
+                    new Pose(new Point(40.45, 42.19 + offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 42.19), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 42.19 - offset), new Angle(Math.PI)),
             },
     };
     Pose rightHP = new Pose(new Point(636.96, 265.74), new Angle(Math.PI));
@@ -118,7 +118,7 @@ public class Odometry {
                 continue;
             }
 
-            System.out.println("measurement: " + x + ", " + y + ", " + theta);
+//            System.out.println("measurement: " + x + ", " + y + ", " + theta);
 
             if (time < last_time) {
                 System.out.println("Invalid input");
@@ -307,7 +307,8 @@ public class Odometry {
     public Pose[] getClosestScoringZone() {
         int minIndex = 0;
         double min = Integer.MAX_VALUE;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
+            if (i == 3 || i == 4) continue;
             if (new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude() < min) {
                 min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
                 minIndex = i;
