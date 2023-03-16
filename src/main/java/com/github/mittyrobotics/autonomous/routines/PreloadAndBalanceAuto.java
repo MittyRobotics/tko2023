@@ -23,7 +23,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
         Pose mid = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 160 : -160, 0)),
                 starting.getHeading());
 
-        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 60)), mid.getHeading());
+        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 60)), starting.getHeading());
 
         Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
                 60)), starting.getHeading());
