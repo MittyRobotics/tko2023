@@ -112,6 +112,7 @@ public class Odometry {
             double x_dist = Math.abs(measurement[5]);
 
 //            System.out.println("Odometry TIme " + (System.currentTimeMillis() * 1000000));
+            System.out.println("x/y dist" + x_dist + " | " + y_dist);
 
             if (x_dist < MIN_DISTANCE || x_dist > MAX_DISTANCE) {
                 System.out.println("Bad X distance: " + x_dist);
