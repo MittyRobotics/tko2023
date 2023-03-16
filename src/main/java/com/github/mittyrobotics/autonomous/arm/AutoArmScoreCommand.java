@@ -78,6 +78,7 @@ public class AutoArmScoreCommand extends CommandBase {
 
                     Util.triggerFunctionAfterTime(() -> {
                         StateMachine.getInstance().setOuttaking();
+                        scoring = false;
                         Util.triggerFunctionAfterTime(() -> {
                             ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.4);
                             StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
@@ -87,7 +88,6 @@ public class AutoArmScoreCommand extends CommandBase {
                                 StateMachine.getInstance().setIntakeOff();
                                 StateMachine.getInstance().setStateNone();
                                 switchCam();
-                                scoring = false;
                             }, 600);
                         }, 10);
                     }, 200);
