@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.routines.PlusOneConeAuto;
+import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -75,7 +76,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        new PlusOneConeAuto(true).schedule();
+        new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
 
 //        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 //
