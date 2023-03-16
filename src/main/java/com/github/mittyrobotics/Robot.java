@@ -4,6 +4,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.routines.InitAutoCommand;
 import com.github.mittyrobotics.autonomous.routines.PlusOneConeAuto;
 import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -16,6 +17,8 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -62,11 +65,12 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().updateForwardKinematics();
 //        System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestTime());
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
-//        Odometry.getInstance().update();
+        Odometry.getInstance().update();
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
         System.out.println(Odometry.getInstance().getState());
+//        System.out.println(Arrays.toString(Odometry.getInstance().getClosestScoringZone(2)));
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();
 
@@ -76,7 +80,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+        new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
 
 //        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 //
@@ -132,6 +136,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+//        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
+
         OI.getInstance().setupControls();
         Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();

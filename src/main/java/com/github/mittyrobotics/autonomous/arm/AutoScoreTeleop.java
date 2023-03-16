@@ -9,7 +9,7 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
         super();
 
         addCommands(
-              new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone()[index], false)
+              new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone(index)[index], false)
         );
     }
 }

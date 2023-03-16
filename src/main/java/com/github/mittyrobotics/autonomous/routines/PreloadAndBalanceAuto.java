@@ -12,6 +12,8 @@ import com.github.mittyrobotics.intake.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+import javax.swing.plaf.nimbus.State;
+
 public class PreloadAndBalanceAuto extends SequentialCommandGroup {
     public PreloadAndBalanceAuto(boolean leftSide) {
         super();
@@ -29,6 +31,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                 60)), starting.getHeading());
 
         addCommands(
+                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                 new InitAutoCommand(starting),
                 new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
@@ -51,7 +54,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(mid_up, balance),
                                 mid_up.getHeading(), balance.getHeading(),
-                                0, 0, 0.8, 1, 0.5,
+                                0, 0, 0.8, 1, 0.8,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),

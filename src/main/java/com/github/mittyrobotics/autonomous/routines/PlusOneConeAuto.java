@@ -30,7 +30,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                 new Angle(leftSide ? 0 : Math.PI));
 
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -80 : 80, 0)),
-                firstCone.getHeading());
+                scoring.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 60 : -60, 15)),
                 starting.getHeading());
@@ -44,13 +44,14 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                 60)), starting.getHeading());
 
         addCommands(
+                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                 new InitAutoCommand(starting),
                 new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
                                 starting.getHeading(), beforeFirstCone.getHeading(),
-                                0, 2, 3, 3, 1,
+                                0, 1, 1, 1, 1,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -59,7 +60,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                 beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                0, 0, 2, 1, 1,
+                                0, 0, 1, 1, 1,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -67,44 +68,44 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                 firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                0, 0, 3, 3, 3,
+                                0, 0, 1, 1, 1,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
-                                beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
-                                0, 2, 3, 3, 3,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeAutoScore, mid),
-                                beforeAutoScore.getHeading(), mid.getHeading(),
-                                0, 1, 3, 3, 3,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(mid, mid_up),
-                                mid.getHeading(), mid_up.getHeading(),
-                                0, 1, 3, 3, 1,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(2, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(mid_up, balance),
-                                mid_up.getHeading(), balance.getHeading(),
-                                0, 0, 0.8, 1, 0.5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
+                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
+//                                beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
+//                                0, 1, 1, 1, 1,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeAutoScore, mid),
+//                                beforeAutoScore.getHeading(), mid.getHeading(),
+//                                0, 1, 1, 1, 1,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(mid, mid_up),
+//                                mid.getHeading(), mid_up.getHeading(),
+//                                0, 1, 1, 1, 1,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//                new AutoLineDrive(2, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(mid_up, balance),
+//                                mid_up.getHeading(), balance.getHeading(),
+//                                0, 0, 0.8, 1, 0.5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
         );
     }
 }

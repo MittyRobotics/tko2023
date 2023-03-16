@@ -112,7 +112,7 @@ public class Odometry {
             double x_dist = Math.abs(measurement[5]);
 
 //            System.out.println("Odometry TIme " + (System.currentTimeMillis() * 1000000));
-            System.out.println("x/y dist" + x_dist + " | " + y_dist);
+//            System.out.println("x/y dist" + x_dist + " | " + y_dist);
 
             if (x_dist < MIN_DISTANCE || x_dist > MAX_DISTANCE) {
                 System.out.println("Bad X distance: " + x_dist);
@@ -305,13 +305,13 @@ public class Odometry {
         return scoringZones[tag_id - 1];
     }
 
-    public Pose[] getClosestScoringZone() {
+    public Pose[] getClosestScoringZone(int ind) {
         int minIndex = 0;
-        double min = Integer.MAX_VALUE;
+        double min = Double.MAX_VALUE;
         for (int i = 0; i < 8; i++) {
             if (i == 3 || i == 4) continue;
-            if (new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude() < min) {
-                min = new Vector(scoringZones[i][1].getPosition(), getState().getPosition()).getMagnitude();
+            if (new Vector(scoringZones[i][ind].getPosition(), getState().getPosition()).getMagnitude() < min) {
+                min = new Vector(scoringZones[i][ind].getPosition(), getState().getPosition()).getMagnitude();
                 minIndex = i;
             }
         }
