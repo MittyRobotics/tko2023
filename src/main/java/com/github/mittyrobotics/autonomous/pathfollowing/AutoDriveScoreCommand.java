@@ -102,8 +102,8 @@ public class AutoDriveScoreCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (firstPath) return Math.abs(robot.getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
-        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
+        if (firstPath) return Math.abs(Odometry.getInstance().getState().getPosition().getY() - path.getByT(1.0).getPosition().getY()) < linearThreshold;
+        return new Vector(Odometry.getInstance().getState().getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
 
     public double maxVelocityFromDistance(double dist) {

@@ -4,6 +4,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.routines.PlusOneConeAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -74,19 +75,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        double x = Odometry.getInstance().FIELD_LEFT_SIDE ? 40.45 + 32 : 610.77 - 32;
-        double y = 42.19 - 20.873;
-        double t = Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0;
+        new PlusOneConeAuto(true).schedule();
 
 //        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 //
 //        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0), new Angle(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0)));
 //        Odometry.getInstance().setState(0, 0, Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
-        Gyro.getInstance().reset();
-        Gyro.getInstance().setAngleOffset(t);
-        Odometry.getInstance().setState(x, y, t);
-        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
-                new Angle(Gyro.getInstance().getHeadingRadians())));
 
 //    SwerveSubsystem.getInstance().resetPose();
 //

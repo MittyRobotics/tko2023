@@ -90,7 +90,7 @@ public class AutoLineDrive extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return new Vector(robot.getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
+        return new Vector(Odometry.getInstance().getState().getPosition(), path.getByT(1.0).getPosition()).getMagnitude() < linearThreshold ;
     }
 
     public double maxVelocityFromDistance(double dist) {
