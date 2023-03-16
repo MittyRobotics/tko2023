@@ -87,8 +87,8 @@ public class Odometry {
     SimpleMatrix Q = SimpleMatrix.identity(3).scale(Q_SCALE);
 
     private final double ERROR_MARGIN = 30;
-    private final double MIN_DISTANCE = 30;
-    private final double MAX_DISTANCE = 120;
+    private final double MIN_DISTANCE = 20;
+    private final double MAX_DISTANCE = 180;
 
     public void setState(double x, double y, double t) {
         state.set(0, 0, x);
