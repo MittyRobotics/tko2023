@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PlusOneConeAuto extends SequentialCommandGroup {
-    public PlusOneConeAuto(boolean leftSide) {
+    public PlusOneConeAuto(boolean leftSide, boolean balance) {
         super();
 
         Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 8 : 1)[2];
@@ -44,103 +44,156 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
 
         Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
 
-        Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
-                66)), starting.getHeading());
+//        Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
+//                66)), starting.getHeading());
 
-        addCommands(
-                // FIRST CONE
-                new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                        Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0 //left vs right BACK cam
-                )),
-                new InitAutoCommand(starting),
-                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+        if(balance) {
+            addCommands(
+                    // FIRST CONE
+                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0 //left vs right BACK cam
+                    )),
+                    new InitAutoCommand(starting),
+                    new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
-                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                // DRIVE BACK & TURN AROUND
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(starting, beforeTurnAround),
-                                starting.getHeading(), beforeTurnAround.getHeading(),
-                                0, 5, 5, 10, 10,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
-                                beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
-                                0, 5, 5, 10, 10,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
+                    // DRIVE BACK & TURN AROUND
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(starting, beforeTurnAround),
+                                    starting.getHeading(), beforeTurnAround.getHeading(),
+                                    0, 5, 5, 10, 10,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
+                                    beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
+                                    0, 5, 5, 10, 10,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
 
-                new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                        Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
-                )),
+                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
+                    )),
 
-                // INTAKE
-                new InstantCommand(() -> OI.getInstance().handleGround()),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                0, 0, 5, 5, 2,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new InstantCommand(() -> {
-                    OI.getInstance().zeroAll();
-                    StateMachine.getInstance().setIntakeStowing();
-                    Odometry.getInstance().setScoringCam(true);
-                }),
+                    // INTAKE
+                    new InstantCommand(() -> OI.getInstance().handleGround()),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(beforeFirstCone, firstCone),
+                                    beforeFirstCone.getHeading(), firstCone.getHeading(),
+                                    0, 0, 5, 5, 3,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new InstantCommand(() -> {
+                        OI.getInstance().zeroAll();
+                        StateMachine.getInstance().setIntakeStowing();
+                        Odometry.getInstance().setScoringCam(true);
+                    }),
 
-                // GO BACK AND AUTOSCORE
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(firstCone, beforeAutoScore),
-                                firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                0, 2, 7, 10, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                    // GO BACK AND AUTOSCORE
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(firstCone, beforeAutoScore),
+                                    firstCone.getHeading(), beforeAutoScore.getHeading(),
+                                    0, 2, 7, 10, 5,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                //GO TO AUTOBALANCE POSITION
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(scoring, beforeAutoScore),
-                                scoring.getHeading(), beforeAutoScore.getHeading(),
-                                0, 3, 5, 10, 10,
-                                0, 0, 0.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeAutoScore, mid),
-                                beforeAutoScore.getHeading(), mid.getHeading(),
-                                0, 1, 5, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(mid, mid_up),
-                                mid.getHeading(), mid_up.getHeading(),
-                                0, 1, 5,  5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new AutoBalanceCommand(3, 1.5)
-//                new AutoLineDrive(2, 0.05,
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(mid_up, balance),
-//                                mid_up.getHeading(), balance.getHeading(),
-//                                0, 0, 5, 5, 5,
-//                                0, 0, 2.5, 0, 0.02, 0.5
-//                        )
-//                ),
-//                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
-        );
+                    //GO TO AUTOBALANCE POSITION
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(scoring, beforeAutoScore),
+                                    scoring.getHeading(), beforeAutoScore.getHeading(),
+                                    0, 3, 5, 10, 10,
+                                    0, 0, 0.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(beforeAutoScore, mid),
+                                    beforeAutoScore.getHeading(), mid.getHeading(),
+                                    0, 1, 5, 5, 5,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(mid, mid_up),
+                                    mid.getHeading(), mid_up.getHeading(),
+                                    0, 1, 5, 5, 5,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoBalanceCommand(3, 1.5, !Odometry.getInstance().FIELD_LEFT_SIDE)
+            );
+        } else {
+            addCommands(
+                    // FIRST CONE
+                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0 //left vs right BACK cam
+                    )),
+                    new InitAutoCommand(starting),
+                    new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+
+                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+
+                    // DRIVE BACK & TURN AROUND
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(starting, beforeTurnAround),
+                                    starting.getHeading(), beforeTurnAround.getHeading(),
+                                    0, 5, 5, 10, 10,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
+                                    beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
+                                    0, 5, 5, 10, 10,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+
+                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
+                    )),
+
+                    // INTAKE
+                    new InstantCommand(() -> OI.getInstance().handleGround()),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(beforeFirstCone, firstCone),
+                                    beforeFirstCone.getHeading(), firstCone.getHeading(),
+                                    0, 0, 5, 5, 2,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new InstantCommand(() -> {
+                        OI.getInstance().zeroAll();
+                        StateMachine.getInstance().setIntakeStowing();
+                        Odometry.getInstance().setScoringCam(true);
+                    }),
+
+                    // GO BACK AND AUTOSCORE
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(firstCone, beforeAutoScore),
+                                    firstCone.getHeading(), beforeAutoScore.getHeading(),
+                                    0, 1, 5, 5, 5,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
+                    new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
+            );
+        }
     }
 }

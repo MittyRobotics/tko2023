@@ -13,10 +13,12 @@ public class AutoBalanceCommand extends CommandBase {
 
     private final double STOP_ANGLE = 5;
     private final double START_ANGLE = 2;
+    private final boolean pos;
 
-    public AutoBalanceCommand(double maxVelStart, double maxVelBalance) {
+    public AutoBalanceCommand(double maxVelStart, double maxVelBalance, boolean pos) {
         this.maxVelBalance = maxVelBalance;
         this.maxVelStart = maxVelStart;
+        this.pos = pos;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
@@ -28,7 +30,7 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double pitch = Gyro.getInstance().getPitch();
+        double pitch = Math.abs(Gyro.getInstance().getPitch());
         double speed;
 
         if (!onScale) {
@@ -37,7 +39,8 @@ public class AutoBalanceCommand extends CommandBase {
         } else {
             speed = maxVelBalance;
         }
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(speed, 0), 0);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
+                pos ? speed : -speed, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

@@ -84,16 +84,19 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getFieldSide().equals("left");
+        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
-        String auto = LoggerInterface.getInstance().getAuto();
+        String auto = LoggerInterface.getInstance().getValue("auto");
+        boolean balance = LoggerInterface.getInstance().getValue("autobalance").equals("true");
 
         switch(auto) {
             case "preload":
-                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                int tag = Integer.parseInt(LoggerInterface.getInstance().getValue("autotag"));
+                int index = Integer.parseInt(LoggerInterface.getInstance().getValue("autoindex"));
+                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, tag, index, balance).schedule();
                 break;
             case "one":
-                new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
                 break;
         }
 

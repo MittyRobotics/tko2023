@@ -42,12 +42,8 @@ public class LoggerInterface {
 //        System.out.println(poseSub.getAtomic().timestamp);
     }
 
-    public String getFieldSide() {
-        return table.getValue("fieldside").getString();
-    }
-
-    public String getAuto() {
-        return table.getValue("auto").getString();
+    public String getValue(String key) {
+        return table.getValue(key).getString();
     }
 
     public void put(String key, Object o) {
