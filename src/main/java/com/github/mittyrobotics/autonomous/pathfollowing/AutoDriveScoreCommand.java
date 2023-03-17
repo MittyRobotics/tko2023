@@ -83,7 +83,32 @@ public class AutoDriveScoreCommand extends CommandBase {
 
         Vector linearVel = new Vector(new Angle(goalA), speed);
 
-        double angularVel = angularController.calculate(Gyro.getInstance().getHeadingRadians(), path.getByT(1.0).getHeading().getRadians());
+        double norm = SwerveSubsystem.standardize(heading);
+        double normDes = SwerveSubsystem.standardize(path.getByT(1.0).getHeading().getRadians());
+
+        boolean right;
+        double dist;
+
+        if (normDes < norm) {
+            if (norm - normDes > Math.PI) {
+                right = true;
+                dist = normDes + 2 * Math.PI - norm;
+            } else {
+                right = false;
+                dist = norm - normDes;
+            }
+        } else {
+            if (normDes - norm > Math.PI) {
+                right = false;
+                dist = norm + 2 * Math.PI - normDes;
+            } else {
+                right = true;
+                dist = normDes - norm;
+            }
+        }
+
+        double angularVel = -angularController.calculate(dist * (right ? 1 : -1), 0);
+
 
 //        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, 0);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
