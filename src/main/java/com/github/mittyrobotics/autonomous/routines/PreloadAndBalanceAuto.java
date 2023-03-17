@@ -25,20 +25,23 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
         Pose mid = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 160 : -160, 0)),
                 starting.getHeading());
 
-        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 60)), starting.getHeading());
+        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
 
         Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
-                60)), starting.getHeading());
+                66)), starting.getHeading());
 
         addCommands(
-                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+                new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2
+                )),
                 new InitAutoCommand(starting),
+                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                 new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                             new QuinticHermiteSpline(starting, mid),
                             starting.getHeading(), mid.getHeading(),
-                            0, 1, 3, 3, 1,
+                            0, 0, 3, 3, 2,
                             0, 0, 2.5, 0, 0.02, 0.5
                     )
                 ),
@@ -46,11 +49,11 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(mid, mid_up),
                                 mid.getHeading(), mid_up.getHeading(),
-                                0, 1, 3, 3, 1,
+                                0, 0, 3, 3, 2,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoBalanceCommand(5, 1.5)
+                new AutoBalanceCommand(3, 1.5)
 //                new AutoLineDrive(2, 0.05,
 //                        new SwervePath(
 //                                new QuinticHermiteSpline(mid_up, balance),

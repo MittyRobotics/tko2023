@@ -57,26 +57,21 @@ public class Robot extends TimedRobot {
                 new Angle(Gyro.getInstance().getHeadingRadians())));
 
         Odometry.getInstance().setScoringCam(true);
-
-        Odometry.getInstance().setCustomCam(Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2);
-
     }
 
     @Override
     public void robotPeriodic() {
 //        System.out.println(LoggerInterface.getInstance().getGamePiece());
         SwerveSubsystem.getInstance().updateForwardKinematics();
-
-        Odometry.getInstance().setCustomCam(Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2);
-
+        
 //        System.out.println(SwerveSubsystem.getInstance().forwardKinematics.getLatestTime());
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
         Odometry.getInstance().update();
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-        System.out.println(Odometry.getInstance().getState());
-        System.out.println(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), 2)[2]);
+//        System.out.println(Odometry.getInstance().getState());
+//        System.out.println(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), 2)[2]);
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();
 
@@ -145,6 +140,7 @@ public class Robot extends TimedRobot {
         new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
 
         OI.getInstance().setupControls();
+        Odometry.getInstance().disableCustomCam();
         Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();

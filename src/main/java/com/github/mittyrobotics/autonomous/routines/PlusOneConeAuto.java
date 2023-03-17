@@ -27,11 +27,14 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 scoring.getHeading());
 
+        Pose beforeTurnAround = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
+                scoring.getHeading());
+
         Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 180 : -180,15)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -80 : 80, 0)),
-                scoring.getHeading());
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -15 : 15, 0)),
+                firstCone.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 60 : -60, 15)),
                 starting.getHeading());
@@ -39,23 +42,44 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 100 : -100, 0)),
                 starting.getHeading());
 
-        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 60)), starting.getHeading());
+        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
 
         Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
-                60)), starting.getHeading());
+                66)), starting.getHeading());
 
         addCommands(
-                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+                // FIRST CONE
+                new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0
+                )),
                 new InitAutoCommand(starting),
+                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+
                 new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+
+                // DRIVE BACK & TURN AROUND
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
-                                new QuinticHermiteSpline(starting, beforeFirstCone),
-                                starting.getHeading(), beforeFirstCone.getHeading(),
+                                new QuinticHermiteSpline(starting, beforeTurnAround),
+                                starting.getHeading(), beforeTurnAround.getHeading(),
                                 0, 5, 5, 10, 10,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
+                new AutoLineDrive(4, 0.05,
+                        new SwervePath(
+                                new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
+                                beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
+                                0, 5, 5, 10, 10,
+                                0, 0, 2.5, 0, 0.02, 0.5
+                        )
+                ),
+
+                new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1
+                )),
+
+                // INTAKE
                 new InstantCommand(() -> OI.getInstance().handleGround()),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
@@ -70,6 +94,8 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);
                 }),
+
+                // GO BACK AND AUTOSCORE
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
@@ -79,11 +105,13 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         )
                 ),
                 new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+
+                //GO TO AUTOBALANCE POSITION
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
                                 new QuinticHermiteSpline(scoring, beforeAutoScore),
-                                beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
-                                0, 3, 5, 5, 3,
+                                scoring.getHeading(), beforeAutoScore.getHeading(),
+                                0, 3, 5, 10, 10,
                                 0, 0, 0.5, 0, 0.02, 0.5
                         )
                 ),
@@ -91,7 +119,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeAutoScore, mid),
                                 beforeAutoScore.getHeading(), mid.getHeading(),
-                                0, 3, 5, 5, 5,
+                                0, 1, 5, 5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -99,7 +127,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(mid, mid_up),
                                 mid.getHeading(), mid_up.getHeading(),
-                                0, 3, 5,  5, 5,
+                                0, 1, 5,  5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
