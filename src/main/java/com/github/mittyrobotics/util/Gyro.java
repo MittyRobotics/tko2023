@@ -32,6 +32,10 @@ public class Gyro extends SubsystemBase {
         gyro.reset();
     }
 
+    public double getPitch() {
+        return gyro.getPitch();
+    }
+
     public void reset() {
         gyro.reset();
     }
