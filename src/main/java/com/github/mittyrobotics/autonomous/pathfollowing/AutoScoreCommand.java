@@ -16,7 +16,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
         Pose mid = new Pose(Point.add(target.getPosition(), new Point((Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * 9, 0)), target.getHeading());
         addCommands(
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
-                new AutoDriveScoreCommand(2, 0.02, true,
+                new AutoDriveScoreCommand(1, 0.02, true,
                         new SwervePath(new QuinticHermiteSpline(init, mid),
                                 init.getHeading(), mid.getHeading(),
                                 0, 1.5, 3, 3, 1.5,

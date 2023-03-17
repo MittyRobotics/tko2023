@@ -50,7 +50,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         addCommands(
                 // FIRST CONE
                 new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                        Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0 //left vs right BACK cam
                 )),
                 new InitAutoCommand(starting),
                 new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
@@ -76,7 +76,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                 ),
 
                 new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                        Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
                 )),
 
                 // INTAKE

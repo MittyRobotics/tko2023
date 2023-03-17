@@ -32,7 +32,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                        Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2
+                        Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2 //right vs left FRONT cam
                 )),
                 new InitAutoCommand(starting),
                 new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
