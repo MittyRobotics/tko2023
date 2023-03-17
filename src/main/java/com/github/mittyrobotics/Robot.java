@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
 //        System.out.println(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), 2)[2]);
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();
-        
+
     }
 
     @Override

@@ -36,10 +36,10 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -15 : 15, 0)),
                 firstCone.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 60 : -60, 15)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 15)),
                 starting.getHeading());
 
-        Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 100 : -100, 0)),
+        Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 130 : -130, 0)),
                 starting.getHeading());
 
         Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
@@ -100,7 +100,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                 firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                0, 2, 5, 5, 5,
+                                0, 2, 7, 10, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
