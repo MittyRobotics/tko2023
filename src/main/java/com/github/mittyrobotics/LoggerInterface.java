@@ -36,7 +36,18 @@ public class LoggerInterface {
         poseSub = table.getDoubleArrayTopic("pose").subscribe(new double[]{}, PubSubOption.keepDuplicates(true));
         radarSub = table.getStringTopic("gamepieces").subscribe(new String(), PubSubOption.keepDuplicates(true));
 
+        table.setDefaultValue("fieldside", NetworkTableValue.makeString("left"));
+        table.setDefaultValue("auto", NetworkTableValue.makeString("preload"));
+
 //        System.out.println(poseSub.getAtomic().timestamp);
+    }
+
+    public String getFieldSide() {
+        return table.getValue("fieldside").getString();
+    }
+
+    public String getAuto() {
+        return table.getValue("auto").getString();
     }
 
     public void put(String key, Object o) {

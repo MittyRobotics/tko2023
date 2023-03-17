@@ -68,20 +68,34 @@ public class Robot extends TimedRobot {
 //        System.out.println(SwerveSubsystem.getInstance().getPose());
         Odometry.getInstance().update();
 
-//    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
-//    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
+        LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
+        LoggerInterface.getInstance().put("Pose", Odometry.getInstance().getState());
+
+        LoggerInterface.getInstance().put("Pose X", Odometry.getInstance().getPose()[0]);
+        LoggerInterface.getInstance().put("Pose Y", Odometry.getInstance().getPose()[1]);
+
 //        System.out.println(Odometry.getInstance().getState());
 //        System.out.println(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), 2)[2]);
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();
-
-
+        
     }
 
     @Override
     public void autonomousInit() {
 
-        new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getFieldSide().equals("left");
+
+        String auto = LoggerInterface.getInstance().getAuto();
+
+        switch(auto) {
+            case "preload":
+                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                break;
+            case "one":
+                new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                break;
+        }
 
 //        Gyro.getInstance().setAngleOffset(Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0);
 //
