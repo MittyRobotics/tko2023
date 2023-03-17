@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.routines;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -12,9 +13,9 @@ public class AutoBalanceCommand extends CommandBase {
     private boolean onScale = false;
     private boolean docking = false;
 
-    private final double STOP_ANGLE = 10;
+    private final double STOP_ANGLE = 8;
     private final double ON_ANGLE = 14;
-    private final double START_ANGLE = 6;
+    private final double BACK_ANGLE = 13;
     private final boolean pos;
 
     public AutoBalanceCommand(double maxVelStart, double maxVelBalance, boolean pos) {
@@ -36,18 +37,22 @@ public class AutoBalanceCommand extends CommandBase {
         double pitch = Math.abs(Gyro.getInstance().getPitch());
         double speed;
 
+        LoggerInterface.getInstance().put("Pitch", Gyro.getInstance().getPitch());
+
 
         if (!onScale) {
-            if (pitch > START_ANGLE) onScale = true;
+            if (pitch > ON_ANGLE) onScale = true;
             speed = maxVelStart;
         } else {
-            if(!docking) {
-                if (pitch > ON_ANGLE) docking = true;
+            if (pitch < BACK_ANGLE) docking = true;
+            if(docking) {
+                speed = -maxVelBalance * 0.6;
+            } else {
+                speed = maxVelBalance;
             }
-            speed = maxVelBalance;
         }
         SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
-                pos ? speed : -speed, 0), 0);
+                -speed, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -61,6 +66,7 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return docking && Gyro.getInstance().getPitch() < STOP_ANGLE;
+//        System.out.println(docking);
+        return docking && Math.abs(Gyro.getInstance().getPitch()) < STOP_ANGLE;
     }
 }

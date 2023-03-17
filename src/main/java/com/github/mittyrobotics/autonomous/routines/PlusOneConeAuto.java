@@ -27,16 +27,16 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 scoring.getHeading());
 
-        Pose beforeTurnAround = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
+        Pose beforeTurnAround = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 5)),
                 scoring.getHeading());
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 180 : -180,15)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195,5)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -15 : 15, 0)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -105 : 105, 0)),
                 firstCone.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 15)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 5)),
                 starting.getHeading());
 
         Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 130 : -130, 0)),
@@ -140,6 +140,11 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                     new InstantCommand(() -> Odometry.getInstance().setCustomCam(
                             Odometry.getInstance().FIELD_LEFT_SIDE ? 3 : 0 //left vs right BACK cam
                     )),
+//
+//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+//                            Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
+//                    )),
+
                     new InitAutoCommand(starting),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
@@ -150,7 +155,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeTurnAround),
                                     starting.getHeading(), beforeTurnAround.getHeading(),
-                                    0, 5, 5, 10, 10,
+                                    0, 1, 2, 5, 5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -158,7 +163,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
                                     beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
-                                    0, 5, 5, 10, 10,
+                                    0, 1, 2, 5, 5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -169,11 +174,12 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
 
                     // INTAKE
                     new InstantCommand(() -> OI.getInstance().handleGround()),
+
                     new AutoLineDrive(4, 0.05,
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                     beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                    0, 0, 5, 5, 2,
+                                    0, 0, 1, 5, 1,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -188,7 +194,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                     firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                    0, 1, 5, 5, 5,
+                                    0, 0, 3, 5, 2,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),

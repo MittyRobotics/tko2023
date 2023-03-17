@@ -81,9 +81,9 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_GROUND,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_MID,
-                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(80 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HIGH,
-                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HP,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(GROUND_TO_STOWED,

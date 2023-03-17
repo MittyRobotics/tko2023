@@ -84,7 +84,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                        new AutoBalanceCommand(3, 1.5, Odometry.getInstance().FIELD_LEFT_SIDE)
+                        new AutoBalanceCommand(2, 0.3, Odometry.getInstance().FIELD_LEFT_SIDE)
                 );
 
             }

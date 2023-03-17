@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class AutoPickupCommand extends SequentialCommandGroup {
 
-    public AutoPickupCommand(boolean isCone, int index, boolean auto) {
+    public AutoPickupCommand(int index, boolean auto) {
         super();
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.NONE) return;
+        boolean isCone = StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE;
         Pose init = Odometry.getInstance().getState();
         double angle = ArmKinematics.getAngleToGamePiece(isCone, index);
         if (Double.isNaN(angle)) return;

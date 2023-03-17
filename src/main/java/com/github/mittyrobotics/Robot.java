@@ -4,6 +4,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.routines.AutoBalanceCommand;
 import com.github.mittyrobotics.autonomous.routines.InitAutoCommand;
 import com.github.mittyrobotics.autonomous.routines.PlusOneConeAuto;
 import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
@@ -155,12 +156,25 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
 //        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
+//
+
 
         OI.getInstance().setupControls();
         Odometry.getInstance().disableCustomCam();
         Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
+
+
+//        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
+//
+//        boolean leftSide = Odometry.getInstance().FIELD_LEFT_SIDE;
+//        int tag = Integer.parseInt(LoggerInterface.getInstance().getValue("autotag"));
+//        int index = Integer.parseInt(LoggerInterface.getInstance().getValue("autoindex"));
+//
+//        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 9 - tag : tag)[index];
+//        new InitAutoCommand(scoring).schedule();
+//        new AutoBalanceCommand(0.5, 0, leftSide).schedule();
 
 //        StateMachine.getInstance().setIntakeStowing();
 //
@@ -177,6 +191,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        System.out.println(Gyro.getInstance().getHeadingRadians() + "  " + Gyro.getInstance().getHeadingRadiansNoOffset());
 //    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
 //    try {
 //      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
@@ -197,6 +212,8 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().setBrakeMode();
 
         LedSubsystem.getInstance().turnOff();
+
+        SwerveSubsystem.getInstance().setAnglesZero();
     }
 
     /**
@@ -218,7 +235,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        System.out.println(Gyro.getInstance().getPitch());
+        System.out.println(LoggerInterface.getInstance().getValue("fieldside"));
     }
 
     /**

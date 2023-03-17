@@ -26,6 +26,7 @@ package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoScoreTeleop;
+import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
@@ -113,7 +114,7 @@ public class OI {
     }
 
     public void handleHumanPlayer() {
-        ArmKinematics.setArmKinematics(new Angle(1.071), 0.479);
+        ArmKinematics.setArmKinematics(new Angle(1.071 + 0.03), 0.479);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.HP);
         StateMachine.getInstance().setStateHP();
         StateMachine.getInstance().setIntaking();
@@ -136,7 +137,7 @@ public class OI {
         } else {
             double curRad = ArmKinematics.getTelescopeDesired();
             double curAngle = ArmKinematics.getPivotDesired().getRadians();
-            ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
+            ArmKinematics.setArmKinematics(new Angle(curAngle + 25 * Math.PI/180), curRad);
 
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
@@ -151,7 +152,7 @@ public class OI {
                         Odometry.getInstance().setScoringCam(false);
                     }, 600);
                 }, 10);
-            }, 200);
+            }, 300);
         }
     }
 
@@ -200,10 +201,10 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 //
-//        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
-//                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
-//        autoIntakeGround.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
-//        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
+                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        autoIntakeGround.whileTrue(new AutoPickupCommand(0, false));
+        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
 //        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
 //                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);

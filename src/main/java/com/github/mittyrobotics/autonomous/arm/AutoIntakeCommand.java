@@ -17,9 +17,7 @@ public class AutoIntakeCommand extends SequentialCommandGroup {
                         OI.getInstance().handleHumanPlayer();
                     }
                 }),
-                new AutoPickupCommand(
-                        piece == StateMachine.PieceState.CONE, 0, true
-                )
+                new AutoPickupCommand(0, true)
         );
     }
 }

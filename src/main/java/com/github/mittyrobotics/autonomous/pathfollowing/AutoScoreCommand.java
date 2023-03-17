@@ -20,7 +20,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
                         new SwervePath(new QuinticHermiteSpline(init, mid),
                                 init.getHeading(), mid.getHeading(),
                                 0, 1.5, 3, 3, 1.5,
-                                0, 0, 3, 0, 0.02, 0.5
+                                0, 0, 3.5, 0, 0.02, 0.5
                         ), auto
                 ),
                 new AutoDriveScoreCommand(1.5, 0.02, false,
