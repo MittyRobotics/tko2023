@@ -8,21 +8,36 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoBalanceCommand extends CommandBase {
-    PIDController controller = new PIDController(SwerveConstants.BALANCE_P, SwerveConstants.BALANCE_I, SwerveConstants.BALANCE_D);
-    public AutoBalanceCommand() {
+    private double maxVelStart, maxVelBalance;
+    private boolean onScale = false;
+
+    private final double STOP_ANGLE = 5;
+    private final double START_ANGLE = 2;
+
+    public AutoBalanceCommand(double maxVelStart, double maxVelBalance) {
+        this.maxVelBalance = maxVelBalance;
+        this.maxVelStart = maxVelStart;
+
         addRequirements(SwerveSubsystem.getInstance());
     }
+
     @Override
     public void initialize() {
-        super.initialize();
+        onScale = false;
     }
 
     @Override
     public void execute() {
-        super.execute();
         double pitch = Gyro.getInstance().getPitch();
-        double output = controller.calculate(pitch, 0);
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(output, 0), 0);
+        double speed;
+
+        if (!onScale) {
+            if (pitch > START_ANGLE) onScale = true;
+            speed = maxVelStart;
+        } else {
+            speed = maxVelBalance;
+        }
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(speed, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -30,11 +45,12 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+        SwerveSubsystem.getInstance().setZero();
+        SwerveSubsystem.getInstance().fortyFiveAngle();
     }
 
     @Override
     public boolean isFinished() {
-        return super.isFinished();
+        return onScale && Gyro.getInstance().getPitch() < STOP_ANGLE;
     }
 }

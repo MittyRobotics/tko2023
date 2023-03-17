@@ -50,15 +50,16 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoLineDrive(2, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(mid_up, balance),
-                                mid_up.getHeading(), balance.getHeading(),
-                                0, 0, 0.8, 1, 0.8,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
+                new AutoBalanceCommand(5, 1.5)
+//                new AutoLineDrive(2, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(mid_up, balance),
+//                                mid_up.getHeading(), balance.getHeading(),
+//                                0, 0, 0.8, 1, 0.8,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//                new InstantCommand(() -> SwerveSubsystem.getInstance().fortyFiveAngle())
         );
     }
 }
