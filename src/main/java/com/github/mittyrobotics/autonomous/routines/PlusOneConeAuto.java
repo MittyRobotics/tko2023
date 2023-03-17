@@ -52,7 +52,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
                                 starting.getHeading(), beforeFirstCone.getHeading(),
-                                0, 1, 1, 1, 1,
+                                0, 5, 5, 3, 3,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -61,7 +61,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                 beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                0, 0, 1, 1, 1,
+                                0, 0, 3, 3, 1.5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -74,16 +74,16 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                 firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                0, 0, 1, 1, 1,
+                                0, 1.5, 3, 3, 3,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
                 new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                 new AutoLineDrive(4, 0.05,
                         new SwervePath(
-                                new QuinticHermiteSpline(beforeAutoScore, beforeAutoScore),
+                                new QuinticHermiteSpline(scoring, beforeAutoScore),
                                 beforeAutoScore.getHeading(), beforeAutoScore.getHeading(),
-                                0, 1, 1, 1, 1,
+                                0, 3, 5, 5, 3,
                                 0, 0, 0.5, 0, 0.02, 0.5
                         )
                 ),
@@ -91,7 +91,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeAutoScore, mid),
                                 beforeAutoScore.getHeading(), mid.getHeading(),
-                                0, 1, 1, 1, 1,
+                                0, 3, 5, 5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -99,7 +99,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(mid, mid_up),
                                 mid.getHeading(), mid_up.getHeading(),
-                                0, 1, 1, 1, 1,
+                                0, 3, 5,  5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
@@ -107,7 +107,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(mid_up, balance),
                                 mid_up.getHeading(), balance.getHeading(),
-                                0, 0, 0.8, 1, 0.5,
+                                0, 0, 5, 5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),

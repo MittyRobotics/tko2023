@@ -75,8 +75,8 @@ public class Robot extends TimedRobot {
 
 //    LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //    LoggerInterface.getInstance().put("Pose", Arrays.toString(Odometry.getInstance().getPose()));
-//        System.out.println(Odometry.getInstance().getState());
-//        System.out.println(Arrays.toString(Odometry.getInstance().getClosestScoringZone(2)));
+        System.out.println(Odometry.getInstance().getState());
+        System.out.println(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), 2)[2]);
 //    System.out.println(Gyro.getInstance().getHeadingRadians());
         CommandScheduler.getInstance().run();
 
@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-//        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
+        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
 
         OI.getInstance().setupControls();
         Odometry.getInstance().setScoringCam(false);
@@ -180,8 +180,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        TelescopeSubsystem.getInstance().setCoastMode();
-        PivotSubsystem.getInstance().setCoastMode();
+        TelescopeSubsystem.getInstance().setBrakeMode();
+        PivotSubsystem.getInstance().setBrakeMode();
 
         LedSubsystem.getInstance().turnOff();
     }

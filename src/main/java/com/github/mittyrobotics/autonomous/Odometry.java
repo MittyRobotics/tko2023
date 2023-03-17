@@ -157,7 +157,7 @@ public class Odometry {
                 lastPose = curP;
 
                 LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
-                System.out.println(getState() + "    " + getIdealCamera());
+//                System.out.println(getState() + "   \n\n\n\n\n " + getIdealCamera());
 
                 //                state.transpose().print();
             } catch (Exception e) {
@@ -306,11 +306,11 @@ public class Odometry {
         return scoringZones[tag_id - 1];
     }
 
-    public Pose[] getClosestScoringZone(int ind) {
+    public Pose[] getClosestScoringZone(Pose state, int ind) {
         int minIndex;
         double min;
         double dist;
-        Point robot = getState().getPosition();
+        Point robot = state.getPosition();
 
         int minIndexRight = 0;
         min = Double.MAX_VALUE;
