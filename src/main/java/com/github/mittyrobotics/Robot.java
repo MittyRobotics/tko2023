@@ -154,7 +154,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
+//        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
 
         OI.getInstance().setupControls();
         Odometry.getInstance().disableCustomCam();
@@ -218,6 +218,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+        System.out.println(Gyro.getInstance().getPitch());
     }
 
     /**

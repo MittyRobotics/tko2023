@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoBalanceCommand extends CommandBase {
     private double maxVelStart, maxVelBalance;
     private boolean onScale = false;
+    private boolean docking = false;
 
-    private final double STOP_ANGLE = 5;
-    private final double START_ANGLE = 2;
+    private final double STOP_ANGLE = 10;
+    private final double ON_ANGLE = 14;
+    private final double START_ANGLE = 6;
     private final boolean pos;
 
     public AutoBalanceCommand(double maxVelStart, double maxVelBalance, boolean pos) {
@@ -26,6 +28,7 @@ public class AutoBalanceCommand extends CommandBase {
     @Override
     public void initialize() {
         onScale = false;
+        docking = false;
     }
 
     @Override
@@ -33,10 +36,14 @@ public class AutoBalanceCommand extends CommandBase {
         double pitch = Math.abs(Gyro.getInstance().getPitch());
         double speed;
 
+
         if (!onScale) {
             if (pitch > START_ANGLE) onScale = true;
             speed = maxVelStart;
         } else {
+            if(!docking) {
+                if (pitch > ON_ANGLE) docking = true;
+            }
             speed = maxVelBalance;
         }
         SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
@@ -54,6 +61,6 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return onScale && Gyro.getInstance().getPitch() < STOP_ANGLE;
+        return docking && Gyro.getInstance().getPitch() < STOP_ANGLE;
     }
 }
