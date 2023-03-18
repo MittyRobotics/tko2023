@@ -21,14 +21,14 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                 scoring.getHeading());
 
         Pose before_mid = new Pose(new Point(starting.getPosition().getX() + (leftSide ? 15 : -15),
-                tag == 1 ? 33 : 183),
+                tag == 1 ? 27 : 190),
                 scoring.getHeading());
 
-        Pose mid = new Pose(new Point(starting.getPosition().getX() + (leftSide ? 160 : -160),
+        Pose mid = new Pose(new Point(starting.getPosition().getX() + (leftSide ? 165 : -165),
                 before_mid.getPosition().getY()),
                 starting.getHeading());
 
-        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, (tag == 1 ? 66 : -66))),
+        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, (tag == 1 ? 75 : -75))),
                 starting.getHeading());
 
         int cam = Odometry.getInstance().FIELD_LEFT_SIDE ?
@@ -46,11 +46,13 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InitAutoCommand(starting),
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+
+
                         new AutoLineDrive(4, 0.05,
                                 new SwervePath(
                                         new QuinticHermiteSpline(starting, before_mid),
                                         starting.getHeading(), before_mid.getHeading(),
-                                        0, 2, 3, 3, 2,
+                                        0, 2, 3, 5, 5,
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
@@ -58,7 +60,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 new SwervePath(
                                         new QuinticHermiteSpline(before_mid, mid),
                                         before_mid.getHeading(), mid.getHeading(),
-                                        0, 0, 3, 3, 2,
+                                        0, 0, 3, 5, 3,
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
@@ -66,11 +68,12 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 new SwervePath(
                                         new QuinticHermiteSpline(mid, mid_up),
                                         mid.getHeading(), mid_up.getHeading(),
-                                        0, 0, 3, 3, 2,
+                                        0, 0, 3, 5, 3,
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
-                        new FastOvershootBalance(3, 1.5, true)
+
+                        new Balance(true)
                 );
 
             } else if (tag == 2) {
@@ -81,7 +84,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                        new FastOvershootBalance(3.5, 0.5, false)
+                        new Balance(false)
                 );
 
             }
@@ -96,7 +99,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 new SwervePath(
                                         new QuinticHermiteSpline(starting, before_mid),
                                         starting.getHeading(), before_mid.getHeading(),
-                                        0, 2, 3, 3, 2,
+                                        0, 2, 3, 5, 5,
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
@@ -104,7 +107,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 new SwervePath(
                                         new QuinticHermiteSpline(before_mid, mid),
                                         before_mid.getHeading(), mid.getHeading(),
-                                        0, 0, 3, 3, 2,
+                                        0, 0, 1.5, 3, 3,
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         )
