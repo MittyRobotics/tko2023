@@ -14,8 +14,8 @@ import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class PlusOneConeAuto extends SequentialCommandGroup {
-    public PlusOneConeAuto(boolean leftSide, boolean balance) {
+public class LowPlusConeAuto extends SequentialCommandGroup {
+    public LowPlusConeAuto(boolean leftSide, boolean balance) {
         super();
 
         Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 8 : 1)[2];
@@ -82,6 +82,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
 
                     // INTAKE
                     new InstantCommand(() -> OI.getInstance().handleGround()),
+                    new InstantCommand(() -> StateMachine.getInstance().setStateCone()),
                     new AutoLineDrive(4, 0.05,
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),

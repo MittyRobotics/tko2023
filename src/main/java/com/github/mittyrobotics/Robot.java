@@ -7,12 +7,10 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.routines.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
-import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
-import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -23,6 +21,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+    public String auto = "preload";
+    public boolean balance = true;
+    public int tag, index;
+
+
     @Override
     public void robotInit() {
         LedSubsystem.getInstance().initHardware();
@@ -59,6 +62,9 @@ public class Robot extends TimedRobot {
         LoggerInterface.getInstance().put("Pose X", Odometry.getInstance().getPose()[0]);
         LoggerInterface.getInstance().put("Pose Y", Odometry.getInstance().getPose()[1]);
 
+        LoggerInterface.getInstance().put("Auto Mode", auto + " | balance " + balance +
+                " | tag " + tag + " | index" + index);
+
         CommandScheduler.getInstance().run();
 
     }
@@ -67,17 +73,20 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
-        String auto = LoggerInterface.getInstance().getValue("auto");
-        boolean balance = LoggerInterface.getInstance().getValue("autobalance").equals("true");
+        auto = LoggerInterface.getInstance().getValue("auto");
+        balance = LoggerInterface.getInstance().getValue("autobalance").equals("true");
 
         switch(auto) {
             case "preload":
-                int tag = Integer.parseInt(LoggerInterface.getInstance().getValue("autotag"));
-                int index = Integer.parseInt(LoggerInterface.getInstance().getValue("autoindex"));
+                tag = Integer.parseInt(LoggerInterface.getInstance().getValue("autotag"));
+                index = Integer.parseInt(LoggerInterface.getInstance().getValue("autoindex"));
                 new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, tag, index, balance).schedule();
                 break;
-            case "one":
-                new PlusOneConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
+            case "low":
+                new LowPlusConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
+                break;
+            case "high":
+                new HighPlusConeCubeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
                 break;
         }
     }
@@ -116,14 +125,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        System.out.println(Gyro.getInstance().getHeadingRadians() + "  " + Gyro.getInstance().getHeadingRadiansNoOffset());
-//    SmartDashboard.putString("pose", SwerveSubsystem.getInstance().getPose().toString());
-//    try {
-//      System.out.println(Arrays.toString(ArmKinematics.getVectorToGamePiece(true, 0)));
-//    } catch (JSONException e) {
-
-//    }
-
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
     }
@@ -138,7 +139,7 @@ public class Robot extends TimedRobot {
 
         LedSubsystem.getInstance().turnOff();
 
-        SwerveSubsystem.getInstance().setAnglesZero();
+//        SwerveSubsystem.getInstance().setAnglesZero();
     }
 
     /**
@@ -160,7 +161,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        System.out.println(LoggerInterface.getInstance().getValue("fieldside"));
+//        System.out.println(LoggerInterface.getInstance().getValue("fieldside"));
     }
 
     /**
