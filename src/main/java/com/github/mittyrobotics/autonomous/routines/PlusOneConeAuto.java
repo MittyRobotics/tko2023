@@ -36,10 +36,13 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 5)),
                 starting.getHeading());
 
-        Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 130 : -130, 0)),
+        Pose beforeDock = new Pose(new Point(starting.getPosition().getX() + 15, 85),
                 starting.getHeading());
 
-        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
+//        Pose mid = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 130 : -130, 0)),
+//                starting.getHeading());
+//
+//        Pose mid_up = new Pose(Point.add(mid.getPosition(), new Point(0, 66)), starting.getHeading());
 
 //        Pose balance = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 80 : -80,
 //                66)), starting.getHeading());
@@ -60,7 +63,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeTurnAround),
                                     starting.getHeading(), beforeTurnAround.getHeading(),
-                                    0, 5, 5, 10, 10,
+                                    0, 2, 3, 5, 5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -68,7 +71,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
                                     beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
-                                    0, 5, 5, 10, 10,
+                                    0, 2, 2, 5, 5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -83,7 +86,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                     beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                    0, 0, 5, 5, 3,
+                                    0, 0, 3, 5, 3,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -98,38 +101,21 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                     firstCone.getHeading(), beforeAutoScore.getHeading(),
-                                    0, 2, 7, 10, 5,
+                                    0, 0, 3, 5, 2,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
                     new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                    new AutoLineDrive(4, 0.05,
+                            new SwervePath(
+                                    new QuinticHermiteSpline(starting, beforeDock),
+                                    starting.getHeading(), beforeDock.getHeading(),
+                                    0, 0, 3, 5, 2,
+                                    0, 0, 2.5, 0, 0.02, 0.5
+                            )
+                    ),
 
-                    //GO TO AUTOBALANCE POSITION
-                    new AutoLineDrive(4, 0.05,
-                            new SwervePath(
-                                    new QuinticHermiteSpline(scoring, beforeAutoScore),
-                                    scoring.getHeading(), beforeAutoScore.getHeading(),
-                                    0, 3, 5, 10, 10,
-                                    0, 0, 0.5, 0, 0.02, 0.5
-                            )
-                    ),
-                    new AutoLineDrive(4, 0.05,
-                            new SwervePath(
-                                    new QuinticHermiteSpline(beforeAutoScore, mid),
-                                    beforeAutoScore.getHeading(), mid.getHeading(),
-                                    0, 1, 5, 5, 5,
-                                    0, 0, 2.5, 0, 0.02, 0.5
-                            )
-                    ),
-                    new AutoLineDrive(4, 0.05,
-                            new SwervePath(
-                                    new QuinticHermiteSpline(mid, mid_up),
-                                    mid.getHeading(), mid_up.getHeading(),
-                                    0, 1, 5, 5, 5,
-                                    0, 0, 2.5, 0, 0.02, 0.5
-                            )
-                    ),
-                    new FastOvershootBalance(3, 1.5, true)
+                    new Balance(false)
             );
         } else {
             addCommands(
