@@ -9,11 +9,13 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
     public AutoScoreTeleop(int index) {
         super();
 
-        if (index == 0) index = Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : 2;
-        if (index == 2) index = Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 0;
+        int ind;
+        if (index == 0) ind = Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : 2;
+        else if (index == 2) ind = Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 0;
+        else ind = 1;
 
         addCommands(
-              new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), index)[index], false)
+              new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), ind)[ind], false)
         );
     }
 }
