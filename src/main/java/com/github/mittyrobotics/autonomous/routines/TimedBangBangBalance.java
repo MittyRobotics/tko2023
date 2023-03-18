@@ -5,55 +5,57 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.Util;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoBalanceCommand extends CommandBase {
+public class TimedBangBangBalance extends CommandBase {
     private double maxVelStart, maxVelBalance;
-    private boolean onScale = false;
-    private boolean docking = false;
+    private boolean forward = true;
 
-    private final double STOP_ANGLE = 8;
-    private final double ON_ANGLE = 14;
-    private final double BACK_ANGLE = 12
-            ;
+    private final double STOP_ANGLE = 10;
+    private final double ON_ANGLE = 5;
+
+    private final long time;
     private final boolean pos;
+    private boolean index;
 
-    public AutoBalanceCommand(double maxVelStart, double maxVelBalance, boolean pos) {
+    public TimedBangBangBalance(double maxVelStart, long time, double maxVelBalance, boolean pos) {
         this.maxVelBalance = maxVelBalance;
         this.maxVelStart = maxVelStart;
         this.pos = pos;
+        this.time = time;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
 
     @Override
     public void initialize() {
-        onScale = false;
-        docking = false;
+        forward = true;
+        index = false;
     }
 
     @Override
     public void execute() {
-        double pitch = Math.abs(Gyro.getInstance().getPitch());
+        double pitch = Gyro.getInstance().getPitch();
         double speed;
 
-        LoggerInterface.getInstance().put("Pitch", Gyro.getInstance().getPitch());
+        if(forward) {
+            speed = pos ? maxVelStart : -maxVelStart;
 
-
-        if (!onScale) {
-            if (pitch > ON_ANGLE) onScale = true;
-            speed = maxVelStart;
-        } else {
-            if (pitch < BACK_ANGLE) docking = true;
-            if(docking) {
-                speed = -maxVelBalance;
-            } else {
-                speed = maxVelStart;
+            if(Math.abs(pitch) > ON_ANGLE && !index) {
+                Util.triggerFunctionAfterTime(() -> {
+                    forward = false;
+                    index = true;
+                }, time);
             }
+        } else {
+            if (Math.abs(pitch) < STOP_ANGLE) speed = 0;
+            else speed = pitch < 0 ? maxVelBalance : -maxVelBalance;
         }
+
         SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
-                pos ? speed : -speed, 0), 0);
+                speed, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -67,7 +69,6 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-//        System.out.println(docking);
-        return docking && Math.abs(Gyro.getInstance().getPitch()) < STOP_ANGLE;
+        return false;
     }
 }

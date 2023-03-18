@@ -111,6 +111,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         setDefaultCommand(new JoystickThrottleCommand());
     }
 
+    public void setRampRate(double ramptime) {
+        for (int i = 0; i < 4; ++i) {
+            driveFalcon[i].configClosedloopRamp(ramptime);
+        }
+    }
+
 //    public double getMagEncoderAbsRadians(int i) {
 //        return encoder[i].getDistance();
 //                / SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER;

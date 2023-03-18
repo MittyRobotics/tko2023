@@ -7,12 +7,9 @@ import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-import javax.swing.plaf.nimbus.State;
 
 public class PreloadAndBalanceAuto extends SequentialCommandGroup {
     public PreloadAndBalanceAuto(boolean leftSide, int tag, int index, boolean balance) {
@@ -73,7 +70,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
-                        new AutoBalanceCommand(3, 1.5, true)
+                        new FastOvershootBalance(3, 1.5, true)
                 );
 
             } else if (tag == 2) {
@@ -84,7 +81,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                        new AutoBalanceCommand(3.5, 0.5, false)
+                        new FastOvershootBalance(3.5, 0.5, false)
                 );
 
             }

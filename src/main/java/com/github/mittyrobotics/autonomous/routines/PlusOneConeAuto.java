@@ -4,15 +4,12 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
 import com.github.mittyrobotics.autonomous.arm.AutoScoreCommandGroup;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
-import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -132,7 +129,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
-                    new AutoBalanceCommand(3, 1.5, true)
+                    new FastOvershootBalance(3, 1.5, true)
             );
         } else {
             addCommands(
