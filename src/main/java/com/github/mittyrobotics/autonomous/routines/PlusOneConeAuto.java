@@ -132,7 +132,7 @@ public class PlusOneConeAuto extends SequentialCommandGroup {
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
-                    new AutoBalanceCommand(3, 1.5, !Odometry.getInstance().FIELD_LEFT_SIDE)
+                    new AutoBalanceCommand(3, 1.5, true)
             );
         } else {
             addCommands(

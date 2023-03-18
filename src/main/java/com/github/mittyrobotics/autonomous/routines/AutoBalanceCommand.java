@@ -15,7 +15,8 @@ public class AutoBalanceCommand extends CommandBase {
 
     private final double STOP_ANGLE = 8;
     private final double ON_ANGLE = 14;
-    private final double BACK_ANGLE = 13;
+    private final double BACK_ANGLE = 12
+            ;
     private final boolean pos;
 
     public AutoBalanceCommand(double maxVelStart, double maxVelBalance, boolean pos) {
@@ -46,13 +47,13 @@ public class AutoBalanceCommand extends CommandBase {
         } else {
             if (pitch < BACK_ANGLE) docking = true;
             if(docking) {
-                speed = -maxVelBalance * 0.6;
+                speed = -maxVelBalance;
             } else {
-                speed = maxVelBalance;
+                speed = maxVelStart;
             }
         }
         SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
-                -speed, 0), 0);
+                pos ? speed : -speed, 0), 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

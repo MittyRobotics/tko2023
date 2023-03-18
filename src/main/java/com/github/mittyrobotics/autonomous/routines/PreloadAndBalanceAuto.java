@@ -73,7 +73,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                         0, 0, 2.5, 0, 0.02, 0.5
                                 )
                         ),
-                        new AutoBalanceCommand(3, 1.5, !Odometry.getInstance().FIELD_LEFT_SIDE)
+                        new AutoBalanceCommand(3, 1.5, true)
                 );
 
             } else if (tag == 2) {
@@ -84,7 +84,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                        new AutoBalanceCommand(2, 0.3, Odometry.getInstance().FIELD_LEFT_SIDE)
+                        new AutoBalanceCommand(3.5, 0.5, false)
                 );
 
             }

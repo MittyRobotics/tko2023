@@ -158,14 +158,14 @@ public class Robot extends TimedRobot {
 //        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
 //
 
-
+//
         OI.getInstance().setupControls();
         Odometry.getInstance().disableCustomCam();
         Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
 
-
+//
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 //
 //        boolean leftSide = Odometry.getInstance().FIELD_LEFT_SIDE;
@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
 //
 //        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 9 - tag : tag)[index];
 //        new InitAutoCommand(scoring).schedule();
-//        new AutoBalanceCommand(0.5, 0, leftSide).schedule();
+//        new AutoBalanceCommand(0.5, 0, false).schedule();
 
 //        StateMachine.getInstance().setIntakeStowing();
 //
