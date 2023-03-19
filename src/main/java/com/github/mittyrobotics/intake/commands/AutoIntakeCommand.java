@@ -15,7 +15,7 @@ public class AutoIntakeCommand extends CommandBase {
     boolean indexing = false;
     boolean outtaking = false;
 
-    private final double threshold = 70;
+    private final double threshold = 29.5;
 
     private final double long_term_avg_k = 20;
     private final double short_term_avg_k = 5;
@@ -72,6 +72,7 @@ public class AutoIntakeCommand extends CommandBase {
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.WHITE);
 
+            System.out.println(IntakeSubsystem.getInstance().getAveragedCurrent());
 //            If prox sensor detected index for another second then stow
             if(IntakeSubsystem.getInstance().getAveragedCurrent() >= threshold && !indexing) {
                 // BLink green
@@ -81,10 +82,14 @@ public class AutoIntakeCommand extends CommandBase {
                 StateMachine.getInstance().setIntakeStowing();
                 Odometry.getInstance().setScoringCam(true);
 
-                //Disable LED
                 Util.triggerFunctionAfterTime(() -> {
-                    LedSubsystem.getInstance().disableIntakeAltColor();
-                }, 1200);
+                    //Disable LED
+                    Util.triggerFunctionAfterTime(() -> {
+                        LedSubsystem.getInstance().disableIntakeAltColor();
+                        indexing = false;
+                    }, 700);
+                }, 500);
+
             }
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW) {
             //Piece stowed

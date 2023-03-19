@@ -33,7 +33,7 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -105 : 105, 0)),
                 firstCone.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, -10)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, -5)),
                 starting.getHeading());
 
         Pose beforeSecondPickup = new Pose(Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 120 : -120, 0)),
@@ -100,66 +100,66 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
                 ),
-                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
 
-
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(starting, beforeAutoScore),
-                                starting.getHeading(), beforeAutoScore.getHeading(),
-                                0, 3, 3, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeAutoScore, beforeSecondPickup),
-                                beforeAutoScore.getHeading(), beforeSecondPickup.getHeading(),
-                                0, 2, 3, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-
-                new InstantCommand(() -> OI.getInstance().handleGround()),
-                new InstantCommand(() -> StateMachine.getInstance().setStateCube()),
-
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeSecondPickup, secondPickup),
-                                beforeSecondPickup.getHeading(), secondPickup.getHeading(),
-                                0, 0, 3, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-
-                new InstantCommand(() -> {
-                    OI.getInstance().zeroAll();
-                    StateMachine.getInstance().setIntakeStowing();
-                    Odometry.getInstance().setScoringCam(true);
-                }),
-
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(secondPickup, beforeSecondPickup),
-                                secondPickup.getHeading(), beforeSecondPickup.getHeading(),
-                                0, 2, 3, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-
-                new AutoLineDrive(4, 0.05,
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeSecondPickup, beforeAutoScore),
-                                beforeSecondPickup.getHeading(), beforeAutoScore.getHeading(),
-                                0, 1, 3, 5, 5,
-                                0, 0, 2.5, 0, 0.02, 0.5
-                        )
-                ),
-
-
-
-                new AutoScoreCommandGroup(scoring_third, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
+//
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(starting, beforeAutoScore),
+//                                starting.getHeading(), beforeAutoScore.getHeading(),
+//                                0, 3, 3, 5, 5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeAutoScore, beforeSecondPickup),
+//                                beforeAutoScore.getHeading(), beforeSecondPickup.getHeading(),
+//                                0, 2, 3, 5, 5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//
+//                new InstantCommand(() -> OI.getInstance().handleGround()),
+//                new InstantCommand(() -> StateMachine.getInstance().setStateCube()),
+//
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeSecondPickup, secondPickup),
+//                                beforeSecondPickup.getHeading(), secondPickup.getHeading(),
+//                                0, 0, 3, 5, 5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//
+//                new InstantCommand(() -> {
+//                    OI.getInstance().zeroAll();
+//                    StateMachine.getInstance().setIntakeStowing();
+//                    Odometry.getInstance().setScoringCam(true);
+//                }),
+//
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(secondPickup, beforeSecondPickup),
+//                                secondPickup.getHeading(), beforeSecondPickup.getHeading(),
+//                                0, 2, 3, 5, 5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//
+//                new AutoLineDrive(4, 0.05,
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeSecondPickup, beforeAutoScore),
+//                                beforeSecondPickup.getHeading(), beforeAutoScore.getHeading(),
+//                                0, 1, 3, 5, 5,
+//                                0, 0, 2.5, 0, 0.02, 0.5
+//                        )
+//                ),
+//
+//
+//
+//                new AutoScoreCommandGroup(scoring_third, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
         );
     }
 }

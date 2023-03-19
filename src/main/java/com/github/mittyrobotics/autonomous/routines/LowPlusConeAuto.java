@@ -33,7 +33,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -105 : 105, 0)),
                 firstCone.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 5)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 20 : -20, 0)),
                 starting.getHeading());
 
         Pose beforeDock = new Pose(new Point(starting.getPosition().getX() + 15, 85),
@@ -147,7 +147,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
                                     beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
-                                    0, 1, 2, 5, 5,
+                                    0, 1.5, 2, 5, 5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),
@@ -157,13 +157,14 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     )),
 
                     // INTAKE
+                    new InstantCommand(() -> StateMachine.getInstance().setStateCone()),
                     new InstantCommand(() -> OI.getInstance().handleGround()),
 
                     new AutoLineDrive(4, 0.05,
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                     beforeFirstCone.getHeading(), firstCone.getHeading(),
-                                    0, 0, 1, 5, 1,
+                                    0, 0, 1.5, 5, 1.5,
                                     0, 0, 2.5, 0, 0.02, 0.5
                             )
                     ),

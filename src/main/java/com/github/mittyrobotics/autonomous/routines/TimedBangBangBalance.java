@@ -13,8 +13,8 @@ public class TimedBangBangBalance extends CommandBase {
     private double maxVelStart, maxVelBalance;
     private boolean forward = true;
 
-    private final double STOP_ANGLE = 10;
-    private final double ON_ANGLE = 5;
+    private final double STOP_ANGLE = 8;
+    private final double ON_ANGLE = 10;
 
     private final long time;
     private final boolean pos;
@@ -50,7 +50,10 @@ public class TimedBangBangBalance extends CommandBase {
                 }, time);
             }
         } else {
-            if (Math.abs(pitch) < STOP_ANGLE) speed = 0;
+            if (Math.abs(pitch) < STOP_ANGLE) {
+                SwerveSubsystem.getInstance().fortyFiveAngle();
+                speed = 0;
+            }
             else speed = pitch < 0 ? maxVelBalance : -maxVelBalance;
         }
 

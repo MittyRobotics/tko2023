@@ -36,6 +36,9 @@ public class IntakeSubsystem extends SubsystemBase {
         spark.getPIDController().setI(IntakeConstants.I);
         spark.getPIDController().setD(IntakeConstants.D);
 
+        spark.setSmartCurrentLimit(30);
+        spark.setSecondaryCurrentLimit(40);
+
         proximitySensor = new DigitalInput(IntakeConstants.PROX_SENSOR_ID);
 
         setDefaultCommand(new AutoIntakeCommand());

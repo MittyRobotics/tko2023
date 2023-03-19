@@ -7,10 +7,12 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.routines.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -62,6 +64,9 @@ public class Robot extends TimedRobot {
         LoggerInterface.getInstance().put("Pose X", Odometry.getInstance().getPose()[0]);
         LoggerInterface.getInstance().put("Pose Y", Odometry.getInstance().getPose()[1]);
 
+//        LoggerInterface.getInstance().put("Spark Current", IntakeSubsystem.getInstance().getCurrent());
+//        System.out.println("CURRENT: " + IntakeSubsystem.getInstance().getCurrent());
+
         LoggerInterface.getInstance().put("Auto Mode", auto + " | balance " + balance +
                 " | tag " + tag + " | index" + index);
 
@@ -103,20 +108,24 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-//        SwerveSubsystem.getInstance().setRampRate(0.5);
-//        OI.getInstance().setupControls();
-//        Odometry.getInstance().disableCustomCam();
-//        Odometry.getInstance().setScoringCam(false);
-//        OI.getInstance().zeroAll();
-//        StateMachine.getInstance().setIntakeOff();
+        SwerveSubsystem.getInstance().setRampRate(0.5);
+        OI.getInstance().setupControls();
+        Odometry.getInstance().disableCustomCam();
+        Odometry.getInstance().setScoringCam(false);
+        OI.getInstance().zeroAll();
+        StateMachine.getInstance().setIntakeOff();
 
 
 //        new InitAutoCommand(new Pose(new Point(40.45 + 32, 42.19 - 20.873), new Angle(Math.PI))).schedule();
 
-        SwerveSubsystem.getInstance().setRampRate(0);
+//        SwerveSubsystem.getInstance().setRampRate(0);
 //        new FastOvershootBalance(3, 0.7, false).schedule();
 //        new TimedOvershootBalance(3, 1000, 0.7, false).schedule();
-        new TimedBangBangBalance(3, 1000, 1, false).schedule();
+        //for false
+//        new TimedBangBangBalance(2.5, 650, 0.3, false).schedule();
+        //for true
+//        new TimedBangBangBalance(2, 700, 0.5, true).schedule();
+
 
     }
 

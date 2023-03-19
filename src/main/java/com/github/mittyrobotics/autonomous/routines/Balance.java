@@ -9,8 +9,9 @@ public class Balance extends SequentialCommandGroup {
         super();
 
         addCommands(
-                new InstantCommand(() -> SwerveSubsystem.getInstance().setRampRate(0.1)),
-                new FastOvershootBalance(3, 0.7, initialDirectionForward)
+                new InstantCommand(() -> SwerveSubsystem.getInstance().setRampRate(0)),
+                new TimedBangBangBalance(2.5, 650, 0.26, initialDirectionForward)
+//                new FastOvershootBalance(3, 0.7, initialDirectionForward)
         );
     }
 }
