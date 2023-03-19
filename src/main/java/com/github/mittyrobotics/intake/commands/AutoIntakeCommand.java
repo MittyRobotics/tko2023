@@ -79,14 +79,14 @@ public class AutoIntakeCommand extends CommandBase {
                 indexing = true;
                 LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
                 OI.getInstance().zeroAll();
-                StateMachine.getInstance().setIntakeStowing();
                 Odometry.getInstance().setScoringCam(true);
 
                 Util.triggerFunctionAfterTime(() -> {
+                    StateMachine.getInstance().setIntakeStowing();
+                    indexing = false;
                     //Disable LED
                     Util.triggerFunctionAfterTime(() -> {
                         LedSubsystem.getInstance().disableIntakeAltColor();
-                        indexing = false;
                     }, 700);
                 }, 500);
 
