@@ -39,7 +39,7 @@ public class PathFollowingCommand extends CommandBase {
         double curVel = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
 
 //        System.out.println(dt + "   " + curVel);
-        Vector linear = path.updateLinear(robot, dt, curVel);
+        Vector linear = path.updateLinear(robot, dt);
 
 //        System.out.println(linear);
 

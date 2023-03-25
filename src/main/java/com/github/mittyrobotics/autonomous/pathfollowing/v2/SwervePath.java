@@ -22,11 +22,11 @@ public class SwervePath {
         vel = 0;
     }
 
-    public Vector updateLinear(Pose robot, double dt, double curvel) {
+    public Vector updateLinear(Pose robot, double dt) {
         vel = Math.min(maxvel, vel + dt * maxaccel);
 
         double closestT = spline.getClosestPoint(robot, 100, 5);
-        LoggerInterface.getInstance().put("CLOSET", closestT);
+//        LoggerInterface.getInstance().put("CLOSET", closestT);
         double lengthToClosest = spline.getLength(closestT, 17);
 
         double distanceToEnd = spline.getLength() - lengthToClosest;
