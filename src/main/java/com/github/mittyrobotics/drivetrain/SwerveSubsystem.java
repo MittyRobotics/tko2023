@@ -428,10 +428,16 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
 
 
+            double ratio = 1;
+
             for(int i = 0; i < 4; i++) {
 //                LoggerInterface.getInstance().put("Module " + i + " Angular", tangentialVelocityVector[i]);
                 swerveModule[i] = Vector.add(linearVel, tangentialVelocityVector[i]);
+                if (swerveModule[i].getMagnitude() / SwerveConstants.MAX_BOOST_LINEAR_VEL > ratio)
+                    ratio = swerveModule[i].getMagnitude() / SwerveConstants.MAX_BOOST_LINEAR_VEL;
             }
+
+            for(int i = 0; i < 4; ++i) swerveModule[i] = Vector.multiply(ratio, swerveModule[i]);
         }
     }
 

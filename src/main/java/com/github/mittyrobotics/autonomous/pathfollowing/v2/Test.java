@@ -9,11 +9,11 @@ public class Test {
 //                new Pose(new Point(100, 50), new Angle(0))
 //        );
         QuinticHermiteSpline spline = new QuinticHermiteSpline(
-                new Point(40, -20),
+                new Point(0, 20),
                 new Vector(0, 0),
                 new Vector(0, 0),
                 new Point(0, 0),
-                new Vector(-100, 0),
+                new Vector(100, 0),
                 new Vector(0, 0)
         );
 
