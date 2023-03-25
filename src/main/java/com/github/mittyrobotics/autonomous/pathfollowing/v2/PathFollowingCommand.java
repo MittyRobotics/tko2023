@@ -16,9 +16,10 @@ public class PathFollowingCommand extends CommandBase {
     private SwervePath path;
     private PIDController angularController;
     private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
+    private boolean useInterp;
 
     public PathFollowingCommand(SwervePath path, double endHeading, double linearThreshold, double angularThreshold,
-                                double angStart, double angEnd, double kP, double kI, double kD) {
+                                double angStart, double angEnd, double kP, double kI, double kD, boolean useInterp) {
 
         addRequirements(SwerveSubsystem.getInstance());
 
@@ -28,6 +29,7 @@ public class PathFollowingCommand extends CommandBase {
         this.angularThreshold = angularThreshold;
         this.angStart = angStart;
         this.angEnd = angEnd;
+        this.useInterp = useInterp;
         angularController = new PIDController(kP, kI, kD);
     }
 
@@ -50,8 +52,10 @@ public class PathFollowingCommand extends CommandBase {
 //        System.out.println(linear);
 
         double norm = SwerveSubsystem.standardize(heading);
-//        double normDes = SwerveSubsystem.standardize(endHeading);
-        double normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
+        double normDes;
+        if(useInterp)
+            normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
+        else normDes = SwerveSubsystem.standardize(endHeading);
 
         boolean right;
         double dist;
@@ -86,7 +90,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setZero();
+//        SwerveSubsystem.getInstance().setZero();
     }
 
     @Override

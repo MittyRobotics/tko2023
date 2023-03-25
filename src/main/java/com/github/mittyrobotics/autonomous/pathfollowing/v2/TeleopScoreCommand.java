@@ -18,7 +18,7 @@ public class TeleopScoreCommand extends SequentialCommandGroup {
         Pose target = Odometry.getInstance().getScoringZone(tag)[left ? index : 2 - index];
         Pose score = new Pose(Point.add(target.getPosition(), new Point(left ? 32 : -32, 0)), target.getHeading());
 
-        double extension = Math.max(60, 1.5 * Math.abs(init.getPosition().getX() - target.getPosition().getX()));
+        double extension = Math.max(60, 1 * Math.abs(init.getPosition().getX() - target.getPosition().getX()));
 
         QuinticHermiteSpline spline = new QuinticHermiteSpline(
                 init.getPosition(),
@@ -31,12 +31,12 @@ public class TeleopScoreCommand extends SequentialCommandGroup {
 
         addCommands(
             new PathFollowingCommand(
-                    new SwervePath(spline, 3,
+                    new SwervePath(spline, 4,
                             0, 0, 0,
                             0, 0, false
                     ),
                     left ? Math.PI : 0, 3, 0.02,
-                    0, 0.75, 2.5, 0, 0
+                    0, 0.75, 2.5, 0, 0, false
             )
         );
     }

@@ -32,12 +32,12 @@ public class AutoScoreCommand extends SequentialCommandGroup {
 
         addCommands(
                 new PathFollowingCommand(
-                        new SwervePath(spline, 3,
+                        new SwervePath(spline, 4,
                                 maxvel, maxaccel, maxdecel,
                                 startvel, endvel, true
                         ),
                         left ? Math.PI : 0, 3, 0.02,
-                        0, 0.75, 2.5, 0, 0
+                        0, 0.75, 2.5, 0, 0, false
                 )
         );
     }

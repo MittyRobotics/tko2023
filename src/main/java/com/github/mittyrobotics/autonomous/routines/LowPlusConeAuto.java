@@ -29,7 +29,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
         Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195,5)),
                 starting.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, 0)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -80 : 80, 0)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -50,8 +50,9 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                 new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
-                                10, 1, 1, 1, 0, 1, true
-                        ), leftSide ? 0 : Math.PI, 2, 1, 0.2, 0.8, 3, 0, 0.02
+                                10, 2, 2, 2, 0, 2, true
+                        ), leftSide ? 0 : Math.PI, 4, 1,
+                        0.2, 0.8, 3, 0, 0.02, true
                 ),
 
                 // INTAKE
@@ -61,8 +62,9 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                 new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                10, 1, 1, 1, 1, 0, true
-                        ), leftSide ? 0 : Math.PI, 2, 0.05, 0, 1, 3, 0, 0.02
+                                10, 2, 2, 2, 2, 0, true
+                        ), leftSide ? 0 : Math.PI, 2, 0.05,
+                        0, 1, 3, 0, 0.02, true
                 ),
 
 
@@ -73,10 +75,20 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     OI.getInstance().zeroAll();
                     StateMachine.getInstance().setIntakeStowing();
                     Odometry.getInstance().setScoringCam(true);
-                })
+                }),
+
+                new PathFollowingCommand(
+                        new SwervePath(
+                                new QuinticHermiteSpline(
+                                        new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
+                                        new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
+                                10, 2, 2, 2, 0, 0, true
+                        ), leftSide ? Math.PI : 0, 2, 1,
+                        0.2, 0.8, 3, 0, 0.02, true
+                ),
 //
 //
-//                new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
+                new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
         );
     }
 }
