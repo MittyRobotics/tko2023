@@ -4,6 +4,9 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
 import com.github.mittyrobotics.autonomous.routines.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -78,6 +81,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
+        /* REAL CODE
         auto = LoggerInterface.getInstance().getValue("auto");
         balance = LoggerInterface.getInstance().getValue("autobalance").equals("true");
 
@@ -94,6 +98,14 @@ public class Robot extends TimedRobot {
                 new HighPlusConeCubeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
                 break;
         }
+
+         */
+
+        Pose init = Odometry.getInstance().getState();
+        Pose end = new Pose(Point.add(init.getPosition(), new Point(120, 50)), init.getHeading());
+        SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
+                15, 1, 1, 1, 0, 0);
+        new PathFollowingCommand(path, init.getHeading().getRadians(), 5, 0.05, 3, 0, 0.02).schedule();
     }
 
     /**

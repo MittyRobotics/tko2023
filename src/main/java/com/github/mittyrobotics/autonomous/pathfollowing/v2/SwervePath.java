@@ -1,10 +1,14 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
+import com.github.mittyrobotics.util.Gyro;
+
+import java.util.logging.Logger;
 
 public class SwervePath {
     public QuinticHermiteSpline spline;
-    public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead;
+    public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead, vel;
 
     public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel) {
         this.spline = spline;
@@ -14,12 +18,15 @@ public class SwervePath {
         this.startvel = startvel;
         this.endvel = endvel;
         this.lookahead = lookahead;
+
+        vel = 0;
     }
 
     public Vector updateLinear(Pose robot, double dt, double curvel) {
-        double vel = Math.min(maxvel, curvel + dt * maxaccel);
+        vel = Math.min(maxvel, vel + dt * maxaccel);
 
-        double closestT = spline.getClosestPoint(robot, 50, 5);
+        double closestT = spline.getClosestPoint(robot, 100, 5);
+        LoggerInterface.getInstance().put("CLOSET", closestT);
         double lengthToClosest = spline.getLength(closestT, 17);
 
         double distanceToEnd = spline.getLength() - lengthToClosest;
@@ -27,12 +34,12 @@ public class SwervePath {
 
         Point lookahead = getLookahead(lookaheadDist);
 
-        System.out.println(lookahead);
-
         vel = Math.min(getMaxVelToEnd(distanceToEnd), vel);
 
         double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians()
-                - robot.getHeading().getRadians();
+                - Gyro.getInstance().getHeadingRadians();
+
+//        System.out.println("Lookahead " + lookahead + "    " + "Robot " + robot + "   Angle to " + angleToLookahead);
 
         return new Vector(new Angle(angleToLookahead), vel);
     }
@@ -53,7 +60,7 @@ public class SwervePath {
     }
 
     public double getMaxVelToEnd(double distToEnd) {
-        return Math.sqrt(endvel * endvel + 2 * maxdecel * distToEnd);
+        return Math.sqrt(endvel * endvel + 2 * maxdecel * distToEnd / 39.37);
     }
 
     public boolean isFinished(Pose p, double linearThreshold) {

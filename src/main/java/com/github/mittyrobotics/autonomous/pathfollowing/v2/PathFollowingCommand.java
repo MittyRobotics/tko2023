@@ -38,11 +38,38 @@ public class PathFollowingCommand extends CommandBase {
         double heading = Gyro.getInstance().getHeadingRadians();
         double curVel = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
 
+//        System.out.println(dt + "   " + curVel);
         Vector linear = path.updateLinear(robot, dt, curVel);
 
-        double angular = -angularController.calculate(heading, endHeading);
+//        System.out.println(linear);
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angular);
+        double norm = SwerveSubsystem.standardize(heading);
+        double normDes = SwerveSubsystem.standardize(endHeading);
+
+        boolean right;
+        double dist;
+
+        if (normDes < norm) {
+            if (norm - normDes > Math.PI) {
+                right = true;
+                dist = normDes + 2 * Math.PI - norm;
+            } else {
+                right = false;
+                dist = norm - normDes;
+            }
+        } else {
+            if (normDes - norm > Math.PI) {
+                right = false;
+                dist = norm + 2 * Math.PI - normDes;
+            } else {
+                right = true;
+                dist = normDes - norm;
+            }
+        }
+
+        double angularVel = -angularController.calculate(dist * (right ? 1 : -1), 0);
+
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, 0);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
 
@@ -51,6 +78,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        SwerveSubsystem.getInstance().setZero();
     }
 
     @Override
