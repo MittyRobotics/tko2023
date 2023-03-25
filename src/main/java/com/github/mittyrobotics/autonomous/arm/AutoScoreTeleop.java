@@ -1,8 +1,7 @@
 package com.github.mittyrobotics.autonomous.arm;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoScoreCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.OldAutoScoreCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class AutoScoreTeleop extends SequentialCommandGroup {
@@ -15,7 +14,7 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
         else ind = 1;
 
         addCommands(
-              new AutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), ind)[ind], false)
+              new OldAutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), ind)[ind], false)
         );
     }
 }

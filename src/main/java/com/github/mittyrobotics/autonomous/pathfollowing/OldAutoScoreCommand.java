@@ -8,8 +8,8 @@ import com.github.mittyrobotics.led.LedSubsystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class AutoScoreCommand extends SequentialCommandGroup {
-    public AutoScoreCommand(Pose target, boolean auto) {
+public class OldAutoScoreCommand extends SequentialCommandGroup {
+    public OldAutoScoreCommand(Pose target, boolean auto) {
         super();
         Pose init = Odometry.getInstance().getState();
         target = new Pose(Point.add(target.getPosition(), new Point(Odometry.getInstance().FIELD_LEFT_SIDE ? 32 : -32, 0)), target.getHeading());

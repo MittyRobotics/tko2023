@@ -39,7 +39,6 @@ public class PathFollowingCommand extends CommandBase {
 
         Pose robot = Odometry.getInstance().getState();
         double heading = Gyro.getInstance().getHeadingRadians();
-        double curVel = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
 
 //        System.out.println(dt + "   " + curVel);
         Vector linear = path.updateLinear(robot, dt);

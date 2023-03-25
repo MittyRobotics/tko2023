@@ -2,15 +2,18 @@ package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
 import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.OI;
 
 import java.util.logging.Logger;
 
 public class SwervePath {
     public QuinticHermiteSpline spline;
     public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead, vel, closestT, lengthToClosest;
+    public boolean auto;
 
-    public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel) {
+    public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel, boolean auto) {
         this.spline = spline;
         this.maxaccel = maxaccel;
         this.maxdecel = maxdecel;
@@ -18,6 +21,7 @@ public class SwervePath {
         this.startvel = startvel;
         this.endvel = endvel;
         this.lookahead = lookahead;
+        this.auto = auto;
 
         vel = 0;
         closestT = 0;
@@ -25,8 +29,6 @@ public class SwervePath {
     }
 
     public Vector updateLinear(Pose robot, double dt) {
-        vel = Math.min(maxvel, vel + dt * maxaccel);
-
         double closestT = spline.getClosestPoint(robot, 100, 5);
 //        LoggerInterface.getInstance().put("CLOSET", closestT);
         double lengthToClosest = spline.getLength(closestT, 17);
@@ -36,7 +38,14 @@ public class SwervePath {
 
         Point lookahead = getLookahead(lookaheadDist);
 
-        vel = Math.min(getMaxVelToEnd(distanceToEnd), vel);
+        if(auto) {
+            vel = Math.min(maxvel, vel + dt * maxaccel);
+            vel = Math.min(getMaxVelToEnd(distanceToEnd), vel);
+        } else {
+            double leftY = OI.getInstance().getDriveController().getLeftX();
+            double leftX = -OI.getInstance().getDriveController().getLeftY();
+            vel = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+        }
 
         double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians()
                 - Gyro.getInstance().getHeadingRadians();
@@ -58,7 +67,7 @@ public class SwervePath {
     }
 
     public static double doSigmoidInterpolation(double start, double end, double t) {
-        LoggerInterface.getInstance().put("SIG T", t);
+//        LoggerInterface.getInstance().put("SIG T", t);
         return start + (end - start) * sigmoid(t, 10);
     }
 

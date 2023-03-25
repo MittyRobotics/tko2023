@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
         Pose init = Odometry.getInstance().getState();
         Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
         SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
-                15, 3, 3, 3, 0, 0);
+                15, 3, 3, 3, 0, 0, true);
         new PathFollowingCommand(path, init.getHeading().getRadians() + Math.PI, 5, 0.05,
                 0.1, 0.8, 6, 0, 0.02).schedule();
     }

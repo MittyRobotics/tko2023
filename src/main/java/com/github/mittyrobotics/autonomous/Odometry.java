@@ -302,16 +302,7 @@ public class Odometry {
         return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2]));
     }
 
-    public Pose[]
-
-
-
-
-
-
-
-
-    getScoringZone(int tag_id) {
+    public Pose[] getScoringZone(int tag_id) {
         return scoringZones[tag_id - 1];
     }
 
