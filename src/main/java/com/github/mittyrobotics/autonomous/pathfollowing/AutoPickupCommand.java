@@ -25,7 +25,7 @@ public class AutoPickupCommand extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
                 new AutoDrivePickupCommand(2, 0.05, isCone, index,
-                        new SwervePath(new QuinticHermiteSpline(init, end), init.getHeading(), new Angle(angle),
+                        new OldSwervePath(new QuinticHermiteSpline(init, end), init.getHeading(), new Angle(angle),
                                 0, 0, 3, 6, 6,
                                 0, 0, 0.0, 0, 0.00, 0.5
                         ), auto

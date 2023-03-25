@@ -5,10 +5,8 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
-import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
 public class AutoDrivePickupCommand extends CommandBase {
-    private SwervePath path;
+    private OldSwervePath path;
     private double linearThreshold, angularThreshold;
     private Pose robot;
     private PIDController angularController;
@@ -29,7 +27,7 @@ public class AutoDrivePickupCommand extends CommandBase {
     private int index;
     private double dt, lastT;
 
-    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, boolean isCone, int index, SwervePath path, boolean auto) {
+    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, boolean isCone, int index, OldSwervePath path, boolean auto) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
@@ -71,7 +69,7 @@ public class AutoDrivePickupCommand extends CommandBase {
         if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
         Vector linearVel = new Vector(new Angle(-targetAngle), speed);
 
-        double angularVel = angularController.calculate(-targetAngle);
+        double angularVel = -angularController.calculate(-targetAngle);
 
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 

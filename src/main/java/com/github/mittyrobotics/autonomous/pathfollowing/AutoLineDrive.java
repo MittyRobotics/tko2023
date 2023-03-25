@@ -5,19 +5,16 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
-import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
-import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
 public class AutoLineDrive extends CommandBase {
-    private SwervePath path;
+    private OldSwervePath path;
     private double linearThreshold, angularThreshold;
     private Pose robot;
     private PIDController angularController;
@@ -25,7 +22,7 @@ public class AutoLineDrive extends CommandBase {
 
     private double dt, lastT;
 
-    public AutoLineDrive(double linearThreshold, double angularThreshold, SwervePath path) {
+    public AutoLineDrive(double linearThreshold, double angularThreshold, OldSwervePath path) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;

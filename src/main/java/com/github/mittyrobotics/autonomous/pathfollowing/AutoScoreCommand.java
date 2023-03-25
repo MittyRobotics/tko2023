@@ -17,14 +17,14 @@ public class AutoScoreCommand extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
                 new AutoDriveScoreCommand(1, 0.02, true,
-                        new SwervePath(new QuinticHermiteSpline(init, mid),
+                        new OldSwervePath(new QuinticHermiteSpline(init, mid),
                                 init.getHeading(), mid.getHeading(),
                                 0, 1, 1.5, 3, 1.5,
                                 0, 0, 3.5, 0, 0.02, 0.5
                         ), auto
                 ),
                 new AutoDriveScoreCommand(1.5, 0.02, false,
-                        new SwervePath(new QuinticHermiteSpline(mid, target),
+                        new OldSwervePath(new QuinticHermiteSpline(mid, target),
                                 mid.getHeading(), target.getHeading(),
                                 0, 0, 1, 1.5, 3,
                                 0, 0, 3, 0, 0.02, 0.5

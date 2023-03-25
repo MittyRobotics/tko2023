@@ -3,7 +3,7 @@ package com.github.mittyrobotics.autonomous.routines;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.OldSwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
@@ -49,7 +49,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
 
 
                         new AutoLineDrive(4, 0.05,
-                                new SwervePath(
+                                new OldSwervePath(
                                         new QuinticHermiteSpline(starting, before_mid),
                                         starting.getHeading(), before_mid.getHeading(),
                                         0, 2, 3, 5, 5,
@@ -57,7 +57,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 )
                         ),
                         new AutoLineDrive(4, 0.05,
-                                new SwervePath(
+                                new OldSwervePath(
                                         new QuinticHermiteSpline(before_mid, mid),
                                         before_mid.getHeading(), mid.getHeading(),
                                         0, 0, 3, 5, 3,
@@ -65,7 +65,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 )
                         ),
                         new AutoLineDrive(4, 0.05,
-                                new SwervePath(
+                                new OldSwervePath(
                                         new QuinticHermiteSpline(mid, mid_up),
                                         mid.getHeading(), mid_up.getHeading(),
                                         0, 0, 3, 5, 3,
@@ -96,7 +96,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                         new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
                         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
                         new AutoLineDrive(4, 0.05,
-                                new SwervePath(
+                                new OldSwervePath(
                                         new QuinticHermiteSpline(starting, before_mid),
                                         starting.getHeading(), before_mid.getHeading(),
                                         0, 2, 3, 5, 5,
@@ -104,7 +104,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
                                 )
                         ),
                         new AutoLineDrive(4, 0.05,
-                                new SwervePath(
+                                new OldSwervePath(
                                         new QuinticHermiteSpline(before_mid, mid),
                                         before_mid.getHeading(), mid.getHeading(),
                                         0, 0, 1.5, 3, 3,

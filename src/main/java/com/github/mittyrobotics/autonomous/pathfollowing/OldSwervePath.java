@@ -3,12 +3,12 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwervePath {
+public class OldSwervePath {
     private QuinticHermiteSpline spline;
     private Angle startHeading, endHeading;
     private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, lookahead, kp, ki, kd, whenToEnd, total;
 
-    public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading, double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular, double lookahead, double kp, double ki, double kd, double whenToEnd) {
+    public OldSwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading, double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular, double lookahead, double kp, double ki, double kd, double whenToEnd) {
         this.spline = spline;
         this.startHeading = startHeading;
         this.endHeading = endHeading;
@@ -27,7 +27,7 @@ public class SwervePath {
         total = spline.getLength(whenToEnd, 17);
     }
 
-    public SwervePath(QuinticHermiteSpline function, Angle startHeading, Angle endHeading) {
+    public OldSwervePath(QuinticHermiteSpline function, Angle startHeading, Angle endHeading) {
         this.spline = function;
         this.startHeading = startHeading;
         this.endHeading = endHeading;

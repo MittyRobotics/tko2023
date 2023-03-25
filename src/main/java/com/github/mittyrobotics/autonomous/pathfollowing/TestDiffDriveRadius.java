@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class TestDiffDriveRadius {
     static DiffDriveKinematics kinematics = new DiffDriveKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
     public static void main(String[] args) {
-        SwervePath path = new SwervePath(
+        OldSwervePath path = new OldSwervePath(
                 new QuinticHermiteSpline(new Point(0, 0), new Angle(0), new Point(1, 1), new Angle(0)),
                 new Angle(0), new Angle(0),
                 0, 0, 6., 12., 3, 0.0, 0.2, 0.0, 0, 0.00, 0.5

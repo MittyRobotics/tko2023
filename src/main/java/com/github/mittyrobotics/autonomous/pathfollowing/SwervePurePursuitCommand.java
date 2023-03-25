@@ -2,7 +2,6 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.util.Gyro;
@@ -15,16 +14,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
 public class SwervePurePursuitCommand extends CommandBase {
-    private SwervePath[] paths;
+    private OldSwervePath[] paths;
     private int currentPathNumber = 0;
-    private SwervePath currentPath;
+    private OldSwervePath currentPath;
     private double linearThreshold, angularThreshold;
     private Pose robot;
     private PIDController angularController;
     private double speed = 0;
     private double dt, lastT = 0;
 
-    public SwervePurePursuitCommand(double linearThreshold, double angularThreshold, SwervePath... paths) {
+    public SwervePurePursuitCommand(double linearThreshold, double angularThreshold, OldSwervePath... paths) {
         setName("Swerve Pure Pursuit");
         this.paths = paths;
         this.linearThreshold = linearThreshold;

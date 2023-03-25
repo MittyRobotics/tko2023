@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
 
 public class AutoDriveScoreCommand extends CommandBase {
-    private SwervePath path;
+    private OldSwervePath path;
     private double linearThreshold, angularThreshold;
     private Pose robot;
     private PIDController angularController;
@@ -26,7 +26,7 @@ public class AutoDriveScoreCommand extends CommandBase {
     private boolean firstPath, auto;
     private double dt, lastT;
 
-    public AutoDriveScoreCommand(double linearThreshold, double angularThreshold, boolean firstPath, SwervePath path, boolean auto) {
+    public AutoDriveScoreCommand(double linearThreshold, double angularThreshold, boolean firstPath, OldSwervePath path, boolean auto) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;

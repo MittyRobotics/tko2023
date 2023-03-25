@@ -4,7 +4,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
 import com.github.mittyrobotics.autonomous.arm.AutoScoreCommandGroup;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
-import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.OldSwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -54,7 +54,7 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
 
                 // DRIVE BACK & TURN AROUND
                 new AutoLineDrive(4, 0.05,
-                        new SwervePath(
+                        new OldSwervePath(
                                 new QuinticHermiteSpline(starting, beforeTurnAround),
                                 starting.getHeading(), beforeTurnAround.getHeading(),
                                 0, 3, 3, 8, 5,
@@ -62,7 +62,7 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
                         )
                 ),
                 new AutoLineDrive(4, 0.05,
-                        new SwervePath(
+                        new OldSwervePath(
                                 new QuinticHermiteSpline(beforeTurnAround, beforeFirstCone),
                                 beforeTurnAround.getHeading(), beforeFirstCone.getHeading(),
                                 0, 3, 3, 8, 5,
@@ -78,7 +78,7 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
                 new InstantCommand(() -> OI.getInstance().handleGround()),
                 new InstantCommand(() -> StateMachine.getInstance().setStateCone()),
                 new AutoLineDrive(4, 0.05,
-                        new SwervePath(
+                        new OldSwervePath(
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                 beforeFirstCone.getHeading(), firstCone.getHeading(),
                                 0, 0, 3, 8, 5,
@@ -93,7 +93,7 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
 
                 // GO BACK AND AUTOSCORE
                 new AutoLineDrive(4, 0.05,
-                        new SwervePath(
+                        new OldSwervePath(
                                 new QuinticHermiteSpline(firstCone, beforeAutoScore),
                                 firstCone.getHeading(), beforeAutoScore.getHeading(),
                                 0, 1, 3, 5, 5,
