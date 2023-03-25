@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SwervePath {
     public QuinticHermiteSpline spline;
-    public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead, vel;
+    public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead, vel, closestT, lengthToClosest;
 
     public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel) {
         this.spline = spline;
@@ -20,6 +20,8 @@ public class SwervePath {
         this.lookahead = lookahead;
 
         vel = 0;
+        closestT = 0;
+        lengthToClosest = 0;
     }
 
     public Vector updateLinear(Pose robot, double dt) {
@@ -42,6 +44,22 @@ public class SwervePath {
 //        System.out.println("Lookahead " + lookahead + "    " + "Robot " + robot + "   Angle to " + angleToLookahead);
 
         return new Vector(new Angle(angleToLookahead), vel);
+    }
+
+    public double getHeadingGoal(double startHeading, double endHeading, double angStart, double angEnd) {
+        double fraction = lengthToClosest / spline.getLength();
+        if (fraction >= angStart) {
+            return doSigmoidInterpolation(startHeading, endHeading, (fraction - angStart) / (angEnd - angStart));
+        } else return startHeading;
+    }
+
+    private static double sigmoid(double x, double a) {
+        return 1. / (1 + Math.exp(-a * (x - 0.5)));
+    }
+
+    public static double doSigmoidInterpolation(double start, double end, double t) {
+        LoggerInterface.getInstance().put("SIG T", t);
+        return start + (end - start) * sigmoid(t, 10);
     }
 
     public Point getGoal() {

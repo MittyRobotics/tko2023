@@ -14,20 +14,23 @@ public class PathFollowingCommand extends CommandBase {
 
     private SwervePath path;
     private PIDController angularController;
-    private double lastTime, endHeading, linearThreshold, angularThreshold;
+    private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
 
     public PathFollowingCommand(SwervePath path, double endHeading, double linearThreshold, double angularThreshold,
-                                double kP, double kI, double kD) {
+                                double angStart, double angEnd, double kP, double kI, double kD) {
         this.path = path;
         this.endHeading = endHeading;
         this.linearThreshold = linearThreshold;
         this.angularThreshold = angularThreshold;
+        this.angStart = angStart;
+        this.angEnd = angEnd;
         angularController = new PIDController(kP, kI, kD);
     }
 
     @Override
     public void initialize() {
         lastTime = Timer.getFPGATimestamp();
+        startingHeading = Gyro.getInstance().getHeadingRadians();
     }
 
     @Override
@@ -44,7 +47,8 @@ public class PathFollowingCommand extends CommandBase {
 //        System.out.println(linear);
 
         double norm = SwerveSubsystem.standardize(heading);
-        double normDes = SwerveSubsystem.standardize(endHeading);
+//        double normDes = SwerveSubsystem.standardize(endHeading);
+        double normDes = path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd);
 
         boolean right;
         double dist;
@@ -69,7 +73,7 @@ public class PathFollowingCommand extends CommandBase {
 
         double angularVel = -angularController.calculate(dist * (right ? 1 : -1), 0);
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, 0);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
 
