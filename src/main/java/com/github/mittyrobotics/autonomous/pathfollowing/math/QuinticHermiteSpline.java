@@ -213,14 +213,13 @@ public class QuinticHermiteSpline extends Parametric {
 
     public double getClosestPoint(Pose robot, int pointsToSample, int newtonSteps) {
         Vector cur_min = new Vector(Double.POSITIVE_INFINITY, 0);
-        Point robotp = robot.getPosition();
 
         //the steps to start Newton's method from
         for(double i = 0; i <= 1+1e-6; i += 1./pointsToSample) {
             double cur_t = i;
             //get first and secondary derivatives of the distance function at that point
-            double firstDeriv = firstDeriv(cur_t, robotp);
-            double secondDeriv = secondDeriv(cur_t, robotp);
+            double firstDeriv = firstDerivDistSquared(cur_t, robot);
+            double secondDeriv = secondDerivDistSquared(cur_t, robot);
 
             //amount to adjust according to Newton's method
             //https://en.wikipedia.org/wiki/Newton%27s_method
@@ -234,8 +233,8 @@ public class QuinticHermiteSpline extends Parametric {
 
                 //adjust based on Newton's method, get new derivatives
                 cur_t -= dt;
-                firstDeriv = firstDeriv(cur_t, robotp);
-                secondDeriv = secondDeriv(cur_t, robotp);
+                firstDeriv = firstDerivDistSquared(cur_t, robot);
+                secondDeriv = secondDerivDistSquared(cur_t, robot);
                 dt = firstDeriv / secondDeriv;
                 counter++;
             }
