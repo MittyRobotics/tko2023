@@ -99,8 +99,8 @@ public class HighPlusConeCubeAuto extends SequentialCommandGroup {
                                 0, 1, 3, 5, 5,
                                 0, 0, 2.5, 0, 0.02, 0.5
                         )
-                ),
-                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
+                )
+//                new AutoScoreCommandGroup(scoring_second, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
 
 //
 //                new AutoLineDrive(4, 0.05,

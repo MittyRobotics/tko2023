@@ -1,17 +1,21 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.AutoScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.TeleopScoreCommand;
 import com.github.mittyrobotics.autonomous.routines.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
+import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
@@ -101,12 +105,16 @@ public class Robot extends TimedRobot {
 
          */
 
-        Pose init = Odometry.getInstance().getState();
-        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
-        SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
-                15, 3, 3, 3, 0, 0, true);
-        new PathFollowingCommand(path, init.getHeading().getRadians() + Math.PI, 5, 0.05,
-                0.1, 0.8, 6, 0, 0.02).schedule();
+        new LowPlusConeAuto(true, false).schedule();
+
+//        Pose init = Odometry.getInstance().getState();
+//        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
+//        SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
+//                15, 3, 3, 3, 0, 0, true);
+//        new PathFollowingCommand(path, init.getHeading().getRadians() + Math.PI, 5, 0.05,
+//                0.1, 0.8, 6, 0, 0.02).schedule();
+
+//        new AutoScoreCommand(8, 0, 3, 3, 3, 0, 0).schedule();
     }
 
     /**
@@ -121,6 +129,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+//        LoggerInterface.getInstance().put("AUTO PICKUP", false);
+
         SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
         Odometry.getInstance().disableCustomCam();
@@ -147,6 +157,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
+                == StateMachine.PieceState.CONE, 0);
+
+        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getLastAngleToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
     }

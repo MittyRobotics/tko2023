@@ -29,9 +29,11 @@ public class SwervePath {
     }
 
     public Vector updateLinear(Pose robot, double dt) {
-        double closestT = spline.getClosestPoint(robot, 100, 5);
+        double closestT = spline.getClosestPoint(robot, 50, 5);
 //        LoggerInterface.getInstance().put("CLOSET", closestT);
-        double lengthToClosest = spline.getLength(closestT, 17);
+        lengthToClosest = spline.getLength(closestT, 17);
+
+//        System.out.println("LENGTH TO CLOSEST " + lengthToClosest);
 
         double distanceToEnd = spline.getLength() - lengthToClosest;
         double lookaheadDist = lengthToClosest + lookahead;
@@ -47,6 +49,8 @@ public class SwervePath {
             vel = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
         }
 
+//        System.out.println("VECTOR TO LOOKAHEAD " + new Vector(robot.getPosition(), lookahead));
+
         double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians()
                 - Gyro.getInstance().getHeadingRadians();
 
@@ -57,6 +61,7 @@ public class SwervePath {
 
     public double getHeadingGoal(double startHeading, double endHeading, double angStart, double angEnd) {
         double fraction = lengthToClosest / spline.getLength();
+        System.out.println("FRACTION: " + fraction);
         if (fraction >= angStart) {
             return doSigmoidInterpolation(startHeading, endHeading, (fraction - angStart) / (angEnd - angStart));
         } else return startHeading;

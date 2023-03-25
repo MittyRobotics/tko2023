@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -18,6 +19,9 @@ public class PathFollowingCommand extends CommandBase {
 
     public PathFollowingCommand(SwervePath path, double endHeading, double linearThreshold, double angularThreshold,
                                 double angStart, double angEnd, double kP, double kI, double kD) {
+
+        addRequirements(SwerveSubsystem.getInstance());
+
         this.path = path;
         this.endHeading = endHeading;
         this.linearThreshold = linearThreshold;
@@ -47,7 +51,7 @@ public class PathFollowingCommand extends CommandBase {
 
         double norm = SwerveSubsystem.standardize(heading);
 //        double normDes = SwerveSubsystem.standardize(endHeading);
-        double normDes = path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd);
+        double normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
 
         boolean right;
         double dist;
@@ -72,6 +76,7 @@ public class PathFollowingCommand extends CommandBase {
 
         double angularVel = -angularController.calculate(dist * (right ? 1 : -1), 0);
 
+//        System.out.println("SEFKJSHEKFESF " + dist);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
@@ -86,6 +91,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        LoggerInterface.getInstance().put("DESIRED", path.getGoal());
         return new Vector(Odometry.getInstance().getState().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold
                 && Math.abs(Gyro.getInstance().getHeadingRadians() - endHeading) <= angularThreshold;
     }

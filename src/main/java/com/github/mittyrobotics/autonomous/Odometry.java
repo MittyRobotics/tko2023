@@ -306,35 +306,22 @@ public class Odometry {
         return scoringZones[tag_id - 1];
     }
 
-    public Pose[] getClosestScoringZone(Pose state, int ind) {
-        int minIndex;
-        double min;
-        double dist;
+    public int getClosestScoringZone(Pose state, int ind) {
+        int minIndex = 0;
+        double dist = Double.POSITIVE_INFINITY;
         Point robot = state.getPosition();
 
-        int minIndexRight = 0;
-        min = Double.MAX_VALUE;
-        for (int i = 0; i < 3; i++) {
-            dist = Math.abs(scoringZones[i][ind].getPosition().getY() - robot.getY());
-            if (dist < min) {
-                min = dist;
-                minIndexRight = i;
+        int i = 0;
+        for(Pose[] p : scoringZones) {
+            if (p.length == 3) {
+                if(Point.getDistance(robot, p[1].getPosition()) < dist) {
+                    minIndex = i;
+                    dist = Point.getDistance(robot, p[1].getPosition());
+                }
             }
+            i++;
         }
-        int minIndexLeft = 0;
-        min = Double.MAX_VALUE;
-        for (int i = 5; i < 8; i++) {
-            dist = Math.abs(scoringZones[i][ind].getPosition().getY() - robot.getY());
-            if (dist < min) {
-                min = dist;
-                minIndexLeft = i;
-            }
-        }
-        minIndex = 0;
-        if (Math.abs(scoringZones[minIndexLeft][ind].getPosition().getX() - robot.getX()) <
-                Math.abs(scoringZones[minIndexRight][ind].getPosition().getX() - robot.getX())) minIndex = minIndexLeft;
-        else minIndex = minIndexRight;
 
-        return scoringZones[minIndex];
+        return minIndex + 1;
     }
 }

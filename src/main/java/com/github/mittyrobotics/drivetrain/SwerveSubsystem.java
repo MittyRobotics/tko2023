@@ -108,7 +108,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         forwardKinematics = new ForwardKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
         diffDriveKinematics = new DiffDriveKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
 
-//        setDefaultCommand(new JoystickThrottleCommand());
+        setDefaultCommand(new JoystickThrottleCommand());
     }
 
     public void setRampRate(double ramptime) {
@@ -420,7 +420,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             this.linearVel = linearVel;
             this.angularVel = angularVel;
 
-            System.out.println("LINEAR VEL" + linearVel);
+//            System.out.println("LINEAR VEL" + linearVel);
 
             tangentialVelocityVector[0] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
             tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());

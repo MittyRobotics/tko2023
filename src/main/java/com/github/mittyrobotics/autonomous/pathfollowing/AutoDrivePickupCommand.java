@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -8,6 +9,7 @@ import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,16 +25,15 @@ public class AutoDrivePickupCommand extends CommandBase {
     private PIDController angularController;
     private double speed = 0, targetAngle;
 
-    private boolean isCone, auto;
+    private boolean auto;
     private int index;
     private double dt, lastT;
 
-    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, boolean isCone, int index, OldSwervePath path, boolean auto) {
+    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, int index, OldSwervePath path, boolean auto) {
         setName("Swerve Pure Pursuit");
         this.path = path;
         this.linearThreshold = linearThreshold;
         this.angularThreshold = angularThreshold;
-        this.isCone = isCone;
         this.index = index;
         this.angularController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
         this.auto = auto;
@@ -65,11 +66,14 @@ public class AutoDrivePickupCommand extends CommandBase {
             speed = Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed());
         }
 
-        double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
-        if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
-        Vector linearVel = new Vector(new Angle(-targetAngle), speed);
+//        double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
+//        if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
+        targetAngle = ArmKinematics.getLastAngleToGamePiece();
+        Vector linearVel = new Vector(new Angle(targetAngle), speed);
 
-        double angularVel = -angularController.calculate(-targetAngle);
+        LoggerInterface.getInstance().put("targetAngle", targetAngle);
+
+        double angularVel = -angularController.calculate(targetAngle);
 
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
@@ -87,6 +91,7 @@ public class AutoDrivePickupCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW;
+        return false;
+//        return StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.STOW;
     }
 }

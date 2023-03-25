@@ -82,7 +82,7 @@ public class OI {
     }
 
     public void zeroAll() {
-        ArmKinematics.setArmKinematics(new Angle(0), 0);
+        ArmKinematics.setArmKinematics(new Angle(5 * Math.PI / 180), 0);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
     }
@@ -201,8 +201,7 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 //
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false)
-                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
+        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
         autoIntakeGround.whileTrue(new AutoPickupCommand(0, false));
         autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //

@@ -5,6 +5,8 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.util.Gyro;
 import org.ejml.simple.SimpleMatrix;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +14,8 @@ import org.json.JSONObject;
 
 public class ArmKinematics {
     private static Angle pitch = new Angle(0);
+
+    private static double lastAngle;
 
     static double incrementSpeed = 0.0005;
 
@@ -109,5 +113,14 @@ public class ArmKinematics {
         } catch (Exception e) {
             return Double.NaN;
         }
+    }
+
+    public static void updateAngleToGamePiece(boolean isCone, int index) {
+        double a = getAngleToGamePiece(isCone, index);
+        if(!Double.isNaN(a)) lastAngle = -a;
+    }
+
+    public static double getLastAngleToGamePiece() {
+        return lastAngle;
     }
 }
