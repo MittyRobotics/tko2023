@@ -223,7 +223,11 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     public void setAnglesZero() {
         for(int i = 0; i < 4; i++) {
 //            rotationFalcon[i].setSelectedSensorPosition(encoder[i].getAbsolutePosition());
-            rotationFalcon[i].set(ControlMode.Position, 0);
+            rotationFalcon[i].set(ControlMode.Position, (2 * Math.PI * (
+                    (int) (rotationFalcon[i].getSelectedSensorPosition() /
+                            SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO / (2 * Math.PI))
+                    )
+            ) * SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
     }
 

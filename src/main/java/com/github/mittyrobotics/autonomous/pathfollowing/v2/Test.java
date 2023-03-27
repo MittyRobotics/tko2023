@@ -9,12 +9,8 @@ public class Test {
 //                new Pose(new Point(100, 50), new Angle(0))
 //        );
         QuinticHermiteSpline spline = new QuinticHermiteSpline(
-                new Point(0, 20),
-                new Vector(0, 0),
-                new Vector(0, 0),
-                new Point(0, 0),
-                new Vector(100, 0),
-                new Vector(0, 0)
+                new Pose(new Point(81, 63), new Angle(Math.PI)),
+                new Pose(new Point(75, 63), new Angle(Math.PI))
         );
 
         for(double t = 0; t <= 1+1e-6; t += 0.02) {

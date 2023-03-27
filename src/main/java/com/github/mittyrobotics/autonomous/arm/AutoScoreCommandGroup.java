@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class AutoScoreCommandGroup extends SequentialCommandGroup {
 
-    public AutoScoreCommandGroup(int target, int index, StateMachine.RobotState level, StateMachine.PieceState piece) {
+    public AutoScoreCommandGroup(int target, int index, StateMachine.RobotState level, StateMachine.PieceState piece,
+                                 double maxvel, double maxaccel, double maxdecel, double startvel, double endvel) {
         super();
         addCommands(
                 new AutoArmScorePart1(level, piece),

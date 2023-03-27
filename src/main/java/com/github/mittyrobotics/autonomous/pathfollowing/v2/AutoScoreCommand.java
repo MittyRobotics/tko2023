@@ -20,24 +20,42 @@ public class AutoScoreCommand extends SequentialCommandGroup {
         // 0 is left from driver perspective
         Pose target = Odometry.getInstance().getScoringZone(tag)[left ? index : 2 - index];
         Pose score = new Pose(Point.add(target.getPosition(), new Point(left ? 32 : -32, 0)), target.getHeading());
+        Pose before_score = new Pose(Point.add(score.getPosition(), new Point(left ? 6 : -6, 0)), score.getHeading());
+
+        double dist = Math.abs(init.getPosition().getX() - target.getPosition().getX());
+        double extension = Math.max(40, 1 * dist);
 
         QuinticHermiteSpline spline = new QuinticHermiteSpline(
                 init.getPosition(),
+                new Vector(dist < 12 ? (left ? 30 : -30) : 0, 0),
                 new Vector(0, 0),
-                new Vector(0, 0),
-                score.getPosition(),
-                new Vector(left ? -150 : 150, 0),
+                before_score.getPosition(),
+                new Vector(left ? -extension : extension, 0),
                 new Vector(0, 0)
         );
 
+        QuinticHermiteSpline spline2 = new QuinticHermiteSpline(
+                before_score,
+                score
+        );
+
+        //TODO TWO PATHS??? TINY LOOKAHEAD SECOND
         addCommands(
                 new PathFollowingCommand(
                         new SwervePath(spline, 4,
                                 maxvel, maxaccel, maxdecel,
-                                startvel, endvel, true
+                                startvel, maxvel, true
                         ),
                         left ? Math.PI : 0, 3, 0.02,
-                        0, 0.75, 2.5, 0, 0, false
+                        0, 1, 3, 0, 0, false
+                ),
+                new PathFollowingCommand(
+                        new SwervePath(spline2, 2,
+                                maxvel, maxaccel, maxdecel,
+                                maxvel, endvel, true
+                        ),
+                        left ? Math.PI : 0, 3, 0.02,
+                        0, 1, 3, 0, 0, false
                 )
         );
     }
