@@ -51,6 +51,10 @@ public class QuinticHermiteSpline extends Parametric {
         this(start.getPosition(), start.getHeading(), end.getPosition(), end.getHeading());
     }
 
+    public QuinticHermiteSpline(Point p1, Point p2) {
+        this(new Pose(p1, new Vector(p1, p2).getAngle()), new Pose(p2, new Vector(p1, p2).getAngle()));
+    }
+
     static class BasisFunctions {
         static class Functions {
             public static double h0(double t) {

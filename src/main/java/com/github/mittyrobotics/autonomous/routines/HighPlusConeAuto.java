@@ -16,16 +16,16 @@ import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class LowPlusConeAuto extends SequentialCommandGroup {
-    public LowPlusConeAuto(boolean leftSide, boolean balance) {
+public class HighPlusConeAuto extends SequentialCommandGroup {
+    public HighPlusConeAuto(boolean leftSide, boolean balance) {
         super();
 
-        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 8 : 1)[2];
+        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 6 : 3)[0];
 
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195,5)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195,-5)),
                 starting.getHeading());
 
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -80 : 80, 0)),
@@ -35,10 +35,10 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                 starting.getHeading());
 
         Point starting_second = Point.add(
-                Odometry.getInstance().getScoringZone(leftSide ? 8 : 1)[2].getPosition(),
+                Odometry.getInstance().getScoringZone(leftSide ? 6 : 3)[2].getPosition(),
                 new Point(leftSide ? 32 : -32, 0));
         Point beforeBalance = Point.add(starting_second,
-                new Point(leftSide ? 12 : -12, 48));
+                new Point(leftSide ? 12 : -12, -48));
 
 
 
@@ -78,7 +78,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
 
 
                     new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2 //left vs right FRONT cam
                     )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
@@ -96,7 +96,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                             0.2, 0.8, 3, 0, 0.02, true
                     ),
 
-                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
+                    new AutoScoreCommandGroup(leftSide ? 6 : 3, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
                             1, 1, 1, 1, 0)
             );
         } else {
@@ -134,7 +134,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
 
 
                     new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 1 //left vs right FRONT cam
+                            Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : 2 //left vs right FRONT cam
                     )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
@@ -153,7 +153,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     ),
 //
 //
-                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
+                    new AutoScoreCommandGroup(leftSide ? 6 : 3, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
                             3, 5, 2, 2, 0),
 
 
@@ -162,7 +162,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(starting_second, beforeBalance),
                                     5, 3, 3, 3, 0, 3, true
                             ), leftSide ? Math.PI : 0, 4, 1,
-                                0, 1, 3, 0, 0.02, true
+                            0, 1, 3, 0, 0.02, true
                     )
 
 //                    , new Balance(false)
