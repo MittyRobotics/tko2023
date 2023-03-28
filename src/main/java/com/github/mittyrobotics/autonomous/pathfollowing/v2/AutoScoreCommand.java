@@ -1,10 +1,7 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -19,7 +16,8 @@ public class AutoScoreCommand extends SequentialCommandGroup {
         Pose init = Odometry.getInstance().getState();
         // 0 is left from driver perspective
         Pose target = Odometry.getInstance().getScoringZone(tag)[left ? index : 2 - index];
-        Pose score = new Pose(Point.add(target.getPosition(), new Point(left ? 32 : -32, 0)), target.getHeading());
+        Pose score = new Pose(Point.add(target.getPosition(), new Point(left ? 32 : -32, 0)),
+                new Angle(left ? Math.PI : 0));
         Pose before_score = new Pose(Point.add(score.getPosition(), new Point(left ? 6 : -6, 0)), score.getHeading());
 
         double dist = Math.abs(init.getPosition().getX() - target.getPosition().getX());

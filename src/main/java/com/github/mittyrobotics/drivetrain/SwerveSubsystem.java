@@ -362,6 +362,40 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         forwardKinematics.updateForwardKinematics(modules);
     }
 
+    public static double getDesiredAngularMP(double curHeading, double desiredHeading, double maxW, double maxA, double threshold) {
+        double norm = SwerveSubsystem.standardize(curHeading);
+        double normDes = SwerveSubsystem.standardize(desiredHeading);
+
+        boolean right;
+        double dist;
+
+        if (normDes < norm) {
+            if (norm - normDes > Math.PI) {
+                right = true;
+                dist = normDes + 2 * Math.PI - norm;
+            } else {
+                right = false;
+                dist = norm - normDes;
+            }
+        } else {
+            if (normDes - norm > Math.PI) {
+                right = false;
+                dist = norm + 2 * Math.PI - normDes;
+            } else {
+                right = true;
+                dist = normDes - norm;
+            }
+        }
+
+        double rawW = Math.min(maxW, getMaxWFromDist(dist, maxA));
+
+        return rawW * (right ? -1 : 1);
+    }
+
+    public static double getMaxWFromDist(double dist, double maxA) {
+        return Math.sqrt(2 * dist * maxA);
+    }
+
     public static class DiffDriveKinematics {
         protected double linearVelocity, angularVelocity, leftVelocity, rightVelocity, radius, trackWidth, trackLength;
         private final double[] linearVels = new double[4];

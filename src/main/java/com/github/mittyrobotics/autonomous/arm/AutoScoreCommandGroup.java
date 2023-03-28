@@ -13,7 +13,7 @@ public class AutoScoreCommandGroup extends SequentialCommandGroup {
         super();
         addCommands(
                 new AutoArmScorePart1(level, piece),
-                new AutoScoreCommand(target, index, 1, 1, 1, 1, 0),
+                new AutoScoreCommand(target, index, maxvel, maxaccel, maxdecel, startvel, endvel),
                 new AutoArmScorePart2(piece)
         );
     }

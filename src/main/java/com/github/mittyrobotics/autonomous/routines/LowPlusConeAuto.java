@@ -83,12 +83,13 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                    10, 2, 2, 2, 0, 0, true
+                                    10, 2, 2, 2, 0, 1, true
                             ), leftSide ? Math.PI : 0, 2, 1,
                             0.2, 0.8, 3, 0, 0.02, true
                     ),
 
-                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
+                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
+                            1, 1, 1, 1, 0)
             );
         } else {
             addCommands(
@@ -144,7 +145,8 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     ),
 //
 //
-                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE)
+                    new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
+                            3, 5, 2, 2, 0)
             );
         }
     }

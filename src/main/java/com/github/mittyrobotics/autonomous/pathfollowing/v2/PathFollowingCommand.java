@@ -5,6 +5,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.math.controller.PIDController;
@@ -17,9 +18,10 @@ public class PathFollowingCommand extends CommandBase {
     private PIDController angularController;
     private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
     private boolean useInterp;
+    private double maxW;
 
     public PathFollowingCommand(SwervePath path, double endHeading, double linearThreshold, double angularThreshold,
-                                double angStart, double angEnd, double kP, double kI, double kD, boolean useInterp) {
+                                double angStart, double angEnd, double kP_OR_MAXW, double kI, double kD, boolean useInterp) {
 
         addRequirements(SwerveSubsystem.getInstance());
 
@@ -30,7 +32,8 @@ public class PathFollowingCommand extends CommandBase {
         this.angStart = angStart;
         this.angEnd = angEnd;
         this.useInterp = useInterp;
-        angularController = new PIDController(kP, kI, kD);
+        this.maxW = kP_OR_MAXW;
+        angularController = new PIDController(kP_OR_MAXW, kI, kD);
     }
 
     @Override
@@ -57,28 +60,9 @@ public class PathFollowingCommand extends CommandBase {
             normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
         else normDes = SwerveSubsystem.standardize(endHeading);
 
-        boolean right;
-        double dist;
-
-        if (normDes < norm) {
-            if (norm - normDes > Math.PI) {
-                right = true;
-                dist = normDes + 2 * Math.PI - norm;
-            } else {
-                right = false;
-                dist = norm - normDes;
-            }
-        } else {
-            if (normDes - norm > Math.PI) {
-                right = false;
-                dist = norm + 2 * Math.PI - normDes;
-            } else {
-                right = true;
-                dist = normDes - norm;
-            }
-        }
-
-        double angularVel = -angularController.calculate(dist * (right ? 1 : -1), 0);
+        double angularVel = SwerveSubsystem.getDesiredAngularMP(
+                norm, normDes, maxW, maxW, 0.02
+        );
 
 //        System.out.println("SEFKJSHEKFESF " + dist);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
