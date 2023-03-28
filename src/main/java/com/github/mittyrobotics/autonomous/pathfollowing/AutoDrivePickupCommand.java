@@ -1,42 +1,31 @@
 package com.github.mittyrobotics.autonomous.pathfollowing;
 
-import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
-import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.intake.StateMachine;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
-import com.github.mittyrobotics.util.OI;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import static com.github.mittyrobotics.autonomous.pathfollowing.PathFollowingConstants.*;
-
 public class AutoDrivePickupCommand extends CommandBase {
-    private OldSwervePath path;
-    private double linearThreshold, angularThreshold;
+    private SwervePath path;
+    private double linearThreshold, angularThreshold, maxW;
     private Pose robot;
-    private PIDController angularController;
     private double speed = 0, targetAngle;
 
-    private boolean auto;
     private int index;
     private double dt, lastT;
 
-    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, int index, OldSwervePath path, boolean auto) {
-        setName("Swerve Pure Pursuit");
+    public AutoDrivePickupCommand(double linearThreshold, double angularThreshold, int index, SwervePath path, double maxW) {
         this.path = path;
         this.linearThreshold = linearThreshold;
         this.angularThreshold = angularThreshold;
         this.index = index;
-        this.angularController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
-        this.auto = auto;
+        this.maxW = maxW;
 
         addRequirements(SwerveSubsystem.getInstance());
     }
@@ -44,10 +33,7 @@ public class AutoDrivePickupCommand extends CommandBase {
     @Override
     public void initialize() {
         super.initialize();
-        angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
 
-        speed = path.getInitSpeed();
-        targetAngle = path.getEndHeading().getRadians();
         lastT = Timer.getFPGATimestamp();
     }
 
@@ -55,28 +41,22 @@ public class AutoDrivePickupCommand extends CommandBase {
     public void execute() {
         dt = Timer.getFPGATimestamp() - lastT;
 
-        robot = Odometry.getInstance().getState();
+        path.changeSpline(ArmKinematics.getSplineToGamePiece());
 
-        if (!auto) {
-            double leftY = OI.getInstance().getDriveController().getLeftX();
-            double leftX = -OI.getInstance().getDriveController().getLeftY();
-            speed = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
-        } else {
-            double curSpeed = SwerveSubsystem.getInstance().getDesiredVel().getMagnitude();
-            speed = Math.min(curSpeed + dt * path.getAccel(), path.getMaxSpeed());
-        }
+        Pose robot = Odometry.getInstance().getState();
+        double heading = Gyro.getInstance().getHeadingRadians();
 
-//        double tempAngle = ArmKinematics.getAngleToGamePiece(isCone, index);
-//        if (!Double.isNaN(tempAngle)) targetAngle = tempAngle;
-        targetAngle = ArmKinematics.getLastAngleToGamePiece();
-        Vector linearVel = new Vector(new Angle(targetAngle), speed);
+        Vector linear = path.updateLinear(robot, dt);
 
-        LoggerInterface.getInstance().put("targetAngle", targetAngle);
+        double norm = SwerveSubsystem.standardize(heading);
+        double normDes = SwerveSubsystem.standardize(
+                path.spline.getVelocityVector(0).getAngle().getRadians());
 
-        double angularVel = -angularController.calculate(targetAngle);
+        double angularVel = SwerveSubsystem.getDesiredAngularMP(
+                norm, normDes, maxW, maxW, 0.02
+        );
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
-
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
 

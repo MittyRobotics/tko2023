@@ -1,10 +1,8 @@
 package com.github.mittyrobotics.pivot;
 
 import com.github.mittyrobotics.LoggerInterface;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import org.ejml.simple.SimpleMatrix;
@@ -15,13 +13,13 @@ import org.json.JSONObject;
 public class ArmKinematics {
     private static Angle pitch = new Angle(0);
 
-    private static double lastAngle;
-
     static double incrementSpeed = 0.0005;
 
     private static double tuningHeight = 5/39.37;
     private static double radius = 0;
     private static double tuningDistance = 0;
+
+    private static QuinticHermiteSpline splineToGamePiece;
 
     public static void setArmKinematics(double distance, double height) {
         radius = Math.sqrt(distance * distance + height * height);
@@ -96,15 +94,6 @@ public class ArmKinematics {
                 new Angle(-phi));
     }
 
-    //Wrong
-    public static double[] getAngleToGamePiece(double dist, double theta, double phi) {
-//        return Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, getCameraPose().getPosition().getX()));
-        Vector vector = Vector.add(new Vector(dist * Math.sin(phi) * Math.sin(theta), dist * Math.sin(phi) * Math.cos(theta)), new Vector(0, 0));
-        return new double[] {dist * Math.sin(phi) * Math.sin(theta) + 0,
-                dist * Math.sin(phi) * Math.cos(theta) + getCameraPose().getPosition().getX(),
-                dist * Math.cos(phi) + 0};
-    }
-
     public static double getAngleToGamePiece(boolean isCone, int index) {
         try {
             JSONObject object = LoggerInterface.getInstance().getGamePiece()
@@ -117,10 +106,22 @@ public class ArmKinematics {
 
     public static void updateAngleToGamePiece(boolean isCone, int index) {
         double a = getAngleToGamePiece(isCone, index);
-        if(!Double.isNaN(a)) lastAngle = -a;
+        if(!Double.isNaN(a)) {
+            Point robot = Odometry.getInstance().getState().getPosition();
+            double heading = Gyro.getInstance().getHeadingRadians();
+            double gp_heading = heading - a;
+
+            Pose start = new Pose(robot, new Angle(gp_heading));
+            Point endp = Point.add(robot, new Point(
+                    Math.cos(gp_heading) * 120, Math.sin(gp_heading) * 120
+            ));
+            Pose end = new Pose(endp, new Angle(gp_heading));
+
+            splineToGamePiece = new QuinticHermiteSpline(start, end);
+        }
     }
 
-    public static double getLastAngleToGamePiece() {
-        return lastAngle;
+    public static QuinticHermiteSpline getSplineToGamePiece() {
+        return splineToGamePiece;
     }
 }

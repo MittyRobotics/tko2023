@@ -1,15 +1,9 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
-import com.github.mittyrobotics.autonomous.pathfollowing.v2.AutoScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
-import com.github.mittyrobotics.autonomous.pathfollowing.v2.TeleopScoreCommand;
 import com.github.mittyrobotics.autonomous.routines.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
@@ -63,7 +57,10 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
+        //UPDATE FROM BEAGLE AND JETSON
         Odometry.getInstance().update();
+        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
+                == StateMachine.PieceState.CONE, 0);
 
         LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
         LoggerInterface.getInstance().put("Pose", Odometry.getInstance().getState());
@@ -157,10 +154,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
-                == StateMachine.PieceState.CONE, 0);
-
-        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getLastAngleToGamePiece());
+//        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
     }

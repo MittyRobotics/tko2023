@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class PathFollowingCommand extends CommandBase {
 
     private SwervePath path;
-    private PIDController angularController;
     private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
     private boolean useInterp;
     private double maxW;
@@ -33,7 +32,6 @@ public class PathFollowingCommand extends CommandBase {
         this.angEnd = angEnd;
         this.useInterp = useInterp;
         this.maxW = kP_OR_MAXW;
-        angularController = new PIDController(kP_OR_MAXW, kI, kD);
     }
 
     @Override
@@ -49,10 +47,7 @@ public class PathFollowingCommand extends CommandBase {
         Pose robot = Odometry.getInstance().getState();
         double heading = Gyro.getInstance().getHeadingRadians();
 
-//        System.out.println(dt + "   " + curVel);
         Vector linear = path.updateLinear(robot, dt);
-
-//        System.out.println(linear);
 
         double norm = SwerveSubsystem.standardize(heading);
         double normDes;
@@ -64,7 +59,6 @@ public class PathFollowingCommand extends CommandBase {
                 norm, normDes, maxW, maxW, 0.02
         );
 
-//        System.out.println("SEFKJSHEKFESF " + dist);
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

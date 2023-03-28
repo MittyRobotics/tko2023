@@ -11,11 +11,6 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
         super();
 
         addRequirements(SwerveSubsystem.getInstance());
-//
-        int ind;
-        if (index == 0) ind = Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : 2;
-        else if (index == 2) ind = Odometry.getInstance().FIELD_LEFT_SIDE ? 2 : 0;
-        else ind = 1;
 
         addCommands(
                 new TeleopScoreCommand(

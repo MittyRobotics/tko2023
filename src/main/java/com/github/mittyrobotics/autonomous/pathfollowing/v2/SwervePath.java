@@ -59,6 +59,14 @@ public class SwervePath {
         return new Vector(new Angle(angleToLookahead), vel);
     }
 
+    public void changeSpline(QuinticHermiteSpline nSpline) {
+        spline = nSpline;
+    }
+
+    public double getVel() {
+        return vel;
+    }
+
     public double getHeadingGoal(double startHeading, double endHeading, double angStart, double angEnd) {
         double fraction = lengthToClosest / spline.getLength();
         System.out.println("FRACTION: " + fraction);
