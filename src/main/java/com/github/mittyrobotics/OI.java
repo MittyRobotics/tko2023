@@ -17,11 +17,10 @@ public class OI {
 
     public XboxController getXboxController() {
         if (xboxController == null) {
-            xboxController = new XboxController(5);
+            xboxController = new XboxController(3);
         }
         return xboxController;
     }
-
     public double rjoystick()
     {
         return xboxController.getRightX();
@@ -32,23 +31,25 @@ public class OI {
         return xboxController.getLeftY();
     }
 
-    public void setIntaking(boolean a)
+
+    /*public void setIntaking(boolean a)
     {
         if(a == false){IntakeSystem.getInstance().stop();}
-    }
+    }*/
 
-    public void setOutaking(boolean a)
+    /*public void setOutaking(boolean a)
     {
         if(a == false){OutakeSystem.getInstance().stop();}
     }
-
+*/
 
     public void controls() {
-        Button intake = new Button(() -> getXboxController().getAButton());
+        /*Button intake = new Button(() -> getXboxController().getAButton());
         intake.whenPressed(new IntakeCommand());
         Button outake = new Button(() -> getXboxController().getBButton());
-        outake.whenPressed(new OutakeCommand());
+        outake.whenPressed(new OutakeCommand());*/
     }
 
 
 }
+

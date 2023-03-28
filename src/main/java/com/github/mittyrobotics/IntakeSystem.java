@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
 
-public class IntakeSystem extends SubsystemBase {
+/*public class IntakeSystem extends SubsystemBase {
     private static IntakeSystem ourInstance = new IntakeSystem();
     public static IntakeSystem getInstance() {return ourInstance;}
     private IntakeSystem() {
@@ -48,7 +48,7 @@ public class IntakeSystem extends SubsystemBase {
     }
 
 
-}
+}*/
 
 
 

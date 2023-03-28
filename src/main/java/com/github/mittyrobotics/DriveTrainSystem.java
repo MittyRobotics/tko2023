@@ -21,7 +21,7 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_rightf = new WPI_TalonSRX(13);
         motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
         motor_leftf = new WPI_TalonSRX(20);
-        motor_leftb = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor_leftb = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         motor_leftf.setInverted(true);
         motor_leftb.setInverted(true);
@@ -52,6 +52,7 @@ public class DriveTrainSystem extends SubsystemBase {
         double right = 0, left = 0;
         right = OI.getInstance().rjoystick();
         left = OI.getInstance().ljoystick();
+
         double rpower = 0, lpower = 0;
         if(right<-0.2)
         {
@@ -64,10 +65,10 @@ public class DriveTrainSystem extends SubsystemBase {
         if(left> 0.2) {rpower += left; lpower+= left;}
         else if(left<-0.2) {rpower -= left; lpower -= left;}
 
-        motor_rightf.set(ControlMode.PercentOutput, 50);
-        motor_rightb.set(50);
-        motor_leftf.set(ControlMode.PercentOutput, 50);
-        motor_leftb.set(50);
+        motor_rightf.set(ControlMode.PercentOutput, rpower);
+        motor_rightb.set(rpower);
+        motor_leftf.set(ControlMode.PercentOutput, lpower);
+        motor_leftb.set(lpower);
         //figure out how to convert joystick to motor power
     }
 }

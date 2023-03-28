@@ -1,4 +1,4 @@
-package com.github.mittyrobotics;
+/*package com.github.mittyrobotics;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.*;
@@ -44,3 +44,4 @@ public class OutakeSystem extends SubsystemBase{
         OI.getInstance().controls();
     }
 }
+*/

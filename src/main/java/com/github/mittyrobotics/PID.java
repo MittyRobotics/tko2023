@@ -33,9 +33,9 @@ public class PID extends CommandBase {
         pid.setTolerance(5, 10);
         pid.setSetpoint(1);
 
-        motor_rightf = new WPI_TalonSRX(5);
+        motor_rightf = new WPI_TalonSRX(13);
         motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor_leftf = new WPI_TalonSRX(22);
+        motor_leftf = new WPI_TalonSRX(20);
         motor_leftb = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         motor_leftf.setInverted(true);

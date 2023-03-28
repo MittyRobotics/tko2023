@@ -1,7 +1,10 @@
 package com.github.mittyrobotics;
 
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.*;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.*;
 
@@ -9,17 +12,32 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends TimedRobot {
 
+    WPI_TalonSRX motor_rightf, motor_leftf;
+    CANSparkMax motor_rightb, motor_leftb;
+
     @Override
     public void robotInit() {
-        IntakeSystem.getInstance();
-        IntakeSystem.getInstance().initHardware();
+        //IntakeSystem.getInstance();
+        //IntakeSystem.getInstance().initHardware();
         //OutakeSystem.getInstance();
         //OutakeSystem.getInstance().initHardware();
-        OI.getInstance();
+        //OI.getInstance();
         DriveTrainSystem.getInstance();
         DriveTrainSystem.getInstance().initHardware();
+        OI.getInstance().getXboxController();
+        /*motor_rightf = new WPI_TalonSRX(13);
+        motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor_leftf = new WPI_TalonSRX(20);
+        motor_leftb = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        //PID.initHardware();
+        motor_leftf.setInverted(true);
+        motor_leftb.setInverted(true);
+
+        motor_rightf.configFactoryDefault();
+        motor_rightb.restoreFactoryDefaults();
+        motor_leftf.configFactoryDefault();
+        motor_leftb.restoreFactoryDefaults();
+        //PID.initHardware();*/
         //TODO code outake system
     }
 
@@ -44,7 +62,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        OI.getInstance().controls();
+        //OI.getInstance().controls();
 
     }
 
