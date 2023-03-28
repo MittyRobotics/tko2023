@@ -19,8 +19,8 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
 
         addCommands(
                 new TeleopScoreCommand(
-                        Odometry.getInstance().getClosestScoringZone(
-                                Odometry.getInstance().getState(), ind
+                        Odometry.getClosestScoringZone(
+                                Odometry.getInstance().getState()
                         ), index
                 )
 //              new OldAutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), ind)[ind], false)

@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 
 public class Test {
@@ -18,6 +19,10 @@ public class Test {
             System.out.print((t == 0 ? "[(" : "(") + p.getX() + ", " + p.getY() + (t >= 1 ? ")]" : "), "));
         }
         System.out.println();
+
+        System.out.println(Odometry.getClosestScoringZone(
+                new Pose(new Point(500, 135), new Angle(0))
+        ));
 
 //        System.out.println(spline.getLength());
 //        System.out.println(spline.getLength(0.5, 17));

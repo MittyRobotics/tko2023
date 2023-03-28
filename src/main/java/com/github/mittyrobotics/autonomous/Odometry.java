@@ -39,8 +39,8 @@ public class Odometry {
         LoggerInterface.getInstance().putDesiredCamera(2);
     }
 
-    double offset = 20.873;
-    Pose[][] scoringZones = {
+    public static double offset = 20.873;
+    public static Pose[][] scoringZones = {
             {
                     new Pose(new Point(610.77, 42.19 + offset), new Angle(0)),
                     new Pose(new Point(610.77, 42.19), new Angle(0)),
@@ -306,7 +306,7 @@ public class Odometry {
         return scoringZones[tag_id - 1];
     }
 
-    public int getClosestScoringZone(Pose state, int ind) {
+    public static int getClosestScoringZone(Pose state) {
         int minIndex = 0;
         double dist = Double.POSITIVE_INFINITY;
         Point robot = state.getPosition();
