@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class PathFollowingCommand extends CommandBase {
 
     private SwervePath path;
+    private PIDController controller;
     private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
     private boolean useInterp;
     private double maxW;
@@ -32,6 +33,7 @@ public class PathFollowingCommand extends CommandBase {
         this.angEnd = angEnd;
         this.useInterp = useInterp;
         this.maxW = kP_OR_MAXW;
+        this.controller = new PIDController(kP_OR_MAXW, kI, kD);
     }
 
     @Override
@@ -50,14 +52,37 @@ public class PathFollowingCommand extends CommandBase {
         Vector linear = path.updateLinear(robot, dt);
 
         double norm = SwerveSubsystem.standardize(heading);
-        double normDes;
-        if(useInterp)
+        double normDes, angularVel;
+        if(useInterp) {
             normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
-        else normDes = SwerveSubsystem.standardize(endHeading);
+            boolean right;
+            double dist;
 
-        double angularVel = SwerveSubsystem.getDesiredAngularMP(
-                norm, normDes, maxW, maxW, 0.02
-        );
+            if (normDes < norm) {
+                if (norm - normDes > Math.PI) {
+                    right = true;
+                    dist = normDes + 2 * Math.PI - norm;
+                } else {
+                    right = false;
+                    dist = norm - normDes;
+                }
+            } else {
+                if (normDes - norm > Math.PI) {
+                    right = false;
+                    dist = norm + 2 * Math.PI - normDes;
+                } else {
+                    right = true;
+                    dist = normDes - norm;
+                }
+            }
+            angularVel = controller.calculate(dist * (right ? -1 : 1), 0);
+        }
+        else {
+            normDes = SwerveSubsystem.standardize(endHeading);
+            angularVel = SwerveSubsystem.getDesiredAngularMP(
+                    norm, normDes, maxW, maxW, 0.02
+            );
+        }
 
         SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
@@ -74,7 +99,6 @@ public class PathFollowingCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         LoggerInterface.getInstance().put("DESIRED", path.getGoal());
-        return new Vector(Odometry.getInstance().getState().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold
-                && Math.abs(Gyro.getInstance().getHeadingRadians() - endHeading) <= angularThreshold;
+        return new Vector(Odometry.getInstance().getState().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold;
     }
 }

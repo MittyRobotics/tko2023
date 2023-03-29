@@ -22,7 +22,7 @@ public class AutoPickupCommand extends SequentialCommandGroup {
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
                 new AutoDrivePickupCommand(2, 0.05, index,
                     new SwervePath(spline, 6, maxvel, maxaccel, maxdecel, startvel, endvel, auto),
-                        SwerveConstants.MAX_ANGULAR_VEL / 3
+                        SwerveConstants.MAX_ANGULAR_VEL
                 ),
                 new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor())
         );

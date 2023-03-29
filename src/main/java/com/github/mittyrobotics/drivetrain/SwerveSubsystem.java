@@ -15,6 +15,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -362,6 +363,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         forwardKinematics.updateForwardKinematics(modules);
     }
 
+    public static PIDController controller = new PIDController(4.5, 0, 0.008);
     public static double getDesiredAngularMP(double curHeading, double desiredHeading, double maxW, double maxA, double threshold) {
         double norm = SwerveSubsystem.standardize(curHeading);
         double normDes = SwerveSubsystem.standardize(desiredHeading);
@@ -387,9 +389,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             }
         }
 
-        double rawW = Math.min(maxW, getMaxWFromDist(dist, maxA));
 
-        return rawW * (right ? -1 : 1);
+        double out = controller.calculate(dist * (right ? -1 : 1));
+        return Math.copySign(Math.min(maxW, Math.abs(out)), out);
     }
 
     public static double getMaxWFromDist(double dist, double maxA) {

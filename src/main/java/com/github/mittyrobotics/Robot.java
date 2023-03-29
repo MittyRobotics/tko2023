@@ -42,9 +42,9 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().setBrakeMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = true;
-        double x = 0;
-        double y = 0;
+        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+        double x = 600;
+        double y = 20;
         double t = 0;
         Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
+//        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
         /* REAL CODE
         auto = LoggerInterface.getInstance().getValue("auto");
@@ -102,7 +102,9 @@ public class Robot extends TimedRobot {
 
          */
 
-        new LowPlusConeAuto(true, false).schedule();
+        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+
+        new LowPlusConeAuto(false, true).schedule();
 
 //        Pose init = Odometry.getInstance().getState();
 //        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());

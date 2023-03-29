@@ -19,8 +19,8 @@ public class Odometry {
     public boolean FIELD_LEFT_SIDE = true;
     public final double FIELD_HALF_X = 325.61;
     public final double MID_TAG_Y = 108.19;
-    public final double R_SCALE = 30;
-    public final double Q_SCALE = 0.1;
+    public final double R_SCALE = 10;
+    public final double Q_SCALE = 0.3;
     private boolean scoringCam;
     private boolean useCustomCam;
     private int customCam;

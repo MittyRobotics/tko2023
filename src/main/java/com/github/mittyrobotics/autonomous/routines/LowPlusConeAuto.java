@@ -28,7 +28,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
         Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195,5)),
                 starting.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -80 : 80, 0)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -115,9 +115,9 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
-                                    10, 3.5, 5, 5, 0, 3.5, true
-                            ), leftSide ? 0 : Math.PI, 4, 1,
-                            0.2, 0.8, 3, 0, 0.02, true
+                                    10, 3, 5, 5, 0, 2.5, true
+                            ), leftSide ? 0 : Math.PI, 6, 3,
+                            0.1, 0.6, 3, 0, 0.01, true
                     ),
 
                     // INTAKE
@@ -127,7 +127,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                    10, 3.5, 5, 2, 3.5, 0, true
+                                    10, 2.5, 5, 2, 2.5, 0, true
                             ), leftSide ? 0 : Math.PI, 2, 0.05,
                             0, 1, 3, 0, 0.02, true
                     ),
@@ -147,14 +147,14 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                    10, 4, 5, 4, 0, 2, true
-                            ), leftSide ? Math.PI : 0, 2, 1,
+                                    10, 4, 5, 2, 0, 1, true
+                            ), leftSide ? Math.PI : 0, 5, 1,
                             0.2, 0.8, 3, 0, 0.02, true
                     ),
 //
 //
                     new AutoScoreCommandGroup(leftSide ? 8 : 1, 1, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
-                            3, 5, 2, 2, 0),
+                            1, 1.5, 1.5, 1, 0),
 
 
                     new PathFollowingCommand(

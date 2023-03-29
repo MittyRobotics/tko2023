@@ -10,13 +10,14 @@ public class AutoScoreTeleop extends SequentialCommandGroup {
     public AutoScoreTeleop(int index) {
         super();
 
+        System.out.println("\n\nAUTO SCORING RUN");
+
         addRequirements(SwerveSubsystem.getInstance());
 
         addCommands(
-                new TeleopScoreCommand(
-                        Odometry.getClosestScoringZone(
-                                Odometry.getInstance().getState()
-                        ), index
+                new TeleopScoreCommand(Odometry.getClosestScoringZone(
+                        Odometry.getInstance().getState()
+                ), index
                 )
 //              new OldAutoScoreCommand(Odometry.getInstance().getClosestScoringZone(Odometry.getInstance().getState(), ind)[ind], false)
         );

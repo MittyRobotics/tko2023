@@ -102,8 +102,8 @@ public class JoystickThrottleCommand extends CommandBase {
             currentDesired = SwerveSubsystem.standardize((y ? 0 : Math.PI) + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
 
             angularVel = SwerveSubsystem.getDesiredAngularMP(
-                    currentAngle, currentDesired, SwerveConstants.MAX_ANGULAR_VEL / 3,
-                    SwerveConstants.MAX_ANGULAR_VEL / 3, 0.02
+                    currentAngle, currentDesired, SwerveConstants.MAX_ANGULAR_VEL,
+                    SwerveConstants.MAX_ANGULAR_VEL, 0.02
             );
             disabled = false;
         }
