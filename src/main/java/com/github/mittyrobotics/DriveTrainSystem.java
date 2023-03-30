@@ -18,7 +18,7 @@ public class DriveTrainSystem extends SubsystemBase {
     public void initHardware()
     {
         //change ids! otherwise only motor_leftb will run, everything else is overridden - naomi
-        motor_leftf = new WPI_TalonSRX(13);
+        motor_leftf = new WPI_TalonSRX(5);
         motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
         motor_rightf = new WPI_TalonSRX(22);
         motor_leftb = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
