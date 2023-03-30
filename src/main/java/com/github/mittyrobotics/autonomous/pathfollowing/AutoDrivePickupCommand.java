@@ -34,6 +34,8 @@ public class AutoDrivePickupCommand extends CommandBase {
     public void initialize() {
         super.initialize();
 
+        path.changeSpline(ArmKinematics.getSplineToGamePiece());
+
         lastT = Timer.getFPGATimestamp();
     }
 

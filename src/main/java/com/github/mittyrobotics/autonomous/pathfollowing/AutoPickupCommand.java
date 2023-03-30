@@ -17,8 +17,6 @@ public class AutoPickupCommand extends SequentialCommandGroup {
         QuinticHermiteSpline spline = ArmKinematics.getSplineToGamePiece();
 
         addCommands(
-                new InstantCommand(() ->         LoggerInterface.getInstance().put("AUTO PICKUP", true)
-),
                 new InstantCommand(() -> LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.BLUE)),
                 new AutoDrivePickupCommand(2, 0.05, index,
                     new SwervePath(spline, 6, maxvel, maxaccel, maxdecel, startvel, endvel, auto),

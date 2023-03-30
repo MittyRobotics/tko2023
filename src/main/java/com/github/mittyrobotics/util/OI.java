@@ -25,8 +25,8 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.arm.AutoScoreTeleop;
 import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.TeleopScoreCommand;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
@@ -212,15 +212,15 @@ public class OI {
 ////
         Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
 //        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
-        autoRight.whileTrue(new AutoScoreTeleop(2));
+        autoRight.whileTrue(new TeleopScoreCommand(2));
         autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new AutoScoreTeleop(1));
+        autoCenter.whileTrue(new TeleopScoreCommand(1));
         autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new AutoScoreTeleop(0));
+        autoLeft.whileTrue(new TeleopScoreCommand(0));
         autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 
         Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());

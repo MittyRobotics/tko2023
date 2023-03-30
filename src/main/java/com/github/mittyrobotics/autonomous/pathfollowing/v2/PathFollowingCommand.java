@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PathFollowingCommand extends CommandBase {
 
-    private SwervePath path;
+    protected SwervePath path;
     private PIDController controller;
-    private double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
+    protected double lastTime, endHeading, linearThreshold, angularThreshold, startingHeading, angStart, angEnd;
     private boolean useInterp;
     private double maxW;
 
