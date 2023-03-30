@@ -18,18 +18,20 @@ public class DriveTrainSystem extends SubsystemBase {
     public void initHardware()
     {
         //change ids! otherwise only motor_leftb will run, everything else is overridden - naomi
-        motor_rightf = new WPI_TalonSRX(13);
+        motor_leftf = new WPI_TalonSRX(13);
         motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor_leftf = new WPI_TalonSRX(20);
-        motor_leftb = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor_rightf = new WPI_TalonSRX(22);
+        motor_leftb = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        motor_leftf.setInverted(true);
-        motor_leftb.setInverted(true);
+
 
         motor_rightf.configFactoryDefault();
         motor_rightb.restoreFactoryDefaults();
         motor_leftf.configFactoryDefault();
         motor_leftb.restoreFactoryDefaults();
+        motor_leftf.setInverted(true);
+        motor_leftb.setInverted(true);
+
 
 
 
@@ -49,26 +51,33 @@ public class DriveTrainSystem extends SubsystemBase {
 
 
     public void run(){
-        double right = 0, left = 0;
+        double right, left;
         right = OI.getInstance().rjoystick();
         left = OI.getInstance().ljoystick();
 
         double rpower = 0, lpower = 0;
         if(right<-0.2)
         {
-            lpower -= right;
+            lpower += right;
+            rpower -= right;
         }
         else if(right>0.2)
         {
             rpower += right;
+            lpower -= right;
         }
         if(left> 0.2) {rpower += left; lpower+= left;}
-        else if(left<-0.2) {rpower -= left; lpower -= left;}
+        else if(left<-0.2) {rpower = left; lpower = left;}
 
-        motor_rightf.set(ControlMode.PercentOutput, rpower);
+
+
+        motor_rightf.set(rpower);
         motor_rightb.set(rpower);
-        motor_leftf.set(ControlMode.PercentOutput, lpower);
+        motor_leftf.set(lpower);
         motor_leftb.set(lpower);
         //figure out how to convert joystick to motor power
     }
 }
+
+/*rpower = left + right;
+        lpower = left - right;"*/

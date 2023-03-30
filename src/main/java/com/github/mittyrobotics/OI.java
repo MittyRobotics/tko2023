@@ -23,7 +23,7 @@ public class OI {
     }
     public double rjoystick()
     {
-        return xboxController.getRightX();
+        return xboxController.getRightY();
     }
 
     public double ljoystick()
