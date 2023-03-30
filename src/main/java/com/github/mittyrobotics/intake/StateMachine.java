@@ -55,14 +55,16 @@ public class StateMachine {
     }
 
     public void setStateCube() {
-        currentPieceState = PieceState.CUBE;
-        lastPieceState = PieceState.CUBE;
-        System.out.println("Set state cube");
+        setState(PieceState.CUBE);
     }
 
     public void setStateCone() {
-        currentPieceState = PieceState.CONE;
-        lastPieceState = PieceState.CONE;
+        setState(PieceState.CONE);
+    }
+
+    public void setState(PieceState state) {
+        currentPieceState = state;
+        lastPieceState = state;
     }
 
     public void setStateNone() {
