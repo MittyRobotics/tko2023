@@ -43,7 +43,8 @@ public class PrePlusOneAuto extends SequentialCommandGroup {
                 new Point(leftSide ? 32 : -32, 0));
 
         Point beforeBalance = Point.add(starting_second,
-                new Point(leftSide ? 12 : -12, low ? 48 : -48));
+                new Point(leftSide ? 12 : -12, (low ? 1 : -1) *
+                        (second_index == 1 ? 44 : 22)));
 
 
 
