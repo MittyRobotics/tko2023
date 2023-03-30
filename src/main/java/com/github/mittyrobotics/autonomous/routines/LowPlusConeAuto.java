@@ -162,7 +162,7 @@ public class LowPlusConeAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(starting_second, beforeBalance),
                                     5, 3, 3, 3, 0, 3, true
                             ), leftSide ? Math.PI : 0, 4, 1,
-                                0, 1, 3, 0, 0.02, true
+                            0, 1, 3, 0, 0.02, true
                     )
 
 //                    , new Balance(false)
