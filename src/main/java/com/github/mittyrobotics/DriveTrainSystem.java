@@ -54,21 +54,16 @@ public class DriveTrainSystem extends SubsystemBase {
         left = OI.getInstance().ljoystick();
 
         double rpower = 0, lpower = 0;
-        if(right<-0.2)
-        {
-            lpower -= right;
-        }
-        else if(right>0.2)
-        {
-            rpower += right;
-        }
+        if(right> 0.2) {rpower -= right;}
+        else if(right<-0.2){lpower += right;}
+
         if(left> 0.2) {rpower += left; lpower+= left;}
         else if(left<-0.2) {rpower -= left; lpower -= left;}
 
         motor_rightf.set(ControlMode.PercentOutput, rpower);
         motor_rightb.set(rpower);
-        motor_leftf.set(ControlMode.PercentOutput, lpower);
-        motor_leftb.set(lpower);
+        motor_leftf.set(ControlMode.PercentOutput, -1*lpower);
+        motor_leftb.set(-1*lpower);
         //figure out how to convert joystick to motor power
     }
 }
