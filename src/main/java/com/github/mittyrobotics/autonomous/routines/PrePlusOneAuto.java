@@ -122,8 +122,8 @@ public class PrePlusOneAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
                                     10, 3, 5, 5, 0, 2.5, true
-                            ), leftSide ? 0 : Math.PI, 6, 3,
-                            0.1, 0.6, 3, 0, 0.01, true
+                            ), leftSide ? 0 : Math.PI, 8, 4,
+                            0.1, 0.5, 3.5, 0, 0.01, true
                     ),
 
                     // INTAKE
