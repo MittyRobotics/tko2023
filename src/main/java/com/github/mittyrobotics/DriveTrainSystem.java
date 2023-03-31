@@ -4,6 +4,8 @@ package com.github.mittyrobotics;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -15,6 +17,13 @@ public class DriveTrainSystem extends SubsystemBase {
     }
     WPI_TalonSRX motor_rightf, motor_leftf;
     CANSparkMax motor_rightb, motor_leftb;
+    private PIDController pid;
+    private Encoder encoderlb;
+    private Encoder encoderrb;
+    private double kP = 0;
+    private double kI = 0;
+    private double kD = 0;
+
     public void initHardware()
     {
         //change ids! otherwise only motor_leftb will run, everything else is overridden - naomi
@@ -23,6 +32,12 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_rightf = new WPI_TalonSRX(22);
         motor_leftb = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
+        kP = kD = kI = 0;
+        pid = new PIDController(kP, kI, kD);
+        encoderlb = new Encoder(0, 1);
+        encoderrb = new Encoder(0, 1);
+        pid.setTolerance(5, 10);
+        pid.setSetpoint(1);
 
 
         motor_rightf.configFactoryDefault();
@@ -31,11 +46,6 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_leftb.restoreFactoryDefaults();
         motor_leftf.setInverted(true);
         motor_leftb.setInverted(true);
-
-
-
-
-
     }
 
     @Override
@@ -76,6 +86,20 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_leftf.set(lpower);
         motor_leftb.set(lpower);
         //figure out how to convert joystick to motor power
+    }
+
+    public void executePID() {
+        motor_leftf.set(pid.calculate(encoderlb.getDistance(), pid.getSetpoint()));
+        motor_leftb.set(pid.calculate(encoderlb.getDistance(), pid.getSetpoint()));
+        motor_rightf.set(pid.calculate(encoderrb.getDistance(), pid.getSetpoint()));
+        motor_rightb.set(pid.calculate(encoderrb.getDistance(), pid.getSetpoint()));
+        if(pid.atSetpoint())
+        {
+            motor_leftf.set(0);
+            motor_leftb.set(0);
+            motor_rightf.set(0);
+            motor_rightb.set(0);
+        }
     }
 }
 

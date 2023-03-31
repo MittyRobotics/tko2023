@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         DriveTrainSystem.getInstance().run();
+        DriveTrainSystem.getInstance().executePID();
 
     }
 
