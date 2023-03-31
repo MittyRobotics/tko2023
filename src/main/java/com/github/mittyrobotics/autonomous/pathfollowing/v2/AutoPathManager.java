@@ -4,8 +4,7 @@ import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 
 public class AutoPathManager {
-    public static QuinticHermiteSpline scoreSpline1;
-    public static QuinticHermiteSpline scoreSpline2;
+    public static QuinticHermiteSpline scoreSpline1, scoreSpline2, scoreSpline3;
     public static boolean left;
 
     public static void updateSplines(int tag, int index) {
@@ -38,6 +37,15 @@ public class AutoPathManager {
         scoreSpline2 = new QuinticHermiteSpline(
                 before_score.getPosition(),
                 score.getPosition()
+        );
+
+        scoreSpline3 = new QuinticHermiteSpline(
+                init.getPosition(),
+                new Vector(dist < 12 ? (left ? 30 : -30) : 0, 0),
+                new Vector(0, 0),
+                score.getPosition(),
+                new Vector(left ? -extension : extension, 0),
+                new Vector(0, 0)
         );
     }
 

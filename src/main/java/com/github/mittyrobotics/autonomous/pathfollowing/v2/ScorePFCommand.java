@@ -14,7 +14,7 @@ public class ScorePFCommand extends PathFollowingCommand {
     public void initialize() {
 
         this.path.changeSpline(order == 1 ? AutoPathManager.scoreSpline1 :
-                                AutoPathManager.scoreSpline2);
+                                order == 2 ? AutoPathManager.scoreSpline2 : AutoPathManager.scoreSpline3);
         this.endHeading = AutoPathManager.left ? Math.PI : 0;
 
         super.initialize();

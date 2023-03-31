@@ -52,16 +52,16 @@ public class Odometry {
                     new Pose(new Point(610.77, 108.19 - offset), new Angle(0)),
             },
             {
-                    new Pose(new Point(610.77, 147.19 + offset), new Angle(0)),
-                    new Pose(new Point(610.77, 147.19), new Angle(0)),
-                    new Pose(new Point(610.77, 147.19 - offset), new Angle(0)),
+                    new Pose(new Point(610.77, 174.19 + offset), new Angle(0)),
+                    new Pose(new Point(610.77, 174.19), new Angle(0)),
+                    new Pose(new Point(610.77, 174.19 - offset), new Angle(0)),
             },
             {},
             {},
             {
-                    new Pose(new Point(40.45, 147.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 147.19), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 147.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 174.19 + offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 174.19), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 174.19 - offset), new Angle(Math.PI)),
             },
             {
                     new Pose(new Point(40.45, 108.19 + offset), new Angle(Math.PI)),

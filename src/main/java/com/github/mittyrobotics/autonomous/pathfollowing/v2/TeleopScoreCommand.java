@@ -15,7 +15,7 @@ public class TeleopScoreCommand extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> AutoPathManager.updateSplines(-1, index)),
             new ScorePFCommand(1,
-                    new SwervePath(null, 4,
+                    new SwervePath(null, 6,
                             0, 0, 0,
                             0, 0, false
                     ),

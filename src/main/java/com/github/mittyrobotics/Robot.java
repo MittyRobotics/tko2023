@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
         double x = 600;
-        double y = 20;
+        double y = 180;
         double t = 0;
         Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
 
-        new PrePlusOneAuto(true, false, StateMachine.PieceState.CUBE, true).schedule();
+        new PrePlusOneAuto(false, false, StateMachine.PieceState.CUBE, true).schedule();
 
 //        Pose init = Odometry.getInstance().getState();
 //        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());

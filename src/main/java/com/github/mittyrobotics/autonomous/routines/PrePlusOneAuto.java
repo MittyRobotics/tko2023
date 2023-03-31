@@ -35,7 +35,7 @@ public class PrePlusOneAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 18 : -18, 0)),
                 starting.getHeading());
 
         Point starting_second = Point.add(
