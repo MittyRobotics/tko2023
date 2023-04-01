@@ -16,8 +16,8 @@ import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class PrePlusOneAuto extends SequentialCommandGroup {
-    public PrePlusOneAuto(boolean low, boolean leftSide, StateMachine.PieceState piece, boolean balance) {
+public class PPOneAuto extends SequentialCommandGroup {
+    public PPOneAuto(boolean low, boolean leftSide, StateMachine.PieceState piece, boolean balance) {
         super();
 
         int tag_id = leftSide ? (low ? 8 : 6) : (low ? 1 : 3);
