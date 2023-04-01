@@ -97,14 +97,14 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(
                                         new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                         new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 4, 5, 2, 0, 1, true
+                                10, 4, 5, 2, 0, 2, true
                         ), leftSide ? Math.PI : 0, 5, 1,
                         0.2, 0.8, 3, 0, 0.02, true
                 ),
 //
 //
                 new AutoScoreCommandGroup(tag_id, second_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
-                        1, 1.5, 1.5, 1, 0),
+                        2, 2, 2, 2, 0),
 
 
                 new PathFollowingCommand(
@@ -122,25 +122,25 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(beforeAutoScore, beforeSecondCone),
                                 10, 3, 5, 5, 2.5, 2.5, true
                         ), leftSide ? 0 : Math.PI, 6, 3,
-                        0.1, 0.6, 3, 0, 0.01, true
-                ),
-
-                new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CONE)),
-                new InstantCommand(() -> OI.getInstance().handleGround()),
-
-                new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(beforeSecondCone, secondCone),
-                                10, 3, 5, 2, 2.5, 0, true
-                        ), secondCone.getHeading().getRadians(), 6, 3,
-                        0.1, 0.6, 3, 0, 0.01, true
+                        0.1, 0.3, 2, 0, 0.01, true
                 )
 
-                ,new InstantCommand(() -> {
-                    OI.getInstance().zeroAll();
-                    StateMachine.getInstance().setIntakeStowing();
-                    Odometry.getInstance().setScoringCam(true);
-                })
+//                , new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CONE)),
+//                new InstantCommand(() -> OI.getInstance().handleGround()),
+//
+//                new PathFollowingCommand(
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(beforeSecondCone, secondCone),
+//                                10, 3, 5, 2, 2.5, 0, true
+//                        ), secondCone.getHeading().getRadians(), 6, 3,
+//                        0, 1, 1.5, 0, 0.01, false
+//                )
+//
+//                ,new InstantCommand(() -> {
+//                    OI.getInstance().zeroAll();
+//                    StateMachine.getInstance().setIntakeStowing();
+//                    Odometry.getInstance().setScoringCam(true);
+//                })
 
 //                ,new PathFollowingCommand(
 //                        new SwervePath(

@@ -35,7 +35,7 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 18 : -18, 0)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 60 : -60, 0)),
                 starting.getHeading());
 
         Point starting_second = Point.add(
@@ -154,13 +154,13 @@ public class PPOneAuto extends SequentialCommandGroup {
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                                     10, 4, 5, 2, 0, 1, true
-                            ), leftSide ? Math.PI : 0, 5, 1,
-                            0.2, 0.8, 3, 0, 0.02, true
+                            ), leftSide ? (low ? 2.75 : Math.PI) : (low ? 0 : -0.4), 6, 1,
+                            0.1, 0.6, 3, 0, 0.02, true
                     ),
 //
 //
                     new AutoScoreCommandGroup(tag_id, second_index, StateMachine.RobotState.HIGH, piece,
-                            1, 1.5, 1.5, 1, 0),
+                            1.5, 1.5, 1.5, 1, 0),
 
 
                     new PathFollowingCommand(
