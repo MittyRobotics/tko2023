@@ -56,9 +56,9 @@ public class PivotSubsystem extends SubsystemBase {
         PivotConstants.PIVOT_MPS.put(STOWED_TO_GROUND,
                 new TrapezoidalMotionProfile(1600 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 500 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 1200 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_MID,
-                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_HIGH,
-                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 210 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
+                new TrapezoidalMotionProfile(800 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 120 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(STOWED_TO_HP,
                 new TrapezoidalMotionProfile(1000 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 250 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 720 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0, 0, 0 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 30 / 360. / PivotConstants.PIVOT_TO_NEO_GEAR_RATIO, 0.3));
         PivotConstants.PIVOT_MPS.put(GROUND_TO_STOWED,

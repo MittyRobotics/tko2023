@@ -61,7 +61,7 @@ public class PivotToKinematics extends CommandBase {
 
         tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
                 1 - 0 / 12. * currentExtension :
-                1 + 0.1 / 12. * currentExtension));
+                2 + 0.1 / 12. * currentExtension));
 
 //        if(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2)
         velPivot = 60 * tpPivot.update(Timer.getFPGATimestamp() - lastTime, PivotSubsystem.getInstance().rawPos());
