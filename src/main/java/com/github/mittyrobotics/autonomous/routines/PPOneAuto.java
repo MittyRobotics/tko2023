@@ -35,7 +35,7 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 20 : -20, 0)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 40 : -40, 0)),
                 starting.getHeading());
 
         Point starting_second = Point.add(
@@ -167,12 +167,12 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(starting_second, beforeBalance),
-                                    5, 3, 3, 3, 0, 3, true
-                            ), leftSide ? Math.PI : 0, 4, 1,
+                                    5, 3, 3, 3, 0, 0, true
+                            ), leftSide ? Math.PI : 0, 6, 4,
                             0, 1, 3, 0, 0.02, true
                     )
 
-//                    , new Balance(false)
+                    , new Balance(false)
             );
         }
     }
