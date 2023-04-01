@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
 
-        new PrePlusOneAuto(false, false, StateMachine.PieceState.CUBE, true).schedule();
+        new PPOneAuto(false, false, StateMachine.PieceState.CUBE, true).schedule();
 
 //        Pose init = Odometry.getInstance().getState();
 //        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
