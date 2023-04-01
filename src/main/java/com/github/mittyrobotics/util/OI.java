@@ -147,8 +147,10 @@ public class OI {
                     Util.triggerFunctionAfterTime(() -> {
                         zeroAll();
                         StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
-                        StateMachine.getInstance().setIntakeOff();
-                        StateMachine.getInstance().setStateNone();
+                        Util.triggerFunctionAfterTime(() -> {
+                            StateMachine.getInstance().setIntakeOff();
+                            StateMachine.getInstance().setStateNone();
+                        }, 200);
                         Odometry.getInstance().setScoringCam(false);
                     }, 100);
                 }, 10);

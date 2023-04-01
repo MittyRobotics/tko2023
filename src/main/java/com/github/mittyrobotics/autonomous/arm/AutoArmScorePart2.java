@@ -63,7 +63,7 @@ public class AutoArmScorePart2 extends CommandBase {
                                 StateMachine.getInstance().setIntakeOff();
                                 StateMachine.getInstance().setStateNone();
                                 switchCam();
-                            }, 600);
+                            }, 300);
                         }, 10);
                     }, 200);
                 }

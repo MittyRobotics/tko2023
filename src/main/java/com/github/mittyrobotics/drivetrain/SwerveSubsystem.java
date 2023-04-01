@@ -199,6 +199,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             driveFalcon[i].set(ControlMode.Velocity, acDes * SwerveConstants.TICKS_PER_METER * 0.1);
         }
 
+        LoggerInterface.getInstance().put("DESIRED 1 SPEED", desiredVelocities[1]);
+        LoggerInterface.getInstance().put("WHEEL 1 SPEED", getSpeedOneMeters());
+
     }
 
     public static double standardize(double radians) {

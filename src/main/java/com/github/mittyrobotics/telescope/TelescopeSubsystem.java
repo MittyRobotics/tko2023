@@ -71,8 +71,8 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
         createMPs();
 
-        setDefaultCommand(new ExtensionToKinematics());
-        System.out.println("AFTER SET DEFAULT");
+//        setDefaultCommand(new ExtensionToKinematics());
+//        System.out.println("AFTER SET DEFAULT");
     }
 
     private void createMPs() {
@@ -204,10 +204,5 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         telescopeNeo.getPIDController().setReference(vel, CANSparkMax.ControlType.kVelocity);
     }
 
-    @Override
-    public void periodic() {
-//        if (getVelocityInchesPerSecond() > 2) {
-//            setVelocityInches(2);
-//        }
-    }
+
 }

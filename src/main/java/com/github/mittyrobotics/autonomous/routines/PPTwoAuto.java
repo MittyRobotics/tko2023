@@ -39,7 +39,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 20 : -20, 0)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
                 starting.getHeading());
 
         Point starting_second = Point.add(
@@ -62,7 +62,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                 new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
-                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+//                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
 
                 new PathFollowingCommand(
@@ -70,12 +70,12 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
                                 10, 3, 5, 5, 0, 2.5, true
                         ), leftSide ? 0 : Math.PI, 6, 3,
-                        0.1, 0.6, 3, 0, 0.01, true
+                        0.1, 0.6, 3.75, 0, 0.01, true
                 ),
 
                 // INTAKE
                 new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CUBE)),
-                new InstantCommand(() -> OI.getInstance().handleGround()),
+//                new InstantCommand(() -> OI.getInstance().handleGround()),
 
                 new PathFollowingCommand(
                         new SwervePath(
@@ -120,16 +120,16 @@ public class PPTwoAuto extends SequentialCommandGroup {
                         0.1, 0.6, 2, 0, 0.02, true
                 )
 
-//                , new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CONE)),
-//                new InstantCommand(() -> OI.getInstance().handleGround()),
-//
-//                new PathFollowingCommand(
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(beforeSecondCone, secondCone),
-//                                10, 3, 5, 2, 2.5, 0, true
-//                        ), secondCone.getHeading().getRadians(), 6, 3,
-//                        0, 1, 1.5, 0, 0.01, false
-//                )
+                , new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CONE))
+//               , new InstantCommand(() -> OI.getInstance().handleGround())
+
+                , new PathFollowingCommand(
+                        new SwervePath(
+                                new QuinticHermiteSpline(beforeSecondCone, secondCone),
+                                10, 3, 5, 2, 2.5, 0, true
+                        ), secondCone.getHeading().getRadians(), 6, 3,
+                        0, 1, 1.5, 0, 0.01, false
+                )
 //
 //                ,new InstantCommand(() -> {
 //                    OI.getInstance().zeroAll();
@@ -137,30 +137,30 @@ public class PPTwoAuto extends SequentialCommandGroup {
 //                    Odometry.getInstance().setScoringCam(true);
 //                })
 
-//                ,new PathFollowingCommand(
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(
-//                                        new Pose(secondCone.getPosition(), new Angle(
-//                                                SwerveSubsystem.standardize(secondCone.getHeading().getRadians() + Math.PI))),
-//                                        new Pose(beforeSecondCone.getPosition(), new Angle(
-//                                                SwerveSubsystem.standardize(beforeSecondCone.getHeading().getRadians() + Math.PI)))),
-//                                10, 3, 5, 2, 0, 2.5, true
-//                        ), scoreHeading : Math.PI, 6, 3,
-//                        0.1, 0.6, 3, 0, 0.01, true
-//                )
-//
-//                ,new PathFollowingCommand(
-//                        new SwervePath(
-//                                new QuinticHermiteSpline(
-//                                        new Pose(beforeSecondCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-//                                        new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-//                                10, 3, 5, 2, 2.5, 1, true
-//                        ), scoreHeading : Math.PI, 6, 3,
-//                        0.1, 0.6, 3, 0, 0.01, true
-//                ),
-//
-//                new AutoScoreCommandGroup(tag_id, third_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE,
-//                        1, 1.5, 1.5, 1, 0)
+                ,new PathFollowingCommand(
+                        new SwervePath(
+                                new QuinticHermiteSpline(
+                                        new Pose(secondCone.getPosition(), new Angle(
+                                                SwerveSubsystem.standardize(secondCone.getHeading().getRadians() + Math.PI))),
+                                        new Pose(beforeSecondCone.getPosition(), new Angle(
+                                                SwerveSubsystem.standardize(beforeSecondCone.getHeading().getRadians() + Math.PI)))),
+                                10, 3, 5, 2, 0, 2.5, true
+                        ), scoreHeading, 6, 3,
+                        0.1, 0.6, 3, 0, 0.01, true
+                )
+
+                ,new PathFollowingCommand(
+                        new SwervePath(
+                                new QuinticHermiteSpline(
+                                        new Pose(beforeSecondCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
+                                        new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
+                                10, 3, 5, 2, 2.5, 1, true
+                        ), scoreHeading, 6, 3,
+                        0.1, 0.6, 3, 0, 0.01, true
+                ),
+
+                new AutoScoreCommandGroup(tag_id, third_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE,
+                        2, 5, 1.5, 1, 0)
         );
     }
 }

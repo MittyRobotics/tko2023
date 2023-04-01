@@ -46,9 +46,9 @@ public class SwerveConstants {
 //    public static final double LINEAR_VELOCITY_D = 0;
 
 
-    public static final double ANGULAR_POSITION_P = 0.13;
+    public static final double ANGULAR_POSITION_P = 0.135;
 
-    public static final double ANGULAR_POSITION_I = 0.001;
+    public static final double ANGULAR_POSITION_I = 0.0005;
 
     public static final double ANGULAR_POSITION_D = 0.002;
 
