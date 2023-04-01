@@ -62,7 +62,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                 new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
-//                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
 
                 new PathFollowingCommand(
@@ -75,7 +75,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
 
                 // INTAKE
                 new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CUBE)),
-//                new InstantCommand(() -> OI.getInstance().handleGround()),
+                new InstantCommand(() -> OI.getInstance().handleGround()),
 
                 new PathFollowingCommand(
                         new SwervePath(
@@ -121,7 +121,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 )
 
                 , new InstantCommand(() -> StateMachine.getInstance().setState(StateMachine.PieceState.CONE))
-//               , new InstantCommand(() -> OI.getInstance().handleGround())
+               , new InstantCommand(() -> OI.getInstance().handleGround())
 
                 , new PathFollowingCommand(
                         new SwervePath(
@@ -130,12 +130,12 @@ public class PPTwoAuto extends SequentialCommandGroup {
                         ), secondCone.getHeading().getRadians(), 6, 3,
                         0, 1, 1.5, 0, 0.01, false
                 )
-//
-//                ,new InstantCommand(() -> {
-//                    OI.getInstance().zeroAll();
-//                    StateMachine.getInstance().setIntakeStowing();
-//                    Odometry.getInstance().setScoringCam(true);
-//                })
+
+                ,new InstantCommand(() -> {
+                    OI.getInstance().zeroAll();
+                    StateMachine.getInstance().setIntakeStowing();
+                    Odometry.getInstance().setScoringCam(true);
+                })
 
                 ,new PathFollowingCommand(
                         new SwervePath(

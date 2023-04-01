@@ -71,7 +71,7 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
 
         createMPs();
 
-//        setDefaultCommand(new ExtensionToKinematics());
+        setDefaultCommand(new ExtensionToKinematics());
 //        System.out.println("AFTER SET DEFAULT");
     }
 

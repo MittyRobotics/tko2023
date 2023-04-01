@@ -47,7 +47,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         System.out.println(PivotSubsystem.getInstance().getPositionRadians());
 
-//        setDefaultCommand(new PivotToKinematics());
+        setDefaultCommand(new PivotToKinematics());
     }
 
     private void createMPs() {

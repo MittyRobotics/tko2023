@@ -116,7 +116,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
-//                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
 
                     new PathFollowingCommand(
@@ -129,7 +129,7 @@ public class PPOneAuto extends SequentialCommandGroup {
 
                     // INTAKE
                     new InstantCommand(() -> StateMachine.getInstance().setState(piece)),
-//                    new InstantCommand(() -> OI.getInstance().handleGround()),
+                    new InstantCommand(() -> OI.getInstance().handleGround()),
 
                     new PathFollowingCommand(
                             new SwervePath(
