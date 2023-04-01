@@ -35,7 +35,7 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
                 starting.getHeading());
 
-        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 60 : -60, 0)),
+        Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 20 : -20, 0)),
                 starting.getHeading());
 
         Point starting_second = Point.add(
@@ -47,6 +47,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                         (second_index == 1 ? 44 : 22)));
 
 
+        double scoreHeading = leftSide ? (low ? 2.75 : Math.PI) : (low ? 0 : -0.4);
 
         if(!balance) {
             //NO BALANCE PRELOAD + ONE
@@ -98,7 +99,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                                     10, 2, 2, 2, 0, 1, true
-                            ), leftSide ? Math.PI : 0, 2, 1,
+                            ), scoreHeading, 2, 1,
                             0.2, 0.8, 3, 0, 0.02, true
                     ),
 
@@ -154,7 +155,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                                     10, 4, 5, 2, 0, 1, true
-                            ), leftSide ? (low ? 2.75 : Math.PI) : (low ? 0 : -0.4), 6, 1,
+                            ), scoreHeading, 6, 1,
                             0.1, 0.6, 3, 0, 0.02, true
                     ),
 //
