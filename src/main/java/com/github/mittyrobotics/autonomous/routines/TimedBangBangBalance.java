@@ -1,10 +1,13 @@
 package com.github.mittyrobotics.autonomous.routines;
 
 import com.github.mittyrobotics.LoggerInterface;
+import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.Util;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -57,8 +60,18 @@ public class TimedBangBangBalance extends CommandBase {
             else speed = pitch < 0 ? maxVelBalance : -maxVelBalance;
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
-                speed, 0), 0);
+        double heading = Gyro.getInstance().getHeadingRadians();
+        double desAngle;
+        if (Odometry.getInstance().FIELD_LEFT_SIDE) {
+            desAngle = (speed < 0) ? 0 : Math.PI;
+        } else {
+            desAngle = (speed < 0) ? Math.PI : 0;
+        }
+
+        double ang = desAngle - heading;
+        Vector linear = new Vector(new Angle(ang), Math.abs(speed));
+
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, 0);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
         SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());

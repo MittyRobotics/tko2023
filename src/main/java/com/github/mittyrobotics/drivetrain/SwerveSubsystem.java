@@ -366,8 +366,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         forwardKinematics.updateForwardKinematics(modules);
     }
 
-    public static PIDController controller = new PIDController(4.5, 0, 0.008);
+    public static PIDController controller = new PIDController(4.5, 0, 0.004);
     public static double getDesiredAngularMP(double curHeading, double desiredHeading, double maxW, double maxA, double threshold) {
+        maxW = 3.5;
+
         double norm = SwerveSubsystem.standardize(curHeading);
         double normDes = SwerveSubsystem.standardize(desiredHeading);
 
