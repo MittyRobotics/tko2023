@@ -107,7 +107,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
 //
 //
                 new AutoScoreCommandGroup(tag_id, second_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CUBE,
-                        1.5, 1.5, 1.5, 1, 0),
+                        2, 5, 1.5, 1, 0),
 
 
                 new PathFollowingCommand(
@@ -154,7 +154,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(
                                         new Pose(beforeSecondCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                         new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 3, 5, 2, 2.5, 1, true
+                                10, 4, 5, 2, 2.5, 1, true
                         ), scoreHeading, 6, 3,
                         0.1, 0.6, 3, 0, 0.01, true
                 ),
