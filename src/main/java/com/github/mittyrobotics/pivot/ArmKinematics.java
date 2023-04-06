@@ -19,6 +19,8 @@ public class ArmKinematics {
     private static double radius = 0;
     private static double tuningDistance = 0;
 
+    private static boolean real = true;
+
     private static QuinticHermiteSpline splineToGamePiece;
 
     public static void setArmKinematics(double distance, double height) {
@@ -27,6 +29,7 @@ public class ArmKinematics {
     }
 
     public static void setArmKinematics(Angle theta, double r) {
+        if (real) r -= 0.10;
         radius = r;
         pitch = theta;
     }
