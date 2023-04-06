@@ -1,6 +1,5 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
-import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -17,7 +16,7 @@ public class JoystickThrottleCommand extends CommandBase {
 
     double fieldX, fieldY, rightX, rightY, leftTrigger, rightTrigger;
 
-    boolean a, b, x, y;
+    boolean a, b, x, rightStickPressed;
 
     boolean notMoving;
 
@@ -48,7 +47,7 @@ public class JoystickThrottleCommand extends CommandBase {
         a = OI.getInstance().getDriveController().getAButton();
 //        b = OI.getInstance().getPS4Controller().getCircleButton();
 //        x = OI.getInstance().getPS4Controller().getSquareButton();
-        y = OI.getInstance().getDriveController().getYButton();
+        rightStickPressed = OI.getInstance().getDriveController().getRightStickButtonPressed();
 
         fieldY = OI.getInstance().getDriveController().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
         fieldX = -OI.getInstance().getDriveController().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);
@@ -97,9 +96,9 @@ public class JoystickThrottleCommand extends CommandBase {
         SmartDashboard.putNumber("rightx", rightX);
         SmartDashboard.putNumber("angular vel", angularVel);
 
-        if(y || a) {
+        if(rightStickPressed || a) {
             currentAngle = SwerveSubsystem.standardize(Gyro.getInstance().getHeadingRadians());
-            currentDesired = SwerveSubsystem.standardize((y ? 0 : Math.PI) + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
+            currentDesired = SwerveSubsystem.standardize((rightStickPressed ? 0 : Math.PI) + (Odometry.getInstance().FIELD_LEFT_SIDE ? 0 : Math.PI));
 
             angularVel = SwerveSubsystem.getDesiredAngularMP(
                     currentAngle, currentDesired, SwerveConstants.MAX_ANGULAR_VEL,
