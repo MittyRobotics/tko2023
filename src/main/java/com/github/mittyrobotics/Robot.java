@@ -24,10 +24,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-    public String auto = "preload";
-    public boolean balance = true;
-    public int tag, index;
-
+    public String auto = "balance";
+    public boolean low = false;
 
     @Override
     public void robotInit() {
@@ -71,41 +69,35 @@ public class Robot extends TimedRobot {
 //        LoggerInterface.getInstance().put("Spark Current", IntakeSubsystem.getInstance().getCurrent());
 //        System.out.println("CURRENT: " + IntakeSubsystem.getInstance().getCurrent());
 
-        LoggerInterface.getInstance().put("Auto Mode", auto + " | balance " + balance +
-                " | tag " + tag + " | index" + index);
-
         CommandScheduler.getInstance().run();
 
     }
 
     @Override
     public void autonomousInit() {
-//        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
+        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
-        /* REAL CODE
         auto = LoggerInterface.getInstance().getValue("auto");
-        balance = LoggerInterface.getInstance().getValue("autobalance").equals("true");
+        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
 
         switch(auto) {
             case "preload":
-                tag = Integer.parseInt(LoggerInterface.getInstance().getValue("autotag"));
-                index = Integer.parseInt(LoggerInterface.getInstance().getValue("autoindex"));
-                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, tag, index, balance).schedule();
+                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
-            case "low":
-                new LowPlusConeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
+            case "balance":
+                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, true).schedule();
                 break;
-            case "high":
-                new HighPlusConeCubeAuto(Odometry.getInstance().FIELD_LEFT_SIDE, balance).schedule();
+            case "pick":
+                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
-         */
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+//        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+//
+//        new PPTwoAuto(false, false).schedule();
 
-        new PPTwoAuto(true, false).schedule();
-//        Pose init = Odometrxxdxxxxxxxxcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc                                     ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc oieiie3iy.getInstance().getState();
+//        Pose init = Odometry.getInstance().getState();
 //        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
 //        SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
 //                15, 3, 3, 3, 0, 0, true);
