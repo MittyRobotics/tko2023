@@ -48,7 +48,7 @@ public class ExtensionToKinematics extends CommandBase {
 //        double telescopeP = Math.max(0.00005, pidmax - (pidmax - 0.00005) * Math.sin(PivotSubsystem.getInstance().getPositionRadians()));
 //        TelescopeSubsystem.getInstance().setPID(telescopeP <= pidmax ? 0 : 0, 0, 0);
 
-        double telescopeFF = (0.25 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
+        double telescopeFF = (0.2 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
                 (telescopeMovingDown ? 1 - 0.8 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.75);
         TelescopeSubsystem.getInstance().setFF(telescopeFF);
 

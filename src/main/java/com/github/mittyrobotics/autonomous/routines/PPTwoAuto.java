@@ -27,16 +27,16 @@ public class PPTwoAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 5 : -5)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 10 : -10)),
                 starting.getHeading());
 
-        Pose secondCone = new Pose(Point.add(firstCone.getPosition(), new Point(0, low ? 48 : -48)),
+        Pose secondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? 5 : -5, low ? 54 : -54)),
                 new Angle(leftSide ? (low ? 1 : -1) : (low ? Math.PI - 1 : -(Math.PI - 1))));
 
-        Pose beforeSecondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, 0)),
+        Pose beforeSecondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, low ? -10 : 10)),
                 firstCone.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -10 : 10)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -68,9 +68,9 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
-                                10, 3, 5, 5, 0, 2.5, true
-                        ), leftSide ? 0 : Math.PI, 6, 3,
-                        0.1, 0.6, 3.75, 0, 0.01, true
+                                10, 2, 5, 5, 0, 2, true
+                        ), leftSide ? 0 : Math.PI, 15, 3,
+                        0.1, 0.6, 3, 0, 0.01, true
                 ),
 
                 // INTAKE
@@ -80,8 +80,8 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                10, 2.5, 5, 2, 2.5, 0, true
-                        ), leftSide ? 0 : Math.PI, 2, 0.05,
+                                10, 2.5, 5, 2, 2, 0, true
+                        ), leftSide ? 0 : Math.PI, 3, 0.05,
                         0, 1, 3, 0, 0.02, true
                 ),
 
@@ -115,7 +115,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(
                                         startingSecondPose,
                                         beforeSecondCone),
-                                10, 4, 5, 5, 0, 0, true
+                                10, 4, 5, 5, 0, 2, true
                         ), secondCone.getHeading().getRadians(), 6, 3,
                         0.1, 0.6, 2, 0, 0.02, true
                 )
@@ -126,7 +126,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                 , new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(beforeSecondCone, secondCone),
-                                10, 3, 5, 2, 2.5, 0, true
+                                10, 3.5, 5, 2, 2, 0, true
                         ), secondCone.getHeading().getRadians(), 6, 3,
                         0, 1, 1.5, 0, 0.01, false
                 )
@@ -148,19 +148,19 @@ public class PPTwoAuto extends SequentialCommandGroup {
                         ), scoreHeading, 6, 3,
                         0.1, 0.6, 3, 0, 0.01, true
                 )
-
-                ,new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(
-                                        new Pose(beforeSecondCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-                                        new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 4, 5, 2, 2.5, 1, true
-                        ), scoreHeading, 6, 3,
-                        0.1, 0.6, 3, 0, 0.01, true
-                ),
-
-                new AutoScoreCommandGroup(tag_id, third_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE,
-                        2, 5, 1.5, 1, 0)
+//
+//                ,new PathFollowingCommand(
+//                        new SwervePath(
+//                                new QuinticHermiteSpline(
+//                                        new Pose(beforeSecondCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
+//                                        new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
+//                                10, 4, 5, 2, 2.5, 1, true
+//                        ), scoreHeading, 6, 3,
+//                        0.1, 0.6, 3, 0, 0.01, true
+//                ),
+//
+//                new AutoScoreCommandGroup(tag_id, third_index, StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE,
+//                        2, 5, 1.5, 1, 0)
         );
     }
 }

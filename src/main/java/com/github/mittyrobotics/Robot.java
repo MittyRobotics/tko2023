@@ -104,9 +104,8 @@ public class Robot extends TimedRobot {
 
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
 
-        new PPTwoAuto(false, false).schedule();
-
-//        Pose init = Odometry.getInstance().getState();
+        new PPTwoAuto(true, false).schedule();
+//        Pose init = Odometrxxdxxxxxxxxcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc                                     ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc oieiie3iy.getInstance().getState();
 //        Pose end = new Pose(Point.add(init.getPosition(), new Point(150, 100)), init.getHeading());
 //        SwervePath path = new SwervePath(new QuinticHermiteSpline(init, end),
 //                15, 3, 3, 3, 0, 0, true);

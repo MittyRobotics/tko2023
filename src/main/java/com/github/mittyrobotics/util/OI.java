@@ -88,7 +88,10 @@ public class OI {
     }
 
     public void handleGround() {
-        ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.1), 0.20456099255847424);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
+            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.05), 0.20);
+        if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
+            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.), 0.17);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
 //        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
@@ -154,7 +157,7 @@ public class OI {
                         Odometry.getInstance().setScoringCam(false);
                     }, 100);
                 }, 10);
-            }, 200);
+            }, 300);
         }
     }
 

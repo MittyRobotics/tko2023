@@ -29,10 +29,10 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 5 : -5)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 10 : -10)),
                 starting.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, 0)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -10 : 10)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -124,7 +124,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
                                     10, 3, 5, 5, 0, 2.5, true
                             ), leftSide ? 0 : Math.PI, 6, 3,
-                            0.1, 0.5, 3.75, 0, 0.01, true
+                            0.1, 0.5, 3.5, 0, 0.01, true
                     ),
 
                     // INTAKE
