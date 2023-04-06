@@ -29,10 +29,10 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 10 : -10)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 198 : -198, low ? 13 : -13)),
                 starting.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -10 : 10)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -13 : 13)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -47,7 +47,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                         (second_index == 1 ? 44 : 22)));
 
 
-        double scoreHeading = leftSide ? (low ? 2.75 : Math.PI) : (low ? 0 : -0.4);
+        double scoreHeading = leftSide ? (low ? 2.85 : Math.PI) : (low ? 0 : -0.3);
 
         if(!balance) {
             //NO BALANCE PRELOAD + ONE
@@ -66,9 +66,9 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
-                                    10, 2, 2, 2, 0, 2, true
-                            ), leftSide ? 0 : Math.PI, 10, 3,
-                            0.1, 0.6, 3, 0, 0.01, true
+                                    10, 2, 5, 5, 0, 2, true
+                            ), leftSide ? 0 : Math.PI, 9, 3,
+                            0.2, 0.8, 3, 0, 0.01, true
                     ),
 
                     // INTAKE
@@ -78,9 +78,9 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                    10, 2, 2, 2, 2, 0, true
+                                    10, 2, 5, 2, 2, 0, true
                             ), leftSide ? 0 : Math.PI, 3, 0.05,
-                            0, 1, 3, 0, 0.02, true
+                            0, 1, 3.25, 0, 0.01, true
                     ),
 
 
@@ -98,13 +98,14 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(
                                             new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                    10, 2, 2, 2, 0, 1, true
-                            ), scoreHeading, 2, 1,
-                            0.2, 0.8, 3, 0, 0.02, true
+                                    10, 2, 5, 2, 0, 1, true
+                            ), scoreHeading, 6, 1,
+                            0.1, 0.6, 3, 0, 0.02, true
                     ),
-
+//
+//
                     new AutoScoreCommandGroup(tag_id, second_index, StateMachine.RobotState.HIGH, piece,
-                            1, 1.5, 1.5, 1, 0)
+                            2, 5, 1.5, 1, 0)
             );
         } else {
             addCommands(
@@ -123,8 +124,8 @@ public class PPOneAuto extends SequentialCommandGroup {
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
                                     10, 3, 5, 5, 0, 2.5, true
-                            ), leftSide ? 0 : Math.PI, 6, 3,
-                            0.1, 0.5, 3.5, 0, 0.01, true
+                            ), leftSide ? 0 : Math.PI, 15, 3,
+                            0.2, 0.8, 3.5, 0, 0.01, true
                     ),
 
                     // INTAKE
@@ -136,7 +137,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                     10, 2.5, 5, 2, 2.5, 0, true
                             ), leftSide ? 0 : Math.PI, 2, 0.05,
-                            0, 1, 3, 0, 0.02, true
+                            0, 1, 3.75, 0, 0.02, true
                     ),
 
 

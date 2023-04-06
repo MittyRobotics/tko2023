@@ -1,7 +1,10 @@
 package com.github.mittyrobotics.util;
 
+import edu.wpi.first.math.filter.LinearFilter;
+
 public class TrapezoidalMotionProfile {
     private double maxAccel, maxDecel, maxVel, startPos, endPos, minOutput, startVel, eps;
+
     public TrapezoidalMotionProfile(double maxAccel, double maxDecel, double maxVel, double startVel, double startPos, double endPos, double minOutput, double eps) {
         this.maxAccel = maxAccel;
         this.maxDecel = maxDecel;

@@ -27,16 +27,16 @@ public class PPTwoAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 195 : -195, low ? 10 : -10)),
+        Pose firstCone = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 198 : -198, low ? 13 : -13)),
                 starting.getHeading());
 
         Pose secondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? 5 : -5, low ? 54 : -54)),
                 new Angle(leftSide ? (low ? 1 : -1) : (low ? Math.PI - 1 : -(Math.PI - 1))));
 
-        Pose beforeSecondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, low ? -10 : 10)),
+        Pose beforeSecondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, low ? -13 : 13)),
                 firstCone.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -10 : 10)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -13 : 13)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
@@ -49,7 +49,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
         Pose startingSecondPose = new Pose(starting_second,
                 new Vector(starting_second, Point.add(beforeAutoScore.getPosition(), new Point(leftSide ? 30 : -30, 0))).getAngle());
 
-        double scoreHeading = leftSide ? (low ? 2.75 : Math.PI) : (low ? 0 : -0.4);
+        double scoreHeading = leftSide ? (low ? 2.85 : Math.PI) : (low ? 0 : -0.3);
 
 
 
@@ -69,8 +69,8 @@ public class PPTwoAuto extends SequentialCommandGroup {
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, beforeFirstCone),
                                 10, 2, 5, 5, 0, 2, true
-                        ), leftSide ? 0 : Math.PI, 15, 3,
-                        0.1, 0.6, 3, 0, 0.01, true
+                        ), leftSide ? 0 : Math.PI, 9, 3,
+                        0.2, 0.8, 3, 0, 0.01, true
                 ),
 
                 // INTAKE
@@ -82,7 +82,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                 10, 2.5, 5, 2, 2, 0, true
                         ), leftSide ? 0 : Math.PI, 3, 0.05,
-                        0, 1, 3, 0, 0.02, true
+                        0, 1, 3.25, 0, 0.01, true
                 ),
 
 

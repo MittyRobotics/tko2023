@@ -50,14 +50,14 @@ public class ExtensionToKinematics extends CommandBase {
 
         double telescopeFF = (0.2 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getPositionRadians()), 6))) *
                 (telescopeMovingDown ? 1 - 0.8 * Math.cos(PivotSubsystem.getInstance().getPositionRadians()) : 1.75);
-        TelescopeSubsystem.getInstance().setFF(telescopeFF);
+//        TelescopeSubsystem.getInstance().setFF(telescopeFF);
 
         velTelescope = 0;
         velTelescope = 60 * tpTelescope.update(Timer.getFPGATimestamp() - lastTime, TelescopeSubsystem.getInstance().rawPos());
 
         if (ArmKinematics.getTelescopeDesired() == 0 && TelescopeSubsystem.getInstance().withinDeadzoneThreshold())
             TelescopeSubsystem.getInstance().setMotor(0);
-        else TelescopeSubsystem.getInstance().setRaw(velTelescope);
+        else TelescopeSubsystem.getInstance().setRaw(velTelescope, telescopeFF);
 
         lastTime = Timer.getFPGATimestamp();
 

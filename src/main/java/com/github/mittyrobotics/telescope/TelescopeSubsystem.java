@@ -79,13 +79,13 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         TelescopeConstants.TELESCOPE_MPS.put(DEFAULT,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_GROUND,
-                new TrapezoidalMotionProfile(20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 15 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_MID,
-                new TrapezoidalMotionProfile(80 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HIGH,
-                new TrapezoidalMotionProfile(60 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 50 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 240 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(STOWED_TO_HP,
-                new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
+                new TrapezoidalMotionProfile(20 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 10 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(GROUND_TO_STOWED,
                 new TrapezoidalMotionProfile(40 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 120 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0, 0, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV, 0.2));
         TelescopeConstants.TELESCOPE_MPS.put(MID_TO_STOWED,
@@ -200,8 +200,10 @@ public class TelescopeSubsystem extends SubsystemBase implements ISubsystem {
         return telescopeNeo.getEncoder().getVelocity();
     }
 
-    public void setRaw(double vel) {
-        telescopeNeo.getPIDController().setReference(vel, CANSparkMax.ControlType.kVelocity);
+    public void setRaw(double vel, double ff) {
+        telescopeNeo.getPIDController().setReference(ff * vel * 12, CANSparkMax.ControlType.kVoltage);
+
+//        telescopeNeo.getPIDController().setReference(vel, CANSparkMax.ControlType.kVelocity, 0, ff);
     }
 
 

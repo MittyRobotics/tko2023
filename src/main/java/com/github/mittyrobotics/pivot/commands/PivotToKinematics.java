@@ -53,11 +53,11 @@ public class PivotToKinematics extends CommandBase {
 
         //1765
         double pivotFF = 0.3/(1765) * (pivotMovingDown ?
-                0.6 - 0 / 12. * currentExtension :
-                0.8 + 0.2 / 12. * currentExtension);
-        PivotSubsystem.getInstance().setFF(pivotFF);
+                1 - 0 / 12. * currentExtension :
+                1.2 + 0.2 / 12. * currentExtension);
+//        PivotSubsystem.getInstance().setFF(pivotFF);
 
-        PivotSubsystem.getInstance().configPID(0.0000, 0, 0);
+//        PivotSubsystem.getInstance().configPID(0.0000, 0, 0);
 
         tpPivot.setMinOutput(30 / 39.37 / TelescopeConstants.METERS_PER_MOTOR_REV * (pivotMovingDown ?
                 1 - 0 / 12. * currentExtension :
@@ -69,12 +69,12 @@ public class PivotToKinematics extends CommandBase {
 //        PivotSubsystem.getInstance().setRaw(OI.getInstance().getOperatorController().getRightTriggerAxis() > 0.2 ? velPivot : 0);
         if (ArmKinematics.getPivotDesired().getRadians() == 0 && PivotSubsystem.getInstance().withinDeadzoneThreshold())
             PivotSubsystem.getInstance().setMotor(0);
-        else PivotSubsystem.getInstance().setRaw(velPivot);
+        else PivotSubsystem.getInstance().setRaw(velPivot, pivotFF);
 
         lastTime = Timer.getFPGATimestamp();
 
-        SmartDashboard.putNumber("Pivot Radians", PivotSubsystem.getInstance().getPositionRadians());
-        SmartDashboard.putNumber("Pivot raw vel", PivotSubsystem.getInstance().rawVel());
+//        SmartDashboard.putNumber("Pivot Radians", PivotSubsystem.getInstance().getPositionRadians());
+//        SmartDashboard.putNumber("Pivot raw vel", PivotSubsystem.getInstance().rawVel());
     }
 
     @Override

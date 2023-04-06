@@ -14,6 +14,7 @@ import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
     public String auto = "balance";
-    public boolean low = false;
+    public boolean low = false, bal = false;
 
     @Override
     public void robotInit() {
@@ -41,8 +42,8 @@ public class Robot extends TimedRobot {
         TelescopeSubsystem.getInstance().setBrakeMode();
 
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
-        double x = 600;
-        double y = 180;
+        double x = 0;
+        double y = 0;
         double t = 0;
         Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
@@ -79,13 +80,14 @@ public class Robot extends TimedRobot {
 
         auto = LoggerInterface.getInstance().getValue("auto");
         low = LoggerInterface.getInstance().getValue("autoside").equals("L");
+        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
 
         switch(auto) {
             case "preload":
                 new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, true).schedule();
+                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
                 new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
@@ -184,6 +186,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+//        OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kLeftRumble, 0.5);
+//        OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kRightRumble, 0.5);
 //        System.out.println(LoggerInterface.getInstance().getValue("fieldside"));
     }
 

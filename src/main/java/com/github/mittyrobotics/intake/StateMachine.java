@@ -119,11 +119,10 @@ public class StateMachine {
                 profileState = ProfileState.HP_TO_STOWED;
                 break;
             case SCORING:
-                System.out.println("\n\n\n\n\n" + source);
                 profileState = ProfileState.SCORING_TO_STOWED;
                 break;
             default:
-                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 1");
+//                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 1");
 //                profileState = ProfileState.DEFAULT;
         }
     }
@@ -143,7 +142,7 @@ public class StateMachine {
                 profileState = ProfileState.STOWED_TO_HP;
                 break;
             default:
-                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 2");
+//                System.out.println("\n\n\n\n\n" + "DEFAULTTTT 2");
 //                profileState = ProfileState.DEFAULT;
         }
     }

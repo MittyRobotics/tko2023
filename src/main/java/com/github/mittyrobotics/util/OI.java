@@ -82,7 +82,7 @@ public class OI {
     }
 
     public void zeroAll() {
-        ArmKinematics.setArmKinematics(new Angle(5 * Math.PI / 180), 0);
+        ArmKinematics.setArmKinematics(new Angle(0), 0);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.STOWED);
         StateMachine.getInstance().setStateStowed();
     }
@@ -94,8 +94,8 @@ public class OI {
             ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.), 0.17);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
         StateMachine.getInstance().setStateGround();
-//        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
-        StateMachine.getInstance().setIntaking();
+        if(StateMachine.getInstance().getIntakingState() != StateMachine.IntakeState.STOW)
+            StateMachine.getInstance().setIntaking();
     }
 
     public void handleMid() {
@@ -206,30 +206,30 @@ public class OI {
         Trigger humanPlayerKinematics = new Trigger(getOperatorController()::getBButton);
         humanPlayerKinematics.whileTrue(new InstantCommand(this::handleHumanPlayer));
 //
-        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
-        autoIntakeGround.whileTrue(new AutoPickupCommand(0, 0, 0, 0, 0, 0,  false));
-        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//        Trigger autoIntakeGround = new Trigger(() -> driverControls(true, false, false, false));
+//        autoIntakeGround.whileTrue(new AutoPickupCommand(0, 0, 0, 0, 0, 0,  false));
+//        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
 //        Trigger autoIntakeHP = new Trigger(() -> driverControls(false, true, false, false)
 //                && StateMachine.getInstance().getCurrentPieceState() != StateMachine.PieceState.NONE);
 //        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
 //        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 ////
-        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-//        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
-        autoRight.whileTrue(new TeleopScoreCommand(2));
-        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
+////        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
+//        autoRight.whileTrue(new TeleopScoreCommand(2));
+//        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+////
+//        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
+//        autoCenter.whileTrue(new TeleopScoreCommand(1));
+//        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+////
+//        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
+//        autoLeft.whileTrue(new TeleopScoreCommand(0));
+//        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
-        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new TeleopScoreCommand(1));
-        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-//
-        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new TeleopScoreCommand(0));
-        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-
-        Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
-        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
+//        Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
+//        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
 
 //        Trigger drive = new Trigger(() -> driverControls(false, false, false, false));
 //        drive.whileTrue(new JoystickThrottleCommand());

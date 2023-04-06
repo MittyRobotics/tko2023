@@ -19,7 +19,7 @@ public class ArmKinematics {
     private static double radius = 0;
     private static double tuningDistance = 0;
 
-    private static boolean real = true;
+    private static boolean real = false;
 
     private static QuinticHermiteSpline splineToGamePiece;
 

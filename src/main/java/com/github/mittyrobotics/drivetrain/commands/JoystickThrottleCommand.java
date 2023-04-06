@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
+import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -9,6 +10,8 @@ import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -44,10 +47,12 @@ public class JoystickThrottleCommand extends CommandBase {
 
     @Override
     public void execute() {
+        linearVel = new Vector(new Angle(0), 0);
         a = OI.getInstance().getDriveController().getAButton();
 //        b = OI.getInstance().getPS4Controller().getCircleButton();
 //        x = OI.getInstance().getPS4Controller().getSquareButton();
-        rightStickPressed = OI.getInstance().getDriveController().getRightStickButtonPressed();
+        rightStickPressed = OI.getInstance().getDriveController().getRightStickButton();
+        System.out.println(rightStickPressed);
 
         fieldY = OI.getInstance().getDriveController().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
         fieldX = -OI.getInstance().getDriveController().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);
@@ -83,7 +88,9 @@ public class JoystickThrottleCommand extends CommandBase {
         double angle_field = Math.atan2(fieldY, fieldX);
         double robot_relative_angle = angle_field - heading;
 
-        if(disabled) throttle = 0;
+        LoggerInterface.getInstance().put("THR", throttle);
+
+//        if(disabled) throttle = 0;
 
         linearVel = new Vector(
                 new Angle(robot_relative_angle), throttle
@@ -107,11 +114,18 @@ public class JoystickThrottleCommand extends CommandBase {
             disabled = false;
         }
 
+        if (Timer.getMatchTime() > 10. && Timer.getMatchTime() < 15.) {
+            OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kLeftRumble, 0.5);
+            OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kRightRumble, 0.5);
+        } else {
+            OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kLeftRumble, 0.0);
+            OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kRightRumble, 0.0);
+        }
+
 //        LoggerInterface.getInstance().put("Desired linear velocity", linearVel.toString());
 //        LoggerInterface.getInstance().put("Desired angular velocity", angularVel);
 
-//        System.out.println("Linear: " + linearVel);
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(1, linearVel), angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
         SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
 
