@@ -72,8 +72,7 @@ public class StateMachine {
     }
 
     public void setIntaking() {
-        if (intakeState != IntakeState.STOW)
-            intakeState = IntakeState.INTAKE;
+        intakeState = IntakeState.INTAKE;
     }
 
     public void setIntakeStowing() {
