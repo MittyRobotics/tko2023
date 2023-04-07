@@ -82,7 +82,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
                                 new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                 10, 2.5, 5, 2, 2, 0, true
                         ), leftSide ? 0 : Math.PI, 3, 0.05,
-                        0, 1, 3.25, 0, 0.01, true
+                        0, 0.6, 3.5, 0, 0.01, true
                 ),
 
 
