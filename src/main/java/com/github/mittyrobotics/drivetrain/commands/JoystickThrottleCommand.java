@@ -114,7 +114,7 @@ public class JoystickThrottleCommand extends CommandBase {
             disabled = false;
         }
 
-        if (Timer.getMatchTime() > 10. && Timer.getMatchTime() < 15.) {
+        if (Timer.getMatchTime() > 18. && Timer.getMatchTime() < 23.) {
             OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kLeftRumble, 0.5);
             OI.getInstance().getDriveController().setRumble(GenericHID.RumbleType.kRightRumble, 0.5);
         } else {

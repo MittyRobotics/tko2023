@@ -121,8 +121,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-//        LoggerInterface.getInstance().put("AUTO PICKUP", false);
-
         SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
         Odometry.getInstance().disableCustomCam();
@@ -135,7 +133,7 @@ public class Robot extends TimedRobot {
 
 //        SwerveSubsystem.getInstance().setRampRate(0);
 //        new FastOvershootBalance(3, 0.7, false).schedule();
-//        new TimedOvershootBalance(3, 1000, 0.7, false).schedule();
+//        new Balance(false).schedule();
         //for false
 //        new TimedBangBangBalance(2.5, 650, 0.3, false).schedule();
         //for true

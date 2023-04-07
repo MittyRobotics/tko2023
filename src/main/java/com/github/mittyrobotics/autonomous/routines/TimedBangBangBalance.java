@@ -47,9 +47,9 @@ public class TimedBangBangBalance extends CommandBase {
             speed = pos ? maxVelStart : -maxVelStart;
 
             if(Math.abs(pitch) > ON_ANGLE && !index) {
+                index = true;
                 Util.triggerFunctionAfterTime(() -> {
                     forward = false;
-                    index = true;
                 }, time);
             }
         } else {

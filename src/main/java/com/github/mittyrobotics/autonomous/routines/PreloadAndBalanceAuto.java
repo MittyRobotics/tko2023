@@ -16,7 +16,7 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
         super();
 
         //tag should be 1, 2, 3 from bottom to top
-        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 7 : 2)[0];
+        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 7 : 2)[2];
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 scoring.getHeading());
 
