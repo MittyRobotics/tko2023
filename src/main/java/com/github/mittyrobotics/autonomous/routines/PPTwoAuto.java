@@ -36,7 +36,7 @@ public class PPTwoAuto extends SequentialCommandGroup {
         Pose beforeSecondCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -60 : 60, low ? -9 : 9)),
                 firstCone.getHeading());
 
-        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -100 : 100, low ? -9 : 9)),
+        Pose beforeFirstCone = new Pose(Point.add(firstCone.getPosition(), new Point(leftSide ? -106 : 106, low ? -9 : 9)),
                 starting.getHeading());
 
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
