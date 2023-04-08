@@ -10,7 +10,7 @@ public class Balance extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(() -> SwerveSubsystem.getInstance().setRampRate(0)),
-                new TimedBangBangBalance(2.5, 650, 0.26, initialDirectionForward)
+                new TimedBangBangBalance(2.5, 570, 0.26, initialDirectionForward)
 //                new FastOvershootBalance(3, 0.7, initialDirectionForward)
         );
     }
