@@ -215,18 +215,17 @@ public class OI {
 //        autoIntakeHP.whileTrue(new SwerveAutoPickupCommand(StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE, 0, false));
 //        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 ////
-//        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-////        autoLeft.onTrue(new InstantCommand(() -> System.out.println("\n\n\n\n\nSEFKJSEHFKJE")));
-//        autoRight.whileTrue(new TeleopScoreCommand(2));
-//        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-////
-//        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-//        autoCenter.whileTrue(new TeleopScoreCommand(1));
-//        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
-////
-//        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-//        autoLeft.whileTrue(new TeleopScoreCommand(0));
-//        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+        Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
+        autoRight.whileTrue(new TeleopScoreCommand(2));
+        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//
+        Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
+        autoCenter.whileTrue(new TeleopScoreCommand(1));
+        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//
+        Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
+        autoLeft.whileTrue(new TeleopScoreCommand(0));
+        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
 //        Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
 //        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));
