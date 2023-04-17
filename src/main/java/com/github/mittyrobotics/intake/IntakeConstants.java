@@ -1,26 +1,18 @@
 package com.github.mittyrobotics.intake;
 
 public class IntakeConstants {
+    public static final int INTAKE_SPARK_ID = 11;
+    public static final int PROX_SENSOR_ID = 1;
 
-    //TODO: figure literally everything out
-    public static final double GRABBER_GEAR_RATIO = 1;
-    public static final double GRABBER_ROTATIONS_PER_DEGREE = GRABBER_GEAR_RATIO*(1/360);
-    public static final double GRABBER_MAX_ANGLE = 180;
-    public static final double GRABBER_MIN_ANGLE = 0;
-    public static final int GRABBER_SPARK_ID = 6;
-    public static final boolean GRABBER_SPARK_INVERTED = false;
+    public static final double INTAKE_TO_NEO_GEAR_RATIO = 1/4.;
 
-    public static final double CONE_DEGREES = 45;
-    public static final double CUBE_DEGREES = 90;
-    public static final double OPEN_DEGREES = 120;
+    public static final double FF = 1/1000.;
+    public static final double P = 0;
+    public static final double I = 0;
+    public static final double D = 0;
 
-
-    public static final double ROLLER_GEAR_RATIO = 1;
-    public static final int ROLLER_SPARK_ID = 7;
-    public static final double ROLLER_INTAKE_SPEED = 1;
-    public static final boolean ROLLER_SPARK_INVERTED = false;
-
-    //TODO: setID
-    public static final int CLAW_PROX_SENSOR_CHANNEL = 0;
-
+    public static final double INTAKE_SPEED = -0.7;
+    public static final double OUTTAKE_SPEED = 0.28;
+    public static final double OUTTAKE_SPEED_CONE = 0.28;
+    public static final double STOW_SPEED = -0.02;
 }

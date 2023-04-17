@@ -77,7 +77,7 @@ public class SwerveCommand extends CommandBase {
 
 //        System.out.println("inputs: " + linearVel + " " + angularVel);
 
-        SwerveSubsystem.getInstance().setSwerveModule(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? 2 : 1, linearVel), angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(Vector.multiply(OI.getInstance().getPS4Controller().getR1Button() ? 2 : 1, linearVel), angularVel);
 
 //        System.out.println(linearVel.toStringMetric() + ", " + angularVel);
 

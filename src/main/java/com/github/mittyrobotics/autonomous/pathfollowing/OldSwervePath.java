@@ -3,12 +3,12 @@ package com.github.mittyrobotics.autonomous.pathfollowing;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwervePath {
+public class OldSwervePath {
     private QuinticHermiteSpline spline;
     private Angle startHeading, endHeading;
-    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, lookahead, kp, ki, kd, whenToEnd;
+    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, lookahead, kp, ki, kd, whenToEnd, total;
 
-    public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading, double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular, double lookahead, double kp, double ki, double kd, double whenToEnd) {
+    public OldSwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading, double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular, double lookahead, double kp, double ki, double kd, double whenToEnd) {
         this.spline = spline;
         this.startHeading = startHeading;
         this.endHeading = endHeading;
@@ -23,9 +23,11 @@ public class SwervePath {
         this.ki = ki;
         this.kd = kd;
         this.whenToEnd = whenToEnd;
+
+        total = spline.getLength(whenToEnd, 17);
     }
 
-    public SwervePath(QuinticHermiteSpline function, Angle startHeading, Angle endHeading) {
+    public OldSwervePath(QuinticHermiteSpline function, Angle startHeading, Angle endHeading) {
         this.spline = function;
         this.startHeading = startHeading;
         this.endHeading = endHeading;
@@ -35,7 +37,8 @@ public class SwervePath {
     public Pose getByT(double t) {
         return new Pose(
                 spline.get(t),
-                Pose.doSigmoidInterpolation(startHeading, endHeading, t)
+//                Pose.doSigmoidInterpolation(startHeading, endHeading, t)
+                spline.getVelocityVector(t).getAngle()
         );
     }
 
@@ -51,9 +54,13 @@ public class SwervePath {
         return spline.getTFromLength(length);
     }
 
-    public Vector getVectorToLookahead(Pose robot, double lookahead) {
+    public Point getLookaheadPoint(Pose robot, double lookahead) {
+        return spline.get(getTForLookahead(robot, lookahead));
+    }
+
+    public Vector getVectorToLookahead(Pose robot, double length, double lookahead) {
         // TODO: 9/2/2022 Fix lookahead format - should be resolved
-        double t = getTForLookahead(robot, lookahead);
+        double t = spline.getTFromLength(length + lookahead);
 
         Point splinePoint = getByT(t).getPosition();
 
@@ -63,16 +70,14 @@ public class SwervePath {
         return new Vector(robot.getPosition(), splinePoint);
     }
 
-    public Angle getHeadingAtLookahead(Pose robot, double lookahead) {
-        double t = getTForLookahead(robot, lookahead);
-        double length = spline.getLength(t, 17);
-        double total = spline.getLength(whenToEnd, 17);
+    public Angle getCurrentDesiredHeading(double length) {
         double fraction = length/total;
-//        double angle = fraction * (endHeading.getRadians() - startHeading.getRadians()) + startHeading.getRadians();
 
-//        return new Angle(angle);
-//        return getByT(t).getHeading();
         return Pose.doSigmoidInterpolation(startHeading, endHeading, fraction);
+    }
+
+    public Angle getEndHeading() {
+        return endHeading;
     }
 
     public double getCurvature(double t) {
@@ -113,5 +118,9 @@ public class SwervePath {
 
     public double getKd() {
         return kd;
+    }
+
+    public double getLookahead() {
+        return lookahead;
     }
 }

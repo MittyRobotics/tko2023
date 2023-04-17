@@ -99,7 +99,7 @@ public class BumperAngular extends CommandBase {
 //        System.out.println("inputs: " + linearVel + " " + angularVel);
 
 
-        SwerveSubsystem.getInstance().setSwerveModule(linearVel, angularVel);
+        SwerveSubsystem.getInstance().setSwerveInvKinematics(linearVel, angularVel);
 
 //        System.out.println(linearVel.toStringMetric() + ", " + angularVel);
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class QuinticHermiteSpline extends Parametric {
     Point start, end;
     Vector vel0, accel0, vel1, accel1;
+    double length;
 
     public QuinticHermiteSpline(Point start, Vector vel0, Vector accel0, Point end, Vector vel1, Vector accel1) {
         this.start = start;
@@ -13,6 +14,20 @@ public class QuinticHermiteSpline extends Parametric {
         this.accel0 = accel0;
         this.vel1 = vel1;
         this.accel1 = accel1;
+
+        this.length = getLength(1, 17);
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public Vector getEndVel() {
+        return vel1;
+    }
+
+    public Point getEnd() {
+        return end;
     }
 
     public QuinticHermiteSpline(Point start, Angle theta0, Point end, Angle theta1) {
@@ -30,6 +45,14 @@ public class QuinticHermiteSpline extends Parametric {
                 ),
                 new Vector(0, 0)
         );
+    }
+
+    public QuinticHermiteSpline(Pose start, Pose end) {
+        this(start.getPosition(), start.getHeading(), end.getPosition(), end.getHeading());
+    }
+
+    public QuinticHermiteSpline(Point p1, Point p2) {
+        this(new Pose(p1, new Vector(p1, p2).getAngle()), new Pose(p2, new Vector(p1, p2).getAngle()));
     }
 
     static class BasisFunctions {
@@ -179,8 +202,8 @@ public class QuinticHermiteSpline extends Parametric {
         return curvatureNumerator(t) / curvatureDenominator(t);
     }
 
-    private double distSquared(double t, Pose robot) {
-        return new Vector(robot.getPosition(), get(t)).getMagnitude() * new Vector(robot.getPosition(), get(t)).getMagnitude();
+    private double tAndPoseDist(double t, Pose robot) {
+        return new Vector(robot.getPosition(), get(t)).getMagnitude();
     }
 
     private double firstDerivDistSquared(double t, Pose robot) {
@@ -193,26 +216,43 @@ public class QuinticHermiteSpline extends Parametric {
     }
 
     public double getClosestPoint(Pose robot, int pointsToSample, int newtonSteps) {
-        HashMap<Double, Double> map = new HashMap<>();
-        // TODO: 9/1/2022 Fill in newtons method or other algorithm
-        for (int i = 0; i < pointsToSample; i++) {
-            double t = ((double) i) / ((double) pointsToSample);
-            for (int j = 0; j < newtonSteps; j++) {
-                t = t - (firstDerivDistSquared(t, robot) / secondDerivDistSquared(t, robot));
+        Vector cur_min = new Vector(Double.POSITIVE_INFINITY, 0);
+
+        //the steps to start Newton's method from
+        for(double i = 0; i <= 1+1e-6; i += 1./pointsToSample) {
+            double cur_t = i;
+            //get first and secondary derivatives of the distance function at that point
+            double firstDeriv = firstDerivDistSquared(cur_t, robot);
+            double secondDeriv = secondDerivDistSquared(cur_t, robot);
+
+            //amount to adjust according to Newton's method
+            //https://en.wikipedia.org/wiki/Newton%27s_method
+            //using first and second derivatives because we want min of distance function (zero of its derivative)
+            double dt = firstDeriv / secondDeriv;
+
+            int counter = 0;
+
+            //run for certain number of iterations
+            while(counter < newtonSteps) {
+
+                //adjust based on Newton's method, get new derivatives
+                cur_t -= dt;
+                firstDeriv = firstDerivDistSquared(cur_t, robot);
+                secondDeriv = secondDerivDistSquared(cur_t, robot);
+                dt = firstDeriv / secondDeriv;
+                counter++;
             }
-            map.put(t, distSquared(t, robot));
+
+            //if distance is less than previous min, update distance and t
+            double cur_d = tAndPoseDist(cur_t, robot);
+
+            if(cur_d < cur_min.getX() && cur_t >= 0 && cur_t <= 1) {
+                cur_min = new Vector(cur_d, cur_t);
+            }
         }
 
-        double bestT = 0;
-        double least = Double.POSITIVE_INFINITY;
-//        PrintStream oos = new PrintStream(new FileOutputStream("file.txt"));
-        for (double t: map.keySet()) {
-            if (map.get(t) < least) {
-                least = map.get(t);
-                bestT = t;
-            }
-        }
-//        oos.println(get(bestT).toString());
-        return bestT;
+        //return t of minimum distance, clamped from 0 to 1
+        return Math.min(1, Math.max(0, cur_min.getY()));
+
     }
 }
