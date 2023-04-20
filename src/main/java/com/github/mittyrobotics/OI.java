@@ -2,6 +2,8 @@ package com.github.mittyrobotics;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class OI {
     private static OI instance;
@@ -32,22 +34,14 @@ public class OI {
     }
 
 
-    /*public void setIntaking(boolean a)
-    {
-        if(a == false){IntakeSystem.getInstance().stop();}
-    }*/
 
-    /*public void setOutaking(boolean a)
-    {
-        if(a == false){OutakeSystem.getInstance().stop();}
-    }
-*/
 
     public void controls() {
-        /*Button intake = new Button(() -> getXboxController().getAButton());
-        intake.whenPressed(new IntakeCommand());
-        Button outake = new Button(() -> getXboxController().getBButton());
-        outake.whenPressed(new OutakeCommand());*/
+        Trigger intake = new JoystickButton(xboxController, XboxController.Button.kY.value)
+                .whileTrue(new IntakeCommand());
+                //intake.onFalse(OutakeSystem.getInstance().stop());
+        Trigger outake = new JoystickButton(xboxController, XboxController.Button.kX.value)
+                .whileTrue(new OutakeCommand());
     }
 
 

@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Encoder;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -18,9 +18,9 @@ public class DriveTrainSystem extends SubsystemBase {
     WPI_TalonSRX motor_rightf, motor_leftf;
     CANSparkMax motor_rightb, motor_leftb;
     private PIDController pid;
-    private Encoder encoderlb;
-    private Encoder encoderrb;
-    private double kP = 0;
+    private RelativeEncoder encoderlb;
+    private RelativeEncoder encoderrb;
+    private double kP = 0.1;
     private double kI = 0;
     private double kD = 0;
 
@@ -32,32 +32,24 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_rightf = new WPI_TalonSRX(22);
         motor_leftb = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        kP = kD = kI = 0;
-        pid = new PIDController(kP, kI, kD);
-        encoderlb = new Encoder(0, 1);
-        encoderrb = new Encoder(0, 1);
-        pid.setTolerance(5, 10);
-        pid.setSetpoint(1);
-
-
         motor_rightf.configFactoryDefault();
         motor_rightb.restoreFactoryDefaults();
         motor_leftf.configFactoryDefault();
         motor_leftb.restoreFactoryDefaults();
         motor_leftf.setInverted(true);
         motor_leftb.setInverted(true);
+
+        pid = new PIDController(kP, kI, kD);
+        encoderlb = motor_leftb.getEncoder();
+        encoderrb = motor_rightb.getEncoder();
+        //pid.setTolerance(5, 10);
+        pid.setSetpoint(100);
+
+
+
     }
 
-    @Override
-    public void periodic()
-    {
-        //turns all motors off, why? - naomi
-        /*motor_rightf.set(ControlMode.PercentOutput, OI.);
-        motor_rightb.set(ControlMode.PercentOutput, 0);
-        motor_leftf.set(ControlMode.PercentOutput, 0);
-        motor_leftb.set(ControlMode.PercentOutput, 0);*/
-        run();
-    }
+
 
 
     public void run(){
@@ -89,19 +81,20 @@ public class DriveTrainSystem extends SubsystemBase {
     }
 
     public void executePID() {
-        motor_leftf.set(pid.calculate(encoderlb.getDistance(), pid.getSetpoint()));
-        motor_leftb.set(pid.calculate(encoderlb.getDistance(), pid.getSetpoint()));
-        motor_rightf.set(pid.calculate(encoderrb.getDistance(), pid.getSetpoint()));
-        motor_rightb.set(pid.calculate(encoderrb.getDistance(), pid.getSetpoint()));
-        if(pid.atSetpoint())
-        {
-            motor_leftf.set(0);
-            motor_leftb.set(0);
-            motor_rightf.set(0);
-            motor_rightb.set(0);
-        }
+        motor_leftf.set(pid.calculate(encoderlb.getPosition(), pid.getSetpoint()));
+        motor_leftb.set(pid.calculate(encoderlb.getPosition(), pid.getSetpoint()));
+        motor_rightf.set(pid.calculate(encoderrb.getPosition(), pid.getSetpoint()));
+        motor_rightb.set(pid.calculate(encoderrb.getPosition(), pid.getSetpoint()));
+    }
+    @Override
+    public void periodic()
+    {
+        //turns all motors off, why? - naomi
+        /*motor_rightf.set(ControlMode.PercentOutput, OI.);
+        motor_rightb.set(ControlMode.PercentOutput, 0);
+        motor_leftf.set(ControlMode.PercentOutput, 0);
+        motor_leftb.set(ControlMode.PercentOutput, 0);*/
+        run();
     }
 }
 
-/*rpower = left + right;
-        lpower = left - right;"*/

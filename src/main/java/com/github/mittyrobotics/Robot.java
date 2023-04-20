@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         DriveTrainSystem.getInstance().run();
-        DriveTrainSystem.getInstance().executePID();
+
 
     }
 
@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-
+        DriveTrainSystem.getInstance().executePID();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         //call drive train system
-
+        DriveTrainSystem.getInstance().executePID();
 
         //TODO create OI function
 
