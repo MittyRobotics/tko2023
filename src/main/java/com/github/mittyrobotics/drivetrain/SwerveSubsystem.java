@@ -32,8 +32,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     private TalonFX[] driveFalcon = new TalonFX[4];
     private TalonFX[] rotationFalcon = new TalonFX[4];
 
-    private Encoder[] encoder = new Encoder[4];
-
     private double[] prevEnc = new double[]{0, 0, 0, 0};
 
     boolean flip;
@@ -49,10 +47,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public Vector getVel() {
         return forwardKinematics.vel;
-    }
-
-    public Angle getDirectionOfTravel() {
-        return forwardKinematics.getCurHeading();
     }
 
     public static SwerveSubsystem getInstance() {
@@ -93,16 +87,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i].config_kI(0, SwerveConstants.ANGULAR_POSITION_I);
             rotationFalcon[i].config_kD(0, SwerveConstants.ANGULAR_POSITION_D);
 
-//            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1], true);
-//            encoder[i].reset();
-//            encoder[i].setDistancePerPulse(1./SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER);
-
-//            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1]);
             prevEnc[i] = driveFalcon[i].getSelectedSensorPosition();
-//            encoder[i].setDistancePerRotation(2048);
-//            encoder[i].setPositionOffset(10);
-//            rotationFalcon[i].setSelectedSensorPosition(encoder[i].getAbsolutePosition() * SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER);
-
         }
 
         inverseKinematics = new InverseKinematics(SwerveConstants.TRACK_WIDTH, SwerveConstants.LENGTH);
@@ -118,27 +103,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
     }
 
-//    public double getMagEncoderAbsRadians(int i) {
-//        return encoder[i].getDistance();
-//                / SwerveConstants.TICKS_PER_RADIAN_MAG_ENCODER;
-//    }
 
     public void resetEncoders() {
         for(int i = 0; i < 4; i++) {
             driveFalcon[i].setSelectedSensorPosition(0);
             rotationFalcon[i].setSelectedSensorPosition(0);
         }
-    }
-
-    public void resetMagEncoderAll() {
-        for(int i = 0; i < 4; i++) {
-//            encoder[i].reset();
-        }
-    }
-
-    public double getMagEncoderDistance(int i) {
-//        return encoder[i].getDistance();
-        return 0;
     }
 
     //set all motors
@@ -174,8 +144,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         double[] velocities = new double[4];
 
         for(int i = 0; i < 4; i++) {
-//            velocities[i] = Math.sqrt(inverseKinematics.swerveModule[i].getX() * inverseKinematics.swerveModule[i].getX() + inverseKinematics.swerveModule[i].getY()
-//                    * inverseKinematics.swerveModule[i].getY());
             velocities[i] = inverseKinematics.swerveModule[i].getMagnitude();
         }
 
@@ -185,7 +153,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     public double[] desiredAngles() {
         double[] angles = new double[4];
         for(int i = 0; i < 4; i++) {
-//            angles[i] = Math.atan2(inverseKinematics.swerveModule[i].getY(), inverseKinematics.swerveModule[i].getX());
             angles[i] = inverseKinematics.swerveModule[i].getAngle().getRadians();
         }
 
@@ -241,8 +208,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public double angle(int i) {
         double curSP = rotationFalcon[i].getSelectedSensorPosition() / SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
-//        double curSP = encoder[i].getDistance();
-//        double curSP = encoder[i].getAbsolutePosition();
         return standardize(curSP);
     }
 
@@ -276,17 +241,11 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         }
 
         for(int i = 0; i < 4; i++) {
-//            rotationFalcon[i].setSelectedSensorPosition(encoder[i].getAbsolutePosition());
-//            double curSP = rotationFalcon[i].getSelectedSensorPosition();
-
             double curSP = rotationFalcon[i].getSelectedSensorPosition(0);
 
             double norm = standardize(curSP / SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
 
             double normDes = standardize(desiredAngles[i]);
-
-//            LoggerInterface.getInstance().put("Module " + i + " desired angle", normDes);
-//            LoggerInterface.getInstance().put("Module " + i + " current angle", norm);
 
             boolean right;
             double diff;
@@ -311,8 +270,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
                 }
             }
 
-//            rotationFalcon[i].setSelectedSensorPosition(encoder[i].getAbsolutePosition());
-//            rotationFalcon[i].set(ControlMode.Position, curSP + (diff * (right ? 1 : -1) * SwerveConstants.TICKS_PER_RADIAN_FALCON_MAG_ENCODER));
             rotationFalcon[i].set(ControlMode.Position, curSP + (diff * (right ? 1 : -1) * SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO));
         }
     }
@@ -329,10 +286,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public double ticks(int i) {
         return driveFalcon[i].getSelectedSensorPosition();
-    }
-
-    public double getSpeedOneTicks() {
-        return driveFalcon[1].getSelectedSensorVelocity();
     }
 
     public void setPose(Pose p) {
@@ -465,8 +418,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             this.linearVel = linearVel;
             this.angularVel = angularVel;
 
-//            System.out.println("LINEAR VEL" + linearVel);
-
             tangentialVelocityVector[0] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
             tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
             tangentialVelocityVector[2] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
@@ -476,13 +427,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             double ratio = 1;
 
             for(int i = 0; i < 4; i++) {
-//                LoggerInterface.getInstance().put("Module " + i + " Angular", tangentialVelocityVector[i]);
                 swerveModule[i] = Vector.add(linearVel, tangentialVelocityVector[i]);
                 if (swerveModule[i].getMagnitude() / SwerveConstants.MAX_BOOST_LINEAR_VEL > ratio)
                     ratio = swerveModule[i].getMagnitude() / SwerveConstants.MAX_BOOST_LINEAR_VEL;
             }
 
-            for(int i = 0; i < 4; ++i) swerveModule[i] = Vector.multiply(ratio, swerveModule[i]);
+            for(int i = 0; i < 4; i++) swerveModule[i] = Vector.multiply(ratio, swerveModule[i]);
         }
     }
 
@@ -505,7 +455,6 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             Point new_ = new Point(0, 0);
             for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
             new_ = Point.multiply(0.25, new_);
-//            new_ = new Point(new_.getX(), new_.getY());
 
             curHeading = new Angle(Gyro.getInstance().getHeadingRadians());
             poses.add(new Pair(nanoTime, new Pose(Point.add(poses.get(poses.size() - 1).getValue().getPosition(), new_), curHeading)));
