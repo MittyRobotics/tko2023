@@ -12,17 +12,15 @@ public class IntakeCommand extends CommandBase {
     {
         //set up OI - naomi
         OI.getInstance();
-        IntakeSystem.getInstance().setIntakeDown();
+
     }
 
     public void execute() {
 
-        IntakeSystem.getInstance().run();
+        IntakeSystem.getInstance().periodic();
     }
     @Override
     public void end(boolean interrupted) {
-        IntakeSystem.getInstance().setIntakeUp();
-        //OI.getInstance().setIntaking(false);
     }
     @Override
     public boolean isFinished() {

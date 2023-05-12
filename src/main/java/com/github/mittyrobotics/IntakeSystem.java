@@ -25,26 +25,12 @@ public class IntakeSystem extends SubsystemBase {
     @Override
     public void periodic()
     {
-        OI.getInstance().controls();
-    }
-
-    public void setIntakeDown() {
-        intakeMotor.set(ControlMode.Position, 45);
-    }
-
-    public void setIntakeUp() {
-        intakeMotor.set(ControlMode.Position, -45);
-    }
-
-    public void stop()
-    {
+        while(OI.getInstance().controls_intake() == true)
+        {
+            intakeMotor.set(50);
+        }
         intakeMotor.set(0);
-    }
 
-
-    public void run()
-    {
-        OI.getInstance().controls();
     }
 
 

@@ -23,7 +23,7 @@ public class DriveTrainSystem extends SubsystemBase {
     private double kP = 0.1;
     private double kI = 0;
     private double kD = 0;
-
+    public static final double TICKS_PER_INCH = 15359.0/24.0;
     public void initHardware()
     {
         //change ids! otherwise only motor_leftb will run, everything else is overridden - naomi
@@ -43,9 +43,8 @@ public class DriveTrainSystem extends SubsystemBase {
         encoderlb = motor_leftb.getEncoder();
         encoderrb = motor_rightb.getEncoder();
         //pid.setTolerance(5, 10);
-        pid.setSetpoint(100);
 
-
+        pid.setSetpoint(TICKS_PER_INCH*39);
 
     }
 

@@ -18,12 +18,10 @@ public class OutakeCommand extends CommandBase {
 
     public void execute() {
 
-        OutakeSystem.getInstance().run();
+        OutakeSystem.getInstance().periodic();
     }
     @Override
     public void end(boolean interrupted) {
-        OutakeSystem.getInstance().stop();
-        //OI.getInstance().setOutaking(false);
     }
     @Override
     public boolean isFinished() {
