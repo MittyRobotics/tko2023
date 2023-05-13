@@ -17,19 +17,20 @@ public class IntakeSystem extends SubsystemBase {
     public void initHardware()
     {
         //update ids - naomi
-        intakeMotor = new WPI_TalonSRX(24);
+        intakeMotor = new WPI_TalonSRX(4);
         intakeMotor.configFactoryDefault();
+        //intakeMotor.setInverted(true);
     }
 
 
     @Override
     public void periodic()
     {
-        while(OI.getInstance().controls_intake() == true)
-        {
-            intakeMotor.set(50);
+        double right;
+        right = OI.getInstance().controls_intake();
+        if(right<-0.2) {
+            intakeMotor.set(-1*right);
         }
-        intakeMotor.set(0);
 
     }
 

@@ -15,22 +15,29 @@ public class OutakeSystem extends SubsystemBase{
     WPI_TalonSRX rampMotorR, rampMotorL;
     public void initHardware()
     {
-        rampMotorR = new WPI_TalonSRX(24);
-        rampMotorL = new WPI_TalonSRX(24);
+        rampMotorR = new WPI_TalonSRX(13);
+        rampMotorL = new WPI_TalonSRX(20);
         rampMotorR.configFactoryDefault();
         rampMotorL.configFactoryDefault();
-        rampMotorR.setInverted(true);
     }
 
 
     @Override
     public void periodic() {
-        while (OI.getInstance().controls_outake() == true) {
-            rampMotorR.set(50);
-            rampMotorL.set(50);
+        double right;
+        right = OI.getInstance().controls_outake();
+        if(right>0.2)
+        {
+            rampMotorR.set(right);
+            rampMotorL.set(right);
         }
-        rampMotorR.set(0);
-        rampMotorL.set(0);
 
+
+
+    }
+
+    public void runauto(){
+        rampMotorR.set(50);
+        rampMotorL.set(50);
     }
 }

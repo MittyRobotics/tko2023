@@ -44,7 +44,7 @@ public class DriveTrainSystem extends SubsystemBase {
         encoderrb = motor_rightb.getEncoder();
         //pid.setTolerance(5, 10);
 
-        pid.setSetpoint(TICKS_PER_INCH*39);
+        pid.setSetpoint(TICKS_PER_INCH*39*1.8);
 
     }
 
