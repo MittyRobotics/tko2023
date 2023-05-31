@@ -15,9 +15,9 @@ public final class Main {
   private Main() {}
 
   /**
-   * Main initialization function. Do not perform any initialization here.
+   * Main initialization function. Do not perform any initialization her
    *
    * <p>If you change your main robot class, change the parameter type.
    */
-  public static void main(String... args) {RobotBase.startRobot(Robot::new);}
+  public static void main(String... args) {RobotBase.startRobot(LimelightTest::new);}
 }
