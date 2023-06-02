@@ -17,16 +17,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        IntakeSystem.getInstance();
-        IntakeSystem.getInstance().initHardware();
+        //IntakeSystem.getInstance();
+        //IntakeSystem.getInstance().initHardware();
         //OutakeSystem.getInstance();
         //OutakeSystem.getInstance().initHardware();
         //OI.getInstance();
         DriveTrainSystem.getInstance();
-        OutakeSystem.getInstance().initHardware();
+        //OutakeSystem.getInstance().initHardware();
         DriveTrainSystem.getInstance().initHardware();
+
         OI.getInstance().getXboxController();
-        OI.getInstance().getXboxController2();
+
+        //OI.getInstance().getXboxController2();
         /*motor_rightf = new WPI_TalonSRX(13);
         motor_rightb = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
         motor_leftf = new WPI_TalonSRX(20);
@@ -45,8 +47,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        OutakeSystem.getInstance().periodic();
-        IntakeSystem.getInstance().periodic();
+        //OutakeSystem.getInstance().periodic();
+        //IntakeSystem.getInstance().periodic();
 
     }
 
@@ -73,7 +75,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         //call drive train system
-        //DriveTrainSystem.getInstance().executePID();
+        DriveTrainSystem.getInstance().executePID();
+        //DriveTrainSystem.getInstance().run();
 
         //TODO create OI function
 

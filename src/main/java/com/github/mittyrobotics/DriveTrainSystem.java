@@ -21,8 +21,8 @@ public class DriveTrainSystem extends SubsystemBase {
     private RelativeEncoder encoderlb;
     private RelativeEncoder encoderrb;
     private double kP = 0.1;
-    private double kI = 0;
-    private double kD = 0;
+    private double kI = 0.0011;
+    private double kD = 0.02;
     public static final double TICKS_PER_INCH = 15359.0/24.0;
     public void initHardware()
     {
@@ -42,9 +42,11 @@ public class DriveTrainSystem extends SubsystemBase {
         pid = new PIDController(kP, kI, kD);
         encoderlb = motor_leftb.getEncoder();
         encoderrb = motor_rightb.getEncoder();
+        encoderlb.setPosition(0);
+        encoderrb.setPosition(0);
         //pid.setTolerance(5, 10);
 
-        pid.setSetpoint(TICKS_PER_INCH*39*1.8);
+        pid.setSetpoint(100);
 
     }
 
@@ -80,10 +82,11 @@ public class DriveTrainSystem extends SubsystemBase {
     }
 
     public void executePID() {
-        motor_leftf.set(pid.calculate(encoderlb.getPosition(), pid.getSetpoint()));
-        motor_leftb.set(pid.calculate(encoderlb.getPosition(), pid.getSetpoint()));
-        motor_rightf.set(pid.calculate(encoderrb.getPosition(), pid.getSetpoint()));
-        motor_rightb.set(pid.calculate(encoderrb.getPosition(), pid.getSetpoint()));
+        motor_leftf.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.025);
+        motor_leftb.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.025);
+        motor_rightf.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.025);
+        motor_rightb.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.025);
+        System.out.println(encoderlb.getPosition());
     }
     @Override
     public void periodic()
