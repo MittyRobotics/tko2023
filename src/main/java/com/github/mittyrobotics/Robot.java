@@ -7,7 +7,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.*;
-
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 
 public class Robot extends TimedRobot {
@@ -22,7 +24,6 @@ public class Robot extends TimedRobot {
         //OutakeSystem.getInstance();
         //OutakeSystem.getInstance().initHardware();
         //OI.getInstance();
-        DriveTrainSystem.getInstance();
         //OutakeSystem.getInstance().initHardware();
         DriveTrainSystem.getInstance().initHardware();
 
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
         //OutakeSystem.getInstance().periodic();
         //IntakeSystem.getInstance().periodic();
 
@@ -54,6 +56,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new DriveTrainCommand(), new WaitCommand(2), new DriveTrainCommand2()));
     }
 
     @Override
@@ -75,7 +78,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         //call drive train system
-        DriveTrainSystem.getInstance().executePID();
+        //DriveTrainSystem.getInstance().executePID();
+        //DriveTrainSystem.getInstance().aa();
         //DriveTrainSystem.getInstance().run();
 
         //TODO create OI function

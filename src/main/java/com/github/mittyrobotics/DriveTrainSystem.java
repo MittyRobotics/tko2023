@@ -46,7 +46,7 @@ public class DriveTrainSystem extends SubsystemBase {
         encoderrb.setPosition(0);
         //pid.setTolerance(5, 10);
 
-        pid.setSetpoint(100);
+        pid.setSetpoint(30);
 
     }
 
@@ -82,21 +82,32 @@ public class DriveTrainSystem extends SubsystemBase {
     }
 
     public void executePID() {
-        motor_leftf.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.025);
-        motor_leftb.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.025);
-        motor_rightf.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.025);
-        motor_rightb.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.025);
+        motor_leftf.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.25);
+        motor_leftb.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.25);
+        motor_rightf.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.25);
+        motor_rightb.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.25);
         System.out.println(encoderlb.getPosition());
     }
+
+    public void aa()
+    {
+        encoderlb.setPosition(0);
+        encoderrb.setPosition(0);
+        motor_rightf.set(-0.25);
+        motor_rightb.set(-0.25);
+        motor_leftf.set(-0.25);
+        motor_leftb.set(-0.25);
+    }
+
+    public boolean getencoders(double setPoint)
+    {
+        return (encoderlb.getPosition() < setPoint) && (encoderrb.getPosition() < setPoint);
+    }
+
     @Override
     public void periodic()
     {
-        //turns all motors off, why? - naomi
-        /*motor_rightf.set(ControlMode.PercentOutput, OI.);
-        motor_rightb.set(ControlMode.PercentOutput, 0);
-        motor_leftf.set(ControlMode.PercentOutput, 0);
-        motor_leftb.set(ControlMode.PercentOutput, 0);*/
-        run();
+        executePID();
     }
 }
 
