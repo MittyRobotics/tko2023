@@ -20,9 +20,9 @@ public class DriveTrainSystem extends SubsystemBase {
     private PIDController pid;
     private RelativeEncoder encoderlb;
     private RelativeEncoder encoderrb;
-    private double kP = 0.1;
-    private double kI = 0.0011;
-    private double kD = 0.02;
+    private double kP = 0.02;
+    private double kI = 0;
+    private double kD = 0;
     public static final double TICKS_PER_INCH = 15359.0/24.0;
     public void initHardware()
     {
@@ -46,7 +46,7 @@ public class DriveTrainSystem extends SubsystemBase {
         encoderrb.setPosition(0);
         //pid.setTolerance(5, 10);
 
-        pid.setSetpoint(30);
+        pid.setSetpoint(50);
 
     }
 
@@ -81,32 +81,58 @@ public class DriveTrainSystem extends SubsystemBase {
         //figure out how to convert joystick to motor power
     }
 
-    public void executePID() {
+    public boolean executePID() {
         motor_leftf.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.25);
         motor_leftb.set((pid.calculate(encoderlb.getPosition(), pid.getSetpoint()))*0.25);
         motor_rightf.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.25);
         motor_rightb.set((pid.calculate(encoderrb.getPosition(), pid.getSetpoint()))*0.25);
-        System.out.println(encoderlb.getPosition());
+        //System.out.println(encoderlb.getPosition());
+        System.out.println("left: " + encoderlb.getPosition()+ "   right: " + encoderrb.getPosition());
+        Command c = new DriveTrainCommand();
+        if(encoderlb.getPosition() > pid.getSetpoint() - 4 && encoderlb.getPosition() < pid.getSetpoint()+2){
+
+
+            //c.end(true);
+        }
+        //System.out.println(c.isFinished());
+
+        return (encoderlb.getPosition() > pid.getSetpoint() - 4 && encoderlb.getPosition() < pid.getSetpoint()+2);
     }
 
-    public void aa()
+    public boolean aa()
     {
+        motor_rightf.set(0.25);
+        motor_rightb.set(0.25);
+        motor_leftf.set(0.25);
+        motor_leftb.set(0.25);
+        System.out.println("left: " + encoderlb.getPosition()+ "   right: " + encoderrb.getPosition());
+        System.out.println(encoderlb.getPosition() > 30);
+        if(encoderlb.getPosition() > 30 == true){
+            DriveTrainSystem.getInstance().stop();
+            Command co = new DriveTrainCommand2();
+            co.end(true);
+
+        }
+        return (encoderlb.getPosition() > 30);
+    }
+
+    public void stop(){
+        motor_rightf.set(0);
+        motor_rightb.set(0);
+        motor_leftf.set(0);
+        motor_leftb.set(0);
+    }
+
+    public void encoder_value(){
         encoderlb.setPosition(0);
         encoderrb.setPosition(0);
-        motor_rightf.set(-0.25);
-        motor_rightb.set(-0.25);
-        motor_leftf.set(-0.25);
-        motor_leftb.set(-0.25);
     }
 
-    public boolean getencoders(double setPoint)
-    {
-        return (encoderlb.getPosition() < setPoint) && (encoderrb.getPosition() < setPoint);
-    }
 
     @Override
     public void periodic()
     {
+        //aa();
         executePID();
     }
 }

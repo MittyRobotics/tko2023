@@ -13,7 +13,7 @@ public class DriveTrainCommand extends CommandBase {
     @Override
     public void execute(){
 
-        DriveTrainSystem.getInstance().run();
+        DriveTrainSystem.getInstance().executePID();
         //DriveTrainSystem.getInstance().aa();
 
 
@@ -22,11 +22,13 @@ public class DriveTrainCommand extends CommandBase {
     @Override
     public void end(boolean interrupted){
         DriveTrainSystem.getInstance().periodic();
+        System.out.println("__________________done");
     }
     @Override
     public boolean isFinished(){
-        if(DriveTrainSystem.getInstance().getencoders(100) == true)
+        if(DriveTrainSystem.getInstance().executePID() == true)
         {
+            //System.out.println("PID" + DriveTrainSystem.getInstance().executePID());
             return true;
         }
         return false;

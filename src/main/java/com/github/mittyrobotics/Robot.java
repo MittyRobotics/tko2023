@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new DriveTrainCommand(), new WaitCommand(2), new DriveTrainCommand2()));
+        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new DriveTrainCommand()));
     }
 
     @Override
@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        //DriveTrainSystem.getInstance().encoder_value();
         //DriveTrainSystem.getInstance().executePID();
         //OutakeSystem.getInstance().runauto();
     }
