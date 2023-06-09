@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new DriveTrainCommand()));
+        //CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new DriveTrainCommand()));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
         //call drive train system
         //DriveTrainSystem.getInstance().executePID();
         //DriveTrainSystem.getInstance().aa();
-        //DriveTrainSystem.getInstance().run();
+        DriveTrainSystem.getInstance().trapezoid();
 
         //TODO create OI function
 
