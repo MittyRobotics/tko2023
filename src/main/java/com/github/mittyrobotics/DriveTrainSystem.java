@@ -32,7 +32,8 @@ public class DriveTrainSystem extends SubsystemBase {
     private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1,1.5);
     private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-    private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(10, 0.75);
+    private TrapezoidProfile.State m_presetpoint = new TrapezoidProfile.State();
+    private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(10, 1);
     public void initHardware()
     {
         //change ids! otherwise only motor_leftb will run, everything else is overridden - naomi
@@ -49,6 +50,8 @@ public class DriveTrainSystem extends SubsystemBase {
         motor_leftb.restoreFactoryDefaults();
         motor_leftf.setInverted(true);
         motor_leftb.setInverted(true);
+        OI.getInstance().getXboxController();
+
 
         pid = new PIDController(kP, kI, kD);
         encoderlb = motor_leftb.getEncoder();
@@ -63,14 +66,15 @@ public class DriveTrainSystem extends SubsystemBase {
 
     public void trapezoid()
     {
-        m_goal = new TrapezoidProfile.State(5,2);
+        m_goal = new TrapezoidProfile.State(5,0);
         var profile = new TrapezoidProfile(m_constraints, m_goal, m_setpoint);
         m_setpoint = profile.calculate(0.02);
-        motor_leftb.getPIDController().setReference(m_goal.position, CANSparkMax.ControlType.kPosition, 0, m_feedforward.calculate(m_goal.velocity));
-        motor_rightb.getPIDController().setReference(m_goal.position, CANSparkMax.ControlType.kPosition, 0, m_feedforward.calculate(m_goal.velocity));
+        motor_leftb.getPIDController().setReference(m_goal.position, CANSparkMax.ControlType.kPosition, 0, m_feedforward.calculate(m_setpoint.velocity));
+        motor_rightb.getPIDController().setReference(m_goal.position, CANSparkMax.ControlType.kPosition, 0, m_feedforward.calculate(m_setpoint.velocity));
         double a = motor_leftb.get();
         double b = motor_rightb.get();
-        System.out.println("speed: " + a + " , " + b);
+        //System.out.println("speed: " + a + " , " + b);
+        System.out.println("setpoint: " + m_setpoint.position + " " + m_setpoint.velocity);
         motor_rightf.set(b);
         motor_leftf.set(a);
     }
@@ -132,8 +136,8 @@ public class DriveTrainSystem extends SubsystemBase {
     public void periodic()
     {
         //aa();
-        //executePID();
-        trapezoid();
+        //executePID(
+        //trapezoid();
     }
 }
 

@@ -48,6 +48,7 @@ public class OI {
     public double controls_outake(){
         return xboxController2.getRightY();
     }
+    public boolean buttonpress(){return xboxController.getAButtonPressed();}
 
 
 }

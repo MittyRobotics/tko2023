@@ -21,7 +21,7 @@ public class DriveTrainCommand extends CommandBase {
     }
     @Override
     public void end(boolean interrupted){
-        DriveTrainSystem.getInstance().periodic();
+        //DriveTrainSystem.getInstance().periodic();
         System.out.println("__________________done");
     }
     @Override

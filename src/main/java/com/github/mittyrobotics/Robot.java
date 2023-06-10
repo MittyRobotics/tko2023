@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
+        //CommandScheduler.getInstance().run();
         //OutakeSystem.getInstance().periodic();
         //IntakeSystem.getInstance().periodic();
 
@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
         //DriveTrainSystem.getInstance().executePID();
         //DriveTrainSystem.getInstance().aa();
         DriveTrainSystem.getInstance().trapezoid();
+        //System.out.println(OI.getInstance().buttonpress());
 
         //TODO create OI function
 
