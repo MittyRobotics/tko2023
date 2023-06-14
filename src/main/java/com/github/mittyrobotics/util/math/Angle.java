@@ -1,4 +1,4 @@
-package com.github.mittyrobotics.util;
+package com.github.mittyrobotics.util.math;
 
 public class Angle {
     private double radians;
