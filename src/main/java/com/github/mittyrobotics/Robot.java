@@ -1,5 +1,6 @@
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.arm.StateMachine;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
@@ -11,7 +12,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        super.robotPeriodic();
+        StateMachine.update(1, 1);
     }
 
     @Override
