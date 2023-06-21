@@ -6,7 +6,12 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,6 +22,9 @@ public class Robot extends TimedRobot {
     WPI_TalonSRX motor_rightf, motor_leftf;
     CANSparkMax motor_rightb, motor_leftb;
 
+    DoubleArraySubscriber areasSub;
+    NetworkTable table;
+
     @Override
     public void robotInit() {
         //IntakeSystem.getInstance();
@@ -24,10 +32,13 @@ public class Robot extends TimedRobot {
         //OutakeSystem.getInstance();
         //OutakeSystem.getInstance().initHardware();
         //OI.getInstance();
-        //OutakeSystem.getInstance().initHardware();
-        DriveTrainSystem.getInstance().initHardware();
+        //limelight.getInstance().initHardware();
+        //DriveTrainSystem.getInstance().initHardware();
+        table = NetworkTableInstance.getDefault().getTable("limelight");
+        //areasSub = table.getDoubleTopic("tx").subscribe(new double {});
 
-        OI.getInstance().getXboxController();
+
+        //OI.getInstance().getXboxController();
 
         //OI.getInstance().getXboxController2();
         /*motor_rightf = new WPI_TalonSRX(13);
@@ -51,6 +62,7 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().run();
         //OutakeSystem.getInstance().periodic();
         //IntakeSystem.getInstance().periodic();
+
 
     }
 
@@ -81,10 +93,28 @@ public class Robot extends TimedRobot {
         //call drive train system
         //DriveTrainSystem.getInstance().executePID();
         //DriveTrainSystem.getInstance().aa();
-        DriveTrainSystem.getInstance().trapezoid();
+        //DriveTrainSystem.getInstance().trapezoid();
         //System.out.println(OI.getInstance().buttonpress());
+        //limelight.getInstance().periodic();
 
-        //TODO create OI function
+        NetworkTableEntry tx = table.getEntry("tx");
+        NetworkTableEntry ty = table.getEntry("ty");
+        NetworkTableEntry ta = table.getEntry("ta");
+        NetworkTableEntry tv = table.getEntry("tv");
+
+        double x = tx.getDouble(0.0);
+        double y = ty.getDouble(0.0);
+        double area = ta.getDouble(0.0);
+        boolean target = tv.getBoolean(false);
+
+        SmartDashboard.putNumber("LimelightX", x);
+        SmartDashboard.putNumber("LimelightY", y);
+        SmartDashboard.putNumber("LimelightArea", area);
+        //SmartDashboard.putBoolean("LimelightTarget", target);
+
+        
+
+
 
     }
 
