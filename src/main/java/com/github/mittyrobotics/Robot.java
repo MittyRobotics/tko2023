@@ -110,13 +110,25 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+
+        double limelightdegree = 180;
+        double limelightheightinches = 1;
+        double goalheightinches = 2;
+
+        double angletogoal = limelightdegree + y;
+        double angletogoalradians = angletogoal *(3.14159/180);
+
+        double dist = (goalheightinches - limelightheightinches)/Math.tan(angletogoalradians);
+
+        System.out.println("distance: " + dist);
         //SmartDashboard.putBoolean("LimelightTarget", target);
 
-        
+
 
 
 
     }
+
 
     @Override
     public void disabledInit() {
