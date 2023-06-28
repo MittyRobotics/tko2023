@@ -4,18 +4,17 @@ import com.github.mittyrobotics.util.Util;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Timer;
 
 import static com.github.mittyrobotics.arm.ArmKinematics.ArmPosition;
 
 public class StateMachine {
     private static Queue<ArmState> desiredArmStates = new LinkedList<>();
-    private static ArmState lastArmState;
+    private static ArmState currentArmState;
     private static long delay = 0;
 
     private static void initStateMachine() {
         desiredArmStates.add(ArmState.STOWED);
-        lastArmState = ArmState.STOWED;
+        currentArmState = ArmState.STOWED;
     }
 
     public static int addStateToQueue(ArmState state) {
@@ -24,8 +23,8 @@ public class StateMachine {
     }
 
     public static ArmState getDesiredArmState() {
-        lastArmState = desiredArmStates.peek() == null ? lastArmState : desiredArmStates.peek();
-        return lastArmState;
+        currentArmState = desiredArmStates.peek() == null ? currentArmState : desiredArmStates.peek();
+        return currentArmState;
     }
 
     public static void setDelay(long delay) {

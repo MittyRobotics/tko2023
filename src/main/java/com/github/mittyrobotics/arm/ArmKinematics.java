@@ -11,6 +11,12 @@ public class ArmKinematics {
     private static double angle;
     private static double radius;
 
+    public static void updateDesiredArmPositionFromState() {
+        StateMachine.ArmState desiredArmState = StateMachine.getDesiredArmState();
+        ArmPosition desiredArmPosition = ArmSetpoints.positions.get(desiredArmState);
+        setArmPositionPolar(desiredArmPosition.angle, desiredArmPosition.radius);
+    }
+
     public static void setArmPositionPolar(Angle angle, double radius) {
         ArmKinematics.angle = PI/2 - angle.getRadians();
         ArmKinematics.radius = radius;
