@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        StateMachine.update(1, 1);
+//        StateMachine.update(1, 1);
         Odometry.updateFromLimelight();
         ArmKinematics.updateDesiredArmPositionFromState();
 
