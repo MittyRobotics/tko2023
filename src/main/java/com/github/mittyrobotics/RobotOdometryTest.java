@@ -1,34 +1,21 @@
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.arm.ArmKinematics;
-import com.github.mittyrobotics.arm.ArmSetpoints;
 import com.github.mittyrobotics.arm.StateMachine;
-import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
-import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.math.Pose;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends TimedRobot {
+public class RobotOdometryTest extends TimedRobot {
 
     @Override
     public void robotInit() {
-        SwerveSubsystem.getInstance().initHardware();
-        PivotSubsystem.getInstance().initHardware();
-        TelevatorSubsystem.getInstance().initHardware();
-        ArmSetpoints.initSetpoints();
         Odometry.initOdometry(new Pose(0, 0, 0));
     }
 
     @Override
     public void robotPeriodic() {
-        StateMachine.update(1, 1);
         Odometry.updateFromLimelight();
-        ArmKinematics.updateDesiredArmPositionFromState();
-
-        CommandScheduler.getInstance().run();
+        System.out.println(Odometry.getPose());
     }
 
     @Override

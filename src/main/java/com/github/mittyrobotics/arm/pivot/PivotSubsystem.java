@@ -1,5 +1,7 @@
 package com.github.mittyrobotics.arm.pivot;
 
+import com.github.mittyrobotics.arm.pivot.commands.PivotToDesiredAngleCommand;
+import com.github.mittyrobotics.arm.televator.commands.MoveToDesiredExtensionCommand;
 import com.github.mittyrobotics.util.math.Angle;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -19,6 +21,8 @@ public class PivotSubsystem extends SubsystemBase {
     private CANSparkMax[] motor;
 
     public void initHardware() {
+        motor = new CANSparkMax[2];
+
         for (int i = 0; i < 2; i++) {
             motor[i] = new CANSparkMax(SPARK_ID[i], CANSparkMaxLowLevel.MotorType.kBrushless);
             motor[i].restoreFactoryDefaults();
@@ -29,6 +33,8 @@ public class PivotSubsystem extends SubsystemBase {
             motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
             motor[i].getEncoder().setPosition(0);
         }
+
+        setDefaultCommand(new PivotToDesiredAngleCommand());
     }
 
     public void setRaw(double rpm, double ff) {

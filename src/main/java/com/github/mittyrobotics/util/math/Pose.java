@@ -22,5 +22,8 @@ public class Pose {
         return angle;
     }
 
-
+    @Override
+    public String toString() {
+        return "{" + point.toString() + ", " + angle.toString() + "}";
+    }
 }

@@ -14,4 +14,9 @@ public class Util {
                 time
         );
     }
+
+    public static final double INCHES_PER_METER = 39.37;
+    public static final double METERS_PER_INCH = 1 / INCHES_PER_METER;
+    public static final double CENTIMETERS_PER_INCH = 2.54;
+    public static final double INCHES_PER_CENTIMETER = 1 / CENTIMETERS_PER_INCH;
 }

@@ -18,4 +18,9 @@ public class Angle {
     public static Angle add(Angle a1, Angle a2) {
         return new Angle(a1.radians + a2.radians, true);
     }
+
+    @Override
+    public String toString() {
+        return "(" + radians + " radians" + ")";
+    }
 }
