@@ -47,4 +47,8 @@ public class PivotSubsystem extends SubsystemBase {
     public Angle getCurrentAngle() {
         return new Angle(motor[0].getEncoder().getPosition(), true);
     }
+
+    public double getCurrentVelocity() {
+        return motor[0].getEncoder().getVelocity();
+    }
 }

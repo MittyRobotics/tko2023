@@ -1,8 +1,11 @@
 package com.github.mittyrobotics.arm.televator.commands;
 
 import com.github.mittyrobotics.arm.ArmKinematics;
+import com.github.mittyrobotics.arm.MotionProfiles;
+import com.github.mittyrobotics.arm.StateMachine;
 import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
+import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class MoveToDesiredExtensionCommand extends CommandBase {
@@ -12,6 +15,7 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
     }
 
     private double desiredExtension, desiredVel, ff;
+    private TrapezoidalMotionProfile motionProfile;
 
     @Override
     public void initialize() {
@@ -23,6 +27,7 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
         desiredExtension = ArmKinematics.getDesiredExtension();
 
         // TODO: 6/27/2023 ADD MP STUFF
+        motionProfile = MotionProfiles.TELEVATOR_MPS.get(StateMachine.getTransitionState());
 
         // TODO: 6/27/2023 ADD FF STUFF
 

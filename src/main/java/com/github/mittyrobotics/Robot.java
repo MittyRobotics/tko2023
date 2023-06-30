@@ -2,7 +2,7 @@ package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.arm.ArmKinematics;
 import com.github.mittyrobotics.arm.ArmSetpoints;
-import com.github.mittyrobotics.arm.StateMachine;
+import com.github.mittyrobotics.arm.MotionProfiles;
 import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
 import com.github.mittyrobotics.autonomous.Odometry;
@@ -18,8 +18,9 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().initHardware();
         PivotSubsystem.getInstance().initHardware();
         TelevatorSubsystem.getInstance().initHardware();
-        ArmSetpoints.initSetpoints();
         Odometry.initOdometry(new Pose(0, 0, 0));
+        ArmSetpoints.initSetpoints();
+        MotionProfiles.createMPs();
     }
 
     @Override
