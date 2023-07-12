@@ -10,6 +10,7 @@ import static com.github.mittyrobotics.arm.ArmKinematics.ArmPosition;
 public class StateMachine {
 //    private static Queue<ArmState> desiredArmStates = new LinkedList<>();
     private static ArmState currentArmState;
+    private static PieceState pieceState;
     private static TransitionState transitionState;
     private static long delay = 0;
 
@@ -31,6 +32,14 @@ public class StateMachine {
     public static ArmState getDesiredArmState() {
 //        currentArmState = desiredArmStates.peek() == null ? currentArmState : desiredArmStates.peek();
         return currentArmState;
+    }
+
+    public static void setPieceState(PieceState state) {
+        pieceState = state;
+    }
+
+    public static PieceState getPieceState() {
+        return pieceState;
     }
 
     public static void setTransitionState(ArmState from, ArmState to) {
@@ -107,6 +116,12 @@ public class StateMachine {
         LOW,
         HP,
         SCORING
+    }
+
+    public enum PieceState {
+        CONE,
+        CUBE,
+        NONE
     }
 
     public enum TransitionState {
