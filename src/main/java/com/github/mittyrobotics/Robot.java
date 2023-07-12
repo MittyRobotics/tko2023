@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().initHardware();
         PivotSubsystem.getInstance().initHardware();
         TelevatorSubsystem.getInstance().initHardware();
-        Odometry.initOdometry(new Pose(0, 0, 0));
+        Odometry.initOdometry(new Pose(0, 0, 0), 0);
         ArmSetpoints.initSetpoints();
         MotionProfiles.createMPs();
     }
