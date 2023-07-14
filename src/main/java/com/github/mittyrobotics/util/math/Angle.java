@@ -4,7 +4,7 @@ public class Angle {
     private double radians;
 
     public Angle(double angle, boolean radians) {
-        this.radians = angle * (radians ? 1 : 180 / Math.PI);
+        this.radians = angle * (radians ? 1 : Math.PI / 180);
     }
 
     public double getRadians() {

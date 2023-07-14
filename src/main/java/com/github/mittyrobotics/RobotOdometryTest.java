@@ -14,7 +14,7 @@ public class RobotOdometryTest extends TimedRobot {
 //    NetworkTableEntry tx, ty, ta, tv;
     @Override
     public void robotInit() {
-        Odometry.initOdometry(new Pose(0, 0, 0), 0);
+        Odometry.initOdometry(new Pose(0, 0, 0, false), 0);
 //        table = NetworkTableInstance.getDefault().getTable("limelight");
 //        table.getEntry("ledMode").setValue(0);
 //        table.getEntry("camMode").setValue(0);

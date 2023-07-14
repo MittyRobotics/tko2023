@@ -9,9 +9,9 @@ public class Pose {
         angle = a;
     }
 
-    public Pose(double x, double y, double theta) {
+    public Pose(double x, double y, double theta, boolean radians) {
         point = new Point(x, y);
-        angle = new Angle(theta, true);
+        angle = new Angle(theta, radians);
     }
 
     public Point getPoint() {

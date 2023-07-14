@@ -14,7 +14,7 @@ public class Odometry {
     private static double zDistToTarget;
 
     public Odometry() {
-        curPose = new Pose(0, 0, 0);
+
     }
 
     public static void initOdometry(Pose startPose, double startDist) {
@@ -37,7 +37,7 @@ public class Odometry {
 
         if (hasTarget) {
             //x, y, theta
-            Pose tempPose = new Pose(limelightPose[0], limelightPose[1], limelightPose[5]);
+            Pose tempPose = new Pose(limelightPose[0], limelightPose[1], limelightPose[5], false);
             setPose(tempPose);
             double tempDist = targetDist[2];
             setDist(tempDist);
