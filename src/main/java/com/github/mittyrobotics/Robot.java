@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 package com.github.mittyrobotics;
 
@@ -8,12 +9,52 @@ import edu.wpi.first.hal.DIOJNI;
 import edu.wpi.first.hal.simulation.DIODataJNI;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+=======
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Mitty Robotics (Team 1351)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.github.mittyrobotics;
+
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.github.mittyrobotics.OI;
+import com.github.mittyrobotics.commands.TankDriveCommand;
+
+import com.github.mittyrobotics.subsystems.DriveTrainSubsystem;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.GenericHID;
+>>>>>>> Stashed changes
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+<<<<<<< Updated upstream
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -150,3 +191,67 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 }
+=======
+public class Robot extends TimedRobot {
+    /**************************
+     *** Used random IDs :) ***
+     **************************/
+
+    CANSparkMax sparkLeft, sparkRight;
+
+ //   WPI_TalonSRX left1, right1;
+
+    @Override
+    public void robotInit() {
+        DriveTrainSubsystem.getInstance().initHardware();
+        DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
+        OI.getInstance().initOI();;
+
+        sparkRight  = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        sparkLeft  = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+        sparkLeft.setInverted(false);
+        sparkRight.setInverted(false);
+
+
+
+
+    }
+
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledInit() {}
+
+    @Override
+    public void disabledPeriodic() {}
+
+    @Override
+    public void autonomousInit() {}
+
+    @Override
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void teleopInit() {
+
+      //  sparkLeft.set(0.5);
+       // sparkRight.set(0.5);
+     //   left1.set(0.5);
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
+    }
+
+    @Override
+    public void testInit() {}
+
+    @Override
+    public void testPeriodic() {}
+}
+>>>>>>> Stashed changes
