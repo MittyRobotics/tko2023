@@ -2,13 +2,12 @@
 
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.OI;
+import com.github.mittyrobotics.commands.IntakeCommand;
+import com.github.mittyrobotics.commands.OuttakeCommand;
 import com.github.mittyrobotics.commands.TankDriveCommand;
 import com.github.mittyrobotics.subsystems.DriveTrainSubsystem;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.TimedRobot;
 
-import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 /*
  * MIT License
@@ -57,9 +56,12 @@ public class Robot extends TimedRobot {
          //   sparkLeft = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
      DriveTrainSubsystem.getInstance().initHardware();
-      OI.getInstance().initOI();;
+     OI.getInstance().initOI();;
+    // DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
 
 
+
+    //CommandScheduler.getInstance().schedule(new TankDriveCommand());
 
 
   }
@@ -110,6 +112,22 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    if (OI.getInstance().getXboxController().getBButton()){
+      CommandScheduler.getInstance().schedule(new IntakeCommand());
+    }
+
+    /*
+    if (OI.getInstance().getXboxController().getLeftY() != 0 || OI.getInstance().getXboxController().getRightY() != 0) {
+      CommandScheduler.getInstance().schedule(new TankDriveCommand(), new IntakeCommand());
+    }
+
+    if (OI.getInstance().getXboxController().getAButtonPressed()) {
+      CommandScheduler.getInstance().schedule(new IntakeCommand());
+    }
+
+     */
+
+
   }
 
   /** This function is called once when the robot is disabled. */

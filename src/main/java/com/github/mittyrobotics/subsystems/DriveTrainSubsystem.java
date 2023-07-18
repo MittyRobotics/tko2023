@@ -13,13 +13,12 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class DriveTrainSubsystem extends SubsystemBase {
     public static DriveTrainSubsystem instance;
-    //brushless or brushed?
 
 
 
- //   private WPI_TalonSRX left1, right1;
-
+    private WPI_TalonSRX roller;
     CANSparkMax sparkLeft, sparkRight;
+
 
     Encoder leftEncoder, rightEncoder;
     public DriveTrainSubsystem() {
@@ -42,12 +41,15 @@ public class DriveTrainSubsystem extends SubsystemBase {
         sparkLeft.setInverted(true);
         sparkRight.setInverted(false);
 
+        roller = new WPI_TalonSRX(4);
+
+        roller.setInverted(true);
+
 
 
 
 
         resetEncoders();
-        sparkLeft.set(0.5);
 
     }
 
@@ -73,6 +75,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
         //left2.set(left);
         sparkRight.set(right);
      //   right2.set(right);
+    }
+
+    public void setRoller(double speed) {
+        roller.set(speed);
     }
 
 }
