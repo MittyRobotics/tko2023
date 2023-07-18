@@ -26,8 +26,8 @@ public class TankDriveCommand extends CommandBase {
     public void execute() {
         double percent = 0.5;
         double deadzone = 0.1;
-        double left = OI.getInstance().getXboxController().getLeftTriggerAxis()* percent;
-        double right = OI.getInstance().getXboxController().getRightTriggerAxis() * percent;
+        double left = OI.getInstance().getXboxController().getLeftY()* percent;
+        double right = OI.getInstance().getXboxController().getRightY() * percent;
         if(Math.abs(left) < deadzone) {
             left = 0;
         }

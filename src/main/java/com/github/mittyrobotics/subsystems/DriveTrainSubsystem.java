@@ -20,6 +20,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
  //   private WPI_TalonSRX left1, right1;
 
     CANSparkMax sparkLeft, sparkRight;
+
+    Encoder leftEncoder, rightEncoder;
     public DriveTrainSubsystem() {
         super();
         setName("Drive Train Subsystem");
@@ -37,32 +39,34 @@ public class DriveTrainSubsystem extends SubsystemBase {
         sparkRight  = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkLeft  = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        sparkLeft.setInverted(false);
+        sparkLeft.setInverted(true);
         sparkRight.setInverted(false);
 
 
 
 
 
-        //resetEncoders();
+        resetEncoders();
+        sparkLeft.set(0.5);
+
+    }
+
+
+    public void resetEncoders() {
+            sparkLeft.getEncoder().setPosition(0);
+            sparkRight.getEncoder().setPosition(0);
 
 
     }
+
 
     /*
-    public void resetEncoders() {
-        sparkLef.setSelectedSensorPosition(0);
-        right1.setSelectedSensorPosition(0);
-    }
-
-
-
     public double getPosition() {
-        return (left1.getSelectedSensorPosition() + right1.getSelectedSensorPosition())/2.;
+        return (sparkLeft.getEncoder() + sparkRight.getEncoder())/2.;
     }
 
+    */
 
-     */
 
     public void setMotors(double left, double right) {
         sparkLeft.set(left);
