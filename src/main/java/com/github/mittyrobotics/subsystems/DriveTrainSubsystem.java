@@ -16,11 +16,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
 
-    private WPI_TalonSRX roller;
+    private WPI_TalonSRX roller, leftTalon;
+
     CANSparkMax sparkLeft, sparkRight;
 
 
-    Encoder leftEncoder, rightEncoder;
+   // Encoder leftEncoder, rightEncoder;
     public DriveTrainSubsystem() {
         super();
         setName("Drive Train Subsystem");
@@ -45,6 +46,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
         roller.setInverted(true);
 
+        leftTalon = new WPI_TalonSRX(13);
+        leftTalon.configFactoryDefault();
+        leftTalon.setInverted(false); //check if is inverted
+
 
 
 
@@ -57,17 +62,18 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void resetEncoders() {
             sparkLeft.getEncoder().setPosition(0);
             sparkRight.getEncoder().setPosition(0);
+            leftTalon.setSelectedSensorPosition(0);
+
 
 
     }
 
 
-    /*
+
     public double getPosition() {
-        return (sparkLeft.getEncoder() + sparkRight.getEncoder())/2.;
+        return leftTalon.getSelectedSensorPosition() / DriveConstants.TICKS_PER_INCH;
     }
 
-    */
 
 
     public void setMotors(double left, double right) {

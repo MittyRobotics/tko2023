@@ -10,4 +10,6 @@ public class DriveConstants {
     public static final boolean FRONT_RIGHT_MOTOR_INVERTED = false;
     public static final boolean BACK_RIGHT_MOTOR_INVERTED = false;
     public static final double MAX_SPEED = 0.5;
+    public static final double TICKS_PER_INCH = 15359.0/24.0;
+
 }

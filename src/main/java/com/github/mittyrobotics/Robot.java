@@ -2,6 +2,7 @@
 
 package com.github.mittyrobotics;
 
+import com.github.mittyrobotics.autonomous.AutoCommand;
 import com.github.mittyrobotics.commands.IntakeCommand;
 import com.github.mittyrobotics.commands.OuttakeCommand;
 import com.github.mittyrobotics.commands.TankDriveCommand;
@@ -91,11 +92,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    new AutoCommand().schedule();
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+
 
 
 
@@ -112,9 +116,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (OI.getInstance().getXboxController().getBButton()){
-      CommandScheduler.getInstance().schedule(new IntakeCommand());
-    }
+    new IntakeCommand().schedule();
 
     /*
     if (OI.getInstance().getXboxController().getLeftY() != 0 || OI.getInstance().getXboxController().getRightY() != 0) {

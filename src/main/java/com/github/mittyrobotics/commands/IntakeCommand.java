@@ -18,14 +18,18 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        System.out.println("intake command has been initialized");
+
         DriveTrainSubsystem.getInstance().setRoller(0);
     }
 
     @Override
     public void execute() {
-        if (OI.getInstance().getXboxController().getAButton()) {
+
+        System.out.println("intake command is executing");
+        if (OI.getInstance().getOperatorController().getCircleButton()) {
             DriveTrainSubsystem.getInstance().setRoller(0.5);
-        } else if(OI.getInstance().getXboxController().getBButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
+        } else if(OI.getInstance().getOperatorController().getCrossButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
             DriveTrainSubsystem.getInstance().setRoller(0);
 
         }

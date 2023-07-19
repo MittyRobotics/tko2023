@@ -23,7 +23,7 @@ public class OuttakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (OI.getInstance().getXboxController().getBButton()) {
+        if (OI.getInstance().getOperatorController().getCrossButton()) {
             DriveTrainSubsystem.getInstance().setRoller(-0.5);
         } else{DriveTrainSubsystem.getInstance().setRoller(0);}
     }
