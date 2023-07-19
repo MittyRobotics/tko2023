@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    new AutoCommand().schedule();
+    //new AutoCommand().schedule();
 
   }
 
@@ -116,9 +116,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    new IntakeCommand().schedule();
+    //new IntakeCommand().schedule();
 
-    /*
+
     if (OI.getInstance().getXboxController().getLeftY() != 0 || OI.getInstance().getXboxController().getRightY() != 0) {
       CommandScheduler.getInstance().schedule(new TankDriveCommand(), new IntakeCommand());
     }
@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(new IntakeCommand());
     }
 
-     */
+
 
 
   }

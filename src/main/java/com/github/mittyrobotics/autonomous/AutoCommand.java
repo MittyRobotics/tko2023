@@ -1,4 +1,4 @@
-package com.github.mittyrobotics.autonomous.;
+package com.github.mittyrobotics.autonomous;
 
 import com.github.mittyrobotics.OI;
 import com.github.mittyrobotics.subsystems.DriveTrainSubsystem;

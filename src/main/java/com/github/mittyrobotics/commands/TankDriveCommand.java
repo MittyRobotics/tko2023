@@ -19,14 +19,14 @@ public class TankDriveCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("tank drive command has been initialized");
+     //   System.out.println("tank drive command has been initialized");
 
         DriveTrainSubsystem.getInstance().setMotors(0, 0);
     }
 
     @Override
     public void execute() {
-        System.out.println("tank drive command is executing");
+      //  System.out.println("tank drive command is executing");
 
         double percent = 0.5;
         double deadzone = 0.1;

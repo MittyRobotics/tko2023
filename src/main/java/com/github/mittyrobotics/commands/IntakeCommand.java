@@ -18,7 +18,7 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("intake command has been initialized");
+      //  System.out.println("intake command has been initialized");
 
         DriveTrainSubsystem.getInstance().setRoller(0);
     }
@@ -26,7 +26,7 @@ public class IntakeCommand extends CommandBase {
     @Override
     public void execute() {
 
-        System.out.println("intake command is executing");
+     //   System.out.println("intake command is executing");
         if (OI.getInstance().getOperatorController().getCircleButton()) {
             DriveTrainSubsystem.getInstance().setRoller(0.5);
         } else if(OI.getInstance().getOperatorController().getCrossButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
