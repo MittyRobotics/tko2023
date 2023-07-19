@@ -57,7 +57,8 @@ public class Robot extends TimedRobot {
          //   sparkLeft = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
      DriveTrainSubsystem.getInstance().initHardware();
-     OI.getInstance().initOI();;
+     OI.getInstance().initOI();
+    new TankDriveCommand().schedule();
     // DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
 
 
@@ -76,6 +77,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
     CommandScheduler.getInstance().run();
 
   }
@@ -109,7 +111,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
+   // DriveTrainSubsystem.getInstance().setDefaultCommand(new TankDriveCommand());
 
   }
 
@@ -119,12 +121,14 @@ public class Robot extends TimedRobot {
     //new IntakeCommand().schedule();
 
 
-    if (OI.getInstance().getXboxController().getLeftY() != 0 || OI.getInstance().getXboxController().getRightY() != 0) {
-      CommandScheduler.getInstance().schedule(new TankDriveCommand());
-    }
 
-    else if (OI.getInstance().getXboxController().getAButton()) {
-      CommandScheduler.getInstance().schedule(new IntakeCommand());
+      new TankDriveCommand().schedule();
+
+      if (OI.getInstance().getOperatorController().getBButton()) {
+        CommandScheduler.getInstance().schedule(new IntakeCommand());
+      }
+    if (OI.getInstance().getOperatorController().getAButton()) {
+      CommandScheduler.getInstance().schedule(new OuttakeCommand());
     }
 
 

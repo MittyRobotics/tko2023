@@ -27,16 +27,15 @@ public class IntakeCommand extends CommandBase {
     public void execute() {
 
      //   System.out.println("intake command is executing");
-        if (OI.getInstance().getOperatorController().getAButton()) {
-            DriveTrainSubsystem.getInstance().setRoller(0.5);
-        } else if(OI.getInstance().getOperatorController().getBButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
-            DriveTrainSubsystem.getInstance().setRoller(0);
 
-        }
+            DriveTrainSubsystem.getInstance().setRoller(0.5);
+
     }
 
     @Override
     public void end(boolean interrupted) {
+        DriveTrainSubsystem.getInstance().setRoller(0);
+
 
     }
 

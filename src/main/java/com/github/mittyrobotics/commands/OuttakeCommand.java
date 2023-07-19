@@ -23,13 +23,14 @@ public class OuttakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (OI.getInstance().getOperatorController().getAButton()) {
+
             DriveTrainSubsystem.getInstance().setRoller(-0.5);
-        } else{DriveTrainSubsystem.getInstance().setRoller(0);}
+
     }
 
     @Override
     public void end(boolean interrupted) {
+        DriveTrainSubsystem.getInstance().setRoller(0);
 
     }
 

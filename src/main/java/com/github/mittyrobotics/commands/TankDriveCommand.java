@@ -39,6 +39,9 @@ public class TankDriveCommand extends CommandBase {
             right = 0;
         }
         DriveTrainSubsystem.getInstance().setMotors(left, right);
+
+
+
     }
 
     @Override

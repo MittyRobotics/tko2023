@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,7 +17,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
 
-    private WPI_TalonSRX roller, leftTalon;
+    //private WPI_TalonSRX roller
+            CANSparkMax roller;
 
     CANSparkMax sparkLeft, sparkRight;
 
@@ -39,16 +41,20 @@ public class DriveTrainSubsystem extends SubsystemBase {
         sparkRight  = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
         sparkLeft  = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        sparkLeft.setInverted(true);
-        sparkRight.setInverted(false);
+        sparkLeft.setInverted(true);  //team 2 - true
+        sparkRight.setInverted(false); //team 2 - false
 
-        roller = new WPI_TalonSRX(4);
+       // roller = new WPI_TalonSRX(4);
+        roller = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         roller.setInverted(true);
 
+        /*
         leftTalon = new WPI_TalonSRX(13);
         leftTalon.configFactoryDefault();
         leftTalon.setInverted(false); //check if is inverted
+
+         */
 
 
 
@@ -62,7 +68,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void resetEncoders() {
             sparkLeft.getEncoder().setPosition(0);
             sparkRight.getEncoder().setPosition(0);
-            leftTalon.setSelectedSensorPosition(0);
+         //   leftTalon.setSelectedSensorPosition(0);
 
 
 
@@ -71,7 +77,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
     public double getPosition() {
-        return leftTalon.getSelectedSensorPosition() / DriveConstants.TICKS_PER_INCH;
+     //   return leftTalon.getSelectedSensorPosition() / DriveConstants.TICKS_PER_INCH;
+        return 0;
     }
 
 
