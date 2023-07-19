@@ -27,9 +27,9 @@ public class IntakeCommand extends CommandBase {
     public void execute() {
 
      //   System.out.println("intake command is executing");
-        if (OI.getInstance().getOperatorController().getCircleButton()) {
+        if (OI.getInstance().getOperatorController().getAButton()) {
             DriveTrainSubsystem.getInstance().setRoller(0.5);
-        } else if(OI.getInstance().getOperatorController().getCrossButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
+        } else if(OI.getInstance().getOperatorController().getBButton()){DriveTrainSubsystem.getInstance().setRoller(-0.5);} else {
             DriveTrainSubsystem.getInstance().setRoller(0);
 
         }

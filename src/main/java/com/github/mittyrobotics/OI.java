@@ -8,7 +8,7 @@ public class OI {
 
     private XboxController controller;
 
-    private PS4Controller operatorController;
+    private XboxController operatorController;
 
     public static OI getInstance() {
         if(instance == null) {
@@ -19,13 +19,13 @@ public class OI {
 
     public void initOI() {
         controller = new XboxController(0);
-        operatorController = new PS4Controller(1);
+        operatorController = new XboxController(1);
     }
 
     public XboxController getXboxController() {
         return controller;
     }
-    public PS4Controller getOperatorController() {return operatorController;}
+    public XboxController getOperatorController() {return operatorController;}
 
 
 }

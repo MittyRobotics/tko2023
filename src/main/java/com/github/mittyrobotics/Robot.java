@@ -120,12 +120,14 @@ public class Robot extends TimedRobot {
 
 
     if (OI.getInstance().getXboxController().getLeftY() != 0 || OI.getInstance().getXboxController().getRightY() != 0) {
-      CommandScheduler.getInstance().schedule(new TankDriveCommand(), new IntakeCommand());
+      CommandScheduler.getInstance().schedule(new TankDriveCommand());
     }
 
-    if (OI.getInstance().getXboxController().getAButtonPressed()) {
+    else if (OI.getInstance().getXboxController().getAButton()) {
       CommandScheduler.getInstance().schedule(new IntakeCommand());
     }
+
+
 
 
 
