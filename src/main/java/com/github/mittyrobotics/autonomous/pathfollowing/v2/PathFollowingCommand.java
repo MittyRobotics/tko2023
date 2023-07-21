@@ -1,12 +1,8 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
-import com.github.mittyrobotics.LoggerInterface;
-import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.Odometry2;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
-import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.math.controller.PIDController;
@@ -39,6 +35,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        System.out.println("INIT\n\n\n");
         lastTime = Timer.getFPGATimestamp();
         startingHeading = Gyro.getInstance().getHeadingRadians();
     }
@@ -49,7 +46,7 @@ public class PathFollowingCommand extends CommandBase {
 
 //        Pose robot = Odometry.getInstance().getState();
 //        double heading = Gyro.getInstance().getHeadingRadians();
-        Pose robot = Odometry2.getPose();
+        Pose robot = Limelight.getPose();
         double heading = Gyro.getInstance().getHeadingRadians();
 
 
@@ -97,12 +94,13 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("ENDED\n\n\n");
 //        SwerveSubsystem.getInstance().setZero();
     }
 
     @Override
     public boolean isFinished() {
-        LoggerInterface.getInstance().put("DESIRED", path.getGoal());
-        return new Vector(Odometry.getInstance().getState().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold;
+//        LoggerInterface.getInstance().put("DESIRED", path.getGoal());
+        return new Vector(Limelight.getPose().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold;
     }
 }

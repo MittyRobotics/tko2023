@@ -1,10 +1,7 @@
 package com.github.mittyrobotics.autonomous;
 
 import com.github.mittyrobotics.LoggerInterface;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -97,6 +94,58 @@ public class Odometry {
     }
 
     public void update() {
+        updateFromLimelight();
+    }
+
+    public void updateFromLimelight() {
+        Pose limelightPose = Limelight.getPose();
+        if (limelightPose == null) return;
+        System.out.println("UPDATED FROM LL\n\n\n");
+        double x = limelightPose.getPosition().getX();
+        double y = limelightPose.getPosition().getY();
+        double theta = limelightPose.getHeading().getRadians();
+        double nanoTime = System.currentTimeMillis() * 1000000 - Limelight.getLatency();
+        double x_dist = Limelight.getXDistToTarget();
+
+        double dt = (nanoTime - last_time) / (1000000000.);
+
+        if (lastPose == null)
+            lastPose = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
+        Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(nanoTime);
+
+        Vector v = new Vector(Point.multiply(1 / dt, Point.add(curP.getPosition(),
+                Point.multiply(-1, lastPose.getPosition()))));
+        double w = (1 / dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
+
+        try {
+//                if (Math.sqrt((state.get(0, 0) - x) * (state.get(0, 0) - x) +
+//                        (state.get(1, 0) - y) * (state.get(1, 0) - y)) > ERROR_MARGIN) {
+//                    System.out.println("Bad input");
+//                    continue;
+//                }
+
+            stateExtrapolate(dt, v, w);
+            covarianceExtrapolate(dt, v, w);
+
+            updateCovarianceR(x_dist);
+            kalmanGain();
+            stateUpdate(new SimpleMatrix(new double[]{x, y, theta}));
+            covarianceUpdate();
+
+            last_time = nanoTime;
+            lastPose = curP;
+
+            LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
+//                System.out.println(getState() + "   \n\n\n\n\n " + getIdealCamera());
+
+            //                state.transpose().print();
+        } catch (Exception e) {
+            System.out.println("error");
+        }
+    }
+
+
+    public void updateFromCameras() {
         DoubleArraySubscriber sub = LoggerInterface.getInstance().getPoseSub();
 
         TimestampedDoubleArray[] m = sub.readQueue();
@@ -312,9 +361,9 @@ public class Odometry {
         Point robot = state.getPosition();
 
         int i = 0;
-        for(Pose[] p : scoringZones) {
+        for (Pose[] p : scoringZones) {
             if (p.length == 3) {
-                if(Point.getDistance(robot, p[1].getPosition()) < dist) {
+                if (Point.getDistance(robot, p[1].getPosition()) < dist) {
                     minIndex = i;
                     dist = Point.getDistance(robot, p[1].getPosition());
                 }
