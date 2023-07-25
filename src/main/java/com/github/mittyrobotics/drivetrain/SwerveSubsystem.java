@@ -1,10 +1,14 @@
 package com.github.mittyrobotics.drivetrain;
 
+import com.github.mittyrobotics.util.math.*;
+import com.github.mittyrobotics.util.Pair;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.util.math.Angle;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.math.Vector;
+
+import java.util.ArrayList;
 
 import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 
@@ -17,6 +21,7 @@ public class SwerveSubsystem {
     }
 
     public final InverseKinematics inverseKinematics = new InverseKinematics();
+    public final ForwardKinematics forwardKinematics = new ForwardKinematics();
 
     private WPI_TalonFX[] driveMotors = new WPI_TalonFX[4];
     private WPI_TalonFX[] angleMotors = new WPI_TalonFX[4];
@@ -70,6 +75,12 @@ public class SwerveSubsystem {
 
         private int length, width;
 
+        private Vector r;
+
+        public InverseKinematics() {
+
+        }
+
         public void calculateInputs(Vector linearVel, double angularVel) {
             linearVel = new Vector(
                     new Angle(
@@ -84,8 +95,8 @@ public class SwerveSubsystem {
             }
         }
 
-        private Vector getR(int i) {
-            return new Vector(0, 0);
+        public Vector getR(int i) {
+            return new Vector(r.getX() * (i == 0 || i == 3 ? -1 : 1), r.getY() * (i > 1 ? -1 : 1));
         }
 
         public double[] getAngles() {
@@ -97,7 +108,97 @@ public class SwerveSubsystem {
         }
     }
 
-    static class ForwardKinematics{
-        // TODO: 6/13/2023 WRITE!!!!!
+    public static class ForwardKinematics {
+        private ArrayList<Pair> poses = new ArrayList<>();
+
+        private Vector vel = new Vector(0, 0);
+        private Angle curHeading = new Angle(0, true);
+
+
+        public ForwardKinematics() {
+
+        }
+
+        public void updateForwardKinematics(Vector[] modules) {
+
+            long nanoTime = System.currentTimeMillis() * 1000000;
+
+            Point new_ = new Point(0, 0);
+            for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
+            new_ = Point.multiply(0.25, new_);
+//            new_ = new Point(new_.getX(), new_.getY());
+
+            curHeading = new Angle(Gyro.getInstance().getHeadingRadians(), true);
+            poses.add(new Pair(nanoTime, new Pose(Point.add(poses.get(poses.size() - 1).getValue().getPosition(), new_), curHeading)));
+
+        }
+
+        private int search(ArrayList<Pair> array, double value, boolean greater) {
+            int start = 0, end = array.size() - 1;
+
+            int ans = -1;
+            while (start <= end) {
+                int mid = (start + end) / 2;
+
+                if (greater) {
+                    if (array.get(mid).getKey() < value) {
+                        start = mid + 1;
+                    } else {
+                        ans = mid;
+                        end = mid - 1;
+                    }
+                } else {
+                    if (array.get(mid).getKey() > value) {
+                        end = mid - 1;
+                    } else {
+                        ans = mid;
+                        start = mid + 1;
+                    }
+                }
+            }
+            return ans;
+        }
+
+        public Pose getPoseAtTime(double time) {
+            long tl, tr;
+            Pose pl, pr;
+
+            int left_index = search(poses, time, false);
+            int right_index = search(poses, time, true);
+
+            if (left_index == -1) return poses.get(right_index).getValue();
+            if (right_index == -1) return poses.get(left_index).getValue();
+
+            tl = poses.get(left_index).getKey();
+            tr = poses.get(right_index).getKey();
+            pl = poses.get(left_index).getValue();
+            pr = poses.get(right_index).getValue();
+
+            if (tr == tl) return pl;
+
+            double a1 = pl.getHeading().getRadians();
+            double a2 = pr.getHeading().getRadians();
+
+            return new Pose(
+                    Point.add(pl.getPosition(), Point.multiply((time - tl) / (tr - tl),
+                            Point.add(pr.getPosition(), Point.multiply(-1, pl.getPosition())))),
+
+                    new Angle(a1 + ((time - tl) / (tr - tl)) * (a2 - a1), true)
+            );
+
+        }
+
+        public Pose getLatestPose() {
+            if (poses.size() == 0) return new Pose(new Point(0, 0), new Angle(0, true));
+            return new Pose(poses.get(poses.size() - 1).getValue().getPosition(), poses.get(poses.size() - 1).getValue().getHeading());
+        }
+
+        public long getLatestTime() {
+            return poses.get(0).getKey();
+        }
+
+        public Angle getCurHeading() {
+            return curHeading;
+        }
     }
 }

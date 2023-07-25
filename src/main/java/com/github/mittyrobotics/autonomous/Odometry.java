@@ -158,33 +158,6 @@ public class Odometry {
         return new double[]{pos.getX() + state.get(0, 0), pos.getY() + state.get(1, 0), angle + state.get(2, 0)};
     }
 
-    public void setScoringCam(boolean scoring) {
-//        disableCustomCam();
-        scoringCam = scoring;
-    }
-
-    public void setCustomCam(int cam) {
-        customCam = cam;
-        useCustomCam = true;
-    }
-
-    public void disableCustomCam() {
-        useCustomCam = false;
-    }
-
-    public int getIdealCamera() {
-        if (useCustomCam) return customCam;
-        if (scoringCam) {
-            if (FIELD_LEFT_SIDE) {
-                return belowMiddleY() ? 1 : 2; //right vs left front cam
-            } else {
-                return belowMiddleY() ? 2 : 1; //left vs right front cam
-            }
-        } else {
-            return FIELD_LEFT_SIDE ? 2 : 1; //left vs right front cam
-        }
-    }
-
     public boolean belowMiddleY() {
         return getPose()[1] < MID_TAG_Y;
     }
@@ -222,18 +195,6 @@ public class Odometry {
         state = f(state, v, w, dt);
     }
 
-    public void stateExtrapolate(double dt) {
-        //REPLACE
-        Vector vel = SwerveSubsystem.getInstance().getVel();
-        state = f(state, vel, Gyro.getInstance().getAngularVel(), dt);
-    }
-
-    public void covarianceExtrapolate(double dt) {
-        Vector vel = SwerveSubsystem.getInstance().getVel();
-        SimpleMatrix J = getJf(vel.getMagnitude(), vel.getAngle().getRadians(), Gyro.getInstance().getAngularVel(), dt);
-        covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
-    }
-
     public void covarianceExtrapolate(double dt, Vector v, double w) {
         SimpleMatrix J = getJf(v.getMagnitude(), v.getAngle().getRadians(), w, dt);
         covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
@@ -255,16 +216,6 @@ public class Odometry {
                 .minus(covariance.mult(Jh.transpose()).mult(kalmanGain.transpose()))
                 .plus(kalmanGain.mult(Jh).mult(covariance).mult(Jh.transpose()).mult(kalmanGain.transpose()))
                 .plus(kalmanGain.mult(R).mult(kalmanGain.transpose()));
-    }
-
-    public void update(double dt, Vector v, double w, SimpleMatrix... z) {
-        stateExtrapolate(dt);
-        covarianceExtrapolate(dt, v, w);
-        for (int i = 0; i < z.length; i++) {
-            kalmanGain();
-            stateUpdate(z[i]);
-            covarianceUpdate();
-        }
     }
 
     public void setLastPose(Pose p) {

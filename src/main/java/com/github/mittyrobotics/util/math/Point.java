@@ -9,6 +9,10 @@ public class Point {
         this.y = y;
     }
 
+    public Point(Vector v) {
+        this(v.getX(), v.getY());
+    }
+
     public double getX() {
         return x;
     }
