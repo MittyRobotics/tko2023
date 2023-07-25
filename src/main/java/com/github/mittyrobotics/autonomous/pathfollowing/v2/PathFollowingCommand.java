@@ -2,7 +2,6 @@ package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
 import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.Odometry2;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
@@ -47,11 +46,8 @@ public class PathFollowingCommand extends CommandBase {
     public void execute() {
         double dt = Timer.getFPGATimestamp() - lastTime;
 
-//        Pose robot = Odometry.getInstance().getState();
-//        double heading = Gyro.getInstance().getHeadingRadians();
-        Pose robot = Odometry2.getPose();
+        Pose robot = Odometry.getInstance().getState();
         double heading = Gyro.getInstance().getHeadingRadians();
-
 
         Vector linear = path.updateLinear(robot, dt);
 
