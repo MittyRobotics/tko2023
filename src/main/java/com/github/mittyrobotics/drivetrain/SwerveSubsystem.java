@@ -26,6 +26,8 @@ public class SwerveSubsystem {
     private WPI_TalonFX[] driveMotors = new WPI_TalonFX[4];
     private WPI_TalonFX[] angleMotors = new WPI_TalonFX[4];
 
+    private double[] prevEnc = new double[4];
+
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
             driveMotors[i] = new WPI_TalonFX(DRIVE_MOTOR_IDS[i]);

@@ -19,7 +19,11 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().initHardware();
         PivotSubsystem.getInstance().initHardware();
         TelevatorSubsystem.getInstance().initHardware();
+        PivotSubsystem.getInstance().initHardware();
+
         Limelight.init(new Pose(0, 0, 0, false), 0);
+        Odometry.getInstance();
+
         ArmSetpoints.initSetpoints();
         MotionProfiles.createMPs();
     }
@@ -27,6 +31,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
 //        StateMachine.update(1, 1);
+        SwerveSubsystem.getInstance().updateForwardKinematics();
+        Limelight.update();
         Odometry.getInstance().update();
         ArmKinematics.updateDesiredArmPositionFromState();
 
