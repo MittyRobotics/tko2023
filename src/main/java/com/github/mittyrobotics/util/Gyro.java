@@ -1,7 +1,6 @@
 package com.github.mittyrobotics.util;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,7 +10,7 @@ public class Gyro extends SubsystemBase {
     private static Gyro instance;
 
     WPI_Pigeon2 gyro;
-    Angle angleOffset = null;
+    double angleOffset = 0;
 
     public short[] pose = new short[3];
 
@@ -42,11 +41,7 @@ public class Gyro extends SubsystemBase {
     }
 
     public void setAngleOffset(double offset) {
-        angleOffset = new Angle(offset);
-    }
-
-    public Angle getAngleOffset() {
-        return angleOffset;
+        angleOffset = offset;
     }
 
     public double getHeadingAngle() {
@@ -55,7 +50,7 @@ public class Gyro extends SubsystemBase {
 
     public double getHeadingRadians() {
 //        System.out.println(getHeadingAngle() * Math.PI / 180.);
-        return -getHeadingAngle() * Math.PI / 180. + angleOffset.getRadians();
+        return -getHeadingAngle() * Math.PI / 180. + angleOffset;
     }
 
     public double getHeadingRadiansNoOffset() {

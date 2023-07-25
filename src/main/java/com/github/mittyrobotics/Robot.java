@@ -1,6 +1,5 @@
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
@@ -42,8 +41,6 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().setBrakeMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
 
-        Limelight.init(null, 0);
-
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
         double x = 0;
         double y = 0;
@@ -57,7 +54,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        Limelight.update();
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
@@ -76,7 +72,6 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().run();
 
-        System.out.println(Odometry.getInstance().getState());
     }
 
     @Override

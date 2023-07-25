@@ -5,24 +5,22 @@ package com.github.mittyrobotics.autonomous;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Limelight {
+public class Odometry2 {
     private static NetworkTable limelightTable;
     private static Pose curPose;
-    private static double latency;
     private static double[] limelightPose, targetDist;
     private static boolean hasTarget;
 
     private static double zDistToTarget;
 
-    public Limelight() {
+    public Odometry2() {
 
     }
 
-    public static void init(Pose startPose, double startDist) {
+    public static void initOdometry(Pose startPose, double startDist) {
         limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
         curPose = startPose;
         zDistToTarget = startDist;
@@ -31,7 +29,7 @@ public class Limelight {
         limelightTable.getEntry("pipeline").setValue(2);
     }
 
-    public static void update() {
+    public static void updateFromLimelight() {
         //x = long side
         //y = short side
         hasTarget = limelightTable.getEntry("tv").getDouble(0) == 1;
@@ -39,41 +37,31 @@ public class Limelight {
                 limelightTable.getEntry("botpose").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0., 0.});
         targetDist = limelightTable.getEntry("botpose_targetspace").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0.});
 
-        System.out.println("TARGET: " + hasTarget + "\n\n\n");
+
         if (hasTarget) {
             //x, y, theta
 
-            Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5] * Math.PI/180.));
-            if (Gyro.getInstance().getAngleOffset() == null) {
-                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadians());
-            }
+            Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 - 311.11, limelightPose[1] * 39.37 - 136.863), new Angle(limelightPose[5] * Math.PI/180.));
             setPose(tempPose);
-            latency = limelightPose[6];
             double tempDist = targetDist[2];
             setDist(tempDist);
-            // z: 10.401, x: 8.095, y: 0
-            //z offset: 1.875
-        } else setPose(null);
+        }
 
     }
 
-    public static double getXDistToTarget() {
-        return zDistToTarget * 39.37;
+    public static double getZDistToTarget() {
+        return zDistToTarget;
     }
 
     public static void setPose(Pose p) {
         curPose = p;
     }
 
-    public static Pose getPose() {
-        return curPose;
-    }
-
     public static void setDist(double d) {
         zDistToTarget = d;
     }
 
-    public static double getLatency() {
-        return latency * 1000000;
+    public static Pose getPose() {
+        return curPose;
     }
 }

@@ -1,13 +1,16 @@
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.Odometry2;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
+import com.github.mittyrobotics.autonomous.routines.PPOneAuto;
+import com.github.mittyrobotics.autonomous.routines.PPTwoAuto;
+import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -19,7 +22,6 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,31 +35,38 @@ public class Robot2 extends TimedRobot {
 
     @Override
     public void robotInit() {
+        LedSubsystem.getInstance().initHardware();
+        Gyro.getInstance().initHardware();
+        SwerveSubsystem.getInstance().initHardware();
+
+        TelescopeSubsystem.getInstance().initHardware();
+        PivotSubsystem.getInstance().initHardware();
+        IntakeSubsystem.getInstance().initHardware();
+
         PivotSubsystem.getInstance().setBrakeMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = true;
+//        Odometry.getInstance().FIELD_LEFT_SIDE = false;
         double x = 0;
         double y = 0;
         double t = 0;
         Gyro.getInstance().setAngleOffset(t);
-        Odometry.getInstance().setState(x, y, t);
+//        Odometry.getInstance().setState(x, y, t);
         SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
                 new Angle(Gyro.getInstance().getHeadingRadians())));
-        Odometry.getInstance().setScoringCam(true);
-        Limelight.init(new Pose(new Point(0, 0), new Angle(0)), 0);
+//        Odometry.getInstance().setScoringCam(true);
+        Odometry2.initOdometry(new Pose(new Point(0, 0), new Angle(0)), 0);
     }
 
     @Override
     public void robotPeriodic() {
-        Limelight.update();
+        Odometry2.updateFromLimelight();
+        System.out.println(Odometry2.getPose());
 
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
-        Odometry.getInstance().update();
-        System.out.println(Odometry.getInstance().getState());
-
+//        Odometry.getInstance().update();
         ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
                 == StateMachine.PieceState.CONE, 0);
 
@@ -107,50 +116,22 @@ public class Robot2 extends TimedRobot {
 //                0.1, 0.8, 6, 0, 0.02).schedule();
         boolean leftSide = false;
 
-        Pose first = new Pose(new Point(576, 109), new Angle(0));
-        Pose second = new Pose(Point.add(first.getPosition(), new Point(-20, 0)), first.getHeading());
-        Pose third = new Pose(Point.add(second.getPosition(), new Point(-40, 20)), new Angle(0));
+        Pose firstCone = new Pose(new Point(0, 0), new Angle(0));
+        firstCone = new Pose(new Point(Odometry.scoringZones[1][1].getPosition().getX() + 15,
+                Odometry.scoringZones[1][1].getPosition().getY()), new Angle(0));
+        Pose beforeAutoScore = new Pose(new Point(Odometry.scoringZones[1][1].getPosition().getX() - 20, Odometry.scoringZones[1][1].getPosition().getY() + 20), new Angle(0));
 
-        double scoreHeading = 0;
+        double scoreHeading = 0 ;
 
-        new SequentialCommandGroup(
-                new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(
-                                        new Pose(first.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-                                        new Pose(second.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 2, 5, 2, 0, 1, true
-                        ), scoreHeading, 6, 1,
-                        0.1, 0.6, 3, 0, 0.02, true
-                ),
-                new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(
-                                        new Pose(second.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-                                        new Pose(third.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 2, 5, 2, 0, 1, true
-                        ), scoreHeading, 6, 1,
-                        0.1, 0.6, 3, 0, 0.02, true
-                ),
-                new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(
-                                        new Pose(third.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-                                        new Pose(second.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 2, 5, 2, 0, 1, true
-                        ), scoreHeading, 6, 1,
-                        0.1, 0.6, 3, 0, 0.02, true
-                ),
-                new PathFollowingCommand(
-                        new SwervePath(
-                                new QuinticHermiteSpline(
-                                        new Pose(second.getPosition(), new Angle(leftSide ? Math.PI : 0)),
-                                        new Pose(first.getPosition(), new Angle(leftSide ? Math.PI : 0))),
-                                10, 2, 5, 2, 0, 1, true
-                        ), scoreHeading, 6, 1,
-                        0.1, 0.6, 3, 0, 0.02, true
-                )
-        ).schedule();
+        new PathFollowingCommand(
+                new SwervePath(
+                        new QuinticHermiteSpline(
+                                new Pose(firstCone.getPosition(), new Angle(leftSide ? Math.PI : 0)),
+                                new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
+                        10, 2, 5, 2, 0, 1, true
+                ), scoreHeading, 6, 1,
+                0.1, 0.6, 3, 0, 0.02, true
+        );
 
 //        new AutoScoreCommand(8, 0, 3, 3, 3, 0, 0).schedule();
     }
@@ -169,8 +150,8 @@ public class Robot2 extends TimedRobot {
     public void teleopInit() {
         SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
-        Odometry.getInstance().disableCustomCam();
-        Odometry.getInstance().setScoringCam(false);
+//        Odometry.getInstance().disableCustomCam();
+//        Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
 
