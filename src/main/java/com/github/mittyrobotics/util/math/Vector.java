@@ -12,6 +12,10 @@ public class Vector {
         this(magnitude * Math.cos(angle.getRadians()), magnitude * Math.sin(angle.getRadians()));
     }
 
+    public Vector(Point p) {
+        this(p.getX(), p.getY());
+    }
+
     public double getX() {
         return x;
     }

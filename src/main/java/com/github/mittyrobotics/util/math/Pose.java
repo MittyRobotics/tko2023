@@ -22,6 +22,14 @@ public class Pose {
         return angle;
     }
 
+    public Point getPosition() {
+        return point;
+    }
+
+    public Angle getHeading() {
+        return angle;
+    }
+
     @Override
     public String toString() {
         return "{" + point.toString() + ", " + angle.toString() + "}";
