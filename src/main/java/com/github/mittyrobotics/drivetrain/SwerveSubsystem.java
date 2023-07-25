@@ -69,6 +69,26 @@ public class SwerveSubsystem {
         }
     }
 
+    public double getModuleAngle(int i) {
+        return angleMotors[i].getSelectedSensorPosition();
+    }
+
+    public void updateForwardKinematics() {
+        Vector[] modules = new Vector[4];
+
+        for (int i = 0; i < 4; i++) {
+            double cur = driveMotors[i].getSelectedSensorPosition();
+
+//            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
+            modules[i] = new Vector(new Angle(angle(i) + Gyro.getInstance().getHeadingRadians()), 39.37 * (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
+//            System.out.println(i + ": " + angle(i));
+
+            prevEnc[i] = cur;
+        }
+
+        forwardKinematics.updateForwardKinematics(modules);
+    }
+
     static class InverseKinematics {
         private double[] angles;
         private double[] magnitudes;
