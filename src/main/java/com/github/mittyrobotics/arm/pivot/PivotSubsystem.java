@@ -31,6 +31,7 @@ public class PivotSubsystem extends SubsystemBase {
             motor[i].getPIDController().setI(PID[1]);
             motor[i].getPIDController().setD(PID[2]);
             motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
+            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
             motor[i].getEncoder().setPosition(0);
         }
 

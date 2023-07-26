@@ -26,14 +26,15 @@ public class TelevatorSubsystem extends SubsystemBase {
         motor.getPIDController().setI(PID[1]);
         motor.getPIDController().setD(PID[2]);
         motor.getEncoder().setPositionConversionFactor(INCHES_PER_REV);
+        motor.getEncoder().setVelocityConversionFactor(INCHES_PER_REV / 60);
         motor.getEncoder().setPosition(0);
 
         setDefaultCommand(new MoveToDesiredExtensionCommand());
     }
 
-    public void setRaw(double rpm, double ff) {
+    public void setRaw(double vel, double ff) {
         motor.getPIDController().setReference(
-                rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+                vel, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
 
     public double getCurrentExtension() {

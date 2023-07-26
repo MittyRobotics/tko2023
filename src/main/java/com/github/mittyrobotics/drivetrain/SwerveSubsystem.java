@@ -72,7 +72,7 @@ public class SwerveSubsystem {
     }
 
     public double getModuleAngle(int i) {
-        return angleMotors[i].getSelectedSensorPosition();
+        return angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
     }
 
     public void updateForwardKinematics() {
@@ -82,7 +82,7 @@ public class SwerveSubsystem {
             double cur = driveMotors[i].getSelectedSensorPosition();
 
 //            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(angle(i) + Gyro.getInstance().getHeadingRadians()), 39.37 * (cur - prevEnc[i]) / SwerveConstants.TICKS_PER_METER);
+            modules[i] = new Vector(new Angle(getModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;

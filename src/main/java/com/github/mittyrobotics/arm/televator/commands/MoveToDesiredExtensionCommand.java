@@ -31,7 +31,7 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
 
         // TODO: 6/27/2023 ADD FF STUFF
 
-        PivotSubsystem.getInstance().setRaw(desiredVel, ff);
+        TelevatorSubsystem.getInstance().setRaw(desiredVel, ff);
     }
 
     @Override
