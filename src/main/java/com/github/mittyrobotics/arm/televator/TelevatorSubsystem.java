@@ -40,4 +40,8 @@ public class TelevatorSubsystem extends SubsystemBase {
     public double getCurrentExtension() {
         return motor.getEncoder().getPosition();
     }
+
+    public double getCurrentVelocity() {
+        return motor.getEncoder().getVelocity();
+    }
 }

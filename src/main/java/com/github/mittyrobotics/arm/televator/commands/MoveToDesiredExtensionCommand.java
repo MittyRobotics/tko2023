@@ -6,6 +6,7 @@ import com.github.mittyrobotics.arm.StateMachine;
 import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
 import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class MoveToDesiredExtensionCommand extends CommandBase {
@@ -14,7 +15,7 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
         addRequirements(TelevatorSubsystem.getInstance());
     }
 
-    private double desiredExtension, desiredVel, ff;
+    private double desiredExtension, desiredVel, ff, dt, time;
     private TrapezoidalMotionProfile motionProfile;
 
     @Override
@@ -24,12 +25,27 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
 
     @Override
     public void execute() {
+        dt = Timer.getFPGATimestamp() - time;
+        time = Timer.getFPGATimestamp();
+
         desiredExtension = ArmKinematics.getDesiredExtension();
 
-        // TODO: 6/27/2023 ADD MP STUFF
         motionProfile = MotionProfiles.TELEVATOR_MPS.get(StateMachine.getTransitionState());
+        motionProfile.changeSetpoint(
+                desiredExtension,
+                TelevatorSubsystem.getInstance().getCurrentExtension(),
+                TelevatorSubsystem.getInstance().getCurrentVelocity()
+        );
+
+        double currentExtension = TelevatorSubsystem.getInstance().getCurrentExtension();
+        desiredVel = motionProfile.update(dt, currentExtension);
+
+        boolean telescopeMovingDown = motionProfile.getSetpoint() < currentExtension;
 
         // TODO: 6/27/2023 ADD FF STUFF
+        ff = (0.2 / (300 + (500 - 300) * Math.pow(Math.sin(PivotSubsystem.getInstance().getCurrentAngle().getRadians()), 6))) *
+                (telescopeMovingDown ? 1 - 0.8 * Math.cos(PivotSubsystem.getInstance().getCurrentAngle().getRadians()) : 1.75);
+
 
         TelevatorSubsystem.getInstance().setRaw(desiredVel, ff);
     }
