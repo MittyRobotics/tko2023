@@ -1,8 +1,8 @@
 package com.github.mittyrobotics.drivetrain;
 
 public class SwerveConstants {
-    public static final int[] DRIVE_MOTOR_IDS = {};
-    public static final int[] ANGLE_MOTOR_IDS = {};
+    public static final int[] DRIVE_MOTOR_IDS = {6, 0, 2, 4};
+    public static final int[] ANGLE_MOTOR_IDS = {7, 1, 3, 5};
 
     public static final double[] DRIVE_PID = {};
     public static final double[] ANGLE_PID = {};
