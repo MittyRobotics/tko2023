@@ -7,13 +7,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.util.math.Angle;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.math.Vector;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.*;
+
 import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 
-public class SwerveSubsystem {
+public class SwerveSubsystem extends SubsystemBase {
     private static SwerveSubsystem instance;
+    private boolean flipped[] = new boolean[4];
 
     public static SwerveSubsystem getInstance() {
         if (instance == null) instance = new SwerveSubsystem();
@@ -61,18 +65,63 @@ public class SwerveSubsystem {
 
     public void setDriveMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
-            driveMotors[i].set(ControlMode.Velocity, values[i]);
+            driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? 1 : -1) * values[i]);
         }
+    }
+
+    public int getQuadrant(double angle) {
+        angle = standardize(angle);
+        if (angle >= 0 && angle < PI / 2) return 1;
+        if (angle >= PI / 2 && angle < PI) return 4;
+        if (angle >= PI && angle < 3 * PI / 2) return 3;
+        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
+    }
+
+    public double getRealAngleDistance(double current, double target, boolean cw) {
+        switch (getQuadrant(current)) {
+            case 1:
+                if (cw) return target - current;
+                else return (2 * PI - target) + current;
+            case 4:
+                if (cw) return target - current;
+                else {
+                    if (getQuadrant(target) == 1) return current - target;
+                    else return (2 * PI - target) + current;
+                }
+            case 3:
+                if (!cw) return current - target;
+                else {
+                    if (getQuadrant(target) == 2) return target - current;
+                    else return (2 * PI - current) + target;
+                }
+            case 2:
+                if (!cw) return current - target;
+                else return (2 * PI - current) + target;
+        }
+        return 0;
     }
 
     public void setAngleMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
+            double currentAngle = getModuleAngle(i);
+            boolean cw = values[i] - currentAngle < PI && values[i] - currentAngle > -PI;
+            double dist = getRealAngleDistance(currentAngle, values[i], cw);
+            boolean flip = dist > PI / 2;
+
+            //check
+            flipped[i] = flip;
+
+            values[i] = standardize(currentAngle + (cw ? 1 : -1) * dist + (flip ? PI : 0));
             angleMotors[i].set(ControlMode.Position, values[i]);
         }
     }
 
+    public double standardize(double angle) {
+        return ((angle % (2 * PI)) + 2 * PI) % 2 * PI;
+    }
+
     public double getModuleAngle(int i) {
-        return angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
+        return standardize(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
     }
 
     public void updateForwardKinematics() {

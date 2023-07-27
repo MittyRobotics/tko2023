@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.TimedRobot;
 
@@ -14,16 +15,20 @@ public class RobotTrajTest extends TimedRobot {
     @Override
     public void robotInit() {
 
+        TrajectoryConfig config = new TrajectoryConfig(
+                1,1
+        );
         // missing config
         traj = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(new Translation2d(0, 2)),
-                new Pose2d(3, 3, new Rotation2d(0))
+                new Pose2d(3, 3, new Rotation2d(0)),
+                config
         );
     }
 
     @Override
     public void robotPeriodic() {
-        super.robotPeriodic();
+        System.out.println(traj.getStates());
     }
 }
