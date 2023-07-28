@@ -55,7 +55,7 @@ public class Gyro extends SubsystemBase {
 
     public double getHeadingRadians() {
 //        System.out.println(getHeadingAngle() * Math.PI / 180.);
-        return -getHeadingAngle() * Math.PI / 180. + angleOffset.getRadians();
+        return -getHeadingAngle() * Math.PI / 180. + (angleOffset == null ? 0 : angleOffset.getRadians());
     }
 
     public double getHeadingRadiansNoOffset() {

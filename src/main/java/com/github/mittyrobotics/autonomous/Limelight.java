@@ -5,6 +5,7 @@ package com.github.mittyrobotics.autonomous;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -34,18 +35,20 @@ public class Limelight {
     public static void update() {
         //x = long side
         //y = short side
+//        limelightTable.getEntry("pipeline").setValue(2);
         hasTarget = limelightTable.getEntry("tv").getDouble(0) == 1;
         limelightPose =
                 limelightTable.getEntry("botpose").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0., 0.});
         targetDist = limelightTable.getEntry("botpose_targetspace").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0.});
 
-        System.out.println("TARGET: " + hasTarget + "\n\n\n");
+        System.out.println("TARGET: " + hasTarget + " at pipeline " + limelightTable.getEntry("pipeline").getDouble(-6) + "\n\n\n");
         if (hasTarget) {
             //x, y, theta
 
             Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5] * Math.PI/180.));
-            if (Gyro.getInstance().getAngleOffset() == null) {
-                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadians());
+            if (Gyro.getInstance().getAngleOffset() == null && SwerveSubsystem.getInstance().getDesiredVel().getMagnitude() < 0.1) {
+                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset());
+                System.out.println("This ran");
             }
             setPose(tempPose);
             latency = limelightPose[6];

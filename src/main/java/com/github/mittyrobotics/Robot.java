@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        Limelight.init(null, 0);
+
         LedSubsystem.getInstance().initHardware();
         Gyro.getInstance().initHardware();
         SwerveSubsystem.getInstance().initHardware();
@@ -42,22 +44,19 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().setBrakeMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
 
-        Limelight.init(null, 0);
-
-        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+        Odometry.getInstance().FIELD_LEFT_SIDE = true;
         double x = 0;
         double y = 0;
         double t = 0;
-        Gyro.getInstance().setAngleOffset(t);
         Odometry.getInstance().setState(x, y, t);
         SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
                 new Angle(Gyro.getInstance().getHeadingRadians())));
         Odometry.getInstance().setScoringCam(true);
+        Odometry.getInstance().update();
     }
 
     @Override
     public void robotPeriodic() {
-        Limelight.update();
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
@@ -65,18 +64,19 @@ public class Robot extends TimedRobot {
         ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
                 == StateMachine.PieceState.CONE, 0);
 
-        LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
-        LoggerInterface.getInstance().put("Pose", Odometry.getInstance().getState());
+//        LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
+//        LoggerInterface.getInstance().put("Pose", Odometry.getInstance().getState());
 
-        LoggerInterface.getInstance().put("Pose X", Odometry.getInstance().getPose()[0]);
-        LoggerInterface.getInstance().put("Pose Y", Odometry.getInstance().getPose()[1]);
+//        LoggerInterface.getInstance().put("Pose X", Odometry.getInstance().getPose()[0]);
+//        LoggerInterface.getInstance().put("Pose Y", Odometry.getInstance().getPose()[1]);
 
 //        LoggerInterface.getInstance().put("Spark Current", IntakeSubsystem.getInstance().getCurrent());
 //        System.out.println("CURRENT: " + IntakeSubsystem.getInstance().getCurrent());
 
         CommandScheduler.getInstance().run();
 
-        System.out.println(Odometry.getInstance().getState());
+        System.out.print(Odometry.getInstance().getState().getPosition());
+        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
     }
 
     @Override
@@ -119,6 +119,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+        Limelight.update();
     }
 
     /**
@@ -128,8 +129,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
-        Odometry.getInstance().disableCustomCam();
-        Odometry.getInstance().setScoringCam(false);
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
 
@@ -152,6 +151,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        Limelight.update();
 //        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
