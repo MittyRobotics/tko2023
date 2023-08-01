@@ -63,18 +63,54 @@ public class SwerveSubsystem extends SubsystemBase {
         setAngleMotors(inverseKinematics.getAngles());
     }
 
+    public void setAngleMotors(double[] values) {
+        for (int i = 0; i < 4; i++) {
+            double currentModuleAngle = getStandardizedModuleAngle(i);
+            boolean cw = values[i] - currentModuleAngle < PI && values[i] - currentModuleAngle > -PI;
+            double dist = getRealAngleDistance(currentModuleAngle, values[i], cw);
+            boolean flip = dist > PI / 2;
+
+            //check
+            flipped[i] = flip;
+
+            values[i] = getEncoderModuleAngle(i) + (cw ? 1 : -1) * dist;
+
+            if (flip) {
+                values[i] += (cw ? -1 : 1) * PI;
+            }
+
+            angleMotors[i].set(ControlMode.Position, values[i]);
+        }
+    }
+
     public void setDriveMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
             driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? 1 : -1) * values[i]);
         }
     }
 
-    public int getQuadrant(double angle) {
-        angle = standardize(angle);
-        if (angle >= 0 && angle < PI / 2) return 1;
-        if (angle >= PI / 2 && angle < PI) return 4;
-        if (angle >= PI && angle < 3 * PI / 2) return 3;
-        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
+    public void updateForwardKinematics() {
+        Vector[] modules = new Vector[4];
+
+        for (int i = 0; i < 4; i++) {
+            double cur = driveMotors[i].getSelectedSensorPosition();
+
+//            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
+            modules[i] = new Vector(new Angle(getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
+//            System.out.println(i + ": " + angle(i));
+
+            prevEnc[i] = cur;
+        }
+
+        forwardKinematics.updateForwardKinematics(modules);
+    }
+
+    public double getEncoderModuleAngle(int i) {
+        return angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
+    }
+
+    public double getStandardizedModuleAngle(int i) {
+        return standardize(getEncoderModuleAngle(i));
     }
 
     public double getRealAngleDistance(double current, double target, boolean cw) {
@@ -101,43 +137,17 @@ public class SwerveSubsystem extends SubsystemBase {
         return 0;
     }
 
-    public void setAngleMotors(double[] values) {
-        for (int i = 0; i < 4; i++) {
-            double currentAngle = getModuleAngle(i);
-            boolean cw = values[i] - currentAngle < PI && values[i] - currentAngle > -PI;
-            double dist = getRealAngleDistance(currentAngle, values[i], cw);
-            boolean flip = dist > PI / 2;
-
-            //check
-            flipped[i] = flip;
-
-            values[i] = standardize(currentAngle + (cw ? 1 : -1) * dist + (flip ? PI : 0));
-            angleMotors[i].set(ControlMode.Position, values[i]);
-        }
-    }
-
     public double standardize(double angle) {
         return ((angle % (2 * PI)) + 2 * PI) % 2 * PI;
     }
 
-    public double getModuleAngle(int i) {
-        return standardize(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
-    }
-
-    public void updateForwardKinematics() {
-        Vector[] modules = new Vector[4];
-
-        for (int i = 0; i < 4; i++) {
-            double cur = driveMotors[i].getSelectedSensorPosition();
-
-//            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(getModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
-//            System.out.println(i + ": " + angle(i));
-
-            prevEnc[i] = cur;
-        }
-
-        forwardKinematics.updateForwardKinematics(modules);
+    public int getQuadrant(double angle) {
+        angle = standardize(angle);
+        if (angle >= 0 && angle < PI / 2) return 1;
+        if (angle >= PI / 2 && angle < PI) return 4;
+        if (angle >= PI && angle < 3 * PI / 2) return 3;
+        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
+        return -6;
     }
 
     static class InverseKinematics {
@@ -155,19 +165,19 @@ public class SwerveSubsystem extends SubsystemBase {
         public void calculateInputs(Vector linearVel, double angularVel) {
             linearVel = new Vector(
                     new Angle(
-                            linearVel.getAngle().getRadians() - Gyro.getInstance().getRadians().getRadians(), true),
+                            linearVel.getAngle().getRadians() - Gyro.getInstance().getHeadingAngle(), true),
                     linearVel.getMagnitude()
             );
 
-            for (int i = 0; i < 4; i++) {
-                Vector wheelVector = Vector.add(linearVel, Vector.multiply(angularVel, getR(i)));
+            for (int i = 1; i <= 4; i++) {
+                Vector wheelVector = Vector.add(linearVel, Vector.multiply(angularVel, getAngularVector(i)));
                 angles[i] = wheelVector.getAngle().getRadians();
                 magnitudes[i] = wheelVector.getMagnitude();
             }
         }
 
-        public Vector getR(int i) {
-            return new Vector(r.getX() * (i == 0 || i == 3 ? -1 : 1), r.getY() * (i > 1 ? -1 : 1));
+        public Vector getAngularVector(int i) {
+            return new Vector(r.getX() * (i == 1 || i == 4 ? -1 : 1), r.getY() * (i > 2 ? -1 : 1));
         }
 
         public double[] getAngles() {

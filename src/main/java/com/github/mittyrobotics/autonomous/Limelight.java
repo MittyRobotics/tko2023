@@ -44,7 +44,7 @@ public class Limelight {
 
             Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5], false));
             if (Gyro.getInstance().getAngleOffset() == null) {
-                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset());
+                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset(), true);
             }
             setPose(tempPose);
             latency = limelightPose[6];
