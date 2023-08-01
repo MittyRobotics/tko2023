@@ -67,10 +67,10 @@ public class LoggerInterface {
     }
     public void print() {
 
-        System.out.println(table.getValue("gamepieces").getValue());
+//        System.out.println(table.getValue("gamepieces").getValue());
 
         for (double[] val : poseSub.readQueueValues()) {
-            System.out.println("pose changed value " + Arrays.toString(val));
+//            System.out.println("pose changed value " + Arrays.toString(val));
         }
 
 //        if(!table.getValue("seen").getBoolean()) {

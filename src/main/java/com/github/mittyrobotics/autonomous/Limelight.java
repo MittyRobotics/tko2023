@@ -41,14 +41,14 @@ public class Limelight {
                 limelightTable.getEntry("botpose").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0., 0.});
         targetDist = limelightTable.getEntry("botpose_targetspace").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0.});
 
-        System.out.println("TARGET: " + hasTarget + " at pipeline " + limelightTable.getEntry("pipeline").getDouble(-6) + "\n\n\n");
+//        System.out.println("TARGET: " + hasTarget + " at pipeline " + limelightTable.getEntry("pipeline").getDouble(-6) + "\n\n\n");
         if (hasTarget) {
             //x, y, theta
 
             Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5] * Math.PI/180.));
             if (Gyro.getInstance().getAngleOffset() == null && SwerveSubsystem.getInstance().getDesiredVel().getMagnitude() < 0.1) {
-                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset());
-                System.out.println("This ran");
+//                Gyro.getInstance().setAngleOffset(tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset());
+//                System.out.println("This ran");
             }
             setPose(tempPose);
             latency = limelightPose[6];

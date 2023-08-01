@@ -89,7 +89,7 @@ public class OI {
 
     public void handleGround() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
-            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.05), 0.20);
+            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.08), 0.20);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
             ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.), 0.17);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);
@@ -145,7 +145,7 @@ public class OI {
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
-                    ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.4);
+                    ArmKinematics.setArmKinematics(new Angle(ArmKinematics.getPivotDesired().getRadians()), 0);
                     StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
                         zeroAll();
@@ -155,7 +155,7 @@ public class OI {
                             StateMachine.getInstance().setStateNone();
                         }, 200);
                         Odometry.getInstance().setScoringCam(false);
-                    }, 100);
+                    }, 1000);
                 }, 10);
             }, 300);
         }
@@ -216,16 +216,16 @@ public class OI {
 //        autoIntakeGround.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 ////
         Trigger autoRight = new Trigger(() -> driverControls(false, false, false, true));
-        autoRight.whileTrue(new TeleopScoreCommand(2));
-        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//        autoRight.whileTrue(new TeleopScoreCommand(2));
+//        autoRight.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoCenter = new Trigger(() -> driverControls(false, false, true, true));
-        autoCenter.whileTrue(new TeleopScoreCommand(1));
-        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//        autoCenter.whileTrue(new TeleopScoreCommand(1));
+//        autoCenter.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
         Trigger autoLeft = new Trigger(() -> driverControls(false, false, true, false));
-        autoLeft.whileTrue(new TeleopScoreCommand(0));
-        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
+//        autoLeft.whileTrue(new TeleopScoreCommand(0));
+//        autoLeft.onFalse(new InstantCommand(() -> LedSubsystem.getInstance().disableDriveAltColor()));
 //
 //        Trigger zeroModules = new Trigger(() -> getOperatorController().getStartButton());
 //        zeroModules.onTrue(new InstantCommand(() -> SwerveSubsystem.getInstance().setAnglesZero()));

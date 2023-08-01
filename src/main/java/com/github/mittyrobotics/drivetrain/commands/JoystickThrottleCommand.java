@@ -52,7 +52,7 @@ public class JoystickThrottleCommand extends CommandBase {
 //        b = OI.getInstance().getPS4Controller().getCircleButton();
 //        x = OI.getInstance().getPS4Controller().getSquareButton();
         rightStickPressed = OI.getInstance().getDriveController().getRightStickButton();
-        System.out.println(rightStickPressed);
+//        System.out.println(rightStickPressed);
 
         fieldY = OI.getInstance().getDriveController().getLeftX() * (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1);
         fieldX = -OI.getInstance().getDriveController().getLeftY() * (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1);

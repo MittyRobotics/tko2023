@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().setBrakeMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = true;
+        Odometry.getInstance().FIELD_LEFT_SIDE = false;
         double x = 0;
         double y = 0;
         double t = 0;
@@ -60,9 +60,9 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
-        Odometry.getInstance().update();
-        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
-                == StateMachine.PieceState.CONE, 0);
+//        Odometry.getInstance().update();
+//        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
+//                == StateMachine.PieceState.CONE, 0);
 
 //        LoggerInterface.getInstance().put("Heading", Gyro.getInstance().getHeadingRadians());
 //        LoggerInterface.getInstance().put("Pose", Odometry.getInstance().getState());
@@ -75,27 +75,27 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().run();
 
-        System.out.print(Odometry.getInstance().getState().getPosition());
-        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
+//        System.out.print(Odometry.getInstance().getState().getPosition());
+//        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
     }
 
     @Override
     public void autonomousInit() {
-        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
+//        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
-        auto = LoggerInterface.getInstance().getValue("auto");
-        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
-        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
+//        auto = LoggerInterface.getInstance().getValue("auto");
+//        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
+//        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
 
         switch(auto) {
             case "preload":
-                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
-                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+//                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        Limelight.update();
+//        Limelight.update();
     }
 
     /**
@@ -151,7 +151,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        Limelight.update();
+//        Limelight.update();
 //        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
