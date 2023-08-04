@@ -1,6 +1,7 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.arm.StateMachine;
+import com.github.mittyrobotics.util.math.Vector;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,6 +21,14 @@ public class OI {
     public void initHardware() {
         driverController = new XboxController(DRIVER_CONTROLLER_ID);
         operatorController = new XboxController(OPERATOR_CONTROLLER_ID);
+    }
+
+    public XboxController getDriverController() {
+        return driverController;
+    }
+
+    public XboxController getOperatorController() {
+        return operatorController;
     }
 
     private boolean pieceControls(boolean left, boolean right) {

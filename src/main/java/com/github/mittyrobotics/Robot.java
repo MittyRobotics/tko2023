@@ -8,6 +8,8 @@ import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
 import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.util.Gyro;
+import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.math.Pose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,25 +18,26 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        OI.getInstance().initHardware();
+        Gyro.getInstance().initHardware();
         SwerveSubsystem.getInstance().initHardware();
-        PivotSubsystem.getInstance().initHardware();
-        TelevatorSubsystem.getInstance().initHardware();
-        PivotSubsystem.getInstance().initHardware();
-
-        Limelight.init(new Pose(0, 0, 0, false), 0);
-        Odometry.getInstance();
-
-        ArmSetpoints.initSetpoints();
-        MotionProfiles.createMPs();
+//        PivotSubsystem.getInstance().initHardware();
+//        TelevatorSubsystem.getInstance().initHardware();
+//
+//        Limelight.init(new Pose(0, 0, 0, false), 0);
+//        Odometry.getInstance();
+//
+//        ArmSetpoints.initSetpoints();
+//        MotionProfiles.createMPs();
     }
 
     @Override
     public void robotPeriodic() {
 //        StateMachine.update(1, 1);
-        SwerveSubsystem.getInstance().updateForwardKinematics();
-        Limelight.update();
-        Odometry.getInstance().update();
-        ArmKinematics.updateDesiredArmPositionFromState();
+//        SwerveSubsystem.getInstance().updateForwardKinematics();
+//        Limelight.update();
+//        Odometry.getInstance().update();
+//        ArmKinematics.updateDesiredArmPositionFromState();
 
         CommandScheduler.getInstance().run();
     }

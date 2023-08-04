@@ -1,12 +1,16 @@
 package com.github.mittyrobotics.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
 import com.github.mittyrobotics.util.math.*;
 import com.github.mittyrobotics.util.Pair;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.util.math.Angle;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.math.Vector;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
@@ -17,7 +21,7 @@ import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 
 public class SwerveSubsystem extends SubsystemBase {
     private static SwerveSubsystem instance;
-    private boolean flipped[] = new boolean[4];
+    public boolean flipped[] = new boolean[4];
 
     public static SwerveSubsystem getInstance() {
         if (instance == null) instance = new SwerveSubsystem();
@@ -40,17 +44,20 @@ public class SwerveSubsystem extends SubsystemBase {
             driveMotors[i].configFactoryDefault();
             driveMotors[i].setSelectedSensorPosition(0);
             driveMotors[i].config_kP(0, DRIVE_PID[0]);
-            driveMotors[i].config_kP(0, DRIVE_PID[1]);
-            driveMotors[i].config_kP(0, DRIVE_PID[2]);
+            driveMotors[i].config_kI(0, DRIVE_PID[1]);
+            driveMotors[i].config_kD(0, DRIVE_PID[2]);
+            driveMotors[i].config_kF(0, DRIVE_PID[3]);
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
 
             angleMotors[i].configFactoryDefault();
             angleMotors[i].setSelectedSensorPosition(0);
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
-            angleMotors[i].config_kP(0, ANGLE_PID[1]);
-            angleMotors[i].config_kP(0, ANGLE_PID[2]);
-            angleMotors[i].config_kF(0, ANGLE_PID[3]);
+            angleMotors[i].config_kI(0, ANGLE_PID[1]);
+            angleMotors[i].config_kD(0, ANGLE_PID[2]);
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
+            angleMotors[i].setNeutralMode(NeutralMode.Coast);
+
+            setDefaultCommand(new SwerveDefaultCommand());
         }
     }
 
@@ -59,16 +66,32 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void applyCalculatedInputs() {
-        setDriveMotors(inverseKinematics.getMagnitudes());
         setAngleMotors(inverseKinematics.getAngles());
+        setDriveMotors(inverseKinematics.getMagnitudes());
+    }
+
+    public double[] getDesiredAngles() {
+        return inverseKinematics.getAngles();
+    }
+
+    public double[] getDesiredMagnitudes() {
+        return inverseKinematics.getMagnitudes();
     }
 
     public void setAngleMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
             double currentModuleAngle = getStandardizedModuleAngle(i);
-            boolean cw = values[i] - currentModuleAngle < PI && values[i] - currentModuleAngle > -PI;
+            values[i] = standardize(values[i]);
+
+            boolean cw = (values[i] - currentModuleAngle < PI && values[i] - currentModuleAngle > 0)
+                    || values[i] - currentModuleAngle < -PI;
             double dist = getRealAngleDistance(currentModuleAngle, values[i], cw);
+
+            if (i == 0) System.out.println("C_Q: " + getQuadrant(currentModuleAngle) + " T_Q: " + getQuadrant(values[i]));
+
             boolean flip = dist > PI / 2;
+
+            if (i == 0) System.out.printf("%.3f %.3f %.3f %b %b\n", currentModuleAngle, values[i], dist, cw, flip);
 
             //check
             flipped[i] = flip;
@@ -79,14 +102,83 @@ public class SwerveSubsystem extends SubsystemBase {
                 values[i] += (cw ? -1 : 1) * PI;
             }
 
-            angleMotors[i].set(ControlMode.Position, values[i]);
+            if (i == 0) System.out.println("Setting to " + values[i]);
+            angleMotors[i].set(ControlMode.Position, values[i] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
     }
 
     public void setDriveMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
-            driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? 1 : -1) * values[i]);
+//            driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? 1 : -1) * values[i]);
+            driveMotors[i].set(ControlMode.Velocity, 4000);
         }
+    }
+
+    public double getRealAngleDistance(double current, double target, boolean cw) {
+        switch (getQuadrant(current)) {
+            case 1:
+                if (cw) return target - current;
+                else {
+                    if (getQuadrant(target) == 1) return current - target;
+                    else return (2 * PI - target) + current;
+                }
+            case 4:
+                if (cw) return target - current;
+                else {
+                    if (getQuadrant(target) == 1 || getQuadrant(target) == 4) return current - target;
+                    else return (2 * PI - target) + current;
+                }
+            case 3:
+                if (!cw) return current - target;
+                else {
+                    if (getQuadrant(target) == 2 || getQuadrant(target) == 3) return target - current;
+                    else return (2 * PI - current) + target;
+                }
+            case 2:
+                if (!cw) return current - target;
+                else {
+                    if (getQuadrant(target) == 2) return target - current;
+                    else return (2 * PI - current) + target;
+                }
+        }
+        return 0;
+    }
+
+    public double getRawWheelVelocity(int i) {
+        return driveMotors[i].getSelectedSensorVelocity();
+    }
+
+    public double getWheelVelocityInches(int i) {
+        return getRawWheelVelocity(i) / TICKS_PER_INCH * 10;
+    }
+
+    public double getWheelVelocityFeet(int i) {
+        return getWheelVelocityInches(i) / 12;
+    }
+
+    public double getEncoderModuleAngle(int i) {
+        return angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
+    }
+
+    public double getRawPosition(int i) {
+        return angleMotors[i].getSelectedSensorPosition();
+    }
+
+    public double getStandardizedModuleAngle(int i) {
+        return standardize(getEncoderModuleAngle(i));
+    }
+
+    public double standardize(double angle) {
+        return ((angle % (2 * PI)) + 2 * PI) % (2 * PI);
+    }
+
+    public int getQuadrant(double angle) {
+        angle = standardize(angle);
+        if (angle >= 0 && angle < PI / 2) return 1;
+        if (angle >= PI / 2 && angle < PI) return 4;
+        if (angle >= PI && angle < 3 * PI / 2) return 3;
+        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
+        return -6;
     }
 
     public void updateForwardKinematics() {
@@ -105,79 +197,45 @@ public class SwerveSubsystem extends SubsystemBase {
         forwardKinematics.updateForwardKinematics(modules);
     }
 
-    public double getEncoderModuleAngle(int i) {
-        return angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
-    }
-
-    public double getStandardizedModuleAngle(int i) {
-        return standardize(getEncoderModuleAngle(i));
-    }
-
-    public double getRealAngleDistance(double current, double target, boolean cw) {
-        switch (getQuadrant(current)) {
-            case 1:
-                if (cw) return target - current;
-                else return (2 * PI - target) + current;
-            case 4:
-                if (cw) return target - current;
-                else {
-                    if (getQuadrant(target) == 1) return current - target;
-                    else return (2 * PI - target) + current;
-                }
-            case 3:
-                if (!cw) return current - target;
-                else {
-                    if (getQuadrant(target) == 2) return target - current;
-                    else return (2 * PI - current) + target;
-                }
-            case 2:
-                if (!cw) return current - target;
-                else return (2 * PI - current) + target;
+    public double getAppliedOutput(boolean accessingAngleMotors, int i) {
+        if (accessingAngleMotors) {
+            return angleMotors[i].getMotorOutputVoltage();
+        } else {
+            return driveMotors[i].getMotorOutputVoltage();
         }
-        return 0;
-    }
-
-    public double standardize(double angle) {
-        return ((angle % (2 * PI)) + 2 * PI) % 2 * PI;
-    }
-
-    public int getQuadrant(double angle) {
-        angle = standardize(angle);
-        if (angle >= 0 && angle < PI / 2) return 1;
-        if (angle >= PI / 2 && angle < PI) return 4;
-        if (angle >= PI && angle < 3 * PI / 2) return 3;
-        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
-        return -6;
     }
 
     static class InverseKinematics {
         private double[] angles;
         private double[] magnitudes;
 
-        private int length, width;
+        private final double length = 25.68, width = 22.68;
 
         private Vector r;
 
         public InverseKinematics() {
+            angles = new double[4];
+            magnitudes = new double[4];
 
+            r = new Vector(length, width);
         }
 
         public void calculateInputs(Vector linearVel, double angularVel) {
             linearVel = new Vector(
                     new Angle(
-                            linearVel.getAngle().getRadians() - Gyro.getInstance().getHeadingAngle(), true),
+                            linearVel.getAngle().getRadians() - Gyro.getInstance().getHeadingRadians(), true),
                     linearVel.getMagnitude()
             );
 
-            for (int i = 1; i <= 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 Vector wheelVector = Vector.add(linearVel, Vector.multiply(angularVel, getAngularVector(i)));
-                angles[i] = wheelVector.getAngle().getRadians();
+                angles[i] = -wheelVector.getAngle().getRadians();
                 magnitudes[i] = wheelVector.getMagnitude();
             }
         }
 
         public Vector getAngularVector(int i) {
-            return new Vector(r.getX() * (i == 1 || i == 4 ? -1 : 1), r.getY() * (i > 2 ? -1 : 1));
+            return new Vector(r.getY() * (i == 0 || i == 1 ? -1 : 1), r.getX() * (i == 0 || i == 3 ? 1 : -1));
         }
 
         public double[] getAngles() {

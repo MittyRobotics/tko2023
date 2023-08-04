@@ -1,14 +1,14 @@
 package com.github.mittyrobotics.drivetrain;
 
 public class SwerveConstants {
-    public static final int[] DRIVE_MOTOR_IDS = {6, 0, 2, 4};
-    public static final int[] ANGLE_MOTOR_IDS = {7, 1, 3, 5};
+    public static final int[] DRIVE_MOTOR_IDS = {4, 2, 0, 6};
+    public static final int[] ANGLE_MOTOR_IDS = {5, 3, 1, 7};
 
-    public static final double[] DRIVE_PID = {};
-    public static final double[] ANGLE_PID = {};
+    public static final double[] ANGLE_PID = {0.3, 0, 0.03};
+    public static final double[] DRIVE_PID = {0.1, 0, 0, 1024./22328.48};
 
-    public static final boolean[] DRIVE_INVERTED = {};
-    public static final boolean[] ANGLE_INVERTED = {};
+    public static final boolean[] DRIVE_INVERTED = {false, false, false, false};
+    public static final boolean[] ANGLE_INVERTED = {false, false, false, false};
 
     private static final double RADIUS_OF_WHEEL = 2. * 2.54 / 100.;
 

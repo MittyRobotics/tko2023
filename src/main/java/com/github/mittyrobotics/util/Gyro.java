@@ -28,7 +28,7 @@ public class Gyro extends SubsystemBase {
     }
 
     public void initHardware() {
-        gyro = new WPI_Pigeon2(SwerveConstants.PIGEON_TWO_ID);
+        gyro = new WPI_Pigeon2(62);
         gyro.configFactoryDefault();
         gyro.reset();
     }
@@ -49,13 +49,13 @@ public class Gyro extends SubsystemBase {
         return angleOffset;
     }
 
-    public double getHeadingAngle() {
+    public double getHeadingAngleRaw() {
         return gyro.getAngle();
     }
 
     public double getHeadingRadians() {
 //        System.out.println(getHeadingAngle() * Math.PI / 180.);
-        return getHeadingRadiansNoOffset() + angleOffset.getRadians();
+        return getHeadingRadiansNoOffset() + (angleOffset == null ? 0 : angleOffset.getRadians());
     }
 
     public Angle getRadiansAsAngle() {
@@ -63,7 +63,7 @@ public class Gyro extends SubsystemBase {
     }
 
     public double getHeadingRadiansNoOffset() {
-        return -getHeadingAngle() * Math.PI / 180.;
+        return -getHeadingAngleRaw() * Math.PI / 180.;
     }
 
     public double getAngularVel() {
