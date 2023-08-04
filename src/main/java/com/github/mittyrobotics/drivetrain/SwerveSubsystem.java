@@ -109,8 +109,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setDriveMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
-//            driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? 1 : -1) * values[i]);
-            driveMotors[i].set(ControlMode.Velocity, 4000);
+            driveMotors[i].set(ControlMode.Velocity, (flipped[i] ? -1 : 1) * values[i] * TICKS_PER_INCH / 10);
         }
     }
 

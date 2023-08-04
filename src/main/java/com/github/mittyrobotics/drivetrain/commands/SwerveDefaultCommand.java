@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
+import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
@@ -29,13 +30,12 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleY = -OI.getInstance().getDriverController().getLeftX();
         throttleAngular = OI.getInstance().getDriverController().getRightX();
 
-        if (Math.abs(throttleX) > joystickDeadzone && Math.abs(throttleY) > joystickDeadzone)
-            SwerveSubsystem.getInstance().calculateInputs(new Vector(5 * throttleX, 5 * throttleY), 0);
-//        if (OI.getInstance().getDriverController().getRightBumper()) {
-//            SwerveSubsystem.getInstance().calculateInputs(new Vector(0, 5), 0);
-//        } else  {
-//            SwerveSubsystem.getInstance().calculateInputs(new Vector(5, 0), 0);
-//        }
+        SwerveSubsystem.getInstance().calculateInputs(
+                new Vector(
+                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX,
+                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY),
+                0);
+
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
         SmartDashboard.putNumber("Gyro", Gyro.getInstance().getHeadingRadians());
@@ -61,8 +61,11 @@ public class SwerveDefaultCommand extends CommandBase {
         SmartDashboard.putBoolean("Wheel 3 flip", SwerveSubsystem.getInstance().flipped[2]);
         SmartDashboard.putBoolean("Wheel 4 flip", SwerveSubsystem.getInstance().flipped[3]);
 
-        SmartDashboard.putNumber("wheel 1 ticks", SwerveSubsystem.getInstance().getRawPosition(0));
+//        SmartDashboard.putNumber("wheel 1 ticks", SwerveSubsystem.getInstance().getRawPosition(0));
         SmartDashboard.putNumber("wheel 1 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(0));
+        SmartDashboard.putNumber("wheel 2 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(1));
+        SmartDashboard.putNumber("wheel 3 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(2));
+        SmartDashboard.putNumber("wheel 4 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(3));
 
         SmartDashboard.putNumber("wheel 1 velocity", SwerveSubsystem.getInstance().getRawWheelVelocity(0));
     }
