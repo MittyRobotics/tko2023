@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import static com.github.mittyrobotics.arm.StateMachine.TransitionState.*;
 
-public class MotionProfiles {
+public class ArmMotionProfiles {
     public static final HashMap<StateMachine.TransitionState, TrapezoidalMotionProfile> PIVOT_MPS = new HashMap<>();
     public static final HashMap<StateMachine.TransitionState, TrapezoidalMotionProfile> TELEVATOR_MPS = new HashMap<>();
 

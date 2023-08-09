@@ -5,6 +5,7 @@ import com.github.mittyrobotics.arm.televator.commands.MoveToDesiredExtensionCom
 import com.github.mittyrobotics.util.math.Angle;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.ControlType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,6 +44,7 @@ public class PivotSubsystem extends SubsystemBase {
                 rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
         motor[1].getPIDController().setReference(
                 rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+//        motor[0].getPIDController().setReference(2, CANSparkMax.ControlType.kPosition);
     }
 
     public Angle getCurrentAngle() {

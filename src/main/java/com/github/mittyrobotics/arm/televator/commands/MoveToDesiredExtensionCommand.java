@@ -1,7 +1,7 @@
 package com.github.mittyrobotics.arm.televator.commands;
 
 import com.github.mittyrobotics.arm.ArmKinematics;
-import com.github.mittyrobotics.arm.MotionProfiles;
+import com.github.mittyrobotics.arm.ArmMotionProfiles;
 import com.github.mittyrobotics.arm.StateMachine;
 import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
@@ -30,7 +30,7 @@ public class MoveToDesiredExtensionCommand extends CommandBase {
 
         desiredExtension = ArmKinematics.getDesiredExtension();
 
-        motionProfile = MotionProfiles.TELEVATOR_MPS.get(StateMachine.getTransitionState());
+        motionProfile = ArmMotionProfiles.TELEVATOR_MPS.get(StateMachine.getTransitionState());
         motionProfile.changeSetpoint(
                 desiredExtension,
                 TelevatorSubsystem.getInstance().getCurrentExtension(),

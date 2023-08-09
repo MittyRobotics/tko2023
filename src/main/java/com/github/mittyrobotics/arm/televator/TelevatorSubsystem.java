@@ -33,8 +33,9 @@ public class TelevatorSubsystem extends SubsystemBase {
     }
 
     public void setRaw(double vel, double ff) {
-        motor.getPIDController().setReference(
-                vel, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+//        motor.getPIDController().setReference(
+//                vel, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+        motor.getPIDController().setReference(vel, CANSparkMax.ControlType.kPosition);
     }
 
     public double getCurrentExtension() {

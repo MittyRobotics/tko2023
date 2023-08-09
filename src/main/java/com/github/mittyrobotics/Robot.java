@@ -1,16 +1,9 @@
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.arm.ArmKinematics;
-import com.github.mittyrobotics.arm.ArmSetpoints;
-import com.github.mittyrobotics.arm.MotionProfiles;
-import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
-import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
-import com.github.mittyrobotics.autonomous.Limelight;
-import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.arm.ArmMotionProfiles;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
-import com.github.mittyrobotics.util.math.Pose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,7 +21,7 @@ public class Robot extends TimedRobot {
 //        Odometry.getInstance();
 //
 //        ArmSetpoints.initSetpoints();
-//        MotionProfiles.createMPs();
+        ArmMotionProfiles.createMPs();
     }
 
     @Override

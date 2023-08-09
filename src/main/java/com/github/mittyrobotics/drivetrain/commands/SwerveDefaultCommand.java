@@ -28,13 +28,15 @@ public class SwerveDefaultCommand extends CommandBase {
     public void execute() {
         throttleX = -OI.getInstance().getDriverController().getLeftY();
         throttleY = -OI.getInstance().getDriverController().getLeftX();
-        throttleAngular = OI.getInstance().getDriverController().getRightX();
+        throttleAngular = -OI.getInstance().getDriverController().getRightX();
 
         SwerveSubsystem.getInstance().calculateInputs(
                 new Vector(
                         SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX,
-                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY),
-                0);
+                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY
+                ),
+                SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
+        );
 
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
