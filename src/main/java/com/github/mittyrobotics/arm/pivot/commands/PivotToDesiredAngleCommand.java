@@ -41,7 +41,7 @@ public class PivotToDesiredAngleCommand extends CommandBase {
 
         desiredRPM = motionProfile.update(dt, PivotSubsystem.getInstance().getCurrentAngle().getRadians());
 
-        boolean pivotMovingDown = PivotSubsystem.getInstance().getCurrentVelocity() > 0;
+        boolean pivotMovingDown = desiredAngle > PivotSubsystem.getInstance().getCurrentAngle().getRadians();
         double currentExtension = TelevatorSubsystem.getInstance().getCurrentExtension();
 
         // TODO: 6/27/2023 ADD FF STUFF
@@ -49,7 +49,7 @@ public class PivotToDesiredAngleCommand extends CommandBase {
                 1 - 0 / 12. * currentExtension :
                 1.2 + 0.2 / 12. * currentExtension);
 
-        PivotSubsystem.getInstance().setRaw(desiredRPM, ff);
+        PivotSubsystem.getInstance().setVelArbFF(desiredRPM, ff);
     }
 
     @Override

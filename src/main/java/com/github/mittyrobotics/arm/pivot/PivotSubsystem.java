@@ -1,11 +1,8 @@
 package com.github.mittyrobotics.arm.pivot;
 
-import com.github.mittyrobotics.arm.pivot.commands.PivotToDesiredAngleCommand;
-import com.github.mittyrobotics.arm.televator.commands.MoveToDesiredExtensionCommand;
 import com.github.mittyrobotics.util.math.Angle;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -31,15 +28,15 @@ public class PivotSubsystem extends SubsystemBase {
             motor[i].getPIDController().setP(PID[0]);
             motor[i].getPIDController().setI(PID[1]);
             motor[i].getPIDController().setD(PID[2]);
-            motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
-            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
-            motor[i].getEncoder().setPosition(0);
+//            motor[i].getEncoder().setPosition(0);
+//            motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
+//            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
         }
 
-        setDefaultCommand(new PivotToDesiredAngleCommand());
+//        setDefaultCommand(new PivotToDesiredAngleCommand());
     }
 
-    public void setRaw(double rpm, double ff) {
+    public void setVelArbFF(double rpm, double ff) {
         motor[0].getPIDController().setReference(
                 rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
         motor[1].getPIDController().setReference(
@@ -47,8 +44,12 @@ public class PivotSubsystem extends SubsystemBase {
 //        motor[0].getPIDController().setReference(2, CANSparkMax.ControlType.kPosition);
     }
 
+    public void setRaw(double percent) {
+        motor[0].set(percent);
+    }
+
     public Angle getCurrentAngle() {
-        return new Angle(motor[0].getEncoder().getPosition(), true);
+        return new Angle(motor[1].getEncoder().getPosition(), true);
     }
 
     public double getCurrentVelocity() {

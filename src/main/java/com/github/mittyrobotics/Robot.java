@@ -1,6 +1,7 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.arm.ArmMotionProfiles;
+import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
@@ -13,8 +14,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         OI.getInstance().initHardware();
         Gyro.getInstance().initHardware();
-        SwerveSubsystem.getInstance().initHardware();
-//        PivotSubsystem.getInstance().initHardware();
+//        SwerveSubsystem.getInstance().initHardware();
+        PivotSubsystem.getInstance().initHardware();
 //        TelevatorSubsystem.getInstance().initHardware();
 //
 //        Limelight.init(new Pose(0, 0, 0, false), 0);
@@ -32,7 +33,8 @@ public class Robot extends TimedRobot {
 //        Odometry.getInstance().update();
 //        ArmKinematics.updateDesiredArmPositionFromState();
 
-        CommandScheduler.getInstance().run();
+//        CommandScheduler.getInstance().run();
+        System.out.println("PIVOT POS: " + PivotSubsystem.getInstance().getCurrentAngle().getRadians());
     }
 
     @Override
@@ -52,7 +54,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        super.teleopPeriodic();
+//        super.teleopPeriodic();
+        PivotSubsystem.getInstance().setRaw(-0.2);
     }
 
     @Override
