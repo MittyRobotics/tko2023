@@ -1,6 +1,6 @@
-package com.github.mittyrobotics.autonomous.pathfollowing.math;
+package com.github.mittyrobotics.util.math.autonomous;
 
-import java.util.HashMap;
+import com.github.mittyrobotics.util.math.*;
 
 public class QuinticHermiteSpline extends Parametric {
     Point start, end;
