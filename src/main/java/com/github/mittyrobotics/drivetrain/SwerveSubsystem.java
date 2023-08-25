@@ -81,13 +81,13 @@ public class SwerveSubsystem extends SubsystemBase {
     public void setAngleMotors(double[] values) {
         for (int i = 0; i < 4; i++) {
             double currentModuleAngle = getStandardizedModuleAngle(i);
-            values[i] = standardize(values[i]);
+            values[i] = Angle.standardize(values[i]);
 
             boolean cw = (values[i] - currentModuleAngle < PI && values[i] - currentModuleAngle > 0)
                     || values[i] - currentModuleAngle < -PI;
-            double dist = getRealAngleDistance(currentModuleAngle, values[i], cw);
+            double dist = Angle.getRealAngleDistance(currentModuleAngle, values[i], cw);
 
-            if (i == 0) System.out.println("C_Q: " + getQuadrant(currentModuleAngle) + " T_Q: " + getQuadrant(values[i]));
+            if (i == 0) System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
 
             boolean flip = dist > PI / 2;
 
@@ -113,36 +113,6 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
-    public double getRealAngleDistance(double current, double target, boolean cw) {
-        switch (getQuadrant(current)) {
-            case 1:
-                if (cw) return target - current;
-                else {
-                    if (getQuadrant(target) == 1) return current - target;
-                    else return (2 * PI - target) + current;
-                }
-            case 4:
-                if (cw) return target - current;
-                else {
-                    if (getQuadrant(target) == 1 || getQuadrant(target) == 4) return current - target;
-                    else return (2 * PI - target) + current;
-                }
-            case 3:
-                if (!cw) return current - target;
-                else {
-                    if (getQuadrant(target) == 2 || getQuadrant(target) == 3) return target - current;
-                    else return (2 * PI - current) + target;
-                }
-            case 2:
-                if (!cw) return current - target;
-                else {
-                    if (getQuadrant(target) == 2) return target - current;
-                    else return (2 * PI - current) + target;
-                }
-        }
-        return 0;
-    }
-
     public double getRawWheelVelocity(int i) {
         return driveMotors[i].getSelectedSensorVelocity();
     }
@@ -164,20 +134,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getStandardizedModuleAngle(int i) {
-        return standardize(getEncoderModuleAngle(i));
-    }
-
-    public double standardize(double angle) {
-        return ((angle % (2 * PI)) + 2 * PI) % (2 * PI);
-    }
-
-    public int getQuadrant(double angle) {
-        angle = standardize(angle);
-        if (angle >= 0 && angle < PI / 2) return 1;
-        if (angle >= PI / 2 && angle < PI) return 4;
-        if (angle >= PI && angle < 3 * PI / 2) return 3;
-        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
-        return -6;
+        return Angle.standardize(getEncoderModuleAngle(i));
     }
 
     public void updateForwardKinematics() {

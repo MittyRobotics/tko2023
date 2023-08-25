@@ -15,7 +15,7 @@ public class QuinticHermiteSpline extends Parametric {
         this.vel1 = vel1;
         this.accel1 = accel1;
 
-        this.length = getLength(1, 17);
+        this.length = getLength(1.0, 17);
     }
 
     public double getLength() {

@@ -8,8 +8,13 @@ public class SwervePath {
     private QuinticHermiteSpline spline;
     private Angle startHeading, endHeading;
     private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, lookahead, kp, ki, kd, whenToEnd, total;
+    private double lookaheadScale, tangentScale;
 
-    public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading, double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular, double lookahead, double kp, double ki, double kd, double whenToEnd) {
+    public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading,
+                      double initSpeed, double endSpeed, double maxSpeed, double accel, double decel,
+                      double minAngular, double whenToEnd,
+                      double lookahead, double kp, double ki, double kd,
+                      double lookaheadScale, double tangentScale) {
         this.spline = spline;
         this.startHeading = startHeading;
         this.endHeading = endHeading;
@@ -24,6 +29,8 @@ public class SwervePath {
         this.ki = ki;
         this.kd = kd;
         this.whenToEnd = whenToEnd;
+        this.lookaheadScale = lookaheadScale;
+        this.tangentScale = tangentScale;
 
         total = spline.getLength(1.0, 17);
     }
@@ -67,7 +74,17 @@ public class SwervePath {
     public Angle getCurrentDesiredHeading(double length) {
         double fraction = length/total;
 
-        return Pose.doSigmoidInterpolation(startHeading, endHeading, fraction);
+        return doSigmoidInterpolation(startHeading, endHeading, fraction);
+    }
+
+    private static double sigmoid(double x, double a) {
+        return 1. / (1 + Math.exp(-a * (x - 0.5)));
+    }
+
+    public static Angle doSigmoidInterpolation(Angle start, Angle end, double t) {
+        return new Angle(
+                start.getRadians() + (end.getRadians() - start.getRadians()) * sigmoid(t, 10), true
+        );
     }
 
     public Angle getEndHeading() {
@@ -116,5 +133,13 @@ public class SwervePath {
 
     public double getLookahead() {
         return lookahead;
+    }
+
+    public double getLookaheadScale() {
+        return lookaheadScale;
+    }
+
+    public double getTangentScale() {
+        return tangentScale;
     }
 }
