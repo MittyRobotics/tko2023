@@ -1,7 +1,6 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.arm.StateMachine;
-import com.github.mittyrobotics.util.math.Vector;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,22 +57,18 @@ public class OI {
 
 
         Trigger armStowed = new Trigger(() -> operatorControls(false, false, false, false));
-        armStowed.whileTrue(new InstantCommand(() -> StateMachine.setCurrentArmState(StateMachine.ArmState.STOWED)));
+        armStowed.whileTrue(new InstantCommand(StateMachine::handleStowed));
 
         Trigger armLow = new Trigger(() -> operatorControls(true, false, false, false));
-        armLow.whileTrue(new InstantCommand(() -> StateMachine.setCurrentArmState(StateMachine.ArmState.LOW)));
+        armLow.whileTrue(new InstantCommand(StateMachine::handleLow));
 
         Trigger armHP = new Trigger(() -> operatorControls(false, true, false, false));
-        armHP.whileTrue(new InstantCommand(() -> StateMachine.setCurrentArmState(StateMachine.ArmState.HP)));
+        armHP.whileTrue(new InstantCommand(StateMachine::handleHP));
 
         Trigger armMid = new Trigger(() -> operatorControls(false, false, true, false));
-        armMid.whileTrue(new InstantCommand(() -> StateMachine.setCurrentArmState(StateMachine.ArmState.MID)));
+        armMid.whileTrue(new InstantCommand(StateMachine::handleMid));
 
         Trigger armHigh = new Trigger(() -> operatorControls(false, false, false, true));
-        armHigh.whileTrue(new InstantCommand(() -> StateMachine.setCurrentArmState(StateMachine.ArmState.HIGH)));
-
-
-
-
+        armHigh.whileTrue(new InstantCommand(StateMachine::handleHigh));
     }
 }
