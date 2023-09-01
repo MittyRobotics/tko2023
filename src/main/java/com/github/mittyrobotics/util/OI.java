@@ -1,9 +1,12 @@
 package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.arm.StateMachine;
+import com.github.mittyrobotics.autonomous.actions.AutoScoreCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import javax.swing.plaf.nimbus.State;
 
 import static com.github.mittyrobotics.util.OIConstants.*;
 
@@ -51,9 +54,10 @@ public class OI {
         Trigger cubeMode = new Trigger(() -> pieceControls(false, true));
         cubeMode.whileTrue(new InstantCommand(() -> StateMachine.setPieceState(StateMachine.PieceState.CUBE)));
 
-        Trigger noneMode = new Trigger(() -> pieceControls(false, false));
+        Trigger noneMode = new Trigger(() -> pieceControls(false, false) &&
+                StateMachine.getDesiredArmState() != StateMachine.ArmState.HIGH &&
+                StateMachine.getDesiredArmState() != StateMachine.ArmState.MID);
         noneMode.whileTrue(new InstantCommand(() -> StateMachine.setPieceState(StateMachine.PieceState.NONE)));
-
 
 
         Trigger armStowed = new Trigger(() -> operatorControls(false, false, false, false));
@@ -70,5 +74,11 @@ public class OI {
 
         Trigger armHigh = new Trigger(() -> operatorControls(false, false, false, true));
         armHigh.whileTrue(new InstantCommand(StateMachine::handleHigh));
+
+
+        Trigger score = new Trigger(() -> pieceControls(false, false) &&
+                (StateMachine.getDesiredArmState() == StateMachine.ArmState.HIGH ||
+                 StateMachine.getDesiredArmState() == StateMachine.ArmState.MID));
+        score.whileTrue(new AutoScoreCommand());
     }
 }

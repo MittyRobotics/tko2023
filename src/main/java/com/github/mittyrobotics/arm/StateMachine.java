@@ -37,6 +37,11 @@ public class StateMachine {
         setCurrentArmState(ArmState.HP);
     }
 
+    public static void handleScore() {
+        setTransitionState(getDesiredArmState(), ArmState.SCORING);
+        setCurrentArmState(ArmState.SCORING);
+    }
+
     public static void setCurrentArmState(ArmState state) {
         currentArmState = state;
     }
@@ -113,7 +118,8 @@ public class StateMachine {
         MID,
         LOW,
         HP,
-        SCORING
+        SCORING,
+        RETRACTED
     }
 
     public enum PieceState {

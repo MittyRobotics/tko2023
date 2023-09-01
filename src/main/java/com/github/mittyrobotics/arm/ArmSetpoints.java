@@ -15,5 +15,7 @@ public class ArmSetpoints {
         positions.put(ArmState.HIGH, new ArmPosition(new Angle(0, true), 0));
         positions.put(ArmState.MID, new ArmPosition(new Angle(0, true), 0));
         positions.put(ArmState.LOW, new ArmPosition(new Angle(0, true), 0));
+        positions.put(ArmState.SCORING, new ArmPosition(new Angle(0, true), 0));
+        positions.put(ArmState.RETRACTED, new ArmPosition(positions.get(ArmState.SCORING).getAngle(), 0));
     }
 }
