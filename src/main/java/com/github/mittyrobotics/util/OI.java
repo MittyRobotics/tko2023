@@ -2,6 +2,7 @@ package com.github.mittyrobotics.util;
 
 import com.github.mittyrobotics.arm.StateMachine;
 import com.github.mittyrobotics.autonomous.actions.AutoScoreCommand;
+import com.github.mittyrobotics.intake.IntakeSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,8 +59,8 @@ public class OI {
         noneMode.whileTrue(new InstantCommand(() -> StateMachine.setPieceState(StateMachine.PieceState.NONE)));
 
 
-        Trigger armStowed = new Trigger(() -> operatorControls(false, false, false, false));
-        armStowed.whileTrue(new InstantCommand(StateMachine::handleStowed));
+        Trigger armStow = new Trigger(() -> StateMachine.getPieceState() == StateMachine.PieceState.NONE);
+        armStow.whileTrue(new InstantCommand(StateMachine::handleStowed));
 
         Trigger armLow = new Trigger(() -> operatorControls(true, false, false, false));
         armLow.whileTrue(new InstantCommand(StateMachine::handleLow));
@@ -77,5 +78,12 @@ public class OI {
                 (StateMachine.getArmState() == StateMachine.ArmState.HIGH ||
                  StateMachine.getArmState() == StateMachine.ArmState.MID));
         armScore.whileTrue(new AutoScoreCommand());
+
+        Trigger intakeStow = new Trigger(() -> IntakeSubsystem.getInstance().intakeFull() &&
+                StateMachine.getIntakeState() == StateMachine.IntakeState.INTAKING);
+        intakeStow.whileTrue(new InstantCommand(StateMachine::handleStowed));
+
+        Trigger outtake = new Trigger(getOperatorController()::getRightBumper);
+        outtake.whileTrue(new InstantCommand(() -> StateMachine.setIntakeState(StateMachine.IntakeState.OUTTAKING)));
     }
 }

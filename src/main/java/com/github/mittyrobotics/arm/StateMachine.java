@@ -16,11 +16,13 @@ public class StateMachine {
     public static void handleStowed() {
         setTransitionState(getArmState(), ArmState.STOWED);
         setArmState(ArmState.STOWED);
+        setIntakeState(IntakeState.STOWING);
     }
 
     public static void handleLow() {
         setTransitionState(getArmState(), ArmState.LOW);
         setArmState(ArmState.LOW);
+        setIntakeState(IntakeState.INTAKING);
     }
 
     public static void handleMid() {
@@ -36,6 +38,7 @@ public class StateMachine {
     public static void handleHP() {
         setTransitionState(getArmState(), ArmState.HP);
         setArmState(ArmState.HP);
+        setIntakeState(IntakeState.INTAKING);
     }
 
     public static void handleScore() {
@@ -111,6 +114,10 @@ public class StateMachine {
 
     public static IntakeState getIntakeState() {
         return intakeState;
+    }
+
+    public static boolean withinThreshold() {
+        return withinThreshold(2, 0.5);
     }
 
     public static boolean withinThreshold(double angleThreshold, double extensionThreshold) {

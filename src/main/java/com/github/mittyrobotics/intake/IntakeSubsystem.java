@@ -18,5 +18,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void initHardware() {
         motor = new CANSparkMax(SPARK_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor.restoreFactoryDefaults();
+        motor.setInverted(INVERTED);
+    }
+
+    public void setMotor(double percent) {
+        motor.set(percent);
+    }
+
+    public boolean intakeFull() {
+        return motor.getOutputCurrent() > F;
     }
 }
