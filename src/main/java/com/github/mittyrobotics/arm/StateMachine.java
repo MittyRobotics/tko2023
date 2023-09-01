@@ -6,47 +6,48 @@ public class StateMachine {
     private static ArmState currentArmState;
     private static PieceState pieceState;
     private static TransitionState transitionState;
+    private static IntakeState intakeState;
 
     private static void initStateMachine() {
-        setCurrentArmState(ArmState.STOWED);
+        setArmState(ArmState.STOWED);
         setTransitionState(ArmState.STOWED, ArmState.HIGH);
     }
 
     public static void handleStowed() {
-        setTransitionState(getDesiredArmState(), ArmState.STOWED);
-        setCurrentArmState(ArmState.STOWED);
+        setTransitionState(getArmState(), ArmState.STOWED);
+        setArmState(ArmState.STOWED);
     }
 
     public static void handleLow() {
-        setTransitionState(getDesiredArmState(), ArmState.LOW);
-        setCurrentArmState(ArmState.LOW);
+        setTransitionState(getArmState(), ArmState.LOW);
+        setArmState(ArmState.LOW);
     }
 
     public static void handleMid() {
-        setTransitionState(getDesiredArmState(), ArmState.MID);
-        setCurrentArmState(ArmState.MID);
+        setTransitionState(getArmState(), ArmState.MID);
+        setArmState(ArmState.MID);
     }
 
     public static void handleHigh() {
-        setTransitionState(getDesiredArmState(), ArmState.HIGH);
-        setCurrentArmState(ArmState.HIGH);
+        setTransitionState(getArmState(), ArmState.HIGH);
+        setArmState(ArmState.HIGH);
     }
 
     public static void handleHP() {
-        setTransitionState(getDesiredArmState(), ArmState.HP);
-        setCurrentArmState(ArmState.HP);
+        setTransitionState(getArmState(), ArmState.HP);
+        setArmState(ArmState.HP);
     }
 
     public static void handleScore() {
-        setTransitionState(getDesiredArmState(), ArmState.SCORING);
-        setCurrentArmState(ArmState.SCORING);
+        setTransitionState(getArmState(), ArmState.SCORING);
+        setArmState(ArmState.SCORING);
     }
 
-    public static void setCurrentArmState(ArmState state) {
+    public static void setArmState(ArmState state) {
         currentArmState = state;
     }
 
-    public static ArmState getDesiredArmState() {
+    public static ArmState getArmState() {
         return currentArmState;
     }
 
@@ -104,13 +105,22 @@ public class StateMachine {
         return transitionState;
     }
 
+    public static void setIntakeState(IntakeState state) {
+        intakeState = state;
+    }
+
+    public static IntakeState getIntakeState() {
+        return intakeState;
+    }
+
     public static boolean withinThreshold(double angleThreshold, double extensionThreshold) {
         ArmPosition diff = ArmPosition.getDifference(
-                ArmSetpoints.positions.get(getDesiredArmState()),
+                ArmSetpoints.positions.get(getArmState()),
                 ArmKinematics.getCurrentArmPosition()
         );
         return diff.getAngle().getDegrees() < angleThreshold && diff.getRadius() < extensionThreshold;
     }
+
 
     public enum ArmState {
         STOWED,

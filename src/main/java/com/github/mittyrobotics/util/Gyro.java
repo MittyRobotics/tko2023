@@ -13,8 +13,6 @@ public class Gyro extends SubsystemBase {
     WPI_Pigeon2 gyro;
     Angle angleOffset = null;
 
-    public short[] pose = new short[3];
-
     public Gyro() {
         super();
         setName("Gyro");

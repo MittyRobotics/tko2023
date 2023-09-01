@@ -11,10 +11,9 @@ public class SwervePath {
     private double lookaheadScale, tangentScale;
 
     public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading,
-                      double initSpeed, double endSpeed, double maxSpeed, double accel, double decel,
-                      double minAngular, double whenToEnd,
-                      double lookahead, double kp, double ki, double kd,
-                      double lookaheadScale, double tangentScale) {
+                      double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular,
+                      double whenToEnd, double lookahead, double lookaheadScale, double tangentScale,
+                      double kp, double ki, double kd) {
         this.spline = spline;
         this.startHeading = startHeading;
         this.endHeading = endHeading;

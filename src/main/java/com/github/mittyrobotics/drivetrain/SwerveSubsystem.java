@@ -12,6 +12,7 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.math.Vector;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.reduxrobotics.sensors.canandcoder.*;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 
 public class SwerveSubsystem extends SubsystemBase {
     private static SwerveSubsystem instance;
-    public boolean flipped[] = new boolean[4];
+    private boolean flipped[] = new boolean[4];
 
     public static SwerveSubsystem getInstance() {
         if (instance == null) instance = new SwerveSubsystem();
@@ -34,12 +35,16 @@ public class SwerveSubsystem extends SubsystemBase {
     private WPI_TalonFX[] driveMotors = new WPI_TalonFX[4];
     private WPI_TalonFX[] angleMotors = new WPI_TalonFX[4];
 
+    private CANandcoder[] absEncoders = new CANandcoder[4];
+
     private double[] prevEnc = new double[4];
 
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
             driveMotors[i] = new WPI_TalonFX(DRIVE_MOTOR_IDS[i]);
             angleMotors[i] = new WPI_TalonFX(ANGLE_MOTOR_IDS[i]);
+
+            absEncoders[i] = new CANandcoder(ABS_ENCODER_IDS[i]);
 
             driveMotors[i].configFactoryDefault();
             driveMotors[i].setSelectedSensorPosition(0);
@@ -50,7 +55,8 @@ public class SwerveSubsystem extends SubsystemBase {
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
 
             angleMotors[i].configFactoryDefault();
-            angleMotors[i].setSelectedSensorPosition(0);
+            angleMotors[i].setSelectedSensorPosition(-absEncoders[i].getAbsPosition()
+                    * 2 * PI / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);

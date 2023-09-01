@@ -53,8 +53,8 @@ public class OI {
         cubeMode.whileTrue(new InstantCommand(() -> StateMachine.setPieceState(StateMachine.PieceState.CUBE)));
 
         Trigger noneMode = new Trigger(() -> pieceControls(false, false) &&
-                StateMachine.getDesiredArmState() != StateMachine.ArmState.HIGH &&
-                StateMachine.getDesiredArmState() != StateMachine.ArmState.MID);
+                StateMachine.getArmState() != StateMachine.ArmState.HIGH &&
+                StateMachine.getArmState() != StateMachine.ArmState.MID);
         noneMode.whileTrue(new InstantCommand(() -> StateMachine.setPieceState(StateMachine.PieceState.NONE)));
 
 
@@ -73,10 +73,9 @@ public class OI {
         Trigger armHigh = new Trigger(() -> operatorControls(false, false, false, true));
         armHigh.whileTrue(new InstantCommand(StateMachine::handleHigh));
 
-
-        Trigger score = new Trigger(() -> pieceControls(false, false) &&
-                (StateMachine.getDesiredArmState() == StateMachine.ArmState.HIGH ||
-                 StateMachine.getDesiredArmState() == StateMachine.ArmState.MID));
-        score.whileTrue(new AutoScoreCommand());
+        Trigger armScore = new Trigger(() -> pieceControls(false, false) &&
+                (StateMachine.getArmState() == StateMachine.ArmState.HIGH ||
+                 StateMachine.getArmState() == StateMachine.ArmState.MID));
+        armScore.whileTrue(new AutoScoreCommand());
     }
 }

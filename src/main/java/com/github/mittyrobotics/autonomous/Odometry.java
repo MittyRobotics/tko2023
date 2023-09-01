@@ -3,11 +3,6 @@ package com.github.mittyrobotics.autonomous;
 //import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.util.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.util.Gyro;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.TimeSyncEventData;
-import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj.Timer;
 import org.ejml.simple.SimpleMatrix;
 
 public class Odometry {
@@ -36,8 +31,8 @@ public class Odometry {
 //        LoggerInterface.getInstance().putDesiredCamera(2);
     }
 
-    public static double offset = 20.873;
-    public static Pose[][] scoringZones = {
+    public static final double offset = 20.873;
+    public static final Pose[][] SCORING_ZONES = {
             {
                     new Pose(new Point(610.77, 42.19 + offset), new Angle(0, true)),
                     new Pose(new Point(610.77, 42.19), new Angle(0, true)),
@@ -232,7 +227,7 @@ public class Odometry {
     }
 
     public Pose[] getScoringZone(int tag_id) {
-        return scoringZones[tag_id - 1];
+        return SCORING_ZONES[tag_id - 1];
     }
 
     public static int getClosestScoringZone(Pose state) {
@@ -241,7 +236,7 @@ public class Odometry {
         Point robot = state.getPosition();
 
         int i = 0;
-        for (Pose[] p : scoringZones) {
+        for (Pose[] p : SCORING_ZONES) {
             if (p.length == 3) {
                 if (Point.getDistance(robot, p[1].getPosition()) < dist) {
                     minIndex = i;

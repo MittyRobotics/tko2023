@@ -12,7 +12,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
                 new WaitCommand(0.3),
                 new InstantCommand(StateMachine::handleScore),
                 new WaitCommand(0.3),
-                new InstantCommand(() -> { StateMachine.setCurrentArmState(StateMachine.ArmState.RETRACTED); }),
+                new InstantCommand(() -> { StateMachine.setArmState(StateMachine.ArmState.RETRACTED); }),
                 new WaitCommand(0.3),
                 new InstantCommand(StateMachine::handleStowed)
         );

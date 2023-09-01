@@ -30,15 +30,31 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleY = -OI.getInstance().getDriverController().getLeftX();
         throttleAngular = -OI.getInstance().getDriverController().getRightX();
 
-        SwerveSubsystem.getInstance().calculateInputs(
-                new Vector(
-                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX,
-                        SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY
-                ),
-                SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
-        );
+        if (throttleX < joystickDeadzone) throttleX = 0;
+        if (throttleY < joystickDeadzone) throttleY = 0;
+        if (throttleAngular < joystickDeadzone) throttleAngular = 0;
 
-        SwerveSubsystem.getInstance().applyCalculatedInputs();
+        if (throttleX == 0 && throttleY == 0 && throttleAngular == 0) {
+            SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
+        } else {
+            SwerveSubsystem.getInstance().calculateInputs(
+                    new Vector(
+                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX,
+                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY
+                    ),
+                    SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
+            );
+
+            SwerveSubsystem.getInstance().applyCalculatedInputs();
+        }
+
+
+
+
+
+
+
+
 
         SmartDashboard.putNumber("Gyro", Gyro.getInstance().getHeadingRadians());
 
@@ -58,10 +74,10 @@ public class SwerveDefaultCommand extends CommandBase {
         SmartDashboard.putNumber("Wheel 3 angle", desiredAngles[2]);
         SmartDashboard.putNumber("Wheel 4 angle", desiredAngles[3]);
 
-        SmartDashboard.putBoolean("Wheel 1 flip", SwerveSubsystem.getInstance().flipped[0]);
-        SmartDashboard.putBoolean("Wheel 2 flip", SwerveSubsystem.getInstance().flipped[1]);
-        SmartDashboard.putBoolean("Wheel 3 flip", SwerveSubsystem.getInstance().flipped[2]);
-        SmartDashboard.putBoolean("Wheel 4 flip", SwerveSubsystem.getInstance().flipped[3]);
+//        SmartDashboard.putBoolean("Wheel 1 flip", SwerveSubsystem.getInstance().flipped[0]);
+//        SmartDashboard.putBoolean("Wheel 2 flip", SwerveSubsystem.getInstance().flipped[1]);
+//        SmartDashboard.putBoolean("Wheel 3 flip", SwerveSubsystem.getInstance().flipped[2]);
+//        SmartDashboard.putBoolean("Wheel 4 flip", SwerveSubsystem.getInstance().flipped[3]);
 
 //        SmartDashboard.putNumber("wheel 1 ticks", SwerveSubsystem.getInstance().getRawPosition(0));
         SmartDashboard.putNumber("wheel 1 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(0));
