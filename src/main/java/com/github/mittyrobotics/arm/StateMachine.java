@@ -1,5 +1,7 @@
 package com.github.mittyrobotics.arm;
 
+import com.github.mittyrobotics.intake.IntakeSubsystem;
+
 import static com.github.mittyrobotics.arm.ArmKinematics.ArmPosition;
 
 public class StateMachine {
@@ -16,7 +18,8 @@ public class StateMachine {
     public static void handleStowed() {
         setTransitionState(getArmState(), ArmState.STOWED);
         setArmState(ArmState.STOWED);
-        setIntakeState(IntakeState.STOWING);
+        setIntakeState(IntakeSubsystem.getInstance().intakeFull() ?
+                IntakeState.STOWING : IntakeState.EMPTY);
     }
 
     public static void handleLow() {
@@ -122,7 +125,7 @@ public class StateMachine {
 
     public static boolean withinThreshold(double angleThreshold, double extensionThreshold) {
         ArmPosition diff = ArmPosition.getDifference(
-                ArmSetpoints.positions.get(getArmState()),
+                ArmSetpoints.positions.get(getArmState()).get(getPieceState()),
                 ArmKinematics.getCurrentArmPosition()
         );
         return diff.getAngle().getDegrees() < angleThreshold && diff.getRadius() < extensionThreshold;

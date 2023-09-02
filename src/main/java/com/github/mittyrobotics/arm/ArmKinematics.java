@@ -13,7 +13,8 @@ public class ArmKinematics {
 
     public static void updateDesiredArmPositionFromState() {
         StateMachine.ArmState desiredArmState = StateMachine.getArmState();
-        ArmPosition desiredArmPosition = ArmSetpoints.positions.get(desiredArmState);
+        StateMachine.PieceState pieceState = StateMachine.getPieceState();
+        ArmPosition desiredArmPosition = ArmSetpoints.positions.get(desiredArmState).get(pieceState);
         setArmPositionPolar(desiredArmPosition.angle, desiredArmPosition.radius);
     }
 

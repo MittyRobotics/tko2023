@@ -25,17 +25,21 @@ public class IntakeDefaultCommand extends CommandBase {
 
         switch (intakeState) {
             case EMPTY:
-                IntakeSubsystem.getInstance().setMotor(0);
+                IntakeSubsystem.getInstance().setMotor(EMPTY_SPEED);
                 break;
             case STOWING:
                 IntakeSubsystem.getInstance().setMotor(STOWING_SPEED);
                 break;
             case INTAKING:
                 IntakeSubsystem.getInstance().setMotor(INTAKING_SPEED);
+                break;
             case OUTTAKING:
                 if (StateMachine.getPieceState() == StateMachine.PieceState.CUBE)
                     IntakeSubsystem.getInstance().setMotor(CUBE_SCORE_SPEED);
                 else IntakeSubsystem.getInstance().setMotor(OUTTAKING_SPEED);
+                break;
+            default:
+                IntakeSubsystem.getInstance().setMotor(0);
         }
     }
 
