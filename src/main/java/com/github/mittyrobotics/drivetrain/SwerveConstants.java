@@ -3,6 +3,7 @@ package com.github.mittyrobotics.drivetrain;
 public class SwerveConstants {
 
     //in the order of quadrants
+    public static final int ABS_ENCODER_IDS[] = {0, 0, 0, 0};
 
     public static final int DRIVE_FALCON[] = {6, 0, 2, 4}; // 3, 10, 11, 7
 

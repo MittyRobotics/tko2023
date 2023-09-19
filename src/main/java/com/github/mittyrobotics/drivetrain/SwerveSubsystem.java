@@ -15,11 +15,15 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.commands.JoystickThrottleCommand;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
+import com.reduxrobotics.sensors.canandcoder.CANandcoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
+
+import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
+import static java.lang.Math.PI;
 
 public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
@@ -35,6 +39,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     private Encoder[] encoder = new Encoder[4];
 
     private double[] prevEnc = new double[]{0, 0, 0, 0};
+
+    private CANandcoder[] absEncoders = new CANandcoder[4];
 
     boolean flip;
 
@@ -92,6 +98,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             rotationFalcon[i].config_kP(0, SwerveConstants.ANGULAR_POSITION_P);
             rotationFalcon[i].config_kI(0, SwerveConstants.ANGULAR_POSITION_I);
             rotationFalcon[i].config_kD(0, SwerveConstants.ANGULAR_POSITION_D);
+
+            //TESTING, NEW
+            absEncoders[i] = new CANandcoder(ABS_ENCODER_IDS[i]);
+            rotationFalcon[i].setSelectedSensorPosition(-absEncoders[i].getAbsPosition()
+                    * 2 * PI / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
+            //TESTING
 
 //            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1], true);
 //            encoder[i].reset();
