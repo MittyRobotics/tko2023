@@ -101,8 +101,8 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
             //TESTING, NEW
             absEncoders[i] = new CANandcoder(ABS_ENCODER_IDS[i]);
-            rotationFalcon[i].setSelectedSensorPosition(-absEncoders[i].getAbsPosition()
-                    * 2 * PI / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
+            rotationFalcon[i].setSelectedSensorPosition(absEncoders[i].getAbsPosition()
+                    * 2 * PI * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
             //TESTING
 
 //            encoder[i] = new Encoder(SwerveConstants.MAG_ENCODER_CHANNEL[i][0], SwerveConstants.MAG_ENCODER_CHANNEL[i][1], true);
