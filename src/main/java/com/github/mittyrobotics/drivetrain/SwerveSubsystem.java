@@ -479,9 +479,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
 //            System.out.println("LINEAR VEL" + linearVel);
 
-            tangentialVelocityVector[0] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
+            tangentialVelocityVector[0] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
             tangentialVelocityVector[1] = new Vector(this.angularVel*r.getX(), -this.angularVel*r.getY());
-            tangentialVelocityVector[2] = new Vector(-this.angularVel*r.getX(), -this.angularVel*r.getY());
+            tangentialVelocityVector[2] = new Vector(this.angularVel*r.getX(), this.angularVel*r.getY());
             tangentialVelocityVector[3] = new Vector(-this.angularVel*r.getX(), this.angularVel*r.getY());
 
 
