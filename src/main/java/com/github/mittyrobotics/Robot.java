@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 //        super.teleopPeriodic();
-        PivotSubsystem.getInstance().setRaw(-0.2);
+//        PivotSubsystem.getInstance().setRaw(-0.2);
     }
 
     @Override

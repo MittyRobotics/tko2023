@@ -9,8 +9,8 @@ import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class PivotToDesiredAngleCommand extends CommandBase {
-    public PivotToDesiredAngleCommand() {
+public class PivotDefaultCommand extends CommandBase {
+    public PivotDefaultCommand() {
         setName("Pivot To Desired Angle");
         addRequirements(PivotSubsystem.getInstance());
     }

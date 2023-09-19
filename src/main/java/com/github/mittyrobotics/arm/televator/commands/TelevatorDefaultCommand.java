@@ -9,8 +9,8 @@ import com.github.mittyrobotics.util.TrapezoidalMotionProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class MoveToDesiredExtensionCommand extends CommandBase {
-    public MoveToDesiredExtensionCommand() {
+public class TelevatorDefaultCommand extends CommandBase {
+    public TelevatorDefaultCommand() {
         setName("Move To Desired Extension");
         addRequirements(TelevatorSubsystem.getInstance());
     }

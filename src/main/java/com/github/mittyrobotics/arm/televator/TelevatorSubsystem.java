@@ -1,9 +1,8 @@
 package com.github.mittyrobotics.arm.televator;
 
-import com.github.mittyrobotics.arm.televator.commands.MoveToDesiredExtensionCommand;
+import com.github.mittyrobotics.arm.televator.commands.TelevatorDefaultCommand;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static com.github.mittyrobotics.arm.televator.TelevatorConstants.*;
@@ -29,7 +28,7 @@ public class TelevatorSubsystem extends SubsystemBase {
         motor.getEncoder().setVelocityConversionFactor(INCHES_PER_REV / 60);
         motor.getEncoder().setPosition(0);
 
-        setDefaultCommand(new MoveToDesiredExtensionCommand());
+        setDefaultCommand(new TelevatorDefaultCommand());
     }
 
     public void setRaw(double vel, double ff) {

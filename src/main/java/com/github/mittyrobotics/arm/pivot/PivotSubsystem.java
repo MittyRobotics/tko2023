@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.arm.pivot;
 
+import com.github.mittyrobotics.arm.pivot.commands.PivotDefaultCommand;
 import com.github.mittyrobotics.util.math.Angle;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -33,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase {
 //            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
         }
 
-//        setDefaultCommand(new PivotToDesiredAngleCommand());
+        setDefaultCommand(new PivotDefaultCommand());
     }
 
     public void setVelArbFF(double rpm, double ff) {
