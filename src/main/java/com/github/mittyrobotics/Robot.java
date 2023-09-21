@@ -49,8 +49,7 @@ public class Robot extends TimedRobot {
         double y = 0;
         double t = 0;
         Odometry.getInstance().setState(x, y, t);
-        SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
-                new Angle(Gyro.getInstance().getHeadingRadians())));
+        SwerveSubsystem.getInstance().forwardKinematics.init();
         Odometry.getInstance().setScoringCam(true);
         Odometry.getInstance().update();
     }
@@ -127,7 +126,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        SwerveSubsystem.getInstance().setRampRate(0.5);
+//        SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
