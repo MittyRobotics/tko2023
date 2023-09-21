@@ -1,13 +1,8 @@
 package com.github.mittyrobotics.autonomous;
 
-import com.github.mittyrobotics.LoggerInterface;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.*;
+//import com.github.mittyrobotics.LoggerInterface;
+import com.github.mittyrobotics.util.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.util.Gyro;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.TimeSyncEventData;
-import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj.Timer;
 import org.ejml.simple.SimpleMatrix;
 
 public class Odometry {
@@ -33,46 +28,46 @@ public class Odometry {
         lastPose = null;
         scoringCam = true;
 
-        LoggerInterface.getInstance().putDesiredCamera(2);
+//        LoggerInterface.getInstance().putDesiredCamera(2);
     }
 
-    public static double offset = 20.873;
-    public static Pose[][] scoringZones = {
+    public static final double offset = 20.873;
+    public static final Pose[][] SCORING_ZONES = {
             {
-                    new Pose(new Point(610.77, 42.19 + offset), new Angle(0)),
-                    new Pose(new Point(610.77, 42.19), new Angle(0)),
-                    new Pose(new Point(610.77, 42.19 - offset), new Angle(0)),
+                    new Pose(new Point(610.77, 42.19 + offset), new Angle(0, true)),
+                    new Pose(new Point(610.77, 42.19), new Angle(0, true)),
+                    new Pose(new Point(610.77, 42.19 - offset), new Angle(0, true)),
             },
             {
-                    new Pose(new Point(610.77, 108.19 + offset), new Angle(0)),
-                    new Pose(new Point(610.77, 108.19), new Angle(0)),
-                    new Pose(new Point(610.77, 108.19 - offset), new Angle(0)),
+                    new Pose(new Point(610.77, 108.19 + offset), new Angle(0, true)),
+                    new Pose(new Point(610.77, 108.19), new Angle(0, true)),
+                    new Pose(new Point(610.77, 108.19 - offset), new Angle(0, true)),
             },
             {
-                    new Pose(new Point(610.77, 174.19 + offset), new Angle(0)),
-                    new Pose(new Point(610.77, 174.19), new Angle(0)),
-                    new Pose(new Point(610.77, 174.19 - offset), new Angle(0)),
+                    new Pose(new Point(610.77, 174.19 + offset), new Angle(0, true)),
+                    new Pose(new Point(610.77, 174.19), new Angle(0, true)),
+                    new Pose(new Point(610.77, 174.19 - offset), new Angle(0, true)),
             },
             {},
             {},
             {
-                    new Pose(new Point(40.45, 174.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 174.19), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 174.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 174.19 + offset), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 174.19), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 174.19 - offset), new Angle(Math.PI, true)),
             },
             {
-                    new Pose(new Point(40.45, 108.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 108.19), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 108.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 108.19 + offset), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 108.19), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 108.19 - offset), new Angle(Math.PI, true)),
             },
             {
-                    new Pose(new Point(40.45, 42.19 + offset), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 42.19), new Angle(Math.PI)),
-                    new Pose(new Point(40.45, 42.19 - offset), new Angle(Math.PI)),
+                    new Pose(new Point(40.45, 42.19 + offset), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 42.19), new Angle(Math.PI, true)),
+                    new Pose(new Point(40.45, 42.19 - offset), new Angle(Math.PI, true)),
             },
     };
-    Pose rightHP = new Pose(new Point(636.96, 265.74), new Angle(Math.PI));
-    Pose leftHP = new Pose(new Point(14.25, 265.74), new Angle(0));
+    Pose rightHP = new Pose(new Point(636.96, 265.74), new Angle(Math.PI, true));
+    Pose leftHP = new Pose(new Point(14.25, 265.74), new Angle(0, true));
 
     SimpleMatrix state = new SimpleMatrix(3, 1);
     SimpleMatrix covariance = new SimpleMatrix(3, 3);
@@ -100,7 +95,7 @@ public class Odometry {
     public void updateFromLimelight() {
         Pose limelightPose = Limelight.getPose();
         if (limelightPose == null) return;
-//        System.out.println("UPDATED FROM LL\n\n\n");
+        System.out.println("UPDATED FROM LL\n\n\n");
         double x = limelightPose.getPosition().getX();
         double y = limelightPose.getPosition().getY();
         double theta = limelightPose.getHeading().getRadians();
@@ -135,83 +130,12 @@ public class Odometry {
             last_time = nanoTime;
             lastPose = curP;
 
-            LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
+//            LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
 //                System.out.println(getState() + "   \n\n\n\n\n " + getIdealCamera());
 
             //                state.transpose().print();
         } catch (Exception e) {
             System.out.println("error");
-        }
-    }
-
-
-    public void updateFromCameras() {
-        DoubleArraySubscriber sub = LoggerInterface.getInstance().getPoseSub();
-
-        TimestampedDoubleArray[] m = sub.readQueue();
-        for (TimestampedDoubleArray tda : m) {
-            double[] measurement = tda.value;
-            double x = measurement[0];
-            double y = measurement[1];
-            double theta = measurement[3];
-            double mt = measurement[4];
-//            System.out.println(Timer.getFPGATimestamp() * 1000000 + " " + tda.timestamp);
-            double time = System.currentTimeMillis() * 1000000 - Math.abs(Timer.getFPGATimestamp() * 1000000 - tda.timestamp) * 1000 - mt;
-            double y_dist = Math.abs(measurement[6]);
-            double x_dist = Math.abs(measurement[5]);
-
-//            System.out.println("Odometry TIme " + (System.currentTimeMillis() * 1000000));
-//            System.out.println("x/y dist" + x_dist + " | " + y_dist);
-
-            if (x_dist < MIN_DISTANCE || x_dist > MAX_DISTANCE) {
-                System.out.println("Bad X distance: " + x_dist);
-                continue;
-            }
-
-//            System.out.println("measurement: " + x + ", " + y + ", " + theta);
-
-            if (time < last_time) {
-                System.out.println("Invalid input");
-                continue;
-            }
-//            System.out.println(time);
-//            System.out.println("System: " + System.currentTimeMillis() * 1000000);
-
-            double dt = (time - last_time) / (1000000000.);
-
-            if (lastPose == null)
-                lastPose = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(last_time);
-            Pose curP = SwerveSubsystem.getInstance().forwardKinematics.getPoseAtTime(time);
-
-            Vector v = new Vector(Point.multiply(1 / dt, Point.add(curP.getPosition(),
-                    Point.multiply(-1, lastPose.getPosition()))));
-            double w = (1 / dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
-
-            try {
-                if (Math.sqrt((state.get(0, 0) - x) * (state.get(0, 0) - x) +
-                        (state.get(1, 0) - y) * (state.get(1, 0) - y)) > ERROR_MARGIN) {
-                    System.out.println("Bad input");
-                    continue;
-                }
-
-                stateExtrapolate(dt, v, w);
-                covarianceExtrapolate(dt, v, w);
-
-                updateCovarianceR(x_dist);
-                kalmanGain();
-                stateUpdate(new SimpleMatrix(new double[]{x, y, theta}));
-                covarianceUpdate();
-
-                last_time = time;
-                lastPose = curP;
-
-                LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
-//                System.out.println(getState() + "   \n\n\n\n\n " + getIdealCamera());
-
-                //                state.transpose().print();
-            } catch (Exception e) {
-                System.out.println("error");
-            }
         }
     }
 
@@ -227,33 +151,6 @@ public class Odometry {
         double angle = curP.getHeading().getRadians() - lastPose.getHeading().getRadians();
 
         return new double[]{pos.getX() + state.get(0, 0), pos.getY() + state.get(1, 0), angle + state.get(2, 0)};
-    }
-
-    public void setScoringCam(boolean scoring) {
-//        disableCustomCam();
-        scoringCam = scoring;
-    }
-
-    public void setCustomCam(int cam) {
-        customCam = cam;
-        useCustomCam = true;
-    }
-
-    public void disableCustomCam() {
-        useCustomCam = false;
-    }
-
-    public int getIdealCamera() {
-        if (useCustomCam) return customCam;
-        if (scoringCam) {
-            if (FIELD_LEFT_SIDE) {
-                return belowMiddleY() ? 1 : 2; //right vs left front cam
-            } else {
-                return belowMiddleY() ? 2 : 1; //left vs right front cam
-            }
-        } else {
-            return FIELD_LEFT_SIDE ? 2 : 1; //left vs right front cam
-        }
     }
 
     public boolean belowMiddleY() {
@@ -293,18 +190,6 @@ public class Odometry {
         state = f(state, v, w, dt);
     }
 
-    public void stateExtrapolate(double dt) {
-        //REPLACE
-        Vector vel = SwerveSubsystem.getInstance().getVel();
-        state = f(state, vel, Gyro.getInstance().getAngularVel(), dt);
-    }
-
-    public void covarianceExtrapolate(double dt) {
-        Vector vel = SwerveSubsystem.getInstance().getVel();
-        SimpleMatrix J = getJf(vel.getMagnitude(), vel.getAngle().getRadians(), Gyro.getInstance().getAngularVel(), dt);
-        covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
-    }
-
     public void covarianceExtrapolate(double dt, Vector v, double w) {
         SimpleMatrix J = getJf(v.getMagnitude(), v.getAngle().getRadians(), w, dt);
         covariance = J.mult(covariance).mult(J.transpose()).plus(Q);
@@ -328,16 +213,6 @@ public class Odometry {
                 .plus(kalmanGain.mult(R).mult(kalmanGain.transpose()));
     }
 
-    public void update(double dt, Vector v, double w, SimpleMatrix... z) {
-        stateExtrapolate(dt);
-        covarianceExtrapolate(dt, v, w);
-        for (int i = 0; i < z.length; i++) {
-            kalmanGain();
-            stateUpdate(z[i]);
-            covarianceUpdate();
-        }
-    }
-
     public void setLastPose(Pose p) {
         lastPose = p;
     }
@@ -348,11 +223,11 @@ public class Odometry {
 
     public Pose getState() {
         double[] pose = getPose();
-        return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2]));
+        return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2], true));
     }
 
     public Pose[] getScoringZone(int tag_id) {
-        return scoringZones[tag_id - 1];
+        return SCORING_ZONES[tag_id - 1];
     }
 
     public static int getClosestScoringZone(Pose state) {
@@ -361,7 +236,7 @@ public class Odometry {
         Point robot = state.getPosition();
 
         int i = 0;
-        for (Pose[] p : scoringZones) {
+        for (Pose[] p : SCORING_ZONES) {
             if (p.length == 3) {
                 if (Point.getDistance(robot, p[1].getPosition()) < dist) {
                     minIndex = i;

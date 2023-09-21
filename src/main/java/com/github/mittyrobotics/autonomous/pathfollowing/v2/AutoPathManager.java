@@ -9,15 +9,17 @@ public class AutoPathManager {
 
     public static void updateSplines(int tag, int index) {
 
-        Pose init = Odometry.getInstance().getState();
+        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
+        Pose init = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
 
         if (tag == -1)
-            tag = Odometry.getClosestScoringZone(init);
+            tag = Odometry.getClosestScoringZone(p);
 
         left = tag > 4;
 
         // 0 is left from driver perspective
-        Pose target = Odometry.getInstance().getScoringZone(tag)[left ? index : 2 - index];
+        p = Odometry.getInstance().getScoringZone(tag)[left ? index : 2 - index];
+        Pose target = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
         Pose score = new Pose(Point.add(target.getPosition(), new Point(left ? 32 : -32, 0)),
                 new Angle(left ? Math.PI : 0));
         Pose before_score = new Pose(Point.add(score.getPosition(), new Point(left ? 10 : -10, 0)), score.getHeading());
