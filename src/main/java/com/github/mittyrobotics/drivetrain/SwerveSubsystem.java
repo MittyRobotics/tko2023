@@ -2,23 +2,17 @@ package com.github.mittyrobotics.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
-import com.github.mittyrobotics.util.math.*;
-import com.github.mittyrobotics.util.Pair;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.github.mittyrobotics.util.math.Angle;
+import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
 import com.github.mittyrobotics.util.Gyro;
-import com.github.mittyrobotics.util.math.Vector;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.github.mittyrobotics.util.math.*;
+import com.reduxrobotics.sensors.canandcoder.CANandcoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.reduxrobotics.sensors.canandcoder.*;
 
 import java.util.ArrayList;
 
-import static java.lang.Math.*;
-
 import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
+import static java.lang.Math.PI;
 
 public class SwerveSubsystem extends SubsystemBase {
     private static SwerveSubsystem instance;

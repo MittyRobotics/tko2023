@@ -26,9 +26,9 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        throttleX = -OI.getInstance().getDriverController().getLeftY();
-        throttleY = -OI.getInstance().getDriverController().getLeftX();
-        throttleAngular = -OI.getInstance().getDriverController().getRightX();
+        throttleX = -OI.getInstance().getDriveController().getLeftY();
+        throttleY = -OI.getInstance().getDriveController().getLeftX();
+        throttleAngular = -OI.getInstance().getDriveController().getRightX();
 
         if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
