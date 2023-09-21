@@ -30,10 +30,12 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleY = -OI.getInstance().getDriverController().getLeftX();
         throttleAngular = -OI.getInstance().getDriverController().getRightX();
 
-        if (throttleX < joystickDeadzone) throttleX = 0;
-        if (throttleY < joystickDeadzone) throttleY = 0;
-        if (throttleAngular < joystickDeadzone) throttleAngular = 0;
+        if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
+        if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
+        if (Math.abs(throttleAngular) < joystickDeadzone) throttleAngular = 0;
 
+        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
+        System.out.println();
         if (throttleX == 0 && throttleY == 0 && throttleAngular == 0) {
             SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
         } else {

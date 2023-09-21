@@ -55,15 +55,22 @@ public class SwerveSubsystem extends SubsystemBase {
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
 
             angleMotors[i].configFactoryDefault();
-            angleMotors[i].setSelectedSensorPosition(-absEncoders[i].getAbsPosition()
-                    * 2 * PI / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);
+            angleMotors[i].setSelectedSensorPosition(0);
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Coast);
 
             setDefaultCommand(new SwerveDefaultCommand());
+        }
+    }
+
+    public void zeroRelativeEncoders() {
+        for (int i = 0; i < 4; i++) {
+            System.out.println(absEncoders[i]);
+            angleMotors[i].setSelectedSensorPosition(absEncoders[i].getAbsPosition()
+                    * 2 * PI * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
     }
 
@@ -93,7 +100,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     || values[i] - currentModuleAngle < -PI;
             double dist = Angle.getRealAngleDistance(currentModuleAngle, values[i], cw);
 
-            if (i == 0) System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
+            if (i == 0)
+                System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
 
             boolean flip = dist > PI / 2;
 
@@ -218,6 +226,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
         public ForwardKinematics() {
 
+        }
+
+        public void init() {
+            poses.add(new Pair(System.currentTimeMillis() * 1000000, new Pose(0, 0, 0, true)));
         }
 
         public void updateForwardKinematics(Vector[] modules) {

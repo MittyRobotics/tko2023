@@ -21,10 +21,12 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         OI.getInstance().initHardware();
         Gyro.getInstance().initHardware();
+        StateMachine.init();
         SwerveSubsystem.getInstance().initHardware();
-        PivotSubsystem.getInstance().initHardware();
-        TelevatorSubsystem.getInstance().initHardware();
+//        PivotSubsystem.getInstance().initHardware();
+//        TelevatorSubsystem.getInstance().initHardware();
 
+        SwerveSubsystem.getInstance().forwardKinematics.init();
         Limelight.init(new Pose(0, 0, 0, false), 0);
         Odometry.getInstance();
 
@@ -40,7 +42,7 @@ public class Robot extends TimedRobot {
         ArmKinematics.updateDesiredArmPositionFromState();
 
         // commented for safety
-//        CommandScheduler.getInstance().run();
+        CommandScheduler.getInstance().run();
     }
 
     @Override
@@ -55,13 +57,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-       OI.getInstance().setupControls();
+        SwerveSubsystem.getInstance().zeroRelativeEncoders();
+        OI.getInstance().setupControls();
     }
 
     @Override
     public void teleopPeriodic() {
 //        super.teleopPeriodic();
 //        PivotSubsystem.getInstance().setRaw(-0.2);
+        System.out.println("POSE: " + Odometry.getInstance().getState());
     }
 
     @Override

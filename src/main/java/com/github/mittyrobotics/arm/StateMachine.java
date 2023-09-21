@@ -10,8 +10,9 @@ public class StateMachine {
     private static TransitionState transitionState;
     private static IntakeState intakeState;
 
-    private static void initStateMachine() {
+    public static void init() {
         setArmState(ArmState.STOWED);
+        setPieceState(PieceState.NONE);
         setTransitionState(ArmState.STOWED, ArmState.HIGH);
     }
 
