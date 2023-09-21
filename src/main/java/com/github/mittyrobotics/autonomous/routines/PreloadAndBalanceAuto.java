@@ -2,11 +2,9 @@ package com.github.mittyrobotics.autonomous.routines;
 
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
-import com.github.mittyrobotics.autonomous.pathfollowing.OldSwervePath;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.intake.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -16,7 +14,8 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
         super();
 
         //tag should be 1, 2, 3 from bottom to top
-        Pose scoring = Odometry.getInstance().getScoringZone(leftSide ? 7 : 2)[2];
+        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getScoringZone(leftSide ? 7 : 2)[2];
+        Pose scoring = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 scoring.getHeading());
 

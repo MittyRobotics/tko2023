@@ -1,12 +1,14 @@
 package com.github.mittyrobotics.autonomous.routines;
 
 import com.github.mittyrobotics.LoggerInterface;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.util.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import static java.lang.Math.PI;
 
 public class FastOvershootBalance extends CommandBase {
     private double maxVelStart, maxVelBalance;
@@ -52,17 +54,16 @@ public class FastOvershootBalance extends CommandBase {
                 speed = maxVelStart;
             }
         }
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(new Vector(
+        SwerveSubsystem.getInstance().calculateInputs(new Vector(
                 pos ? speed : -speed, 0), 0);
 
-        SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
-        SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+        SwerveSubsystem.getInstance().applyCalculatedInputs();
     }
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setZero();
-        SwerveSubsystem.getInstance().fortyFiveAngle();
+        SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
+        SwerveSubsystem.getInstance().setAngleMotors(new double[] {PI / 4, PI / 4, PI / 4, PI / 4});
     }
 
     @Override

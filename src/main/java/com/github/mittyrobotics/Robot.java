@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
         double t = 0;
         Odometry.getInstance().setState(x, y, t);
         SwerveSubsystem.getInstance().forwardKinematics.init();
-        Odometry.getInstance().setScoringCam(true);
+//        Odometry.getInstance().setScoringCam(true);
         Odometry.getInstance().update();
     }
 
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
-//        Odometry.getInstance().update();
+        Odometry.getInstance().update();
 //        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
 //                == StateMachine.PieceState.CONE, 0);
 
@@ -88,13 +88,13 @@ public class Robot extends TimedRobot {
 
         switch(auto) {
             case "preload":
-//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
-//                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-//        Limelight.update();
+        Limelight.update();
     }
 
     /**
@@ -150,7 +150,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-//        Limelight.update();
+        Limelight.update();
 //        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());

@@ -1,6 +1,9 @@
 package com.github.mittyrobotics.autonomous.pathfollowing.v2;
 
 import com.github.mittyrobotics.autonomous.Limelight;
+import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
@@ -46,16 +49,17 @@ public class PathFollowingCommand extends CommandBase {
 
 //        Pose robot = Odometry.getInstance().getState();
 //        double heading = Gyro.getInstance().getHeadingRadians();
-        Pose robot = Limelight.getPose();
+        com.github.mittyrobotics.util.math.Pose p = Limelight.getPose();
+        Pose robot = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
         double heading = Gyro.getInstance().getHeadingRadians();
 
 
         Vector linear = path.updateLinear(robot, dt);
 
-        double norm = SwerveSubsystem.standardize(heading);
+        double norm = (heading);
         double normDes, angularVel;
         if(useInterp) {
-            normDes = SwerveSubsystem.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
+            normDes = com.github.mittyrobotics.util.math.Angle.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
             boolean right;
             double dist;
 
@@ -79,15 +83,17 @@ public class PathFollowingCommand extends CommandBase {
             angularVel = controller.calculate(dist * (right ? -1 : 1), 0);
         }
         else {
-            normDes = SwerveSubsystem.standardize(endHeading);
-            angularVel = SwerveSubsystem.getDesiredAngularMP(
-                    norm, normDes, maxW, maxW, 0.02
-            );
+            normDes = com.github.mittyrobotics.util.math.Angle.standardize(endHeading);
+            // TODO: 9/21/2023 FIX
+            angularVel = 0;
+//            angularVel = SwerveSubsystem.getDesiredAngularMP(
+//                    norm, normDes, maxW, maxW, 0.02
+//            );
         }
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, angularVel);
-        SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
-        SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+        SwerveSubsystem.getInstance().calculateInputs(
+                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
+        SwerveSubsystem.getInstance().applyCalculatedInputs();
 
         lastTime = Timer.getFPGATimestamp();
     }
@@ -101,6 +107,7 @@ public class PathFollowingCommand extends CommandBase {
     @Override
     public boolean isFinished() {
 //        LoggerInterface.getInstance().put("DESIRED", path.getGoal());
-        return new Vector(Limelight.getPose().getPosition(), path.getGoal()).getMagnitude() <= linearThreshold;
+        com.github.mittyrobotics.util.math.Point p = Odometry.getInstance().getState().getPosition();
+        return new Vector(new Point(p.getX(), p.getY()), path.getGoal()).getMagnitude() <= linearThreshold;
     }
 }

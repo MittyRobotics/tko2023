@@ -3,8 +3,6 @@ package com.github.mittyrobotics.autonomous.routines;
 import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
 import com.github.mittyrobotics.autonomous.arm.AutoScoreCommandGroup;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoLineDrive;
-import com.github.mittyrobotics.autonomous.pathfollowing.OldSwervePath;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
@@ -24,7 +22,8 @@ public class PPOneAuto extends SequentialCommandGroup {
         int second_index = piece == StateMachine.PieceState.CUBE ? 1 : (low ? 0 : 2);
 
 
-        Pose scoring = Odometry.getInstance().getScoringZone(tag_id)[low ? 2 : 0];
+        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getScoringZone(tag_id)[low ? 2 : 0];
+        Pose scoring = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
 
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
@@ -38,8 +37,9 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
                 starting.getHeading());
 
+        com.github.mittyrobotics.util.math.Point p2 = Odometry.getInstance().getScoringZone(tag_id)[second_index].getPosition();
         Point starting_second = Point.add(
-                Odometry.getInstance().getScoringZone(tag_id)[second_index].getPosition(),
+                new Point(p2.getX(), p2.getY()),
                 new Point(leftSide ? 32 : -32, 0));
 
         Point beforeBalance = Point.add(starting_second,
@@ -53,9 +53,9 @@ public class PPOneAuto extends SequentialCommandGroup {
             //NO BALANCE PRELOAD + ONE
             addCommands(
                     // FIRST CONE
-                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
-                    )),
+//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
+//                    )),
 
                     new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
@@ -84,13 +84,13 @@ public class PPOneAuto extends SequentialCommandGroup {
                     ),
 
 
-                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
-                    )),
+//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
+//                    )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
                         StateMachine.getInstance().setIntakeStowing();
-                        Odometry.getInstance().setScoringCam(true);
+//                        Odometry.getInstance().setScoringCam(true);
                     }),
 
                     new PathFollowingCommand(
@@ -110,9 +110,9 @@ public class PPOneAuto extends SequentialCommandGroup {
         } else {
             addCommands(
                     // FIRST CONE
-                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
-                    )),
+//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
+//                    )),
 
                     new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
@@ -141,13 +141,13 @@ public class PPOneAuto extends SequentialCommandGroup {
                     ),
 
 
-                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
-                    )),
+//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
+//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
+//                    )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
                         StateMachine.getInstance().setIntakeStowing();
-                        Odometry.getInstance().setScoringCam(true);
+//                        Odometry.getInstance().setScoringCam(true);
                     }),
 
                     new PathFollowingCommand(

@@ -107,23 +107,6 @@ public class ArmKinematics {
         }
     }
 
-    public static void updateAngleToGamePiece(boolean isCone, int index) {
-        double a = getAngleToGamePiece(isCone, index);
-        if(!Double.isNaN(a)) {
-            Point robot = Odometry.getInstance().getState().getPosition();
-            double heading = Gyro.getInstance().getHeadingRadians();
-            double gp_heading = heading - a;
-
-            Pose start = new Pose(robot, new Angle(gp_heading));
-            Point endp = Point.add(robot, new Point(
-                    Math.cos(gp_heading) * 120, Math.sin(gp_heading) * 120
-            ));
-            Pose end = new Pose(endp, new Angle(gp_heading));
-
-            splineToGamePiece = new QuinticHermiteSpline(start, end);
-        }
-    }
-
     public static QuinticHermiteSpline getSplineToGamePiece() {
         return splineToGamePiece;
     }

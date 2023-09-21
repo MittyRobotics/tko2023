@@ -36,7 +36,7 @@ public class Circle {
     }
 
     public Vector getVectorToLookahead(Point robot, Angle angle, double lookahead) {
-        double theta = SwerveSubsystem.standardize(Math.atan2(robot.getY(), robot.getX()));
+        double theta = com.github.mittyrobotics.util.math.Angle.standardize(Math.atan2(robot.getY(), robot.getX()));
 
         int quadrant = 1;
         if (robot.getX() >= 0) {

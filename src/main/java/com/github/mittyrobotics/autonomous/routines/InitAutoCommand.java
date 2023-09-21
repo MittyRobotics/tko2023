@@ -15,11 +15,10 @@ public class InitAutoCommand extends InstantCommand {
             double y = pose.getPosition().getY();
             double t = pose.getHeading().getRadians();
 
-            SwerveSubsystem.getInstance().resetEncoders();
-            Gyro.getInstance().setAngleOffset(t - Gyro.getInstance().getHeadingRadiansNoOffset());
+//            SwerveSubsystem.getInstance().resetEncoders();
+            Gyro.getInstance().setAngleOffset(t - Gyro.getInstance().getHeadingRadiansNoOffset(), true);
             Odometry.getInstance().setState(x, y, t);
-            SwerveSubsystem.getInstance().setPose(new Pose(new Point(0, 0),
-                    new Angle(Gyro.getInstance().getHeadingRadians())));
+            SwerveSubsystem.getInstance().forwardKinematics.init();
         });
     }
 }

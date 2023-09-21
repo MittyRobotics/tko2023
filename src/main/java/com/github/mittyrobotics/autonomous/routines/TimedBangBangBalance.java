@@ -2,8 +2,8 @@ package com.github.mittyrobotics.autonomous.routines;
 
 import com.github.mittyrobotics.LoggerInterface;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Vector;
+import com.github.mittyrobotics.util.math.Angle;
+import com.github.mittyrobotics.util.math.Vector;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
@@ -11,6 +11,8 @@ import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.util.Util;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import static java.lang.Math.PI;
 
 public class TimedBangBangBalance extends CommandBase {
     private double maxVelStart, maxVelBalance;
@@ -54,7 +56,7 @@ public class TimedBangBangBalance extends CommandBase {
             }
         } else {
             if (Math.abs(pitch) < STOP_ANGLE) {
-                SwerveSubsystem.getInstance().fortyFiveAngle();
+                SwerveSubsystem.getInstance().setAngleMotors(new double[] {Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4});
                 speed = 0;
             }
             else speed = pitch < 0 ? maxVelBalance : -maxVelBalance;
@@ -69,18 +71,17 @@ public class TimedBangBangBalance extends CommandBase {
         }
 
         double ang = desAngle - heading;
-        Vector linear = new Vector(new Angle(ang), Math.abs(speed));
+        Vector linear = new Vector(new Angle(desAngle, true), Math.abs(speed));
 
-        SwerveSubsystem.getInstance().setSwerveInvKinematics(linear, 0);
+        SwerveSubsystem.getInstance().calculateInputs(linear, 0);
 
-        SwerveSubsystem.getInstance().setSwerveVelocity(SwerveSubsystem.getInstance().desiredVelocities());
-        SwerveSubsystem.getInstance().setSwerveAngle(SwerveSubsystem.getInstance().desiredAngles());
+        SwerveSubsystem.getInstance().applyCalculatedInputs();
     }
 
     @Override
     public void end(boolean interrupted) {
-        SwerveSubsystem.getInstance().setZero();
-        SwerveSubsystem.getInstance().fortyFiveAngle();
+        SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
+        SwerveSubsystem.getInstance().setAngleMotors(new double[] {PI / 4, PI / 4, PI / 4, PI / 4});
     }
 
     @Override

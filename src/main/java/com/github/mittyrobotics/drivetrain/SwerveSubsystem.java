@@ -170,6 +170,11 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    public com.github.mittyrobotics.autonomous.pathfollowing.math.Vector getDesiredVel() {
+        return new com.github.mittyrobotics.autonomous.pathfollowing.math.Vector(
+                inverseKinematics.linearVel.getX(), inverseKinematics.linearVel.getY());
+    }
+
     static class InverseKinematics {
         private double[] angles;
         private double[] magnitudes;
@@ -177,6 +182,9 @@ public class SwerveSubsystem extends SubsystemBase {
         private final double length = 25.68, width = 22.68;
 
         private Vector r;
+
+        private Vector linearVel = new Vector(0, 0);
+        private double angularVel = 0;
 
         public InverseKinematics() {
             angles = new double[4];
@@ -186,6 +194,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         public void calculateInputs(Vector linearVel, double angularVel) {
+            this.linearVel = linearVel;
             linearVel = new Vector(
                     new Angle(
                             linearVel.getAngle().getRadians() - Gyro.getInstance().getHeadingRadians(), true),

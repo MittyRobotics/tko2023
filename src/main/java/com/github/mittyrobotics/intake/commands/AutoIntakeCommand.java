@@ -50,13 +50,13 @@ public class AutoIntakeCommand extends CommandBase {
             //Outtake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.OUTTAKE_SPEED);
             StateMachine.getInstance().setIntakeOff();
-            Odometry.getInstance().setScoringCam(false);
+//            Odometry.getInstance().setScoringCam(false);
             LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
         } else if (OI.getInstance().getOperatorController().getLeftBumper()) {
             //Intake override
             IntakeSubsystem.getInstance().setMotor(IntakeConstants.INTAKE_SPEED);
             StateMachine.getInstance().setIntakeStowing();
-            Odometry.getInstance().setScoringCam(true);
+//            Odometry.getInstance().setScoringCam(true);
             //But set to white while not released
             LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.WHITE);
         } else if (StateMachine.getInstance().getIntakingState() == StateMachine.IntakeState.OUTTAKE) {
@@ -79,7 +79,7 @@ public class AutoIntakeCommand extends CommandBase {
                 indexing = true;
                 LedSubsystem.getInstance().setAltColor(LedSubsystem.Color.GREEN);
                 OI.getInstance().zeroAll();
-                Odometry.getInstance().setScoringCam(true);
+//                Odometry.getInstance().setScoringCam(true);
 
                 Util.triggerFunctionAfterTime(() -> {
                     StateMachine.getInstance().setIntakeStowing();

@@ -46,13 +46,12 @@ public class SwervePath {
         } else {
             double leftY = OI.getInstance().getDriveController().getLeftX();
             double leftX = -OI.getInstance().getDriveController().getLeftY();
-            vel = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_VEL;
+            vel = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND;
         }
 
 //        System.out.println("VECTOR TO LOOKAHEAD " + new Vector(robot.getPosition(), lookahead));
 
-        double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians()
-                - Gyro.getInstance().getHeadingRadians();
+        double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians();
 
 //        System.out.println("Lookahead " + lookahead + "    " + "Robot " + robot + "   Angle to " + angleToLookahead);
 

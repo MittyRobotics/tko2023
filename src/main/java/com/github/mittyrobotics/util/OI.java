@@ -24,13 +24,8 @@
 
 package com.github.mittyrobotics.util;
 
-import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.AutoPickupCommand;
-import com.github.mittyrobotics.autonomous.pathfollowing.v2.TeleopScoreCommand;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
-import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.led.LedSubsystem;
+import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.pivot.ArmKinematics;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -134,7 +129,7 @@ public class OI {
                 Util.triggerFunctionAfterTime(() -> {
                     StateMachine.getInstance().setIntakeOff();
                     StateMachine.getInstance().setStateNone();
-                    Odometry.getInstance().setScoringCam(false);
+//                    Odometry.getInstance().setScoringCam(false);
                 }, 200);
             }, 300);
         } else {
@@ -154,7 +149,7 @@ public class OI {
                             StateMachine.getInstance().setIntakeOff();
                             StateMachine.getInstance().setStateNone();
                         }, 200);
-                        Odometry.getInstance().setScoringCam(false);
+//                        Odometry.getInstance().setScoringCam(false);
                     }, 1000);
                 }, 10);
             }, 300);
