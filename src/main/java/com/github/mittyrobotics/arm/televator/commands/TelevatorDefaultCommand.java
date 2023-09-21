@@ -47,7 +47,7 @@ public class TelevatorDefaultCommand extends CommandBase {
                 (telescopeMovingDown ? 1 - 0.8 * Math.cos(PivotSubsystem.getInstance().getCurrentAngle().getRadians()) : 1.75);
 
 
-        TelevatorSubsystem.getInstance().setRaw(desiredVel, ff);
+        TelevatorSubsystem.getInstance().setVelArbFF(desiredVel, ff);
     }
 
     @Override
