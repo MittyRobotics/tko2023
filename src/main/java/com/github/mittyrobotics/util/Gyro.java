@@ -28,7 +28,7 @@ public class Gyro extends SubsystemBase {
     }
 
     public void initHardware() {
-        gyro = new WPI_Pigeon2(SwerveConstants.PIGEON_TWO_ID);
+        gyro = new WPI_Pigeon2(62);
         gyro.configFactoryDefault();
         gyro.reset();
     }
