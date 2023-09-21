@@ -29,20 +29,20 @@ public class PivotSubsystem extends SubsystemBase {
             motor[i].getPIDController().setP(PID[0]);
             motor[i].getPIDController().setI(PID[1]);
             motor[i].getPIDController().setD(PID[2]);
-//            motor[i].getEncoder().setPosition(0);
-//            motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
-//            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
+            motor[i].getEncoder().setPosition(0);
+            motor[i].getEncoder().setPositionConversionFactor(RADIANS_PER_REV);
+            motor[i].getEncoder().setVelocityConversionFactor(RADIANS_PER_REV / 60);
         }
 
-        setDefaultCommand(new PivotDefaultCommand());
+//        setDefaultCommand(new PivotDefaultCommand());
     }
 
     public void setVelArbFF(double rpm, double ff) {
-        motor[0].getPIDController().setReference(
-                rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
-        motor[1].getPIDController().setReference(
-                rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
-//        motor[0].getPIDController().setReference(2, CANSparkMax.ControlType.kPosition);
+//        motor[0].getPIDController().setReference(
+//                rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+//        motor[1].getPIDController().setReference(
+//                rpm, CANSparkMax.ControlType.kVelocity, 0, ff, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+        motor[0].getPIDController().setReference(rpm, CANSparkMax.ControlType.kPosition);
     }
 
     public void setRaw(double percent) {

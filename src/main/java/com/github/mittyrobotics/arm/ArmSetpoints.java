@@ -4,11 +4,12 @@ import com.github.mittyrobotics.util.math.Angle;
 
 import java.util.HashMap;
 
+import static com.github.mittyrobotics.arm.ArmKinematics.ArmPosition;
 import static com.github.mittyrobotics.arm.StateMachine.ArmState;
 import static com.github.mittyrobotics.arm.StateMachine.ArmState.*;
-import static com.github.mittyrobotics.arm.ArmKinematics.ArmPosition;
 import static com.github.mittyrobotics.arm.StateMachine.PieceState;
 import static com.github.mittyrobotics.arm.StateMachine.PieceState.*;
+import static java.lang.Math.PI;
 
 public class ArmSetpoints {
     public static final HashMap<ArmState, HashMap<PieceState, ArmPosition>> positions = new HashMap<>();
