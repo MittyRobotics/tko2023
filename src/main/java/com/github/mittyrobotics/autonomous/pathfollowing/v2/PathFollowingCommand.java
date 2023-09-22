@@ -46,10 +46,8 @@ public class PathFollowingCommand extends CommandBase {
     @Override
     public void execute() {
         double dt = Timer.getFPGATimestamp() - lastTime;
-
-//        Pose robot = Odometry.getInstance().getState();
-//        double heading = Gyro.getInstance().getHeadingRadians();
-        com.github.mittyrobotics.util.math.Pose p = Limelight.getPose();
+        
+        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
         Pose robot = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
         double heading = Gyro.getInstance().getHeadingRadians();
 

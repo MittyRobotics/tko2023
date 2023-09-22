@@ -2,20 +2,18 @@ package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
-import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
-import com.github.mittyrobotics.autonomous.routines.*;
+import com.github.mittyrobotics.util.math.Angle;
+import com.github.mittyrobotics.autonomous.routines.PPOneAuto;
+import com.github.mittyrobotics.autonomous.routines.PPTwoAuto;
+import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
 import com.github.mittyrobotics.led.LedSubsystem;
-import com.github.mittyrobotics.pivot.ArmKinematics;
 import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -80,11 +78,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        SwerveSubsystem.getInstance().zeroRelativeEncoders();
+        Gyro.getInstance().setAngleOffset(180, false);
+        Odometry.getInstance().FIELD_LEFT_SIDE = true;
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
 //        auto = LoggerInterface.getInstance().getValue("auto");
 //        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
 //        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
+
+        auto = "balance";
+        low = true;
+        bal = false;
 
         switch(auto) {
             case "preload":
@@ -126,6 +131,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        SwerveSubsystem.getInstance().zeroRelativeEncoders();
 //        SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
         OI.getInstance().zeroAll();

@@ -13,19 +13,25 @@ public class SwervePath {
     public double maxvel, maxaccel, maxdecel, startvel, endvel, lookahead, vel, closestT, lengthToClosest;
     public boolean auto;
 
-    public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel, boolean auto) {
+    public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel, boolean auto, boolean meters) {
+        double factor = meters ? 39.37 : 1;
+
         this.spline = spline;
-        this.maxaccel = maxaccel;
-        this.maxdecel = maxdecel;
-        this.maxvel = maxvel;
-        this.startvel = startvel;
-        this.endvel = endvel;
+        this.maxaccel = maxaccel * factor;
+        this.maxdecel = maxdecel * factor;
+        this.maxvel = maxvel * factor;
+        this.startvel = startvel * factor;
+        this.endvel = endvel * factor;
         this.lookahead = lookahead;
         this.auto = auto;
 
         vel = 0;
         closestT = 0;
         lengthToClosest = 0;
+    }
+
+    public SwervePath(QuinticHermiteSpline spline, double lookahead, double maxvel, double maxaccel, double maxdecel, double startvel, double endvel, boolean auto) {
+        this(spline, lookahead, maxvel, maxaccel, maxdecel, startvel, endvel, auto, true);
     }
 
     public Vector updateLinear(Pose robot, double dt) {
