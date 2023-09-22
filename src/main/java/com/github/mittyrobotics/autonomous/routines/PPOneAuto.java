@@ -66,9 +66,9 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
-                                    10, 2, 5, 5, 0, 2, true
+                                    10, 0.5, 1, 1, 0, 0, true
                             ), leftSide ? 0 : Math.PI, 9, 3,
-                            0.2, 0.8, 3, 0, 0.01, true
+                            0.2, 0.8, 1, 0, 0.01, false
                     ),
 
                     // INTAKE
@@ -78,7 +78,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                    10, 2, 5, 2, 2, 0, true
+                                    10, 0.5, 1, 1, 2, 0, true
                             ), leftSide ? 0 : Math.PI, 3, 0.05,
                             0, 0.6, 3.25, 0, 0.01, true
                     ),

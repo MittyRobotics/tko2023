@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveDefaultCommand extends CommandBase {
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
+    private boolean rightBumper;
+
     public SwerveDefaultCommand() {
         setName("Swerve Default Command");
         addRequirements(SwerveSubsystem.getInstance());
@@ -22,6 +24,7 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleY = 0;
         throttleAngular = 0;
         joystickDeadzone = 0;
+        rightBumper = false;
     }
 
     @Override
@@ -29,6 +32,7 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleX = -OI.getInstance().getDriveController().getLeftY();
         throttleY = -OI.getInstance().getDriveController().getLeftX();
         throttleAngular = -OI.getInstance().getDriveController().getRightX();
+        rightBumper = OI.getInstance().getDriveController().getRightBumper();
 
         if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
@@ -41,8 +45,8 @@ public class SwerveDefaultCommand extends CommandBase {
         } else {
             SwerveSubsystem.getInstance().calculateInputs(
                     new Vector(
-                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX,
-                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY
+                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX * (rightBumper ? 1.5 : 1),
+                            SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY * (rightBumper ? 1.5 : 1)
                     ),
                     SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
             );

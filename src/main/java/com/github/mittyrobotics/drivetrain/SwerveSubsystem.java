@@ -8,6 +8,7 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.Pair;
 import com.github.mittyrobotics.util.math.*;
 import com.reduxrobotics.sensors.canandcoder.CANandcoder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
@@ -95,12 +96,12 @@ public class SwerveSubsystem extends SubsystemBase {
                     || values[i] - currentModuleAngle < -PI;
             double dist = Angle.getRealAngleDistance(currentModuleAngle, values[i], cw);
 
-            if (i == 0)
-                System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
+//            if (i == 0)
+//                System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
 
             boolean flip = dist > PI / 2;
 
-            if (i == 0) System.out.printf("%.3f %.3f %.3f %b %b\n", currentModuleAngle, values[i], dist, cw, flip);
+//            if (i == 0) System.out.printf("%.3f %.3f %.3f %b %b\n", currentModuleAngle, values[i], dist, cw, flip);
 
             //check
             flipped[i] = flip;
@@ -111,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 values[i] += (cw ? -1 : 1) * PI;
             }
 
-            if (i == 0) System.out.println("Setting to " + values[i]);
+//            if (i == 0) System.out.println("Setting to " + values[i]);
             angleMotors[i].set(ControlMode.Position, values[i] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
     }
@@ -168,6 +169,39 @@ public class SwerveSubsystem extends SubsystemBase {
         } else {
             return driveMotors[i].getMotorOutputVoltage();
         }
+    }
+
+    public static PIDController controller = new PIDController(4.5, 0, 0.004);
+    public static double getDesiredAngularMP(double curHeading, double desiredHeading, double maxW, double maxA, double threshold) {
+        maxW = 3.5;
+
+        double norm = Angle.standardize(curHeading);
+        double normDes = Angle.standardize(desiredHeading);
+
+        boolean right;
+        double dist;
+
+        if (normDes < norm) {
+            if (norm - normDes > Math.PI) {
+                right = true;
+                dist = normDes + 2 * Math.PI - norm;
+            } else {
+                right = false;
+                dist = norm - normDes;
+            }
+        } else {
+            if (normDes - norm > Math.PI) {
+                right = false;
+                dist = norm + 2 * Math.PI - normDes;
+            } else {
+                right = true;
+                dist = normDes - norm;
+            }
+        }
+
+
+        double out = controller.calculate(dist * (right ? -1 : 1));
+        return Math.copySign(Math.min(maxW, Math.abs(out)), out);
     }
 
     public com.github.mittyrobotics.autonomous.pathfollowing.math.Vector getDesiredVel() {
@@ -241,7 +275,10 @@ public class SwerveSubsystem extends SubsystemBase {
             long nanoTime = System.currentTimeMillis() * 1000000;
 
             Point new_ = new Point(0, 0);
-            for (int i = 0; i < 4; i++) new_ = Point.add(new_, new Point(modules[i]));
+            for (int i = 0; i < 4; i++) {
+                Point p = new Point(modules[i].getX(), -modules[i].getY());
+                new_ = Point.add(new_, p);
+            }
             new_ = Point.multiply(0.25, new_);
 //            new_ = new Point(new_.getX(), new_.getY());
 

@@ -105,7 +105,7 @@ public class SwervePath {
     }
 
     public double getMaxVelToEnd(double distToEnd) {
-        return Math.sqrt(endvel * endvel + 2 * maxdecel * distToEnd / 39.37);
+        return Math.sqrt(endvel * endvel + 2 * maxdecel * distToEnd);
     }
 
     public boolean isFinished(Pose p, double linearThreshold) {

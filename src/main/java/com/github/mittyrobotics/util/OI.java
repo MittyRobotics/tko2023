@@ -134,13 +134,14 @@ public class OI {
             }, 300);
         } else {
             double curRad = ArmKinematics.getTelescopeDesired();
+            double retractedRad = 0;
             double curAngle = ArmKinematics.getPivotDesired().getRadians();
-            ArmKinematics.setArmKinematics(new Angle(curAngle + 25 * Math.PI/180), curRad);
+            ArmKinematics.setArmKinematics(new Angle(curAngle + 12 * Math.PI/180), curRad);
 
             Util.triggerFunctionAfterTime(() -> {
                 StateMachine.getInstance().setOuttaking();
                 Util.triggerFunctionAfterTime(() -> {
-                    ArmKinematics.setArmKinematics(new Angle(ArmKinematics.getPivotDesired().getRadians()), 0);
+                    ArmKinematics.setArmKinematics(new Angle(ArmKinematics.getPivotDesired().getRadians()), retractedRad);
                     StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                     Util.triggerFunctionAfterTime(() -> {
                         zeroAll();

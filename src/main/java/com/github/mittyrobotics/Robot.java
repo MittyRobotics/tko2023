@@ -50,6 +50,8 @@ public class Robot extends TimedRobot {
         SwerveSubsystem.getInstance().forwardKinematics.init();
 //        Odometry.getInstance().setScoringCam(true);
         Odometry.getInstance().update();
+
+        SwerveSubsystem.getInstance().zeroRelativeEncoders();
     }
 
     @Override
@@ -79,8 +81,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         SwerveSubsystem.getInstance().zeroRelativeEncoders();
-        Gyro.getInstance().setAngleOffset(180, false);
         Odometry.getInstance().FIELD_LEFT_SIDE = true;
+//        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
 //        auto = LoggerInterface.getInstance().getValue("auto");
@@ -88,18 +90,18 @@ public class Robot extends TimedRobot {
 //        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
 
         auto = "balance";
-        low = true;
+        low = false;
         bal = false;
 
         switch(auto) {
             case "preload":
-                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
-                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+//                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
@@ -157,6 +159,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Limelight.update();
+        System.out.println("POSE: " + Odometry.getInstance().getState());
+//        System.out.println("POSE: " + Limelight.getPose());
 //        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
 //    System.out.println("RADIUS: "  + TelescopeSubsystem.getInstance().getDistanceMeters());
