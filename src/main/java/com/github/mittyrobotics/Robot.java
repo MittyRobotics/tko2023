@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         SwerveSubsystem.getInstance().zeroRelativeEncoders();
-        Odometry.getInstance().FIELD_LEFT_SIDE = true;
+        Odometry.getInstance().FIELD_LEFT_SIDE = false;
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 

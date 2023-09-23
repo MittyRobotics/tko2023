@@ -84,7 +84,7 @@ public class OI {
 
     public void handleGround() {
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CUBE)
-            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.08), 0.20);
+            ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.12), 0.20);
         if (StateMachine.getInstance().getCurrentPieceState() == StateMachine.PieceState.CONE)
             ArmKinematics.setArmKinematics(new Angle(2.1847833197051916 - 0.), 0.17);
         StateMachine.getInstance().setProfile(StateMachine.getInstance().getCurrentRobotState(), StateMachine.RobotState.GROUND);

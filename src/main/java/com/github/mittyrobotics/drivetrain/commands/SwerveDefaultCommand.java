@@ -23,7 +23,7 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleX = 0;
         throttleY = 0;
         throttleAngular = 0;
-        joystickDeadzone = 0;
+        joystickDeadzone = 0.05;
         rightBumper = false;
     }
 
@@ -32,7 +32,7 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleX = -OI.getInstance().getDriveController().getLeftY();
         throttleY = -OI.getInstance().getDriveController().getLeftX();
         throttleAngular = -OI.getInstance().getDriveController().getRightX();
-        rightBumper = OI.getInstance().getDriveController().getRightBumper();
+        rightBumper = OI.getInstance().getDriveController().getXButton();
 
         if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
