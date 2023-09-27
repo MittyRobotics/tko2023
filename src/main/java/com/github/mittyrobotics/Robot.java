@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 //        Odometry.getInstance().setScoringCam(true);
         Odometry.getInstance().update();
 
-        SwerveSubsystem.getInstance().zeroRelativeEncoders();
+//        SwerveSubsystem.getInstance().zeroRelativeEncoders();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        SwerveSubsystem.getInstance().zeroRelativeEncoders();
+//        SwerveSubsystem.getInstance().zeroRelativeEncoders();
         Odometry.getInstance().FIELD_LEFT_SIDE = false;
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
@@ -133,7 +133,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        SwerveSubsystem.getInstance().zeroRelativeEncoders();
+        Gyro.getInstance().setAngleOffset(3.141592, true);
+//        for (int i = 0; i < 4; i++) {
+//            SwerveSubsystem.getInstance().angleMotors[i].setSelectedSensorPosition(0);
+//        }
+//        SwerveSubsystem.getInstance().setAllAngleEncodersZero();
+//        SwerveSubsystem.getInstance().zeroRelativeEncoders();
 //        SwerveSubsystem.getInstance().setRampRate(0.5);
         OI.getInstance().setupControls();
         OI.getInstance().zeroAll();
@@ -159,7 +164,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Limelight.update();
-        System.out.println("POSE: " + Odometry.getInstance().getState());
+//        System.out.println("angles: " + SwerveSubsystem.getInstance().getAngl);
+//        System.out.println(OI.getInstance().getOperatorController().getRightTriggerAxis());
+//        System.out.println("POSE: " + Odometry.getInstance().getState());
 //        System.out.println("POSE: " + Limelight.getPose());
 //        LoggerInterface.getInstance().put("AGNEL TO GP", ArmKinematics.getSplineToGamePiece());
 //    System.out.println("ANGLE: " + PivotSubsystem.getInstance().getPositionRadians());
@@ -171,6 +178,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        SwerveSubsystem.getInstance().setAngleCoastMode();
         TelescopeSubsystem.getInstance().setBrakeMode();
         PivotSubsystem.getInstance().setBrakeMode();
 

@@ -95,7 +95,7 @@ public class Odometry {
     public void updateFromLimelight() {
         Pose limelightPose = Limelight.getPose();
         if (limelightPose == null) return;
-        System.out.println("UPDATED FROM LL\n\n\n");
+//        System.out.println("UPDATED FROM LL\n\n\n");
         double x = limelightPose.getPosition().getX();
         double y = limelightPose.getPosition().getY();
         double theta = limelightPose.getHeading().getRadians();

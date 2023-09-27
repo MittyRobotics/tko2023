@@ -38,8 +38,8 @@ public class SwerveDefaultCommand extends CommandBase {
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
         if (Math.abs(throttleAngular) < joystickDeadzone) throttleAngular = 0;
 
-        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
-        System.out.println();
+//        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
+//        System.out.println();
         if (throttleX == 0 && throttleY == 0 && throttleAngular == 0) {
             SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
         } else {
@@ -48,11 +48,29 @@ public class SwerveDefaultCommand extends CommandBase {
                             SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX * (rightBumper ? 1.5 : 1),
                             SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY * (rightBumper ? 1.5 : 1)
                     ),
+//                    new Vector(SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX, 0),
                     SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
             );
 
             SwerveSubsystem.getInstance().applyCalculatedInputs();
         }
+
+        System.out.printf("%.6f, %.6f, %.6f, %.6f",
+                (SwerveSubsystem.getInstance().getEncoderModuleAngle(0)),
+                (SwerveSubsystem.getInstance().getEncoderModuleAngle(1)),
+                (SwerveSubsystem.getInstance().getEncoderModuleAngle(2)),
+                (SwerveSubsystem.getInstance().getEncoderModuleAngle(3))
+//                (SwerveSubsystem.getInstance().getDesiredAngles()[0]),
+//                (SwerveSubsystem.getInstance().getDesiredAngles()[1]),
+//                (SwerveSubsystem.getInstance().getDesiredAngles()[2]),
+//                (SwerveSubsystem.getInstance().getDesiredAngles()[3])
+//                    SwerveSubsystem.getInstance().absEncoders[0].getAbsPosition(),
+//                    SwerveSubsystem.getInstance().absEncoders[1].getAbsPosition(),
+//                    SwerveSubsystem.getInstance().absEncoders[2].getAbsPosition(),
+//                    SwerveSubsystem.getInstance().absEncoders[3].getAbsPosition()
+        );
+
+        System.out.println();
 
 
 

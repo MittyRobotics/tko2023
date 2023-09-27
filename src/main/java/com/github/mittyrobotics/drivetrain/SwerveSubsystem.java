@@ -1,6 +1,7 @@
 package com.github.mittyrobotics.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
@@ -31,7 +32,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private WPI_TalonFX[] driveMotors = new WPI_TalonFX[4];
     private WPI_TalonFX[] angleMotors = new WPI_TalonFX[4];
 
-    private CANandcoder[] absEncoders = new CANandcoder[4];
+    public CANandcoder[] absEncoders = new CANandcoder[4];
 
     private double[] prevEnc = new double[4];
 
@@ -49,16 +50,26 @@ public class SwerveSubsystem extends SubsystemBase {
             driveMotors[i].config_kD(0, DRIVE_PID[2]);
             driveMotors[i].config_kF(0, DRIVE_PID[3]);
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
+            driveMotors[i].setNeutralMode(NeutralMode.Coast);
+            driveMotors[i].configOpenloopRamp(3);
+            driveMotors[i].configClosedloopRamp(3);
 
             angleMotors[i].configFactoryDefault();
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);
+            angleMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             angleMotors[i].setSelectedSensorPosition(0);
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
-            angleMotors[i].setNeutralMode(NeutralMode.Coast);
+            angleMotors[i].setNeutralMode(NeutralMode.Brake);
 
             setDefaultCommand(new SwerveDefaultCommand());
+        }
+    }
+
+    public void setAllAngleEncodersZero() {
+        for (int i = 0; i < 4; i++) {
+            angleMotors[i].setSelectedSensorPosition(0);
         }
     }
 
@@ -77,6 +88,12 @@ public class SwerveSubsystem extends SubsystemBase {
     public void applyCalculatedInputs() {
         setAngleMotors(inverseKinematics.getAngles());
         setDriveMotors(inverseKinematics.getMagnitudes());
+    }
+
+    public void setAngleCoastMode() {
+        for (int i = 0; i < 4; i++) {
+            angleMotors[i].setNeutralMode(NeutralMode.Coast);
+        }
     }
 
     public double[] getDesiredAngles() {
@@ -114,7 +131,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 //            if (i == 0) System.out.println("Setting to " + values[i]);
             angleMotors[i].set(ControlMode.Position, values[i] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
+            System.out.print(angleMotors[i].getClosedLoopError() + ", ");
         }
+        System.out.println();
     }
 
     public void setDriveMotors(double[] values) {
@@ -239,7 +258,9 @@ public class SwerveSubsystem extends SubsystemBase {
                 Vector wheelVector = Vector.add(linearVel, Vector.multiply(angularVel, getAngularVector(i)));
                 angles[i] = -wheelVector.getAngle().getRadians();
                 magnitudes[i] = wheelVector.getMagnitude();
+                System.out.print("WV " + i + ": " + wheelVector + ", ");
             }
+            System.out.println();
         }
 
         public Vector getAngularVector(int i) {

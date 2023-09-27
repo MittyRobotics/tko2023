@@ -5,7 +5,8 @@ public class SwerveConstants {
     public static final int[] ANGLE_MOTOR_IDS = {3, 5, 7, 1};
     public static final int[] ABS_ENCODER_IDS = {30, 31, 32, 33};
 
-    public static final double[] ANGLE_PID = {0.3, 0, 0.03};
+//    public static final double[] ANGLE_PID = {0.135, 0, 0.03};
+    public static final double[] ANGLE_PID = {0.32, 0.0005, 0.002};
     public static final double[] DRIVE_PID = {0.16, 0, 0.01, 1024./22328.48};
     public static final double MAX_LINEAR_SPEED_INCHES_PER_SECOND = 15 * 12;
     public static final double MAX_ANGULAR_SPEED = 1;

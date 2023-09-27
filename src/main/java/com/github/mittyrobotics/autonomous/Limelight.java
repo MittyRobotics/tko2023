@@ -1,7 +1,5 @@
 package com.github.mittyrobotics.autonomous;
 
-
-
 import com.github.mittyrobotics.util.math.*;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.networktables.NetworkTable;
@@ -43,9 +41,9 @@ public class Limelight {
             //x, y, theta
 
             Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5], false));
-            System.out.println("LL angle " + limelightPose[5]);
+//            System.out.println("LL angle " + limelightPose[5]);
             if (Gyro.getInstance().getAngleOffset() == null) {
-                Gyro.getInstance().setAngleOffset(Math.PI + (tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset()), true);
+                Gyro.getInstance().setAngleOffset(Math.PI + tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset(), true);
             }
             setPose(tempPose);
             latency = limelightPose[6];
