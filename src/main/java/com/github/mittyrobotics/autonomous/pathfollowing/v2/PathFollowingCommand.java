@@ -78,8 +78,8 @@ public class PathFollowingCommand extends CommandBase {
         System.out.println("AV: " + angularVel);
 
         SwerveSubsystem.getInstance().calculateInputs(
-//                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
-                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), 0);
+                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
+//                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), 0);
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
         lastTime = Timer.getFPGATimestamp();
@@ -88,7 +88,7 @@ public class PathFollowingCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         System.out.println("ENDED\n\n\n");
-//        SwerveSubsystem.getInstance().setZero();
+        SwerveSubsystem.getInstance().setZero();
     }
 
     @Override

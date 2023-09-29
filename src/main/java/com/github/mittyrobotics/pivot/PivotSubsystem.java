@@ -29,7 +29,7 @@ public class PivotSubsystem extends SubsystemBase {
             spark[i] = new CANSparkMax(PivotConstants.PIVOT_ID[i], CANSparkMax.MotorType.kBrushless);
             spark[i].restoreFactoryDefaults();
             spark[i].getEncoder().setPosition(0);
-            spark[i].setIdleMode(CANSparkMax.IdleMode.kBrake);
+            spark[i].setIdleMode(CANSparkMax.IdleMode.kCoast);
             spark[i].getPIDController().setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
             spark[i].getPIDController().setSmartMotionMaxAccel(30. / 360 * 60, 0);
             spark[i].getPIDController().setSmartMotionMaxVelocity(40. / 360 * 60, 0);

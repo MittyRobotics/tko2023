@@ -106,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return inverseKinematics.getMagnitudes();
     }
 
-    public void setAngleMotors(double[] values) {
+    public void setAngleMotors(double[] values, boolean allowedToFlip) {
         for (int i = 0; i < 4; i++) {
             double currentModuleAngle = getStandardizedModuleAngle(i);
             values[i] = Angle.standardize(values[i]);
@@ -123,11 +123,12 @@ public class SwerveSubsystem extends SubsystemBase {
 //            if (i == 0) System.out.printf("%.3f %.3f %.3f %b %b\n", currentModuleAngle, values[i], dist, cw, flip);
 
             //check
-            flipped[i] = flip;
+            if (allowedToFlip) flipped[i] = flip;
+            else flipped[i] = false;
 
             values[i] = getEncoderModuleAngle(i) + (cw ? 1 : -1) * dist;
 
-            if (flip) {
+            if (flip && allowedToFlip) {
                 values[i] += (cw ? -1 : 1) * PI;
             }
 
@@ -136,6 +137,10 @@ public class SwerveSubsystem extends SubsystemBase {
             System.out.print(angleMotors[i].getClosedLoopError() + ", ");
         }
         System.out.println();
+    }
+
+    public void setAngleMotors(double[] values) {
+        setAngleMotors(values, true);
     }
 
     public void setDriveMotors(double[] values) {
@@ -175,7 +180,7 @@ public class SwerveSubsystem extends SubsystemBase {
             double cur = driveMotors[i].getSelectedSensorPosition();
 
 //            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
+            modules[i] = new Vector(new Angle(-getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;
@@ -228,6 +233,14 @@ public class SwerveSubsystem extends SubsystemBase {
     public com.github.mittyrobotics.autonomous.pathfollowing.math.Vector getDesiredVel() {
         return new com.github.mittyrobotics.autonomous.pathfollowing.math.Vector(
                 inverseKinematics.linearVel.getX(), inverseKinematics.linearVel.getY());
+    }
+
+    public void setZero() {
+        setDriveMotors(new double[] {0, 0, 0, 0});
+    }
+
+    public void lockWheels() {
+        setAngleMotors(new double[] {0, 0, 0, 0}, false);
     }
 
     static class InverseKinematics {
@@ -299,7 +312,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
             Point new_ = new Point(0, 0);
             for (int i = 0; i < 4; i++) {
-                Point p = new Point(modules[i].getX(), -modules[i].getY());
+                Point p = new Point(modules[i].getX(), modules[i].getY());
                 new_ = Point.add(new_, p);
             }
             new_ = Point.multiply(0.25, new_);

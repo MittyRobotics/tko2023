@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveDefaultCommand extends CommandBase {
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
-    private boolean rightBumper, leftBumper;
+    private boolean rightBumper, leftBumper, a;
 
     public SwerveDefaultCommand() {
         setName("Swerve Default Command");
@@ -26,6 +26,8 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleAngular = 0;
         joystickDeadzone = 0.05;
         rightBumper = false;
+        leftBumper = false;
+        a = false;
     }
 
     @Override
@@ -35,17 +37,21 @@ public class SwerveDefaultCommand extends CommandBase {
         throttleAngular = -OI.getInstance().getDriveController().getRightX();
         rightBumper = OI.getInstance().getDriveController().getRightBumper();
         leftBumper = OI.getInstance().getDriveController().getLeftBumper();
+        a = OI.getInstance().getDriveController().getAButton();
 
         if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
         if (Math.abs(throttleAngular) < joystickDeadzone) throttleAngular = 0;
 
-        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE + ", X: " + throttleX);
+//        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE + ", X: " + throttleX);
 
 //        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
 //        System.out.println();
-        if (throttleX == 0 && throttleY == 0 && throttleAngular == 0) {
-            SwerveSubsystem.getInstance().setDriveMotors(new double[] {0, 0, 0, 0});
+        if (a) {
+            SwerveSubsystem.getInstance().setZero();
+            SwerveSubsystem.getInstance().lockWheels();
+        } else if (throttleX == 0 && throttleY == 0 && throttleAngular == 0) {
+            SwerveSubsystem.getInstance().setZero();
         } else {
             SwerveSubsystem.getInstance().calculateInputs(
                     new Vector(
@@ -56,7 +62,6 @@ public class SwerveDefaultCommand extends CommandBase {
 //                    new Vector(0, 0),
                     SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 2 : 1)
             );
-
             SwerveSubsystem.getInstance().applyCalculatedInputs();
         }
 
@@ -65,6 +70,7 @@ public class SwerveDefaultCommand extends CommandBase {
                 (SwerveSubsystem.getInstance().getEncoderModuleAngle(1)),
                 (SwerveSubsystem.getInstance().getEncoderModuleAngle(2)),
                 (SwerveSubsystem.getInstance().getEncoderModuleAngle(3))
+        );
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[0]),
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[1]),
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[2]),
@@ -73,6 +79,11 @@ public class SwerveDefaultCommand extends CommandBase {
 //                    SwerveSubsystem.getInstance().absEncoders[1].getAbsPosition(),
 //                    SwerveSubsystem.getInstance().absEncoders[2].getAbsPosition(),
 //                    SwerveSubsystem.getInstance().absEncoders[3].getAbsPosition()
+        System.out.printf("%.6f, %.6f, %.6f, %.6f",
+                SwerveSubsystem.getInstance().getWheelVelocityInches(0),
+                SwerveSubsystem.getInstance().getWheelVelocityInches(1),
+                SwerveSubsystem.getInstance().getWheelVelocityInches(2),
+                SwerveSubsystem.getInstance().getWheelVelocityInches(3)
         );
 
         System.out.println();

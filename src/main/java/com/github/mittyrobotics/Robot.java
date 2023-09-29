@@ -7,6 +7,8 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
+import com.github.mittyrobotics.autonomous.routines.PPOneAuto;
+import com.github.mittyrobotics.autonomous.routines.PTaxi;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -91,6 +93,7 @@ public class Robot extends TimedRobot {
 //        Gyro.getInstance().setAngleOffset(0, true);
         Limelight.setAngleOffset();
 //        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
+        Odometry.getInstance().FIELD_LEFT_SIDE = false;
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
@@ -107,24 +110,26 @@ public class Robot extends TimedRobot {
 //                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
 //                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
+//        new PTaxi(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE).schedule();
+
         com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
         Pose start = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(1 * Math.PI));
-        Pose end = new Pose(new Point(start.getPosition().getX() - 200, start.getPosition().getY() + 50), new Angle(Math.PI));
+        Pose end = new Pose(new Point(start.getPosition().getX() - 150, start.getPosition().getY() + 30), new Angle(Math.PI));
         new PathFollowingCommand(
                 new SwervePath(
                         new QuinticHermiteSpline(start, end),
                         8, 100, 200, 200, 0, 0, true, false
                 ), Math.PI/2, 3, 0.05,
-                0, 0.6, 0.25, 0, 0.01, true
-        ).schedule();
-
+                0, 0.6, 0.75, 0, 0.01, true
+//        ).schedule();
+        );
 
 
 //        Odometry.getInstance().FIELD_LEFT_SIDE = false;

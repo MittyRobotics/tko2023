@@ -67,6 +67,7 @@ public class SwervePath {
 
 //        return new Vector(new Angle(angleToLookahead), vel);
         Vector vectorToLookahead = new Vector(robot.getPosition(), lookahead);
+//        Vector vectorToLookahead = spline.getVelocityVector(closestT);
         return Vector.multiply(vel / vectorToLookahead.getMagnitude(), vectorToLookahead);
     }
 

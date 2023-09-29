@@ -48,24 +48,27 @@ public class AutoArmScorePart2 extends CommandBase {
                     }, 100);
                 } else {
                     double curRad = ArmKinematics.getTelescopeDesired();
+                    double retractedRad = 0;
                     double curAngle = ArmKinematics.getPivotDesired().getRadians();
-                    ArmKinematics.setArmKinematics(new Angle(curAngle + 15 * Math.PI/180), curRad);
+                    ArmKinematics.setArmKinematics(new Angle(curAngle + 12 * Math.PI/180), curRad);
 
                     Util.triggerFunctionAfterTime(() -> {
                         StateMachine.getInstance().setOuttaking();
                         scoring = false;
                         Util.triggerFunctionAfterTime(() -> {
-                            ArmKinematics.setArmKinematics(new Angle(curAngle), curRad - 0.4);
+                            ArmKinematics.setArmKinematics(new Angle(ArmKinematics.getPivotDesired().getRadians()), retractedRad);
                             StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
                             Util.triggerFunctionAfterTime(() -> {
                                 OI.getInstance().zeroAll();
                                 StateMachine.getInstance().setProfile(StateMachine.RobotState.SCORING, StateMachine.RobotState.STOWED);
-                                StateMachine.getInstance().setIntakeOff();
-                                StateMachine.getInstance().setStateNone();
-                                switchCam();
-                            }, 300);
+                                Util.triggerFunctionAfterTime(() -> {
+                                    StateMachine.getInstance().setIntakeOff();
+                                    StateMachine.getInstance().setStateNone();
+                                }, 200);
+//                        Odometry.getInstance().setScoringCam(false);
+                            }, 1000);
                         }, 10);
-                    }, 200);
+                    }, 300);
                 }
                 ran = true;
             }
