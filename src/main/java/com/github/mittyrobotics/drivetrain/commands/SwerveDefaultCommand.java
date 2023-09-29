@@ -1,5 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveDefaultCommand extends CommandBase {
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
-    private boolean rightBumper;
+    private boolean rightBumper, leftBumper;
 
     public SwerveDefaultCommand() {
         setName("Swerve Default Command");
@@ -29,14 +30,17 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        throttleX = -OI.getInstance().getDriveController().getLeftY();
-        throttleY = -OI.getInstance().getDriveController().getLeftX();
+        throttleX = (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * -OI.getInstance().getDriveController().getLeftY();
+        throttleY = (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1) * OI.getInstance().getDriveController().getLeftX();
         throttleAngular = -OI.getInstance().getDriveController().getRightX();
-        rightBumper = OI.getInstance().getDriveController().getXButton();
+        rightBumper = OI.getInstance().getDriveController().getRightBumper();
+        leftBumper = OI.getInstance().getDriveController().getLeftBumper();
 
         if (Math.abs(throttleX) < joystickDeadzone) throttleX = 0;
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
         if (Math.abs(throttleAngular) < joystickDeadzone) throttleAngular = 0;
+
+        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE + ", X: " + throttleX);
 
 //        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
 //        System.out.println();
@@ -49,7 +53,8 @@ public class SwerveDefaultCommand extends CommandBase {
                             SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY * (rightBumper ? 1.5 : 1)
                     ),
 //                    new Vector(SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX, 0),
-                    SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular
+//                    new Vector(0, 0),
+                    SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 2 : 1)
             );
 
             SwerveSubsystem.getInstance().applyCalculatedInputs();

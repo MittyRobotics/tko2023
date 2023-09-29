@@ -2,10 +2,11 @@ package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
-import com.github.mittyrobotics.util.math.Angle;
-import com.github.mittyrobotics.autonomous.routines.PPOneAuto;
-import com.github.mittyrobotics.autonomous.routines.PPTwoAuto;
-import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -14,6 +15,7 @@ import com.github.mittyrobotics.pivot.PivotSubsystem;
 import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -60,6 +62,8 @@ public class Robot extends TimedRobot {
 
         //UPDATE FROM BEAGLE AND JETSON
         Odometry.getInstance().update();
+        Limelight.updateClosestTag();
+        Limelight.updatePose();
 //        ArmKinematics.updateAngleToGamePiece(StateMachine.getInstance().getCurrentPieceState()
 //                == StateMachine.PieceState.CONE, 0);
 
@@ -74,14 +78,19 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().run();
 
-//        System.out.print(Odometry.getInstance().getState().getPosition());
-//        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
+        System.out.print(Odometry.getInstance().getState().getPosition());
+        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
+        System.out.println(Limelight.getPose());
+        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE);
     }
 
     @Override
     public void autonomousInit() {
 //        SwerveSubsystem.getInstance().zeroRelativeEncoders();
-        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+        Limelight.setCheckingGyro(true);
+//        Gyro.getInstance().setAngleOffset(0, true);
+        Limelight.setAngleOffset();
+//        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
@@ -105,6 +114,18 @@ public class Robot extends TimedRobot {
                 break;
         }
 
+        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
+        Pose start = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(1 * Math.PI));
+        Pose end = new Pose(new Point(start.getPosition().getX() - 200, start.getPosition().getY() + 50), new Angle(Math.PI));
+        new PathFollowingCommand(
+                new SwervePath(
+                        new QuinticHermiteSpline(start, end),
+                        8, 100, 200, 200, 0, 0, true, false
+                ), Math.PI/2, 3, 0.05,
+                0, 0.6, 0.25, 0, 0.01, true
+        ).schedule();
+
+
 
 //        Odometry.getInstance().FIELD_LEFT_SIDE = false;
 //
@@ -125,7 +146,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        Limelight.update();
+//        Limelight.updatePose();
     }
 
     /**
@@ -133,13 +154,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        Gyro.getInstance().setAngleOffset(3.141592, true);
+        Limelight.setCheckingGyro(true);
+        Limelight.setAngleOffset();
+//        Gyro.getInstance().setAngleOffset(3.141592, true);
 //        for (int i = 0; i < 4; i++) {
 //            SwerveSubsystem.getInstance().angleMotors[i].setSelectedSensorPosition(0);
 //        }
 //        SwerveSubsystem.getInstance().setAllAngleEncodersZero();
 //        SwerveSubsystem.getInstance().zeroRelativeEncoders();
 //        SwerveSubsystem.getInstance().setRampRate(0.5);
+        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
         OI.getInstance().setupControls();
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
@@ -163,7 +187,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        Limelight.update();
+//        Limelight.updatePose();
 //        System.out.println("angles: " + SwerveSubsystem.getInstance().getAngl);
 //        System.out.println(OI.getInstance().getOperatorController().getRightTriggerAxis());
 //        System.out.println("POSE: " + Odometry.getInstance().getState());

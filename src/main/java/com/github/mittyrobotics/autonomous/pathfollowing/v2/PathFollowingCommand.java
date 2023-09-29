@@ -49,7 +49,7 @@ public class PathFollowingCommand extends CommandBase {
         double dt = Timer.getFPGATimestamp() - lastTime;
 
         com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
-        Pose robot = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(p.getAngle().getRadians()));
+        Pose robot = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(Gyro.getInstance().getHeadingRadians()));
         double heading = Gyro.getInstance().getHeadingRadians();
 
 
@@ -59,6 +59,7 @@ public class PathFollowingCommand extends CommandBase {
         double normDes, angularVel;
         if(useInterp) {
             normDes = com.github.mittyrobotics.util.math.Angle.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
+            System.out.println("DES ANGLE: " + normDes);
             boolean cw = (normDes - norm < PI && normDes - norm > 0)
                     || normDes - norm < -PI;
             double dist = com.github.mittyrobotics.util.math.Angle.getRealAngleDistance(norm, normDes, cw);
@@ -67,14 +68,18 @@ public class PathFollowingCommand extends CommandBase {
         else {
             normDes = com.github.mittyrobotics.util.math.Angle.standardize(endHeading);
             // TODO: 9/21/2023 FIX
-            angularVel = 0;
-//            angularVel = SwerveSubsystem.getDesiredAngularMP(
-//                    norm, normDes, maxW, maxW, 0.02
-//            );
+//            angularVel = 0;
+            angularVel = SwerveSubsystem.getDesiredAngularMP(
+                    norm, normDes, maxW, maxW, 0.02
+            );
         }
 
+        System.out.println("LV: " + linear.toString());
+        System.out.println("AV: " + angularVel);
+
         SwerveSubsystem.getInstance().calculateInputs(
-                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
+//                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
+                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), 0);
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
         lastTime = Timer.getFPGATimestamp();

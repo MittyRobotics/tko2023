@@ -8,9 +8,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class Limelight {
     private static NetworkTable limelightTable;
     private static Pose curPose;
+    private static int tagID = -1;
     private static double latency;
     private static double[] limelightPose, targetDist;
     private static boolean hasTarget;
+
+    private static boolean checkingGyro = false;
 
     private static double zDistToTarget;
 
@@ -28,7 +31,7 @@ public class Limelight {
         limelightTable.getEntry("pipeline").setValue(2);
     }
 
-    public static void update() {
+    public static void updatePose() {
         //x = long side
         //y = short side
         hasTarget = limelightTable.getEntry("tv").getDouble(0) == 1;
@@ -42,7 +45,7 @@ public class Limelight {
 
             Pose tempPose = new Pose(new Point(limelightPose[0] * 39.37 + 325.61, limelightPose[1] * 39.37 + 157.863), new Angle(limelightPose[5], false));
 //            System.out.println("LL angle " + limelightPose[5]);
-            if (Gyro.getInstance().getAngleOffset() == null) {
+            if (Gyro.getInstance().getAngleOffset() == null && checkingGyro) {
                 Gyro.getInstance().setAngleOffset(Math.PI + tempPose.getHeading().getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset(), true);
             }
             setPose(tempPose);
@@ -51,6 +54,11 @@ public class Limelight {
             setDist(tempDist);
         } else setPose(null);
 
+    }
+
+    public static void updateClosestTag() {
+        hasTarget = limelightTable.getEntry("tv").getDouble(0) == 1;
+        if (hasTarget) tagID = (int) limelightTable.getEntry("tid").getDouble(-1);
     }
 
     public static double getXDistToTarget() {
@@ -71,5 +79,29 @@ public class Limelight {
 
     public static double getLatency() {
         return latency * 1000000;
+    }
+
+    public static int getClosestTag() {
+        if (tagID == -1) return 1;
+        return tagID;
+    }
+
+    public static void setCheckingGyro(boolean checkingGyro) {
+        Limelight.checkingGyro = checkingGyro;
+    }
+
+    public static void setAngleOffset() {
+        hasTarget = limelightTable.getEntry("tv").getDouble(0) == 1;
+        limelightPose =
+                limelightTable.getEntry("botpose").getDoubleArray(new double[] {0., 0., 0., 0., 0., 0., 0.});
+        if (hasTarget) {
+            if (Gyro.getInstance().getAngleOffset() == null && checkingGyro) {
+                Gyro.getInstance().setAngleOffset(new Angle(limelightPose[5], false).getRadians() - Gyro.getInstance().getHeadingRadiansNoOffset(), true);
+            }
+        } else {
+            if (Gyro.getInstance().getAngleOffset() == null && checkingGyro) {
+                Gyro.getInstance().setAngleOffset((Odometry.getInstance().FIELD_LEFT_SIDE ? Math.PI : 0), true);
+            }
+        }
     }
 }

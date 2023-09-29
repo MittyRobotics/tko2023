@@ -36,6 +36,7 @@ public class SwervePath {
 
     public Vector updateLinear(Pose robot, double dt) {
         double closestT = spline.getClosestPoint(robot, 50, 5);
+        System.out.println("CLOSEST T: " + closestT);
 //        LoggerInterface.getInstance().put("CLOSET", closestT);
         lengthToClosest = spline.getLength(closestT, 17);
 
@@ -45,23 +46,28 @@ public class SwervePath {
         double lookaheadDist = lengthToClosest + lookahead;
 
         Point lookahead = getLookahead(lookaheadDist);
+        System.out.println("LOOKAHEAD: " + lookahead);
 
         if(auto) {
             vel = Math.min(maxvel, vel + dt * maxaccel);
+            System.out.println("AUTO VEL: " + vel);
             vel = Math.min(getMaxVelToEnd(distanceToEnd), vel);
+
         } else {
             double leftY = OI.getInstance().getDriveController().getLeftX();
             double leftX = -OI.getInstance().getDriveController().getLeftY();
             vel = Math.sqrt(leftY * leftY + leftX * leftX) * SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND;
         }
 
-//        System.out.println("VECTOR TO LOOKAHEAD " + new Vector(robot.getPosition(), lookahead));
+        System.out.println("VECTOR TO LOOKAHEAD " + new Vector(robot.getPosition(), lookahead));
 
-        double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians();
+//        double angleToLookahead = new Vector(robot.getPosition(), lookahead).getAngle().getRadians();
 
 //        System.out.println("Lookahead " + lookahead + "    " + "Robot " + robot + "   Angle to " + angleToLookahead);
 
-        return new Vector(new Angle(angleToLookahead), vel);
+//        return new Vector(new Angle(angleToLookahead), vel);
+        Vector vectorToLookahead = new Vector(robot.getPosition(), lookahead);
+        return Vector.multiply(vel / vectorToLookahead.getMagnitude(), vectorToLookahead);
     }
 
     public void changeSpline(QuinticHermiteSpline nSpline) {

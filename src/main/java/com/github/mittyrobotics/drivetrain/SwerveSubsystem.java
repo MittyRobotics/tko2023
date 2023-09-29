@@ -3,6 +3,7 @@ package com.github.mittyrobotics.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
 import com.github.mittyrobotics.util.Gyro;
@@ -49,17 +50,18 @@ public class SwerveSubsystem extends SubsystemBase {
             driveMotors[i].config_kI(0, DRIVE_PID[1]);
             driveMotors[i].config_kD(0, DRIVE_PID[2]);
             driveMotors[i].config_kF(0, DRIVE_PID[3]);
+            driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
             driveMotors[i].setNeutralMode(NeutralMode.Coast);
-            driveMotors[i].configOpenloopRamp(3);
-            driveMotors[i].configClosedloopRamp(3);
-
+//            driveMotors[i].configOpenloopRamp(1.45);
+//            driveMotors[i].configClosedloopRamp(1.45);
             angleMotors[i].configFactoryDefault();
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);
             angleMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             angleMotors[i].setSelectedSensorPosition(0);
+            angleMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Brake);
 

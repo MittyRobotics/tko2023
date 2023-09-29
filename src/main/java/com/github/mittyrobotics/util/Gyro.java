@@ -1,6 +1,7 @@
 package com.github.mittyrobotics.util;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.github.mittyrobotics.autonomous.Odometry;
 import com.github.mittyrobotics.util.math.*;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.util.math.Angle;
