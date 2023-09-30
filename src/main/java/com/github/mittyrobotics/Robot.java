@@ -2,6 +2,7 @@ package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.arm.AutoArmScoreCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpline;
@@ -19,6 +20,7 @@ import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -97,6 +99,8 @@ public class Robot extends TimedRobot {
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
+//        auto = SmartDashboard.getString("auto", "N");
+//        low = SmartDashboard.getString()
 //        auto = LoggerInterface.getInstance().getValue("auto");
 //        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
 //        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
@@ -110,26 +114,27 @@ public class Robot extends TimedRobot {
 //                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
             case "balance":
-                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
                 break;
             case "pick":
 //                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
                 break;
         }
 
-//        new PTaxi(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE).schedule();
+//        new PTaxi(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE).schedule();
+        new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE).schedule();
 
-        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
-        Pose start = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(1 * Math.PI));
-        Pose end = new Pose(new Point(start.getPosition().getX() - 150, start.getPosition().getY() + 30), new Angle(Math.PI));
-        new PathFollowingCommand(
-                new SwervePath(
-                        new QuinticHermiteSpline(start, end),
-                        8, 100, 200, 200, 0, 0, true, false
-                ), Math.PI/2, 3, 0.05,
-                0, 0.6, 0.75, 0, 0.01, true
+//        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
+//        Pose start = new Pose(new Point(p.getPoint().getX(), p.getPoint().getY()), new Angle(1 * Math.PI));
+//        Pose end = new Pose(new Point(start.getPosition().getX() - 150, start.getPosition().getY() + 30), new Angle(Math.PI));
+//        new PathFollowingCommand(
+//                new SwervePath(
+//                        new QuinticHermiteSpline(start, end),
+//                        8, 100, 200, 200, 0, 0, true, false
+//                ), Math.PI/2, 3, 0.05,
+//                0, 0.6, 0.75, 0, 0.01, true
 //        ).schedule();
-        );
+//        );
 
 
 //        Odometry.getInstance().FIELD_LEFT_SIDE = false;
