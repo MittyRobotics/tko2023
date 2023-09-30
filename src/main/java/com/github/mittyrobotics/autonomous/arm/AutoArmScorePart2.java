@@ -67,7 +67,7 @@ public class AutoArmScorePart2 extends CommandBase {
                                 }, 200);
 //                        Odometry.getInstance().setScoringCam(false);
                             }, 1000);
-                        }, 10);
+                        }, 100);
                     }, 300);
                 }
                 ran = true;

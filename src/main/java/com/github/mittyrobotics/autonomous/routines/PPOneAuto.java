@@ -37,9 +37,9 @@ public class PPOneAuto extends SequentialCommandGroup {
         Pose beforeAutoScore = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 30 : -30, 0)),
                 starting.getHeading());
 
-        com.github.mittyrobotics.util.math.Point p2 = Odometry.getInstance().getScoringZone(tag_id)[second_index].getPosition();
+        p = Odometry.getInstance().getScoringZone(tag_id)[second_index];
         Point starting_second = Point.add(
-                new Point(p2.getX(), p2.getY()),
+                new Point(p.getPoint().getX(), p.getPoint().getY()),
                 new Point(leftSide ? 32 : -32, 0));
 
         Point beforeBalance = Point.add(starting_second,
@@ -53,10 +53,6 @@ public class PPOneAuto extends SequentialCommandGroup {
             //NO BALANCE PRELOAD + ONE
             addCommands(
                     // FIRST CONE
-//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
-//                    )),
-
                     new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
@@ -66,9 +62,9 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
-                                    10, 3, 2, 2, 0, 2, true
+                                    10, 2, 5, 5, 0, 2, true
                             ), leftSide ? 0 : Math.PI, 9, 3,
-                            0.2, 0.8, 1.25, 0, 0.01, false
+                            0.2, 0.8, 1.25, 0, 0.01, true
                     ),
 
                     // INTAKE
@@ -78,19 +74,15 @@ public class PPOneAuto extends SequentialCommandGroup {
                     new PathFollowingCommand(
                             new SwervePath(
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
-                                    10, 3, 2, 2, 2, 0, true
+                                    10, 2, 5, 2, 2, 0, true
                             ), leftSide ? 0 : Math.PI, 3, 0.05,
-                            0, 0.6, 0.5, 0, 0.01, true
+                            0, 0.6, 1.25, 0, 0.01, true
                     ),
 
 
-//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
-//                    )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
                         StateMachine.getInstance().setIntakeStowing();
-//                        Odometry.getInstance().setScoringCam(true);
                     }),
 
                     new PathFollowingCommand(
@@ -100,7 +92,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                                     10, 2, 5, 2, 0, 1, true
                             ), scoreHeading, 6, 1,
-                            0.1, 0.6, 0.25, 0, 0.02, true
+                            0.1, 0.6, 3, 0, 0.02, true
                     ),
 //
 //
@@ -110,10 +102,6 @@ public class PPOneAuto extends SequentialCommandGroup {
         } else {
             addCommands(
                     // FIRST CONE
-//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 3 : 0) : (low ? 0 : 3) //left vs right BACK cam
-//                    )),
-
                     new InitAutoCommand(new Pose(starting.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                     new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
 
@@ -125,7 +113,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(starting, beforeFirstCone),
                                     10, 3, 5, 5, 0, 2.5, true
                             ), leftSide ? 0 : Math.PI, 12, 3,
-                            0.2, 0.8, 0.5, 0, 0.01, true
+                            0.2, 0.8, 3.5, 0, 0.01, true
                     ),
 
                     // INTAKE
@@ -137,17 +125,13 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(beforeFirstCone, firstCone),
                                     10, 2.5, 5, 2, 2.5, 0, true
                             ), leftSide ? 0 : Math.PI, 2, 0.05,
-                            0, 0.6, 0.25, 0, 0.02, true
+                            0, 0.6, 3.75, 0, 0.02, true
                     ),
 
 
-//                    new InstantCommand(() -> Odometry.getInstance().setCustomCam(
-//                            Odometry.getInstance().FIELD_LEFT_SIDE ? (low ? 2 : 1) : (low ? 1 : 2) //left vs right FRONT cam
-//                    )),
                     new InstantCommand(() -> {
                         OI.getInstance().zeroAll();
                         StateMachine.getInstance().setIntakeStowing();
-//                        Odometry.getInstance().setScoringCam(true);
                     }),
 
                     new PathFollowingCommand(
@@ -157,7 +141,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                             new Pose(beforeAutoScore.getPosition(), new Angle(leftSide ? Math.PI : 0))),
                                     10, 4, 5, 2, 0, 1, true
                             ), scoreHeading, 6, 1,
-                            0.1, 0.6, 0.75, 0, 0.02, true
+                            0.1, 0.6, 3, 0, 0.02, true
                     ),
 //
 //
@@ -170,7 +154,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                                     new QuinticHermiteSpline(starting_second, beforeBalance),
                                     5, 3, 3, 3, 0, 0, true
                             ), leftSide ? Math.PI : 0, 6, 4,
-                            0, 1, 0.75, 0, 0.02, true
+                            0, 1, 3, 0, 0.02, true
                     )
 
                     , new Balance(false)

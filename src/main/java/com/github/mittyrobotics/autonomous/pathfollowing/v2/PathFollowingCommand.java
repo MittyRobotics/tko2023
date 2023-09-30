@@ -9,6 +9,7 @@ import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static java.lang.Math.PI;
@@ -60,10 +61,11 @@ public class PathFollowingCommand extends CommandBase {
         if(useInterp) {
             normDes = com.github.mittyrobotics.util.math.Angle.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
             System.out.println("DES ANGLE: " + normDes);
-            boolean cw = (normDes - norm < PI && normDes - norm > 0)
-                    || normDes - norm < -PI;
+            boolean cw = (normDes - norm > PI)
+                    || (normDes - norm > -PI && normDes - norm < 0);
             double dist = com.github.mittyrobotics.util.math.Angle.getRealAngleDistance(norm, normDes, cw);
             angularVel = controller.calculate(norm, norm + (cw ? -1 : 1) * dist);
+//            angularVel = controller.calculate(heading, normDes);
         }
         else {
             normDes = com.github.mittyrobotics.util.math.Angle.standardize(endHeading);
@@ -76,6 +78,10 @@ public class PathFollowingCommand extends CommandBase {
 
         System.out.println("LV: " + linear.toString());
         System.out.println("AV: " + angularVel);
+
+        SmartDashboard.putNumber("DES ANGLE", normDes);
+        SmartDashboard.putNumber("CUR ANGLE", norm);
+        SmartDashboard.putNumber("AV", angularVel);
 
         SwerveSubsystem.getInstance().calculateInputs(
                 new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
