@@ -11,6 +11,7 @@ import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
 import com.github.mittyrobotics.intake.StateMachine;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class PTaxi extends SequentialCommandGroup {
     public PTaxi(boolean low, boolean leftSide, StateMachine.PieceState piece) {
@@ -24,7 +25,7 @@ public class PTaxi extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
-        Pose ending = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 100 : -100, 0)),
+        Pose ending = new Pose(Point.add(starting.getPosition(), new Point(leftSide ? 135 : -135, 0)),
                 new Angle(leftSide ? 0 : Math.PI));
 
         addCommands(
@@ -33,11 +34,13 @@ public class PTaxi extends SequentialCommandGroup {
 
                 new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
+                new WaitCommand(2),
+
                 new PathFollowingCommand(
                         new SwervePath(
                                 new QuinticHermiteSpline(starting, ending),
                                 10, 3, 2, 2, 0, 2, true
-                        ), leftSide ? Math.PI : 0, 5, 3,
+                        ), leftSide ? Math.PI : 0, 10, 3,
                         0.2, 0.8, 0.5, 0, 0.01, true
                 )
         );

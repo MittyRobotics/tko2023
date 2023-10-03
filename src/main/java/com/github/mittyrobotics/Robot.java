@@ -9,7 +9,9 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.QuinticHermiteSpli
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.PathFollowingCommand;
 import com.github.mittyrobotics.autonomous.pathfollowing.v2.SwervePath;
 import com.github.mittyrobotics.autonomous.routines.PPOneAuto;
+import com.github.mittyrobotics.autonomous.routines.PPTwoAuto;
 import com.github.mittyrobotics.autonomous.routines.PTaxi;
+import com.github.mittyrobotics.autonomous.routines.PreloadAndBalanceAuto;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.intake.IntakeSubsystem;
 import com.github.mittyrobotics.intake.StateMachine;
@@ -19,9 +21,14 @@ import com.github.mittyrobotics.telescope.TelescopeSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.ejml.All;
+
+import java.util.Objects;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,10 +38,33 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
     public String auto = "balance";
-    public boolean low = false, bal = false;
+    public String low = "DOWN", bal = "YES";
+
+    private SendableChooser<String> sideChooser = new SendableChooser<>();
+    private SendableChooser<String> autoChooser = new SendableChooser<>();
+    private SendableChooser<String> balChooser = new SendableChooser<>();
+    private SendableChooser<String> heightChooser = new SendableChooser<>();
 
     @Override
     public void robotInit() {
+        sideChooser.setDefaultOption("Blue", "LEFT");
+        sideChooser.addOption("Red", "RIGHT");
+        SmartDashboard.putData("side", sideChooser);
+
+        autoChooser.setDefaultOption("Preload only", "PRELOAD");
+        autoChooser.addOption("Pick one piece", "BALANCE");
+        autoChooser.addOption("Pick two pieces", "PICK");
+        SmartDashboard.putData("auto", autoChooser);
+
+        balChooser.setDefaultOption("Neither", "NO");
+        balChooser.addOption("Balance", "BAL");
+        balChooser.addOption("Taxi", "TAXI");
+        SmartDashboard.putData("balance", balChooser);
+
+        heightChooser.setDefaultOption("Non-bump side (HP side)", "UP");
+        heightChooser.addOption("Bump side (away from HP)", "DOWN");
+        SmartDashboard.putData("low", heightChooser);
+
         Limelight.init(null, 0);
 
         LedSubsystem.getInstance().initHardware();
@@ -45,10 +75,10 @@ public class Robot extends TimedRobot {
         PivotSubsystem.getInstance().initHardware();
         IntakeSubsystem.getInstance().initHardware();
 
-        PivotSubsystem.getInstance().setBrakeMode();
-        TelescopeSubsystem.getInstance().setBrakeMode();
+        PivotSubsystem.getInstance().setCoastMode();
+        TelescopeSubsystem.getInstance().setCoastMode();
 
-        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+        Odometry.getInstance().FIELD_LEFT_SIDE = true;
         double x = 0;
         double y = 0;
         double t = 0;
@@ -62,6 +92,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        Odometry.getInstance().FIELD_LEFT_SIDE = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue);
         SwerveSubsystem.getInstance().updateForwardKinematics();
 
         //UPDATE FROM BEAGLE AND JETSON
@@ -82,20 +113,22 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().run();
 
-        System.out.print(Odometry.getInstance().getState().getPosition());
-        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
-        System.out.println(Limelight.getPose());
-        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE);
+//        System.out.print(Odometry.getInstance().getState().getPosition());
+//        System.out.println("   Angle: " + Gyro.getInstance().getHeadingRadians());
+//        System.out.println(Limelight.getPose());
+//        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE);
     }
 
     @Override
     public void autonomousInit() {
+        PivotSubsystem.getInstance().setBrakeMode();
+        TelescopeSubsystem.getInstance().setBrakeMode();
 //        SwerveSubsystem.getInstance().zeroRelativeEncoders();
         Limelight.setCheckingGyro(true);
 //        Gyro.getInstance().setAngleOffset(0, true);
         Limelight.setAngleOffset();
 //        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
-        Odometry.getInstance().FIELD_LEFT_SIDE = false;
+//        Odometry.getInstance().FIELD_LEFT_SIDE = true;
 //        Gyro.getInstance().setAngleOffset(180, false);
 //        Odometry.getInstance().FIELD_LEFT_SIDE = LoggerInterface.getInstance().getValue("fieldside").equals("left");
 
@@ -105,23 +138,44 @@ public class Robot extends TimedRobot {
 //        low = LoggerInterface.getInstance().getValue("autoside").equals("L");
 //        bal = LoggerInterface.getInstance().getValue("autobal").equals("T");
 
-        auto = "balance";
-        low = false;
-        bal = false;
+//        auto = "balance";
+//        low = true;
+//        bal = false;
+
+//        Odometry.getInstance().FIELD_LEFT_SIDE = sideChooser.getSelected().equals("LEFT");
+        auto = autoChooser.getSelected();
+        bal = balChooser.getSelected();
+        low = heightChooser.getSelected();
+
+        SmartDashboard.putString("TESTS", String.valueOf(Odometry.getInstance().FIELD_LEFT_SIDE));
+//        SmartDashboard.putString("TESTA", auto);
+        SmartDashboard.putString("TESTB", bal);
+        SmartDashboard.putBoolean("TESTL", low.equals("DOWN"));
 
         switch(auto) {
-            case "preload":
-//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+            case "PRELOAD":
+//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, bal.equals("BAL"), bal.equals("TAXI"), low.equals("DOWN")).schedule();
+                SmartDashboard.putString("TESTA", "P+B");
                 break;
-            case "balance":
-//                new PPOneAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal).schedule();
+            case "BALANCE":
+//                new PPOneAuto(low.equals("DOWN"), Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, bal.equals("YES")).schedule();
+//                new PTaxi(low.equals("DOWN"), Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE).schedule();
+                SmartDashboard.putString("TESTA", "PPOne");
                 break;
-            case "pick":
-//                new PPTwoAuto(low, Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+            case "PICK":
+//                new PPTwoAuto(low.equals("DOWN"), Odometry.getInstance().FIELD_LEFT_SIDE).schedule();
+//                new PTaxi(low.equals("DOWN"), Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE).schedule();
+                SmartDashboard.putString("TESTA", "PPTwo");
                 break;
         }
 
-//        new PTaxi(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE).schedule();
+//        new PTaxi(false, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE).schedule();
+//        new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, false, false, true).schedule();
+//        new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, true, false, true).schedule();
+//        new PPOneAuto(true, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CUBE, false);
+
+//                new PreloadAndBalanceAuto(Odometry.getInstance().FIELD_LEFT_SIDE, true, bal.equals("TAXI"), low.equals("DOWN")).schedule();
+
         new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE).schedule();
 
 //        com.github.mittyrobotics.util.math.Pose p = Odometry.getInstance().getState();
@@ -166,6 +220,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         Limelight.setCheckingGyro(true);
         Limelight.setAngleOffset();
+        PivotSubsystem.getInstance().setBrakeMode();
+        TelescopeSubsystem.getInstance().setBrakeMode();
 //        Gyro.getInstance().setAngleOffset(3.141592, true);
 //        for (int i = 0; i < 4; i++) {
 //            SwerveSubsystem.getInstance().angleMotors[i].setSelectedSensorPosition(0);
@@ -173,7 +229,8 @@ public class Robot extends TimedRobot {
 //        SwerveSubsystem.getInstance().setAllAngleEncodersZero();
 //        SwerveSubsystem.getInstance().zeroRelativeEncoders();
 //        SwerveSubsystem.getInstance().setRampRate(0.5);
-        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
+//        Odometry.getInstance().FIELD_LEFT_SIDE = Limelight.getClosestTag() >= 5;
+//        Odometry.getInstance().FIELD_LEFT_SIDE = false;
         OI.getInstance().setupControls();
         OI.getInstance().zeroAll();
         StateMachine.getInstance().setIntakeOff();
@@ -213,8 +270,8 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         SwerveSubsystem.getInstance().setAngleCoastMode();
-        TelescopeSubsystem.getInstance().setBrakeMode();
-        PivotSubsystem.getInstance().setBrakeMode();
+        PivotSubsystem.getInstance().setCoastMode();
+        TelescopeSubsystem.getInstance().setCoastMode();
 
         LedSubsystem.getInstance().turnOff();
 

@@ -57,15 +57,16 @@ public class PathFollowingCommand extends CommandBase {
         Vector linear = path.updateLinear(robot, dt);
 
         double norm = com.github.mittyrobotics.util.math.Angle.standardize(heading);
-        double normDes, angularVel;
+        double des, normDes, angularVel;
         if(useInterp) {
-            normDes = com.github.mittyrobotics.util.math.Angle.standardize(path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd));
+            des = path.getHeadingGoal(startingHeading, endHeading, angStart, angEnd);
+            normDes = com.github.mittyrobotics.util.math.Angle.standardize(des);
             System.out.println("DES ANGLE: " + normDes);
             boolean cw = (normDes - norm > PI)
                     || (normDes - norm > -PI && normDes - norm < 0);
-            double dist = com.github.mittyrobotics.util.math.Angle.getRealAngleDistance(norm, normDes, cw);
-            angularVel = controller.calculate(norm, norm + (cw ? -1 : 1) * dist);
-//            angularVel = controller.calculate(heading, normDes);
+            double dist = com.github.mittyrobotics.util.math.Angle.getRealAngleDistanceSwerve(norm, normDes, cw);
+//            angularVel = controller.calculate(norm, norm + (cw ? -1 : 1) * dist);
+            angularVel = controller.calculate(heading, des);
         }
         else {
             normDes = com.github.mittyrobotics.util.math.Angle.standardize(endHeading);
@@ -84,8 +85,8 @@ public class PathFollowingCommand extends CommandBase {
         SmartDashboard.putNumber("AV", angularVel);
 
         SwerveSubsystem.getInstance().calculateInputs(
-                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
-//                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), 0);
+//                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), angularVel);
+                new com.github.mittyrobotics.util.math.Vector(linear.getX(), linear.getY()), 0);
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
         lastTime = Timer.getFPGATimestamp();

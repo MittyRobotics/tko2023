@@ -60,17 +60,17 @@ public class SwerveDefaultCommand extends CommandBase {
                     ),
 //                    new Vector(SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX, 0),
 //                    new Vector(0, 0),
-                    SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 2 : 1)
+                    SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 1.5 : 1)
             );
             SwerveSubsystem.getInstance().applyCalculatedInputs();
         }
 
-        System.out.printf("%.6f, %.6f, %.6f, %.6f",
-                (SwerveSubsystem.getInstance().getEncoderModuleAngle(0)),
-                (SwerveSubsystem.getInstance().getEncoderModuleAngle(1)),
-                (SwerveSubsystem.getInstance().getEncoderModuleAngle(2)),
-                (SwerveSubsystem.getInstance().getEncoderModuleAngle(3))
-        );
+//        System.out.printf("%.6f, %.6f, %.6f, %.6f",
+//                (SwerveSubsystem.getInstance().getEncoderModuleAngle(0)),
+//                (SwerveSubsystem.getInstance().getEncoderModuleAngle(1)),
+//                (SwerveSubsystem.getInstance().getEncoderModuleAngle(2)),
+//                (SwerveSubsystem.getInstance().getEncoderModuleAngle(3))
+//        );
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[0]),
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[1]),
 //                (SwerveSubsystem.getInstance().getDesiredAngles()[2]),
@@ -79,12 +79,12 @@ public class SwerveDefaultCommand extends CommandBase {
 //                    SwerveSubsystem.getInstance().absEncoders[1].getAbsPosition(),
 //                    SwerveSubsystem.getInstance().absEncoders[2].getAbsPosition(),
 //                    SwerveSubsystem.getInstance().absEncoders[3].getAbsPosition()
-        System.out.printf("%.6f, %.6f, %.6f, %.6f",
-                SwerveSubsystem.getInstance().getWheelVelocityInches(0),
-                SwerveSubsystem.getInstance().getWheelVelocityInches(1),
-                SwerveSubsystem.getInstance().getWheelVelocityInches(2),
-                SwerveSubsystem.getInstance().getWheelVelocityInches(3)
-        );
+//        System.out.printf("%.6f, %.6f, %.6f, %.6f",
+//                SwerveSubsystem.getInstance().getWheelVelocityInches(0),
+//                SwerveSubsystem.getInstance().getWheelVelocityInches(1),
+//                SwerveSubsystem.getInstance().getWheelVelocityInches(2),
+//                SwerveSubsystem.getInstance().getWheelVelocityInches(3)
+//        );
 
         System.out.println();
 
@@ -96,36 +96,36 @@ public class SwerveDefaultCommand extends CommandBase {
 
 
 
-        SmartDashboard.putNumber("Gyro", Gyro.getInstance().getHeadingRadians());
-
-        double[] desiredAngles = SwerveSubsystem.getInstance().getDesiredAngles(),
-                desiredMagnitudes = SwerveSubsystem.getInstance().getDesiredMagnitudes();
-        SmartDashboard.putString("Wheel 1", new Vector(new Angle(desiredAngles[0], true),
-                desiredMagnitudes[0]).toString());
-        SmartDashboard.putString("Wheel 2", new Vector(new Angle(desiredAngles[1], true),
-                desiredMagnitudes[1]).toString());
-        SmartDashboard.putString("Wheel 3", new Vector(new Angle(desiredAngles[2], true),
-                desiredMagnitudes[2]).toString());
-        SmartDashboard.putString("Wheel 4", new Vector(new Angle(desiredAngles[3], true),
-                desiredMagnitudes[3]).toString());
-
-        SmartDashboard.putNumber("Wheel 1 angle", desiredAngles[0]);
-        SmartDashboard.putNumber("Wheel 2 angle", desiredAngles[1]);
-        SmartDashboard.putNumber("Wheel 3 angle", desiredAngles[2]);
-        SmartDashboard.putNumber("Wheel 4 angle", desiredAngles[3]);
-
+//        SmartDashboard.putNumber("Gyro", Gyro.getInstance().getHeadingRadians());
+//
+//        double[] desiredAngles = SwerveSubsystem.getInstance().getDesiredAngles(),
+//                desiredMagnitudes = SwerveSubsystem.getInstance().getDesiredMagnitudes();
+//        SmartDashboard.putString("Wheel 1", new Vector(new Angle(desiredAngles[0], true),
+//                desiredMagnitudes[0]).toString());
+//        SmartDashboard.putString("Wheel 2", new Vector(new Angle(desiredAngles[1], true),
+//                desiredMagnitudes[1]).toString());
+//        SmartDashboard.putString("Wheel 3", new Vector(new Angle(desiredAngles[2], true),
+//                desiredMagnitudes[2]).toString());
+//        SmartDashboard.putString("Wheel 4", new Vector(new Angle(desiredAngles[3], true),
+//                desiredMagnitudes[3]).toString());
+//
+//        SmartDashboard.putNumber("Wheel 1 angle", desiredAngles[0]);
+//        SmartDashboard.putNumber("Wheel 2 angle", desiredAngles[1]);
+//        SmartDashboard.putNumber("Wheel 3 angle", desiredAngles[2]);
+//        SmartDashboard.putNumber("Wheel 4 angle", desiredAngles[3]);
+//
 //        SmartDashboard.putBoolean("Wheel 1 flip", SwerveSubsystem.getInstance().flipped[0]);
 //        SmartDashboard.putBoolean("Wheel 2 flip", SwerveSubsystem.getInstance().flipped[1]);
 //        SmartDashboard.putBoolean("Wheel 3 flip", SwerveSubsystem.getInstance().flipped[2]);
 //        SmartDashboard.putBoolean("Wheel 4 flip", SwerveSubsystem.getInstance().flipped[3]);
 
 //        SmartDashboard.putNumber("wheel 1 ticks", SwerveSubsystem.getInstance().getRawPosition(0));
-        SmartDashboard.putNumber("wheel 1 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(0));
-        SmartDashboard.putNumber("wheel 2 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(1));
-        SmartDashboard.putNumber("wheel 3 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(2));
-        SmartDashboard.putNumber("wheel 4 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(3));
-
-        SmartDashboard.putNumber("wheel 1 velocity", SwerveSubsystem.getInstance().getRawWheelVelocity(0));
+//        SmartDashboard.putNumber("wheel 1 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(0));
+//        SmartDashboard.putNumber("wheel 2 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(1));
+//        SmartDashboard.putNumber("wheel 3 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(2));
+//        SmartDashboard.putNumber("wheel 4 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(3));
+//
+//        SmartDashboard.putNumber("wheel 1 velocity", SwerveSubsystem.getInstance().getRawWheelVelocity(0));
     }
 
     @Override

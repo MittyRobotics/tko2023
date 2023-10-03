@@ -6,11 +6,13 @@ import com.github.mittyrobotics.autonomous.pathfollowing.math.Angle;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Point;
 import com.github.mittyrobotics.autonomous.pathfollowing.math.Pose;
 import com.github.mittyrobotics.intake.StateMachine;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class PreloadAndBalanceAuto extends SequentialCommandGroup {
-    public PreloadAndBalanceAuto(boolean leftSide) {
+    public PreloadAndBalanceAuto(boolean leftSide, boolean bal, boolean taxi, boolean low) {
         super();
 
         //tag should be 1, 2, 3 from bottom to top
@@ -19,13 +21,28 @@ public class PreloadAndBalanceAuto extends SequentialCommandGroup {
         Pose starting = new Pose(Point.add(scoring.getPosition(), new Point(leftSide ? 32 : -32, 0)),
                 scoring.getHeading());
 
-        addCommands(
-                new InitAutoCommand(starting),
-                new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
-                new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
+        if (bal) {
+            addCommands(
+                    new InstantCommand(() -> SmartDashboard.putString("Test", "running")),
+                    new InitAutoCommand(starting),
+                    new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE),
 
-                new Balance(false)
-        );
+                    new WaitCommand(2),
+
+                    new Balance(false)
+            );
+        } else if (taxi) {
+            addCommands(
+                new PTaxi(low, Odometry.getInstance().FIELD_LEFT_SIDE, StateMachine.PieceState.CONE)
+            );
+        } else {
+            addCommands(
+                    new InitAutoCommand(starting),
+                    new InstantCommand(() -> StateMachine.getInstance().setIntakeStowing()),
+                    new AutoArmScoreCommand(StateMachine.RobotState.HIGH, StateMachine.PieceState.CONE)
+            );
+        }
 
     }
 }

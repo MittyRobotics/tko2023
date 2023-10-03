@@ -71,7 +71,7 @@ public class TimedBangBangBalance extends CommandBase {
         }
 
         double ang = desAngle - heading;
-        Vector linear = new Vector(new Angle(desAngle, true), Math.abs(speed));
+        Vector linear = new Vector(new Angle(desAngle, true), Math.abs(speed * 39.37));
 
         SwerveSubsystem.getInstance().calculateInputs(linear, 0);
 

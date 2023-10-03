@@ -113,7 +113,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
             boolean cw = (values[i] - currentModuleAngle < PI && values[i] - currentModuleAngle > 0)
                     || values[i] - currentModuleAngle < -PI;
-            double dist = Angle.getRealAngleDistance(currentModuleAngle, values[i], cw);
+            double dist = Angle.getRealAngleDistanceSwerve(currentModuleAngle, values[i], cw);
 
 //            if (i == 0)
 //                System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
