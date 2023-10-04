@@ -230,9 +230,8 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.copySign(Math.min(maxW, Math.abs(out)), out);
     }
 
-    public com.github.mittyrobotics.autonomous.pathfollowing.math.Vector getDesiredVel() {
-        return new com.github.mittyrobotics.autonomous.pathfollowing.math.Vector(
-                inverseKinematics.linearVel.getX(), inverseKinematics.linearVel.getY());
+    public Vector getDesiredVel() {
+        return inverseKinematics.linearVel;
     }
 
     public void setZero() {
