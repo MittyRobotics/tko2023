@@ -85,12 +85,21 @@ public class Angle {
         return 0;
     }
 
-    public static int getQuadrant(double angle) {
+    public static int getQuadrantSwerve(double angle) {
         angle = Angle.standardize(angle);
         if (angle >= 0 && angle < PI / 2) return 1;
         if (angle >= PI / 2 && angle < PI) return 4;
         if (angle >= PI && angle < 3 * PI / 2) return 3;
         if (angle >= 3 * PI / 2 && angle < 2 * PI) return 2;
+        return -6;
+    }
+
+    public static int getQuadrantAuto(double angle) {
+        angle = Angle.standardize(angle);
+        if (angle >= 0 && angle < PI / 2) return 1;
+        if (angle >= PI / 2 && angle < PI) return 2;
+        if (angle >= PI && angle < 3 * PI / 2) return 3;
+        if (angle >= 3 * PI / 2 && angle < 2 * PI) return 4;
         return -6;
     }
 

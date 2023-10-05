@@ -14,6 +14,7 @@ public class SwerveDefaultCommand extends CommandBase {
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
 
     private boolean leftBumper, rightBumper, a;
+
     public SwerveDefaultCommand() {
         setName("Swerve Default Command");
         addRequirements(SwerveSubsystem.getInstance());
@@ -62,14 +63,7 @@ public class SwerveDefaultCommand extends CommandBase {
             );
             SwerveSubsystem.getInstance().applyCalculatedInputs();
         }
-        }
-
-
-
-
-
-
-
+    }
 
 
 //        SmartDashboard.putNumber("Gyro", Gyro.getInstance().getHeadingRadians());
@@ -102,7 +96,6 @@ public class SwerveDefaultCommand extends CommandBase {
 //        SmartDashboard.putNumber("wheel 4 position", SwerveSubsystem.getInstance().getEncoderModuleAngle(3));
 //
 //        SmartDashboard.putNumber("wheel 1 velocity", SwerveSubsystem.getInstance().getRawWheelVelocity(0));
-    }
 
     @Override
     public void end(boolean interrupted) {
