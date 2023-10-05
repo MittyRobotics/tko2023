@@ -74,6 +74,14 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
+    public void setZero() {
+        setDriveMotors(new double[] {0, 0, 0, 0});
+    }
+
+    public void lockWheels() {
+        setAngleMotors(new double[] {0, 0, 0, 0}, false);
+    }
+
     public void calculateInputs(Vector linearVel, double angularVel) {
         inverseKinematics.calculateInputs(linearVel, angularVel);
     }
