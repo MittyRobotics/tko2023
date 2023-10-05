@@ -100,12 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     || values[i] - currentModuleAngle < -PI;
             double dist = Angle.getRealAngleDistance(currentModuleAngle, values[i], cw);
 
-            if (i == 0)
-                System.out.println("C_Q: " + Angle.getQuadrant(currentModuleAngle) + " T_Q: " + Angle.getQuadrant(values[i]));
-
             boolean flip = dist > PI / 2;
-
-            if (i == 0) System.out.printf("%.3f %.3f %.3f %b %b\n", currentModuleAngle, values[i], dist, cw, flip);
 
             //check
             flipped[i] = flip;
@@ -116,7 +111,6 @@ public class SwerveSubsystem extends SubsystemBase {
                 values[i] += (cw ? -1 : 1) * PI;
             }
 
-            if (i == 0) System.out.println("Setting to " + values[i]);
             angleMotors[i].set(ControlMode.Position, values[i] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
     }

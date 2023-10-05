@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwervePath {
     private QuinticHermiteSpline spline;
     private Angle startHeading, endHeading;
-    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, lookahead, kp, ki, kd, whenToEnd, total;
-    private double lookaheadScale, tangentScale;
+    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, kp, ki, kd, whenToEnd, total;
+    private double correctionScale, tangentScale;
 
     public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading,
                       double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular,
-                      double whenToEnd, double lookahead, double lookaheadScale, double tangentScale,
+                      double whenToEnd, double correctionScale, double tangentScale,
                       double kp, double ki, double kd) {
         this.spline = spline;
         this.startHeading = startHeading;
@@ -23,12 +23,11 @@ public class SwervePath {
         this.accel = accel;
         this.decel = decel;
         this.minAngular = minAngular;
-        this.lookahead = lookahead;
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
         this.whenToEnd = whenToEnd;
-        this.lookaheadScale = lookaheadScale;
+        this.correctionScale = correctionScale;
         this.tangentScale = tangentScale;
 
         total = spline.getLength(1.0, 17);
@@ -46,28 +45,11 @@ public class SwervePath {
         return spline;
     }
 
-    public double getTForLookahead(Pose robot, double lookahead) {
-        double closestPoint = spline.getClosestPoint(robot, 50, 10);
-        double length = spline.getLength(closestPoint, 17);
-        length += lookahead;
+    public Vector getErrorVector(Pose robot) {
+        double closetT = spline.getClosestPoint(robot, 50, 10);
+        Point splinePoint = getByT(closetT).getPoint();
 
-        return spline.getTFromLength(length);
-    }
-
-    public Point getLookaheadPoint(Pose robot, double lookahead) {
-        return spline.get(getTForLookahead(robot, lookahead));
-    }
-
-    public Vector getVectorToLookahead(Pose robot, double length, double lookahead) {
-        // TODO: 9/2/2022 Fix lookahead format - should be resolved
-        double t = spline.getTFromLength(length + lookahead);
-
-        Point splinePoint = getByT(t).getPosition();
-
-        SmartDashboard.putNumber("t for lookahead", t);
-        SmartDashboard.putString("point for lookahead", splinePoint.toString());
-
-        return new Vector(robot.getPosition(), splinePoint);
+        return new Vector(robot.getPoint(), splinePoint);
     }
 
     public Angle getCurrentDesiredHeading(double length) {
@@ -130,12 +112,8 @@ public class SwervePath {
         return kd;
     }
 
-    public double getLookahead() {
-        return lookahead;
-    }
-
-    public double getLookaheadScale() {
-        return lookaheadScale;
+    public double getCorrectionScale() {
+        return correctionScale;
     }
 
     public double getTangentScale() {

@@ -25,7 +25,7 @@ public class PPOneAuto extends SequentialCommandGroup {
                         new QuinticHermiteSpline(start, new Pose(0, 0, 0, true)),
                         new Angle(0, true), new Angle(PI, true),
                         0, 0, 4, 5, 5, 0,
-                        0.8, 0.4, 1, 1,
+                        0.8, 1, 1,
                         0.6, 0, 0
                         )); }
                 ),

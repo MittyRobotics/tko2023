@@ -18,12 +18,16 @@ public class NewPathFollowingCommand extends CommandBase {
     double dt, lastTime, curVel;
     PIDController angularController;
 
+    public NewPathFollowingCommand(SwervePath path) {
+        this.path = path;
+    }
+
     @Override
     public void initialize() {
-        path = AutoPathManager.getCurrentPath();
+        path = path == null ? AutoPathManager.getCurrentPath() : path;
         robot = Odometry.getInstance().getState();
         lastTime = Timer.getFPGATimestamp();
-        curVel = 0;
+        curVel = path.getInitSpeed();
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
     }
 
@@ -36,14 +40,14 @@ public class NewPathFollowingCommand extends CommandBase {
         double closestT = path.getSpline().getClosestPoint(robot, 50, 10);
         double currentLength = path.getSpline().getLength(0, closestT, 17);
 
-        //get linear velocity direction - linear combination of tangent and lookahead vectors
-        Vector vectorToLookahead = path.getVectorToLookahead(robot, currentLength, path.getLookahead());
-        double lookaheadT = path.getTForLookahead(robot, path.getLookahead());
-        Vector tangentVector = path.getSpline().getVelocityVector(lookaheadT);
+        //get linear velocity direction - linear combination of tangent and error vectors
+        Vector errorVector = path.getErrorVector(robot);
+        Vector tangentVector = path.getSpline().getVelocityVector(closestT);
         Vector linearDirection = Vector.add(
-                Vector.multiply(path.getLookaheadScale(), vectorToLookahead),
+                Vector.multiply(path.getCorrectionScale(), errorVector),
                 Vector.multiply(path.getTangentScale(), tangentVector)
         );
+        linearDirection = Vector.multiply(1. / linearDirection.getMagnitude(), linearDirection);
 
         //accelerate to max velocity
         curVel += path.getAccel() * dt;
@@ -51,11 +55,11 @@ public class NewPathFollowingCommand extends CommandBase {
 
         //decelerate when nearing end of path
         double vi = Math.sqrt(path.getEndSpeed() * path.getEndSpeed() +
-                2 * path.getDecel() * path.getSpline().getLength());
+                2 * path.getDecel() * (path.getSpline().getLength() - currentLength));
         curVel = Math.min(curVel, vi);
 
         //scale linear velocity to motion profile
-        Vector linearVel = Vector.multiply(curVel / linearDirection.getMagnitude(), linearDirection);
+        Vector linearVel = Vector.multiply(curVel, linearDirection);
 
         double desiredHeading = Angle.standardize(path.getCurrentDesiredHeading(currentLength).getRadians());
         double currentHeading = Angle.standardize(Gyro.getInstance().getHeadingRadians());
@@ -66,10 +70,11 @@ public class NewPathFollowingCommand extends CommandBase {
         double angularVel = angularController.calculate(currentHeading, currentHeading + (cw ? -1 : 1) * angleDist);
 
 
-        SwerveSubsystem.getInstance().calculateInputs(linearVel, angularVel);
+        SwerveSubsystem.getInstance().calculateInputs(linearVel, 0);
+//        SwerveSubsystem.getInstance().calculateInputs(linearVel, angularVel);
         SwerveSubsystem.getInstance().applyCalculatedInputs();
 
-        double lastTime = Timer.getFPGATimestamp();
+        lastTime = Timer.getFPGATimestamp();
     }
 
     @Override
