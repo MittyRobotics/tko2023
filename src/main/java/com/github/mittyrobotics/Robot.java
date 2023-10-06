@@ -86,7 +86,8 @@ public class Robot extends TimedRobot {
         group.addCommands(
                 new NewPathFollowingCommand(path1),
                 new WaitCommand(5),
-                new NewPathFollowingCommand(path2)
+                new NewPathFollowingCommand(path2),
+                new WaitCommand(10)
         );
 
         group.schedule();
