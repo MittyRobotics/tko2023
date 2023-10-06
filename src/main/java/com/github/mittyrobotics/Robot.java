@@ -8,13 +8,24 @@ import com.github.mittyrobotics.arm.pivot.PivotSubsystem;
 import com.github.mittyrobotics.arm.televator.TelevatorSubsystem;
 import com.github.mittyrobotics.autonomous.Limelight;
 import com.github.mittyrobotics.autonomous.Odometry;
+import com.github.mittyrobotics.autonomous.pathfollowing.NewPathFollowingCommand;
+import com.github.mittyrobotics.autonomous.pathfollowing.SwervePath;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.drivetrain.commands.SwerveDefaultCommand;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
+import com.github.mittyrobotics.util.math.Angle;
+import com.github.mittyrobotics.util.math.Point;
 import com.github.mittyrobotics.util.math.Pose;
+import com.github.mittyrobotics.util.math.autonomous.QuinticHermiteSpline;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import static java.lang.Math.PI;
 
 public class Robot extends TimedRobot {
 
@@ -43,6 +54,7 @@ public class Robot extends TimedRobot {
         Odometry.getInstance().update();
 //        ArmKinematics.updateDesiredArmPositionFromState();
         System.out.println("POSE: " + Odometry.getInstance().getState());
+        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE);
 
         // commented for safety
         CommandScheduler.getInstance().run();
@@ -50,7 +62,34 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        super.autonomousInit();
+        Pose start = new Pose(Odometry.getInstance().getState().getPoint(), new Angle(PI, true));
+        Pose end = new Pose(start.getPoint().getX() - 100, start.getPoint().getY() - 50, PI, true);
+        SmartDashboard.putString("start", start.toString());
+        SmartDashboard.putString("end", end.toString());
+
+        SwervePath path1 = new SwervePath(
+                new QuinticHermiteSpline(start, end),
+                new Angle(0, true), new Angle(-PI / 2, true),
+                0, 0, 140, 120, 120, 0,
+                0.8, 1, 1,
+                2, 0, 0.0001
+        );
+        SwervePath path2 = new SwervePath(
+                new QuinticHermiteSpline(new Pose(end.getPoint(), new Angle(0, true)), new Pose(start.getPoint(), new Angle(0, true))),
+                new Angle(-PI / 2, true), new Angle(0, true),
+                0, 0, 140, 160, 80, 0,
+                0.8, 1, 1,
+                2, 0, 0.0001
+        );
+
+        SequentialCommandGroup group = new SequentialCommandGroup();
+        group.addCommands(
+                new NewPathFollowingCommand(path1),
+                new WaitCommand(5),
+                new NewPathFollowingCommand(path2)
+        );
+
+        group.schedule();
     }
 
     @Override
@@ -62,6 +101,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
 //        SwerveSubsystem.getInstance().zeroRelativeEncoders();
 //        OI.getInstance().setupControls();
+        SwerveSubsystem.getInstance().setDefaultCommand(new SwerveDefaultCommand());
     }
 
     @Override

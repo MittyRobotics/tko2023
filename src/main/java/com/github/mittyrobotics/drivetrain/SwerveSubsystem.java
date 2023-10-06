@@ -62,7 +62,7 @@ public class SwerveSubsystem extends SubsystemBase {
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Coast);
 
-            setDefaultCommand(new SwerveDefaultCommand());
+//            setDefaultCommand(new SwerveDefaultCommand());
         }
     }
 
@@ -169,7 +169,7 @@ public class SwerveSubsystem extends SubsystemBase {
             double cur = driveMotors[i].getSelectedSensorPosition();
 
 //            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
+            modules[i] = new Vector(new Angle(-getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;

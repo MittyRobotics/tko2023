@@ -34,7 +34,7 @@ public class SwerveDefaultCommand extends CommandBase {
     @Override
     public void execute() {
         throttleX = (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * -OI.getInstance().getDriverController().getLeftY();
-        throttleY = (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * OI.getInstance().getDriverController().getLeftX();
+        throttleY = (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1) * OI.getInstance().getDriverController().getLeftX();
         throttleAngular = -OI.getInstance().getDriverController().getRightX();
         leftBumper = OI.getInstance().getDriverController().getLeftBumper();
         rightBumper = OI.getInstance().getDriverController().getRightBumper();

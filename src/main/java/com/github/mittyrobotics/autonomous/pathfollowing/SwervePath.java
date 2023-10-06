@@ -46,7 +46,7 @@ public class SwervePath {
     }
 
     public Vector getErrorVector(Pose robot) {
-        double closetT = spline.getClosestPoint(robot, 50, 10);
+        double closetT = spline.getClosestPoint(robot, 50, 7);
         Point splinePoint = getByT(closetT).getPoint();
 
         return new Vector(robot.getPoint(), splinePoint);
