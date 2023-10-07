@@ -62,32 +62,51 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Pose start = new Pose(Odometry.getInstance().getState().getPoint(), new Angle(PI, true));
-        Pose end = new Pose(start.getPoint().getX() - 100, start.getPoint().getY() - 50, PI, true);
-        SmartDashboard.putString("start", start.toString());
-        SmartDashboard.putString("end", end.toString());
+        SwerveSubsystem.getInstance().setDefaultCommand(null);
+        Gyro.getInstance().setAngleOffset(PI / 2, true);
+        Pose start = new Pose(Odometry.getInstance().getState().getPoint(), new Angle(PI / 2, true));
+        Pose one = new Pose(start.getPoint().getX() + 60, start.getPoint().getY(), -PI / 4, true);
+        Pose two = new Pose(one.getPoint().getX() + 60, start.getPoint().getY(), PI / 2, true);
+        Pose three = new Pose(one.getPoint().getX() - 60, start.getPoint().getY(), 5 * PI / 4, true);
+        Pose four = new Pose(three.getPoint().getX() - 60, start.getPoint().getY(), PI / 2, true);
+//        SmartDashboard.putString("start", start.toString());
+//        SmartDashboard.putString("end", end.toString());
 
         SwervePath path1 = new SwervePath(
-                new QuinticHermiteSpline(start, end),
-                new Angle(0, true), new Angle(-PI / 2, true),
+                new QuinticHermiteSpline(start, one),
+                start.getHeading(), one.getHeading(),
                 0, 0, 140, 120, 120, 0,
-                0.8, 1, 1,
+                0.2, 0.5, 1, 1,
                 2, 0, 0.0001
         );
         SwervePath path2 = new SwervePath(
-                new QuinticHermiteSpline(new Pose(end.getPoint(), new Angle(0, true)), new Pose(start.getPoint(), new Angle(0, true))),
-                new Angle(-PI / 2, true), new Angle(0, true),
+                new QuinticHermiteSpline(one, two),
+                one.getHeading(), two.getHeading(),
                 0, 0, 140, 160, 80, 0,
-                0.8, 1, 1,
+                0.2, 0.5, 1, 1,
+                2, 0, 0.0001
+        );
+        SwervePath path3 = new SwervePath(
+                new QuinticHermiteSpline(two, three),
+                two.getHeading(), three.getHeading(),
+                0, 0, 140, 120, 120, 0,
+                0.2, 0.5, 1, 1,
+                2, 0, 0.0001
+        );
+        SwervePath path4 = new SwervePath(
+                new QuinticHermiteSpline(three, four),
+                three.getHeading(), four.getHeading(),
+                0, 0, 140, 120, 120, 0,
+                0.2, 0.5, 1, 1,
                 2, 0, 0.0001
         );
 
         SequentialCommandGroup group = new SequentialCommandGroup();
         group.addCommands(
                 new NewPathFollowingCommand(path1),
-                new WaitCommand(5),
                 new NewPathFollowingCommand(path2),
-                new WaitCommand(10)
+                new NewPathFollowingCommand(path3),
+                new NewPathFollowingCommand(path4)
         );
 
         group.schedule();

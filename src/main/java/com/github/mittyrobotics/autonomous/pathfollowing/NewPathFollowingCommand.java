@@ -21,6 +21,7 @@ public class NewPathFollowingCommand extends CommandBase {
 
     public NewPathFollowingCommand(SwervePath path) {
         this.path = path;
+        addRequirements(SwerveSubsystem.getInstance());
     }
 
     @Override
@@ -72,15 +73,18 @@ public class NewPathFollowingCommand extends CommandBase {
 
         SmartDashboard.putString("linearVel", linearVel.toString());
 
-        double desiredHeading = Angle.standardize(path.getCurrentDesiredHeading(currentLength).getRadians());
-        double currentHeading = Angle.standardize(Gyro.getInstance().getHeadingRadians());
-        boolean cw = (desiredHeading - currentHeading < PI && desiredHeading - currentHeading > 0)
-                || desiredHeading - currentHeading < -PI;
-        double angleDist = Angle.getRealAngleDistanceAuto(currentHeading, desiredHeading, cw);
+//        double desiredHeading = Angle.standardize(path.getCurrentDesiredHeading(currentLength).getRadians());
+//        double currentHeading = Angle.standardize(Gyro.getInstance().getHeadingRadians());
+//        boolean cw = (desiredHeading - currentHeading < PI && desiredHeading - currentHeading > 0)
+//                || desiredHeading - currentHeading < -PI;
+//        double angleDist = Angle.getRealAngleDistanceAuto(currentHeading, desiredHeading, cw);
 
 //        double angularVel = angularController.calculate(currentHeading, currentHeading + (cw ? -1 : 1) * angleDist);
         double angularVel = angularController.calculate(Gyro.getInstance().getHeadingRadians(),
                 path.getCurrentDesiredHeading(currentLength).getRadians());
+
+        SmartDashboard.putNumber("desired angle", path.getCurrentDesiredHeading(currentLength).getDegrees());
+        SmartDashboard.putNumber("dist to end", new Vector(robot.getPoint(), path.getByT(1.0).getPoint()).getMagnitude());
 
 
 //        SwerveSubsystem.getInstance().calculateInputs(linearVel, 0);

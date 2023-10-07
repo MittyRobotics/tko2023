@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwervePath {
     private QuinticHermiteSpline spline;
     private Angle startHeading, endHeading;
-    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, kp, ki, kd, whenToEnd, total;
+    private double initSpeed, endSpeed, maxSpeed, accel, decel, minAngular, kp, ki, kd, angStart, angEnd, total;
     private double correctionScale, tangentScale;
 
     public SwervePath(QuinticHermiteSpline spline, Angle startHeading, Angle endHeading,
                       double initSpeed, double endSpeed, double maxSpeed, double accel, double decel, double minAngular,
-                      double whenToEnd, double correctionScale, double tangentScale,
+                      double angStart, double angEng, double correctionScale, double tangentScale,
                       double kp, double ki, double kd) {
         this.spline = spline;
         this.startHeading = startHeading;
@@ -26,7 +26,8 @@ public class SwervePath {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
-        this.whenToEnd = whenToEnd;
+        this.angStart = angStart;
+        this.angEnd = angEng;
         this.correctionScale = correctionScale;
         this.tangentScale = tangentScale;
 
@@ -53,7 +54,11 @@ public class SwervePath {
     }
 
     public Angle getCurrentDesiredHeading(double length) {
-        double fraction = length/total;
+        double lengthStart = spline.getLength(0, angStart, 17);
+        double lengthEnd = spline.getLength(0, angEnd, 17);
+        if (length < lengthStart) return startHeading;
+        if (length > lengthEnd) return endHeading;
+        double fraction = (length - lengthStart) / (lengthEnd - lengthStart);
 
         return doSigmoidInterpolation(startHeading, endHeading, fraction);
     }
