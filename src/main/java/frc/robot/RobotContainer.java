@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.BringCubeToHolding;
 import frc.robot.commands.SwerveDefaultCommand;
+import frc.robot.commands.autos.AutoSelector;
 import frc.robot.subsystems.*;
 
 import static frc.robot.Constants.*;
@@ -30,6 +31,7 @@ public class RobotContainer {
     private final Conveyor conveyor;
     private final Swerve swerve;
     private final PoseEstimator poseEstimator;
+    private final AutoSelector autoSelector;
 
     private final Command spinFlywheel;
     private final Command unloadConveyor;
@@ -56,6 +58,7 @@ public class RobotContainer {
         conveyor = new Conveyor();
         swerve = new Swerve(gyro);
         poseEstimator = new PoseEstimator(limelight, swerve);
+        autoSelector = new AutoSelector(swerve, gyro, poseEstimator);
 
         spinFlywheel = new FunctionalCommand(
                 () -> {},
@@ -121,6 +124,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
 //        return Autos.exampleAuto(m_exampleSubsystem);
-        return null;
+        return autoSelector.getAuto();
     }
 }
