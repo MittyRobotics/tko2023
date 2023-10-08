@@ -1,32 +1,28 @@
 package frc.robot.subsystems;
 
 //import com.github.mittyrobotics.LoggerInterface;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.math.*;
 import org.ejml.simple.SimpleMatrix;
 
-public class Odometry {
-    private static Odometry instance;
+public class PoseEstimator extends SubsystemBase {
+    private Limelight limelight;
+    private Swerve.ForwardKinematics forwardKinematics;
+
     private double last_time;
     public boolean FIELD_LEFT_SIDE = true;
     public final double FIELD_HALF_X = 325.61;
     public final double MID_TAG_Y = 108.19;
     public final double R_SCALE = 10;
     public final double Q_SCALE = 0.3;
-    private boolean scoringCam;
-    private boolean useCustomCam;
-    private int customCam;
     private Pose lastPose;
 
-    public static Odometry getInstance() {
-        if (instance == null) instance = new Odometry();
-        return instance;
-    }
+    public PoseEstimator(Limelight limelight, Swerve swerve) {
+        this.limelight = limelight;
+        this.forwardKinematics = swerve.getForwardKinematics();
 
-    public Odometry() {
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
-        scoringCam = true;
-
 //        LoggerInterface.getInstance().putDesiredCamera(2);
     }
 
@@ -92,20 +88,20 @@ public class Odometry {
     }
 
     public void updateFromLimelight() {
-        Pose limelightPose = Limelight.getPose();
+        Pose limelightPose = limelight.getPose();
         if (limelightPose == null) return;
 //        System.out.println("UPDATED FROM LL\n\n\n");
         double x = limelightPose.getPosition().getX();
         double y = limelightPose.getPosition().getY();
         double theta = limelightPose.getHeading().getRadians();
-        double nanoTime = System.currentTimeMillis() * 1000000 - Limelight.getLatency();
-        double x_dist = Limelight.getXDistToTarget();
+        double nanoTime = System.currentTimeMillis() * 1000000 - limelight.getLatency();
+        double x_dist = limelight.getXDistToTarget();
 
         double dt = (nanoTime - last_time) / (1000000000.);
 
         if (lastPose == null)
-            lastPose = Swerve.getInstance().forwardKinematics.getPoseAtTime(last_time);
-        Pose curP = Swerve.getInstance().forwardKinematics.getPoseAtTime(nanoTime);
+            lastPose = forwardKinematics.getPoseAtTime(last_time);
+        Pose curP = forwardKinematics.getPoseAtTime(nanoTime);
 
         Vector v = new Vector(Point.multiply(1 / dt, Point.add(curP.getPosition(),
                 Point.multiply(-1, lastPose.getPosition()))));
@@ -139,7 +135,7 @@ public class Odometry {
     }
 
     public double[] getPose() {
-        Pose curP = Swerve.getInstance().forwardKinematics.getLatestPose();
+        Pose curP = forwardKinematics.getLatestPose();
 //        System.out.println("     - " + curP);
 
         if (lastPose == null) {

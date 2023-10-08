@@ -10,8 +10,7 @@ public class Gyro extends SubsystemBase {
     Angle angleOffset = null;
 
     public Gyro() {
-        super();
-        setName("Gyro");
+        initHardware();
     }
 
     public void initHardware() {

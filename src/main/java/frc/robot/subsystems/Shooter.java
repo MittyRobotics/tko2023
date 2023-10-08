@@ -11,6 +11,10 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax[] motor;
     private boolean isShooting = false;
 
+    public Shooter() {
+        initHardware();
+    }
+
     public void initHardware() {
         motor = new CANSparkMax[2];
         for (int i = 0; i < 2; i++) {

@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Gyro;
-import frc.robot.subsystems.Odometry;
+import frc.robot.subsystems.PoseEstimator;
 import frc.robot.util.math.Vector;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Swerve;
@@ -50,8 +50,8 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        throttleX = (Odometry.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * xSupplier.getAsDouble();
-        throttleY = (Odometry.getInstance().FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
+        throttleX = (PoseEstimator.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * xSupplier.getAsDouble();
+        throttleY = (PoseEstimator.getInstance().FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
         throttleAngular = -angularSupplier.getAsDouble();
         rightBumper = rBumperSupplier.getAsBoolean();
         leftBumper = lBumperSupplier.getAsBoolean();

@@ -11,7 +11,10 @@ public class Conveyor extends SubsystemBase {
 
     private CANSparkMax motor;
     private DigitalInput limitSwitch;
-    private boolean isIntaking = false;
+
+    public Conveyor() {
+        initHardware();
+    }
 
     public void initHardware() {
         motor = new CANSparkMax(MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -28,17 +31,5 @@ public class Conveyor extends SubsystemBase {
 
     public boolean getLimitSwitchTripped() {
         return !limitSwitch.get();
-    }
-
-    public boolean isIntaking() {
-        return isIntaking;
-    }
-
-    public void stopIntaking() {
-        isIntaking = false;
-    }
-
-    public void startIntaking() {
-        isIntaking = true;
     }
 }

@@ -19,18 +19,35 @@ import static frc.robot.Constants.SwerveConstants.*;
 import static java.lang.Math.PI;
 
 public class Swerve extends SubsystemBase {
+    private Gyro gyro;
 
-    private boolean flipped[] = new boolean[4];
+    private boolean flipped[];
 
-    public final InverseKinematics inverseKinematics = new InverseKinematics();
-    public final ForwardKinematics forwardKinematics = new ForwardKinematics();
+    private final InverseKinematics inverseKinematics;
+    private final ForwardKinematics forwardKinematics;
 
-    private WPI_TalonFX[] driveMotors = new WPI_TalonFX[4];
-    private WPI_TalonFX[] angleMotors = new WPI_TalonFX[4];
+    private WPI_TalonFX[] driveMotors;
+    private WPI_TalonFX[] angleMotors;
 
-    public CANandcoder[] absEncoders = new CANandcoder[4];
+    public CANandcoder[] absEncoders;
 
-    private double[] prevEnc = new double[4];
+    private double[] prevEnc;
+
+    public Swerve(Gyro gyro) {
+        this.gyro = gyro;
+
+        inverseKinematics = new InverseKinematics(gyro);
+        forwardKinematics = new ForwardKinematics(gyro);
+
+        driveMotors = new WPI_TalonFX[4];
+        angleMotors = new WPI_TalonFX[4];
+        absEncoders = new CANandcoder[4];
+
+        flipped = new boolean[4];
+        prevEnc = new double[4];
+
+        initHardware();
+    }
 
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
@@ -60,6 +77,10 @@ public class Swerve extends SubsystemBase {
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Brake);
         }
+    }
+
+    public ForwardKinematics getForwardKinematics() {
+        return forwardKinematics;
     }
 
     public void setAllAngleEncodersZero() {
@@ -173,7 +194,7 @@ public class Swerve extends SubsystemBase {
             double cur = driveMotors[i].getSelectedSensorPosition();
 
 //            LoggerInterface.getInstance().put("Module " + i + " field angle", angle(i) + Gyro.getInstance().getHeadingRadians());
-            modules[i] = new Vector(new Angle(-getStandardizedModuleAngle(i) + Gyro.getInstance().getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
+            modules[i] = new Vector(new Angle(-getStandardizedModuleAngle(i) + gyro.getHeadingRadians(), true), (cur - prevEnc[i]) / TICKS_PER_INCH);
 //            System.out.println(i + ": " + angle(i));
 
             prevEnc[i] = cur;
@@ -237,6 +258,8 @@ public class Swerve extends SubsystemBase {
     }
 
     static class InverseKinematics {
+        private Gyro gyro;
+
         private double[] angles;
         private double[] magnitudes;
 
@@ -247,7 +270,9 @@ public class Swerve extends SubsystemBase {
         private Vector linearVel = new Vector(0, 0);
         private double angularVel = 0;
 
-        public InverseKinematics() {
+        public InverseKinematics(Gyro gyro) {
+            this.gyro = gyro;
+
             angles = new double[4];
             magnitudes = new double[4];
 
@@ -258,7 +283,7 @@ public class Swerve extends SubsystemBase {
             this.linearVel = linearVel;
             linearVel = new Vector(
                     new Angle(
-                            linearVel.getAngle().getRadians() - Gyro.getInstance().getHeadingRadians(), true),
+                            linearVel.getAngle().getRadians() - gyro.getHeadingRadians(), true),
                     linearVel.getMagnitude()
             );
 
@@ -285,14 +310,16 @@ public class Swerve extends SubsystemBase {
     }
 
     public static class ForwardKinematics {
+        private Gyro gyro;
+
         private ArrayList<Pair> poses = new ArrayList<>();
 
         private Vector vel = new Vector(0, 0);
         private Angle curHeading = new Angle(0, true);
 
 
-        public ForwardKinematics() {
-
+        public ForwardKinematics(Gyro gyro) {
+            this.gyro = gyro;
         }
 
         public void init() {
@@ -311,7 +338,7 @@ public class Swerve extends SubsystemBase {
             new_ = Point.multiply(0.25, new_);
 //            new_ = new Point(new_.getX(), new_.getY());
 
-            curHeading = new Angle(Gyro.getInstance().getHeadingRadians(), true);
+            curHeading = new Angle(gyro.getHeadingRadians(), true);
             poses.add(new Pair(nanoTime, new Pose(Point.add(poses.get(poses.size() - 1).getValue().getPosition(), new_), curHeading)));
 
         }

@@ -11,6 +11,10 @@ public class Intake extends SubsystemBase {
 
     private CANSparkMax motor;
 
+    public Intake() {
+        initHardware();
+    }
+
     public void initHardware() {
         motor = new CANSparkMax(MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         motor.restoreFactoryDefaults();

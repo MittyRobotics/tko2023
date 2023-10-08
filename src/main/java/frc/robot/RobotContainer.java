@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Autos;
 import frc.robot.commands.BringCubeToHolding;
 import frc.robot.commands.SwerveDefaultCommand;
 import frc.robot.subsystems.*;
@@ -24,13 +23,13 @@ import static frc.robot.Constants.*;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Limelight limelight;
     private final Gyro gyro;
+    private final Limelight limelight;
     private final Shooter shooter;
     private final Intake intake;
     private final Conveyor conveyor;
     private final Swerve swerve;
-    private final Odometry odometry;
+    private final PoseEstimator poseEstimator;
 
     private final Command spinFlywheel;
     private final Command unloadConveyor;
@@ -50,13 +49,13 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the trigger bindings
-        limelight = new Limelight();
         gyro = new Gyro();
+        limelight = new Limelight();
         shooter = new Shooter();
         intake = new Intake();
         conveyor = new Conveyor();
-        swerve = new Swerve();
-        odometry = new Odometry();
+        swerve = new Swerve(gyro);
+        poseEstimator = new PoseEstimator(limelight, swerve);
 
         spinFlywheel = new FunctionalCommand(
                 () -> {},
