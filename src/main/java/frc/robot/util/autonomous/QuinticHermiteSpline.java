@@ -1,4 +1,4 @@
-package frc.robot.util.math.autonomous;
+package frc.robot.util.autonomous;
 
 import frc.robot.util.math.*;
 
