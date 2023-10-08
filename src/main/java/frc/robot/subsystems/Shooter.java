@@ -40,15 +40,7 @@ public class Shooter extends SubsystemBase {
         motor[1].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
     }
 
-    public boolean isShooting() {
-        return isShooting;
-    }
-
-    public void stopShooting() {
-        isShooting = false;
-    }
-
-    public void startShooting() {
-        isShooting = true;
+    public double getVelocityError(double target) {
+        return Math.abs(target - motor[0].getEncoder().getVelocity());
     }
 }

@@ -110,7 +110,11 @@ public class RobotContainer {
         ));
 
         operatorController.a().onTrue(bringCubeToHolding);
-        new Trigger(() -> operatorController.b().getAsBoolean() && conveyor.getLimitSwitchTripped()).whileTrue(unloadConveyor);
+        new Trigger(() ->
+                operatorController.b().getAsBoolean() &&
+                conveyor.getLimitSwitchTripped() &&
+                shooter.getVelocityError(ShooterConstants.SHOOTER_RPM) < ShooterConstants.THRESHOLD
+        ).whileTrue(unloadConveyor);
         new Trigger(() -> operatorController.getRightTriggerAxis() > 0.5).whileTrue(spinFlywheel);
         operatorController.rightBumper().onTrue(lowerIntake);
         operatorController.leftBumper().onTrue(raiseIntake);
