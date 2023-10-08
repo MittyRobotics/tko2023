@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import frc.robot.commands.SwerveDefaultCommand;
 import frc.robot.util.math.*;
 import com.reduxrobotics.sensors.canandcoder.CANandcoder;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,16 +20,14 @@ import static java.lang.Math.PI;
 public class Swerve extends SubsystemBase {
     private Gyro gyro;
 
-    private boolean flipped[];
-
     private final InverseKinematics inverseKinematics;
     private final ForwardKinematics forwardKinematics;
 
     private WPI_TalonFX[] driveMotors;
     private WPI_TalonFX[] angleMotors;
-
     public CANandcoder[] absEncoders;
 
+    private boolean flipped[];
     private double[] prevEnc;
 
     public Swerve(Gyro gyro) {
