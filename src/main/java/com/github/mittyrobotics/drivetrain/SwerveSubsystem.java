@@ -1,6 +1,8 @@
 package com.github.mittyrobotics.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,6 +39,9 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     @Override
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
+            DeviceIdentifier i = new DeviceIdentifier()
+            TalonFXConfigurator config = new TalonFXConfigurator();
+
 
             //SET PIDF
             angleMotors[i] = new TalonFX(SwerveConstants.ANGLE_MOTOR_IDS[i]);
