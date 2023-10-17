@@ -7,7 +7,7 @@ import org.ejml.simple.SimpleMatrix;
 
 public class PoseEstimator extends SubsystemBase {
     private Limelight limelight;
-    private Swerve.ForwardKinematics forwardKinematics;
+    private Swerve.ForwardKinematics odometry;
 
     private double last_time;
     public boolean FIELD_LEFT_SIDE = true;
@@ -19,7 +19,7 @@ public class PoseEstimator extends SubsystemBase {
 
     public PoseEstimator(Limelight limelight, Swerve swerve) {
         this.limelight = limelight;
-        this.forwardKinematics = swerve.getForwardKinematics();
+        this.odometry = swerve.getForwardKinematics();
 
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
@@ -100,8 +100,8 @@ public class PoseEstimator extends SubsystemBase {
         double dt = (nanoTime - last_time) / (1000000000.);
 
         if (lastPose == null)
-            lastPose = forwardKinematics.getPoseAtTime(last_time);
-        Pose curP = forwardKinematics.getPoseAtTime(nanoTime);
+            lastPose = odometry.getPoseAtTime(last_time);
+        Pose curP = odometry.getPoseAtTime(nanoTime);
 
         Vector v = new Vector(Point.multiply(1 / dt, Point.add(curP.getPosition(),
                 Point.multiply(-1, lastPose.getPosition()))));
@@ -135,7 +135,7 @@ public class PoseEstimator extends SubsystemBase {
     }
 
     public double[] getPose() {
-        Pose curP = forwardKinematics.getLatestPose();
+        Pose curP = odometry.getLatestPose();
 //        System.out.println("     - " + curP);
 
         if (lastPose == null) {
