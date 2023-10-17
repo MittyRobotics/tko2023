@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.PoseEstimator;
+import frc.robot.util.math.Pose;
 import frc.robot.util.math.Vector;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Swerve;
@@ -12,19 +13,19 @@ import java.util.function.DoubleSupplier;
 
 public class SwerveDefaultCommand extends CommandBase {
     private Swerve swerve;
-    private Gyro gyro;
+    private PoseEstimator poseEstimator;
 
     private DoubleSupplier xSupplier, ySupplier, angularSupplier;
     private BooleanSupplier rBumperSupplier, lBumperSupplier, aSupplier;
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
     private boolean rightBumper, leftBumper, a;
 
-    public SwerveDefaultCommand(Swerve swerve, Gyro gyro,
+    public SwerveDefaultCommand(Swerve swerve, PoseEstimator poseEstimator,
                                 DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier angularSupplier,
                                 BooleanSupplier rBumperSupplier, BooleanSupplier lBumperSupplier, BooleanSupplier aSupplier) {
 
         this.swerve = swerve;
-        this.gyro = gyro;
+        this.poseEstimator = poseEstimator;
 
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
@@ -50,8 +51,8 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        throttleX = (PoseEstimator.getInstance().FIELD_LEFT_SIDE ? 1 : -1) * xSupplier.getAsDouble();
-        throttleY = (PoseEstimator.getInstance().FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
+        throttleX = (poseEstimator.FIELD_LEFT_SIDE ? 1 : -1) * xSupplier.getAsDouble();
+        throttleY = (poseEstimator.FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
         throttleAngular = -angularSupplier.getAsDouble();
         rightBumper = rBumperSupplier.getAsBoolean();
         leftBumper = lBumperSupplier.getAsBoolean();

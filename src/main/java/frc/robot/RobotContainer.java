@@ -120,7 +120,7 @@ public class RobotContainer {
      */
     private void configureBindings() {
         swerve.setDefaultCommand(new SwerveDefaultCommand(
-                swerve, gyro,
+                swerve, poseEstimator,
                 driverController::getLeftY, driverController::getLeftY, driverController::getRightX,
                 driverController::getRightBumper, driverController::getLeftBumper, driverController::getAButton
         ));
