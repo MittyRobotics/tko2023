@@ -163,7 +163,7 @@ public class PoseEstimator extends SubsystemBase {
     //INPUT DIMS
 
     public SimpleMatrix f(SimpleMatrix state, Vector v, double w, double dt) {
-        return state.plus(new SimpleMatrix(new double[][]{{v.getX() * dt}, {v.getY() * dt}, {w * dt}}));
+        return state.plus(new SimpleMatrix(new double[]{v.getX() * dt, v.getY() * dt, w * dt}));
     }
 
     public SimpleMatrix getJf(double v, double angle, double w, double dt) {
