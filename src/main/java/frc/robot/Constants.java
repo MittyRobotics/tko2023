@@ -54,7 +54,8 @@ public final class Constants {
         public static final double MOTOR_TURNS_PER_REV = 1;
 
         //RPM
-        public static final double SHOOTER_RPM = 6000;
+        public static final double MID_SHOOTER_RPM = 2000;
+        public static final double HIGH_SHOOTER_RPM = 4000;
         public static final double THRESHOLD = 100;
     }
 
@@ -63,19 +64,23 @@ public final class Constants {
 
         public static final double INCHES_PER_REV = 0;
 
-        public static final int LIMIT_SWITCH_ID = 30;
+        public static final int LIMIT_SWITCH_ID = 35;
     }
 
     public static class IntakeConstants {
         public static final int MOTOR_ID = 23;
+
+        public static final int LIMIT_SWITCH_ID = 34;
 
         public static final double RADIANS_PER_REV = 0;
 
         public static final double[] PID = new double[]{0, 0, 0, 0};
 
         //RADIANS
+        public static final double ZERO_POSITION = 0.8;
         public static final double UP_POSITION = 1;
         public static final double DOWN_POSITION = -1;
         public static final double THRESHOLD = 2 * 3.1415 / 180;
+
     }
 }

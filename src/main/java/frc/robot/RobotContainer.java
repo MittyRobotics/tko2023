@@ -33,11 +33,13 @@ public class RobotContainer {
     private final PoseEstimator poseEstimator;
     private final AutoSelector autoSelector;
 
-    private final Command spinFlywheel;
+    private final Command midFlywheel;
+    private final Command highFlywheel;
     private final Command unloadConveyor;
     private final Command bringCubeToHolding;
     private final Command lowerIntake;
     private final Command raiseIntake;
+    private final Command zeroIntake;
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -60,9 +62,16 @@ public class RobotContainer {
         poseEstimator = new PoseEstimator(limelight, swerve);
         autoSelector = new AutoSelector(swerve, gyro, poseEstimator);
 
-        spinFlywheel = new FunctionalCommand(
+        midFlywheel = new FunctionalCommand(
                 () -> {},
-                () -> shooter.setSpeed(ShooterConstants.SHOOTER_RPM),
+                () -> shooter.setSpeed(ShooterConstants.MID_SHOOTER_RPM),
+                (a) -> shooter.setMotor(0),
+                () -> false,
+                shooter
+        );
+        highFlywheel = new FunctionalCommand(
+                () -> {},
+                () -> shooter.setSpeed(ShooterConstants.HIGH_SHOOTER_RPM),
                 (a) -> shooter.setMotor(0),
                 () -> false,
                 shooter
@@ -89,6 +98,13 @@ public class RobotContainer {
                 () -> intake.getPositionError(IntakeConstants.UP_POSITION) < IntakeConstants.THRESHOLD,
                 intake
         );
+        zeroIntake = new FunctionalCommand(
+                () -> {},
+                () -> intake.setMotor(0.2),
+                (a) -> { intake.setMotor(0); intake.zeroIntake(); },
+                intake::getLimitSwitchTripped,
+                intake
+        );
 
         configureBindings();
     }
@@ -113,11 +129,20 @@ public class RobotContainer {
         new Trigger(() ->
                 operatorController.b().getAsBoolean() &&
                 conveyor.getLimitSwitchTripped() &&
-                shooter.getVelocityError(ShooterConstants.SHOOTER_RPM) < ShooterConstants.THRESHOLD
+                shooter.getVelocityError() < ShooterConstants.THRESHOLD
         ).whileTrue(unloadConveyor);
-        new Trigger(() -> operatorController.getRightTriggerAxis() > 0.5).whileTrue(spinFlywheel);
+        new Trigger(() -> operatorController.getRightTriggerAxis() > 0.5).whileTrue(highFlywheel);
         operatorController.rightBumper().onTrue(lowerIntake);
         operatorController.leftBumper().onTrue(raiseIntake);
+        operatorController.rightStick().onTrue(zeroIntake);
+    }
+
+    public void autoInit() {
+        if (!intake.hasBeenZeroed()) zeroIntake.schedule();
+    }
+
+    public void teleopInit() {
+        if (!intake.hasBeenZeroed()) zeroIntake.schedule();
     }
 
     /**

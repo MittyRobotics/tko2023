@@ -10,6 +10,7 @@ public class Shooter extends SubsystemBase {
 
     private CANSparkMax[] motor;
     private boolean isShooting = false;
+    private double targetRPM = 0;
 
     public Shooter() {
         initHardware();
@@ -36,11 +37,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setSpeed(double rpm) {
+        targetRPM = rpm;
         motor[0].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
         motor[1].getPIDController().setReference(rpm, CANSparkMax.ControlType.kVelocity);
     }
 
-    public double getVelocityError(double target) {
-        return Math.abs(target - motor[0].getEncoder().getVelocity());
+    public double getVelocityError() {
+        return Math.abs(targetRPM - motor[0].getEncoder().getVelocity());
     }
 }

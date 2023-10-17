@@ -3,13 +3,18 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.IntakeConstants.*;
 
 public class Intake extends SubsystemBase {
 
     private CANSparkMax motor;
+    private DigitalInput limitSwitch;
+
+    private boolean zeroed = false;
 
     public Intake() {
         initHardware();
@@ -25,6 +30,15 @@ public class Intake extends SubsystemBase {
         motor.getPIDController().setI(PID[1]);
         motor.getPIDController().setD(PID[2]);
         motor.getPIDController().setFF(PID[3]);
+
+        limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
+    }
+
+    @Override
+    public void periodic() {
+        if (DriverStation.isDisabled() && getLimitSwitchTripped() && !zeroed) {
+            zeroIntake();
+        }
     }
 
     public void setMotor(double speed) {
@@ -37,5 +51,22 @@ public class Intake extends SubsystemBase {
 
     public double getPositionError(double target) {
         return Math.abs(motor.getEncoder().getPosition() - target);
+    }
+
+    public boolean getLimitSwitchTripped() {
+        return limitSwitch.get();
+    }
+
+    public void setEncoderPosition(double pos) {
+        motor.getEncoder().setPosition(pos);
+    }
+
+    public void zeroIntake() {
+        setEncoderPosition(Constants.IntakeConstants.ZERO_POSITION);
+        zeroed = true;
+    }
+
+    public boolean hasBeenZeroed() {
+        return zeroed;
     }
 }

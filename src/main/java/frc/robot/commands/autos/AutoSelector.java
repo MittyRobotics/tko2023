@@ -56,6 +56,8 @@ public class AutoSelector {
                         return new PreloadOne(swerve, gyro, poseEstimator, low.getSelected());
                     case "balance":
                         return new PreloadOneBalance(swerve, gyro, poseEstimator, low.getSelected());
+                    case "taxi":
+                        return new PreloadOneTaxi(swerve, gyro, poseEstimator, low.getSelected());
                     default:
                         return new PreloadOne(swerve, gyro, poseEstimator, low.getSelected());
                 }
@@ -65,6 +67,8 @@ public class AutoSelector {
                         return new PreloadTwo(swerve, gyro, poseEstimator, low.getSelected());
                     case "balance":
                         return new PreloadTwoBalance(swerve, gyro, poseEstimator, low.getSelected());
+                    case "taxi":
+                        return new PreloadTwoTaxi(swerve, gyro, poseEstimator, low.getSelected());
                     default:
                         return new PreloadTwo(swerve, gyro, poseEstimator, low.getSelected());
                 }
