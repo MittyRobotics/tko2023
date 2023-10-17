@@ -32,7 +32,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        robot = poseEstimator.getState();
+        robot = new Pose(poseEstimator.getState().getPoint(), new Angle(gyro.getHeadingRadians(), true));
         lastTime = Timer.getFPGATimestamp();
         curVel = path.getInitSpeed();
         angularController = new PIDController(path.getKp(), path.getKi(), path.getKd());
@@ -42,7 +42,7 @@ public class PathFollowingCommand extends CommandBase {
     public void execute() {
         SmartDashboard.putNumber("ended", 0);
         dt = Timer.getFPGATimestamp() - lastTime;
-        robot = poseEstimator.getState();
+        robot = new Pose(poseEstimator.getState().getPoint(), new Angle(gyro.getHeadingRadians(), true));
 
         //get total length traversed
         double closestT = path.getSpline().getClosestPoint(robot, 50, 7);
