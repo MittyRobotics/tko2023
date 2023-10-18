@@ -1,8 +1,13 @@
 package com.github.mittyrobotics.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.DeviceIdentifier;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -39,18 +44,22 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     @Override
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
-            DeviceIdentifier i = new DeviceIdentifier()
-            TalonFXConfigurator config = new TalonFXConfigurator();
-
+            angleMotors[i] = new TalonFX(i);
 
             //SET PIDF
-            angleMotors[i] = new TalonFX(SwerveConstants.ANGLE_MOTOR_IDS[i]);
-            angleMotors[i].configFactoryDefault();
-            angleMotors[i].setSelectedSensorPosition(0);
+            TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
+            angleMotorConfig.Slot0.kP = 0;
+            angleMotorConfig.Slot0.kI = 0;
+            angleMotorConfig.Slot0.kD = 0;
+            angleMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-            driveMotors[i] = new TalonFX(SwerveConstants.DRIVE_MOTOR_IDS[i]);
-            driveMotors[i].configFactoryDefault();
-            driveMotors[i].setSelectedSensorPosition(0);
+            angleMotors[i].getConfigurator().apply(angleMotorConfig);
+
+            TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
+            driveMotorConfig.Slot0.kP = 0;
+            driveMotorConfig.Slot0.kI = 0;
+            driveMotorConfig.Slot0.kD = 0;
+            driveMotors[i].getConfigurator().apply(driveMotorConfig)
         }
 
         modulePos[0] = new Translation2d(SwerveConstants.xRad, SwerveConstants.yRad);
@@ -75,15 +84,14 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         modules = kinematics.toSwerveModuleStates(speed);
         for (int i = 0; i < 4; i++) {
             modules[i] = SwerveModuleState.optimize(modules[i],
-                    new Rotation2d(angleMotors[i].getSelectedSensorPosition()));
+                    new Rotation2d(angleMotors[i].getRotorPosition().getValue()));
         }
     }
 
     public void setModules() {
         for (int i = 0; i < 4; i++) {
-            //ADJUST FOR FLIP OVER 2PI/0 LINE
-            angleMotors[i].setSelectedSensorPosition(modules[i].angle.getRadians());
-            driveMotors[i].setSelectedSensorPosition(modules[i].speedMetersPerSecond);
+            angleMotors[i].setControl(new PositionVoltage(modules[i].angle.getRadians()));
+            driveMotors[i].setControl(new VelocityVoltage(modules[i].speedMetersPerSecond));
         }
     }
 }
