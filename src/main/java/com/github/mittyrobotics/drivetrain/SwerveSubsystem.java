@@ -52,6 +52,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             angleMotorConfig.Slot0.kI = 0;
             angleMotorConfig.Slot0.kD = 0;
             angleMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+            angleMotorConfig.Feedback.SensorToMechanismRatio = SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
 
             angleMotors[i].getConfigurator().apply(angleMotorConfig);
 
@@ -59,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             driveMotorConfig.Slot0.kP = 0;
             driveMotorConfig.Slot0.kI = 0;
             driveMotorConfig.Slot0.kD = 0;
-            driveMotors[i].getConfigurator().apply(driveMotorConfig)
+            driveMotors[i].getConfigurator().apply(driveMotorConfig);
         }
 
         modulePos[0] = new Translation2d(SwerveConstants.xRad, SwerveConstants.yRad);
