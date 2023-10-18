@@ -6,12 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.BringCubeToHolding;
-import frc.robot.commands.SwerveDefaultCommand;
-import frc.robot.commands.autos.AutoSelector;
+import frc.robot.commands.*;
+import frc.robot.commands.auto.*;
 import frc.robot.subsystems.*;
 
 import static frc.robot.Constants.*;
@@ -60,51 +58,16 @@ public class RobotContainer {
         conveyor = new Conveyor();
         swerve = new Swerve(gyro);
         poseEstimator = new PoseEstimator(limelight, swerve);
-        autoSelector = new AutoSelector(swerve, gyro, poseEstimator);
+        autoSelector = new AutoSelector(swerve, gyro, poseEstimator,
+                conveyor, shooter, intake);
 
-        midFlywheel = new FunctionalCommand(
-                () -> {},
-                () -> shooter.setSpeed(ShooterConstants.MID_SHOOTER_RPM),
-                (a) -> shooter.setMotor(0),
-                () -> false,
-                shooter
-        );
-        highFlywheel = new FunctionalCommand(
-                () -> {},
-                () -> shooter.setSpeed(ShooterConstants.HIGH_SHOOTER_RPM),
-                (a) -> shooter.setMotor(0),
-                () -> false,
-                shooter
-        );
-        unloadConveyor = new FunctionalCommand(
-                () -> {},
-                () -> conveyor.setMotor(0.5),
-                (a) -> conveyor.setMotor(0),
-                () -> false,
-                conveyor
-        );
+        midFlywheel = new MidFlywheel(shooter);
+        highFlywheel = new HighFlywheel(shooter);
+        unloadConveyor = new UnloadConveyor(conveyor);
         bringCubeToHolding = new BringCubeToHolding(conveyor);
-        lowerIntake = new FunctionalCommand(
-                () -> {},
-                () -> intake.setPosition(IntakeConstants.DOWN_POSITION),
-                (a) -> intake.setMotor(0),
-                () -> intake.getPositionError(IntakeConstants.DOWN_POSITION) < IntakeConstants.THRESHOLD,
-                intake
-        );
-        raiseIntake = new FunctionalCommand(
-                () -> {},
-                () -> intake.setPosition(IntakeConstants.UP_POSITION),
-                (a) -> intake.setMotor(0),
-                () -> intake.getPositionError(IntakeConstants.UP_POSITION) < IntakeConstants.THRESHOLD,
-                intake
-        );
-        zeroIntake = new FunctionalCommand(
-                () -> {},
-                () -> intake.setMotor(0.2),
-                (a) -> { intake.setMotor(0); intake.zeroIntake(); },
-                intake::getLimitSwitchTripped,
-                intake
-        );
+        lowerIntake = new LowerIntake(intake);
+        raiseIntake = new RaiseIntake(intake);
+        zeroIntake = new ZeroIntake(intake);
 
         configureBindings();
     }
@@ -128,8 +91,8 @@ public class RobotContainer {
         operatorController.a().onTrue(bringCubeToHolding);
         new Trigger(() ->
                 operatorController.b().getAsBoolean() &&
-                conveyor.getLimitSwitchTripped() &&
-                shooter.getVelocityError() < ShooterConstants.THRESHOLD
+                        conveyor.getLimitSwitchTripped() &&
+                        shooter.getVelocityError() < ShooterConstants.THRESHOLD
         ).whileTrue(unloadConveyor);
         new Trigger(() -> operatorController.getRightTriggerAxis() > 0.5).whileTrue(highFlywheel);
         operatorController.rightBumper().onTrue(lowerIntake);

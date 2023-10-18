@@ -1,13 +1,13 @@
-package frc.robot.commands.autos;
+package frc.robot.commands.auto;
 
 import frc.robot.util.autonomous.SwervePath;
 
 import java.util.HashMap;
 
-import static frc.robot.commands.autos.AutoPathManager.PathName.*;
+import static frc.robot.commands.auto.AutoPathManager.PathName.*;
 
 public class AutoPathManager {
-    HashMap<PathName, SwervePath> paths;
+    public final HashMap<PathName, SwervePath> paths;
 
     public AutoPathManager() {
         paths = new HashMap<>();
@@ -61,7 +61,7 @@ public class AutoPathManager {
         ));
     }
 
-    enum PathName {
+    public enum PathName {
         LOW_TAXI,
         LOW_TO_FIRST_PIECE,
         LOW_TO_SECOND_PIECE,

@@ -1,4 +1,4 @@
-package frc.robot.commands.autos.routines;
+package frc.robot.commands.auto.routines;
 
 public class PreloadOneTaxi extends AutoRoutine {
 }

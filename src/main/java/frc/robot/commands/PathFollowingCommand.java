@@ -20,9 +20,9 @@ public class PathFollowingCommand extends CommandBase {
     private double dt, lastTime, curVel;
     private PIDController angularController;
 
-    public PathFollowingCommand(Gyro gyro, Swerve swerve, PoseEstimator poseEstimator, SwervePath path) {
-        this.gyro = gyro;
+    public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, SwervePath path) {
         this.swerve = swerve;
+        this.gyro = gyro;
         this.poseEstimator = poseEstimator;
 
         this.path = path;
@@ -32,6 +32,8 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        if (path == null) cancel();
+
         robot = new Pose(poseEstimator.getState().getPoint(), new Angle(gyro.getHeadingRadians(), true));
         lastTime = Timer.getFPGATimestamp();
         curVel = path.getInitSpeed();
