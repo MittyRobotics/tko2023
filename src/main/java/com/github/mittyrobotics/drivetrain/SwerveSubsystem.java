@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 
 public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
@@ -44,22 +45,38 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     @Override
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
-            angleMotors[i] = new TalonFX(i);
+            driveMotors[i] = new TalonFX(DRIVE_MOTOR_IDS[i]);
+            driveMotors[i].setRotorPosition(0);
+//            driveMotors[i].setInverted(ANGLE_INVERTED[i]);
 
-            //SET PIDF
+            angleMotors[i] = new TalonFX(ANGLE_MOTOR_IDS[i]);
+            angleMotors[i].setRotorPosition(0);
+//            angleMotors[i].setInverted(ANGLE_INVERTED[i]);
+//            WHERE NEUTRALMODE
+
             TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
-            angleMotorConfig.Slot0.kP = 0;
-            angleMotorConfig.Slot0.kI = 0;
-            angleMotorConfig.Slot0.kD = 0;
+
+            //PID RETUNE
+            angleMotorConfig.Slot0.kP = ANGLE_LOCK_P;
+            angleMotorConfig.Slot0.kI = ANGLE_LOCK_I;
+            angleMotorConfig.Slot0.kD = ANGLE_LOCK_D;
             angleMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
-            angleMotorConfig.Feedback.SensorToMechanismRatio = SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
+            angleMotorConfig.Feedback.SensorToMechanismRatio = SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO
+                    / (2. * Math.PI);
+            //INROTATIONS
 
             angleMotors[i].getConfigurator().apply(angleMotorConfig);
 
             TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
-            driveMotorConfig.Slot0.kP = 0;
-            driveMotorConfig.Slot0.kI = 0;
-            driveMotorConfig.Slot0.kD = 0;
+
+            driveMotorConfig.Slot0.kP = LINEAR_VELOCITY_P;
+            driveMotorConfig.Slot0.kI = LINEAR_VELOCITY_I;
+            driveMotorConfig.Slot0.kD = LINEAR_VELOCITY_D;
+            driveMotorConfig.Slot0.kV = SPEED_FEED_FORWARD;
+            driveMotorConfig.ClosedLoopGeneral.ContinuousWrap = false;
+            driveMotorConfig.Feedback.SensorToMechanismRatio = TICKS_PER_METER / (RADIUS_OF_WHEEL * 2. * Math.PI);
+            //FIX CONVERSION DRIVE
+
             driveMotors[i].getConfigurator().apply(driveMotorConfig);
         }
 

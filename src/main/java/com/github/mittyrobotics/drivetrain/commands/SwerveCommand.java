@@ -2,6 +2,7 @@ package com.github.mittyrobotics.drivetrain.commands;
 
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystemPhoenix6;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,6 +40,10 @@ public class SwerveCommand extends CommandBase {
         leftStickY = OI.getInstance().getDriveController().getLeftY();
         rightStickY = OI.getInstance().getDriveController().getRightY();
 
+        leftStickX = Math.abs(leftStickX) > 0.1 ? leftStickX : 0;
+        leftStickY = Math.abs(leftStickY) > 0.1 ? leftStickY : 0;
+        rightStickY = Math.abs(rightStickY) > 0.1 ? rightStickY : 0;
+
         velX = leftStickX * SwerveConstants.MAX_LINEAR_VEL;
         velY = leftStickY * SwerveConstants.MAX_LINEAR_VEL;
         angVel = rightStickY * SwerveConstants.MAX_ANGULAR_VEL;
@@ -47,10 +52,10 @@ public class SwerveCommand extends CommandBase {
 
         //can merge if wanted
         speed = new ChassisSpeeds(velX, velY, angVel);
-        speed = ChassisSpeeds.fromFieldRelativeSpeeds(speed, angle);
+        speed = speed.fromFieldRelativeSpeeds(speed, angle);
 
-        SwerveSubsystem.getInstance().setModuleStates(speed);
-        SwerveSubsystem.getInstance().setModules();
+        SwerveSubsystemPhoenix6.getInstance().setModuleStates(speed);
+        SwerveSubsystemPhoenix6.getInstance().setModules();
     }
 
     @Override
