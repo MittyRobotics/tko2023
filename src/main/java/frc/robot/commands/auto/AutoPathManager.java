@@ -5,6 +5,7 @@ import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.autonomous.QuinticHermiteSpline;
 import frc.robot.util.autonomous.SwervePath;
+import frc.robot.util.math.Angle;
 import frc.robot.util.math.Point;
 import frc.robot.util.math.Pose;
 import frc.robot.util.math.Vector;
@@ -20,17 +21,17 @@ public class AutoPathManager {
 
     public final HashMap<PathName, SwervePath> paths;
 
-    private Pose lowStartPose = new Pose();
-    private Pose highStartPose = new Pose();
+    private Pose lowStartPose;
+    private Pose highStartPose;
 
-    private Pose lowFirstPiece = new Pose();
-    private Pose highFirstPiece = new Pose();
+    private Pose lowFirstPiece;
+    private Pose highFirstPiece;
 
-    private Pose lowSecondPiece = new Pose();
-    private Pose highSecondPiece = new Pose();
+    private Pose lowSecondPiece;
+    private Pose highSecondPiece;
 
-    private Pose lowBalance = new Pose();
-    private Pose highBalance = new Pose();
+    private Pose lowBalance;
+    private Pose highBalance;
 
     public AutoPathManager(PoseEstimator poseEstimator, Swerve swerve, Gyro gyro) {
         this.poseEstimator = poseEstimator;
@@ -43,6 +44,15 @@ public class AutoPathManager {
         initLowReturnPaths();
         initHighStartPaths();
         initHighReturnPaths();
+
+        int lowTag = poseEstimator.FIELD_LEFT_SIDE ? 8 : 1;
+        int highTag = poseEstimator.FIELD_LEFT_SIDE ? 6 : 3;
+    }
+
+    private void initPoses(int tag, boolean leftSide) {
+        lowStartPose = new Pose(Point.add(poseEstimator.getScoringZone(tag)[1].getPoint(), new Point(leftSide ? 32 : -32, 0)),
+                new Angle(leftSide ? 0 : Math.PI, true));
+
     }
 
     private void initLowStartPaths() {
