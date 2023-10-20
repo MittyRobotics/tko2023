@@ -3,7 +3,6 @@ package frc.robot.commands.auto.routines;
 import frc.robot.commands.PathFollowingCommand;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathManager;
-import frc.robot.commands.auto.AutoScoreHigh;
 import frc.robot.subsystems.*;
 import frc.robot.util.autonomous.SwervePath;
 
@@ -19,7 +18,7 @@ public class PreloadBalance extends AutoRoutine {
         SwervePath balancePath = pathManager.paths.get(
                 low == null ? null : low ? LOW_BALANCE_FAR_SIDE : HIGH_BALANCE_FAR_SIDE);
         addCommands(
-                new AutoScoreHigh(conveyor, shooter),
+                new Preload(conveyor, shooter),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, balancePath),
                 new AutoBalance(swerve, gyro, poseEstimator, low == null)
         );

@@ -7,7 +7,6 @@ import frc.robot.commands.LowerIntake;
 import frc.robot.commands.PathFollowingCommand;
 import frc.robot.commands.RaiseIntake;
 import frc.robot.commands.auto.AutoPathManager;
-import frc.robot.commands.auto.AutoScoreHigh;
 import frc.robot.commands.auto.AutoScoreMid;
 import frc.robot.subsystems.*;
 import frc.robot.util.autonomous.SwervePath;
@@ -26,7 +25,7 @@ public class PreloadOne extends AutoRoutine {
         SwervePath firstScorePath = pathManager.paths.get(
                 low == null ? null : low ? LOW_FIRST_PIECE_TO_SCORE : HIGH_FIRST_PIECE_TO_SCORE);
         addCommands(
-                new AutoScoreHigh(conveyor, shooter),
+                new Preload(conveyor, shooter),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
                 new LowerIntake(intake),
                 new ParallelCommandGroup(

@@ -6,7 +6,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class Preload extends AutoRoutine {
-    public Preload(Conveyor conveyor, Shooter shooter, Intake intake) {
+    public Preload(Conveyor conveyor, Shooter shooter) {
         super();
 
         addCommands(

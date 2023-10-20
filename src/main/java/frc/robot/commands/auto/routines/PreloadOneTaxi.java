@@ -21,23 +21,13 @@ public class PreloadOneTaxi extends AutoRoutine {
                           Boolean low) {
         super();
 
-        SwervePath firstPiecePath = pathManager.paths.get(
-                low == null ? null : low ? LOW_TO_FIRST_PIECE : HIGH_TO_FIRST_PIECE);
-        SwervePath firstScorePath = pathManager.paths.get(
-                low == null ? null : low ? LOW_FIRST_PIECE_TO_SCORE : HIGH_FIRST_PIECE_TO_SCORE);
         SwervePath taxiPath = pathManager.paths.get(
                 low == null ? null : low ? LOW_TAXI : HIGH_TAXI);
         addCommands(
-                new AutoScoreHigh(conveyor, shooter),
-                new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
-                new LowerIntake(intake),
-                new ParallelCommandGroup(
-                        new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : pathManager, 10),
-                        new BringCubeToHolding(conveyor)
-                ),
-                new RaiseIntake(intake),
-                new PathFollowingCommand(swerve, gyro, poseEstimator, firstScorePath),
-                new AutoScoreMid(conveyor, shooter),
+                new PreloadOne(pathManager,
+                        swerve, gyro, poseEstimator,
+                        conveyor, shooter, intake,
+                        low),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, taxiPath)
         );
     }
