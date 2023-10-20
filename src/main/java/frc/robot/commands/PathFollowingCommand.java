@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import frc.robot.commands.auto.AutoPathManager;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
@@ -14,10 +15,12 @@ public class PathFollowingCommand extends CommandBase {
     private Gyro gyro;
     private Swerve swerve;
     private PoseEstimator poseEstimator;
+    private AutoPathManager pathManager;
 
     private SwervePath path;
+    private boolean intakingPath;
     private Pose robot;
-    private double dt, lastTime, curVel;
+    private double dt, lastTime, curVel, intakingDist;
     private PIDController angularController;
 
     public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, SwervePath path) {
@@ -27,11 +30,30 @@ public class PathFollowingCommand extends CommandBase {
 
         this.path = path;
 
+        intakingPath = false;
+
+        addRequirements(swerve);
+    }
+
+    public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, AutoPathManager pathManager, double dist) {
+        this.swerve = swerve;
+        this.gyro = gyro;
+        this.poseEstimator = poseEstimator;
+
+        this.pathManager = pathManager;
+
+        intakingPath = true;
+        intakingDist = dist;
+
         addRequirements(swerve);
     }
 
     @Override
     public void initialize() {
+        if (intakingPath) {
+            if (pathManager == null) path = null;
+            else path = pathManager.getGroundIntakingPath(intakingDist);
+        }
         if (path == null) cancel();
 
         robot = new Pose(poseEstimator.getState().getPoint(), new Angle(gyro.getHeadingRadians(), true));

@@ -4,16 +4,15 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.HighFlywheel;
 import frc.robot.commands.UnloadConveyor;
 import frc.robot.subsystems.Conveyor;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 import static frc.robot.Constants.*;
 
 public class AutoScoreHigh extends SequentialCommandGroup {
-    public AutoScoreHigh(Conveyor conveyor, Shooter shooter, Intake intake) {
+    public AutoScoreHigh(Conveyor conveyor, Shooter shooter) {
         super();
 
-        addRequirements(conveyor, shooter, intake);
+        addRequirements(conveyor, shooter);
 
         SequentialCommandGroup unloadSequence = new SequentialCommandGroup(
                 new WaitUntilCommand(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD),
