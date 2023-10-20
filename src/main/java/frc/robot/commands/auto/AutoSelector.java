@@ -6,7 +6,7 @@ import frc.robot.commands.auto.routines.*;
 import frc.robot.subsystems.*;
 
 public class AutoSelector {
-    private AutoPathManager pathManager = new AutoPathManager();
+    private AutoPathManager pathManager;
 
     private Swerve swerve;
     private Gyro gyro;
@@ -22,6 +22,8 @@ public class AutoSelector {
 
     public AutoSelector(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator,
                         Conveyor conveyor, Shooter shooter, Intake intake) {
+        this.pathManager = new AutoPathManager(poseEstimator, swerve, gyro);
+
         this.swerve = swerve;
         this.gyro = gyro;
         this.poseEstimator = poseEstimator;

@@ -7,16 +7,15 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.MidFlywheel;
 import frc.robot.commands.UnloadConveyor;
 import frc.robot.subsystems.Conveyor;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 import static frc.robot.Constants.ShooterConstants;
 
 public class AutoScoreMid extends SequentialCommandGroup {
-    public AutoScoreMid(Conveyor conveyor, Shooter shooter, Intake intake) {
+    public AutoScoreMid(Conveyor conveyor, Shooter shooter) {
         super();
 
-        addRequirements(conveyor, shooter, intake);
+        addRequirements(conveyor, shooter);
 
         SequentialCommandGroup unloadSequence = new SequentialCommandGroup(
                 new WaitUntilCommand(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD),

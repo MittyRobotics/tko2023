@@ -10,7 +10,7 @@ public class Preload extends AutoRoutine {
         super();
 
         addCommands(
-                new AutoScoreHigh(conveyor, shooter, intake)
+                new AutoScoreHigh(conveyor, shooter)
         );
     }
 }

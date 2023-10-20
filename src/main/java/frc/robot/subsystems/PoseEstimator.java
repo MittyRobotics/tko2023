@@ -134,7 +134,7 @@ public class PoseEstimator extends SubsystemBase {
         }
     }
 
-    public double[] getPose() {
+    public double[] getOdometryExtrapolatedPose() {
         Pose curP = odometry.getLatestPose();
 //        System.out.println("     - " + curP);
 
@@ -149,7 +149,7 @@ public class PoseEstimator extends SubsystemBase {
     }
 
     public boolean belowMiddleY() {
-        return getPose()[1] < MID_TAG_Y;
+        return getOdometryExtrapolatedPose()[1] < MID_TAG_Y;
     }
 
     public void updateCovarianceR(double x) {
@@ -217,7 +217,7 @@ public class PoseEstimator extends SubsystemBase {
     }
 
     public Pose getState() {
-        double[] pose = getPose();
+        double[] pose = getOdometryExtrapolatedPose();
         return new Pose(new Point(pose[0], pose[1]), new Angle(pose[2], true));
     }
 

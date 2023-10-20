@@ -1,6 +1,7 @@
 package frc.robot.commands.auto.routines;
 
 import frc.robot.commands.PathFollowingCommand;
+import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathManager;
 import frc.robot.commands.auto.AutoScoreHigh;
 import frc.robot.subsystems.*;
@@ -16,10 +17,11 @@ public class PreloadBalance extends AutoRoutine {
         super();
 
         SwervePath balancePath = pathManager.paths.get(
-                low == null ? BALANCE_COMMUNITY_SIDE : low ? LOW_BALANCE_FAR_SIDE : HIGH_BALANCE_FAR_SIDE);
+                low == null ? null : low ? LOW_BALANCE_FAR_SIDE : HIGH_BALANCE_FAR_SIDE);
         addCommands(
-                new AutoScoreHigh(conveyor, shooter, intake),
-                new PathFollowingCommand(swerve, gyro, poseEstimator, balancePath)
+                new AutoScoreHigh(conveyor, shooter),
+                new PathFollowingCommand(swerve, gyro, poseEstimator, balancePath),
+                new AutoBalance(swerve, gyro, poseEstimator, low == null)
         );
     }
 }
