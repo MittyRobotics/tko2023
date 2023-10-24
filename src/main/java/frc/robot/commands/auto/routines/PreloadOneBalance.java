@@ -1,6 +1,6 @@
 package frc.robot.commands.auto.routines;
 
-import frc.robot.commands.PathFollowingCommand;
+import frc.robot.commands.auto.PathFollowingCommand;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathManager;
 import frc.robot.subsystems.*;

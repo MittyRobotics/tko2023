@@ -1,10 +1,9 @@
 package frc.robot.commands.auto.routines;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.BringCubeToHolding;
 import frc.robot.commands.LowerIntake;
-import frc.robot.commands.PathFollowingCommand;
+import frc.robot.commands.auto.PathFollowingCommand;
 import frc.robot.commands.RaiseIntake;
 import frc.robot.commands.auto.AutoPathManager;
 import frc.robot.commands.auto.AutoScoreMid;
@@ -29,7 +28,7 @@ public class PreloadOne extends AutoRoutine {
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
                 new LowerIntake(intake),
                 new ParallelCommandGroup(
-                        new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : pathManager, 10),
+                        new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10)),
                         new BringCubeToHolding(conveyor)
                 ),
                 new RaiseIntake(intake),

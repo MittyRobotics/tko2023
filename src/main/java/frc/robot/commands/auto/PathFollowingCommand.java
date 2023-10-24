@@ -1,6 +1,5 @@
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
-import frc.robot.commands.auto.AutoPathManager;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.Swerve;
@@ -11,16 +10,19 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import java.util.function.Supplier;
+
 public class PathFollowingCommand extends CommandBase {
     private Gyro gyro;
     private Swerve swerve;
     private PoseEstimator poseEstimator;
-    private AutoPathManager pathManager;
 
     private SwervePath path;
+    private Supplier<SwervePath> pathSupplier;
+
     private boolean intakingPath;
     private Pose robot;
-    private double dt, lastTime, curVel, intakingDist;
+    private double dt, lastTime, curVel;
     private PIDController angularController;
 
     public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, SwervePath path) {
@@ -35,15 +37,14 @@ public class PathFollowingCommand extends CommandBase {
         addRequirements(swerve);
     }
 
-    public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, AutoPathManager pathManager, double dist) {
+    public PathFollowingCommand(Swerve swerve, Gyro gyro, PoseEstimator poseEstimator, Supplier<SwervePath> pathSupplier) {
         this.swerve = swerve;
         this.gyro = gyro;
         this.poseEstimator = poseEstimator;
 
-        this.pathManager = pathManager;
+        this.pathSupplier = pathSupplier;
 
         intakingPath = true;
-        intakingDist = dist;
 
         addRequirements(swerve);
     }
@@ -51,8 +52,8 @@ public class PathFollowingCommand extends CommandBase {
     @Override
     public void initialize() {
         if (intakingPath) {
-            if (pathManager == null) path = null;
-            else path = pathManager.getGroundIntakingPath(intakingDist);
+            if (pathSupplier == null) path = null;
+            else path = pathSupplier.get();
         }
         if (path == null) cancel();
 

@@ -90,7 +90,6 @@ public class PoseEstimator extends SubsystemBase {
     public void updateFromLimelight() {
         Pose limelightPose = limelight.getPose();
         if (limelightPose == null) return;
-//        System.out.println("UPDATED FROM LL\n\n\n");
         double x = limelightPose.getPosition().getX();
         double y = limelightPose.getPosition().getY();
         double theta = limelightPose.getHeading().getRadians();
@@ -101,19 +100,13 @@ public class PoseEstimator extends SubsystemBase {
 
         if (lastPose == null)
             lastPose = odometry.getPoseAtTime(last_time);
-        Pose curP = odometry.getPoseAtTime(nanoTime);
+        Pose curOdometryPose = odometry.getPoseAtTime(nanoTime);
 
-        Vector v = new Vector(Point.multiply(1 / dt, Point.add(curP.getPosition(),
+        Vector v = new Vector(Point.multiply(1 / dt, Point.add(curOdometryPose.getPosition(),
                 Point.multiply(-1, lastPose.getPosition()))));
-        double w = (1 / dt) * (curP.getHeading().getRadians() - lastPose.getHeading().getRadians());
+        double w = (1 / dt) * (curOdometryPose.getHeading().getRadians() - lastPose.getHeading().getRadians());
 
         try {
-//                if (Math.sqrt((state.get(0, 0) - x) * (state.get(0, 0) - x) +
-//                        (state.get(1, 0) - y) * (state.get(1, 0) - y)) > ERROR_MARGIN) {
-//                    System.out.println("Bad input");
-//                    continue;
-//                }
-
             stateExtrapolate(dt, v, w);
             covarianceExtrapolate(dt, v, w);
 
@@ -123,12 +116,7 @@ public class PoseEstimator extends SubsystemBase {
             covarianceUpdate();
 
             last_time = nanoTime;
-            lastPose = curP;
-
-//            LoggerInterface.getInstance().putDesiredCamera(getIdealCamera());
-//                System.out.println(getState() + "   \n\n\n\n\n " + getIdealCamera());
-
-            //                state.transpose().print();
+            lastPose = curOdometryPose;
         } catch (Exception e) {
             System.out.println("error");
         }
