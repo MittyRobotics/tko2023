@@ -51,7 +51,7 @@ public final class Constants {
 
         public static final double[] PID = new double[]{0, 0, 0, 0};
 
-        public static final double MOTOR_TURNS_PER_REV = 1;
+        public static final double MOTOR_TURNS_PER_REV = 2;
 
         //RPM
         public static final double MID_SHOOTER_RPM = 2000;
@@ -72,7 +72,7 @@ public final class Constants {
 
         public static final int LIMIT_SWITCH_ID = 34;
 
-        public static final double RADIANS_PER_REV = 0;
+        public static final double RADIANS_PER_REV = 2 * Math.PI / (16 * 30. / 12);
 
         public static final double[] PID = new double[]{0, 0, 0, 0};
 
