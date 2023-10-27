@@ -80,6 +80,7 @@ public final class Constants {
         public static final double ZERO_POSITION = 0.8;
         public static final double UP_POSITION = 1;
         public static final double DOWN_POSITION = -1;
+        public static final double LOW_SCORE_POSITION = 0.5;
         public static final double THRESHOLD = 2 * 3.1415 / 180;
 
     }

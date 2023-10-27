@@ -19,7 +19,7 @@ public class AutoScoreMid extends SequentialCommandGroup {
 
         SequentialCommandGroup unloadSequence = new SequentialCommandGroup(
                 new WaitUntilCommand(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD),
-                new UnloadConveyor(conveyor).raceWith(new WaitCommand(1))
+                new UnloadConveyor(conveyor, () -> true).raceWith(new WaitCommand(1))
         );
         addCommands(
                 new ParallelCommandGroup(
