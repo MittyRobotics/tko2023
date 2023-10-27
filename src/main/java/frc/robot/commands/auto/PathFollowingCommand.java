@@ -84,9 +84,6 @@ public class PathFollowingCommand extends CommandBase {
         );
         linearDirection = Vector.multiply(1. / linearDirection.getMagnitude(), linearDirection);
 
-        SmartDashboard.putString("errorVector", errorVector.toString());
-        SmartDashboard.putString("tangentVector", tangentVector.toString());
-
         //accelerate to max velocity
         curVel += path.getAccel() * dt;
         curVel = Math.min(curVel, path.getMaxSpeed());
@@ -95,8 +92,6 @@ public class PathFollowingCommand extends CommandBase {
         double vi = Math.sqrt(path.getEndSpeed() * path.getEndSpeed() +
                 2 * path.getDecel() * (path.getSpline().getLength() - currentLength));
         curVel = Math.min(curVel, vi);
-
-        SmartDashboard.putNumber("vel", curVel);
 
         //scale linear velocity to motion profile
         Vector linearVel = Vector.multiply(curVel, linearDirection);
