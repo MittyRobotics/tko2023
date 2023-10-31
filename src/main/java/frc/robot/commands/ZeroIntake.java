@@ -19,12 +19,12 @@ public class ZeroIntake extends CommandBase {
 
     @Override
     public void execute() {
-        intake.setMotor(0.2);
+        intake.setMotor(0.05);
     }
 
     @Override
     public void end(boolean interrupted) {
-        intake.setMotor(0);
+        intake.setMotor(-0.1);
         intake.zeroIntake();
     }
 

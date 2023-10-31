@@ -28,7 +28,7 @@ public class RobotContainer {
     private final Gyro gyro;
     private final Limelight limelight;
     private final Shooter shooter;
-    private final Intake intake;
+    public final Intake intake;
     private final Conveyor conveyor;
     private final Swerve swerve;
     private final PoseEstimator poseEstimator;
@@ -123,7 +123,8 @@ public class RobotContainer {
     }
 
     public void teleopInit() {
-        if (!intake.hasBeenZeroed()) zeroIntake.schedule();
+//        if (!intake.hasBeenZeroed()) zeroIntake.schedule();
+        new ZeroIntake(intake).schedule();
     }
 
     /**

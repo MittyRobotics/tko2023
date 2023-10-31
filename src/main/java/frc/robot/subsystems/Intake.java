@@ -54,7 +54,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean getLimitSwitchTripped() {
-        return limitSwitch.get();
+        return !limitSwitch.get();
     }
 
     public void setEncoderPosition(double pos) {

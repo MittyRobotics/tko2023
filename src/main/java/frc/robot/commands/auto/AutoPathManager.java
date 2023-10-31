@@ -56,57 +56,57 @@ public class AutoPathManager {
     }
 
     private void initLowStartPaths() {
-        paths.put(LOW_TAXI, new SwervePath(
-
-        ));
-        paths.put(LOW_TO_FIRST_PIECE, new SwervePath(
-
-        ));
-        paths.put(LOW_TO_SECOND_PIECE, new SwervePath(
-
-        ));
-        paths.put(LOW_TO_THIRD_PIECE, new SwervePath(
-
-        ));
-        paths.put(LOW_BALANCE_FAR_SIDE, new SwervePath(
-
-        ));
+//        paths.put(LOW_TAXI, new SwervePath(
+//
+//        ));
+//        paths.put(LOW_TO_FIRST_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(LOW_TO_SECOND_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(LOW_TO_THIRD_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(LOW_BALANCE_FAR_SIDE, new SwervePath(
+//
+//        ));
     }
 
     private void initLowReturnPaths() {
-        paths.put(LOW_FIRST_PIECE_TO_SCORE, new SwervePath(
-
-        ));
-        paths.put(LOW_SECOND_PIECE_TO_SCORE, new SwervePath(
-
-        ));
+//        paths.put(LOW_FIRST_PIECE_TO_SCORE, new SwervePath(
+//
+//        ));
+//        paths.put(LOW_SECOND_PIECE_TO_SCORE, new SwervePath(
+//
+//        ));
     }
 
     private void initHighStartPaths() {
-        paths.put(HIGH_TAXI, new SwervePath(
-
-        ));
-        paths.put(HIGH_TO_FIRST_PIECE, new SwervePath(
-
-        ));
-        paths.put(HIGH_TO_SECOND_PIECE, new SwervePath(
-
-        ));
-        paths.put(HIGH_TO_THIRD_PIECE, new SwervePath(
-
-        ));
-        paths.put(HIGH_BALANCE_FAR_SIDE, new SwervePath(
-
-        ));
+//        paths.put(HIGH_TAXI, new SwervePath(
+//
+//        ));
+//        paths.put(HIGH_TO_FIRST_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(HIGH_TO_SECOND_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(HIGH_TO_THIRD_PIECE, new SwervePath(
+//
+//        ));
+//        paths.put(HIGH_BALANCE_FAR_SIDE, new SwervePath(
+//
+//        ));
     }
 
     private void initHighReturnPaths() {
-        paths.put(HIGH_FIRST_PIECE_TO_SCORE, new SwervePath(
-
-        ));
-        paths.put(HIGH_SECOND_PIECE_TO_SCORE, new SwervePath(
-
-        ));
+//        paths.put(HIGH_FIRST_PIECE_TO_SCORE, new SwervePath(
+//
+//        ));
+//        paths.put(HIGH_SECOND_PIECE_TO_SCORE, new SwervePath(
+//
+//        ));
     }
 
     public SwervePath getGroundIntakingPath(double dist) {

@@ -64,13 +64,13 @@ public final class Constants {
 
         public static final double INCHES_PER_REV = 0;
 
-        public static final int LIMIT_SWITCH_ID = 35;
+        public static final int LIMIT_SWITCH_ID = 8;
     }
 
     public static class IntakeConstants {
         public static final int MOTOR_ID = 23;
 
-        public static final int LIMIT_SWITCH_ID = 34;
+        public static final int LIMIT_SWITCH_ID = 9;
 
         public static final double RADIANS_PER_REV = 2 * Math.PI / (16 * 30. / 12);
 
