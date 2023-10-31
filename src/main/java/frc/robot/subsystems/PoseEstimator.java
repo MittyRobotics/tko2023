@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 //import com.github.mittyrobotics.LoggerInterface;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.math.*;
 import org.ejml.simple.SimpleMatrix;
@@ -24,6 +25,11 @@ public class PoseEstimator extends SubsystemBase {
         last_time = System.currentTimeMillis() * 1000000;
         lastPose = null;
 //        LoggerInterface.getInstance().putDesiredCamera(2);
+    }
+
+    @Override
+    public void periodic() {
+        FIELD_LEFT_SIDE = DriverStation.getAlliance().equals(DriverStation.Alliance.Blue);
     }
 
     public static final double offset = 20.873;
