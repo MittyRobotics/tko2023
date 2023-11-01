@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    System.out.println(m_robotContainer.intake.getLimitSwitchTripped());
+    System.out.println(m_robotContainer.conveyor.getLimitSwitchTripped());
   }
 
   @Override

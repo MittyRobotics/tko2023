@@ -29,10 +29,9 @@ public class PreloadTwo extends AutoRoutine {
                         conveyor, shooter, intake,
                         low),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, secondPiecePath),
-                new LowerIntake(intake),
                 new ParallelCommandGroup(
                         new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10)),
-                        new BringCubeToHolding(conveyor)
+                        new BringCubeToHolding(conveyor).raceWith(new LowerIntake(intake))
                 ),
                 new RaiseIntake(intake),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, secondScorePath),

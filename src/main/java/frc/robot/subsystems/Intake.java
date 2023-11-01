@@ -30,6 +30,7 @@ public class Intake extends SubsystemBase {
         motor.getPIDController().setI(PID[1]);
         motor.getPIDController().setD(PID[2]);
         motor.getPIDController().setFF(PID[3]);
+        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
     }
@@ -47,6 +48,10 @@ public class Intake extends SubsystemBase {
 
     public void setPosition(double radians) {
         motor.getPIDController().setReference(radians, CANSparkMax.ControlType.kPosition);
+    }
+
+    public double getPosition() {
+        return motor.getEncoder().getPosition();
     }
 
     public double getPositionError(double target) {

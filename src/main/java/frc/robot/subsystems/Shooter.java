@@ -9,7 +9,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 public class Shooter extends SubsystemBase {
 
     private CANSparkMax[] motor;
-    private boolean isShooting = false;
     private double targetRPM = 0;
 
     public Shooter() {
@@ -22,13 +21,14 @@ public class Shooter extends SubsystemBase {
             motor[i] = new CANSparkMax(MOTOR_ID[i], CANSparkMaxLowLevel.MotorType.kBrushless);
             motor[i].restoreFactoryDefaults();
             motor[i].getEncoder().setPositionConversionFactor(1. / MOTOR_TURNS_PER_REV);
-            motor[i].getEncoder().setPositionConversionFactor(1. / MOTOR_TURNS_PER_REV);
+            motor[i].getEncoder().setVelocityConversionFactor(1. / MOTOR_TURNS_PER_REV);
             motor[i].getEncoder().setPosition(0);
             motor[i].getPIDController().setP(PID[0]);
             motor[i].getPIDController().setI(PID[1]);
             motor[i].getPIDController().setD(PID[2]);
             motor[i].getPIDController().setFF(PID[3]);
         }
+        motor[0].setInverted(true);
     }
 
     public void setMotor(double speed) {
@@ -44,5 +44,13 @@ public class Shooter extends SubsystemBase {
 
     public double getVelocityError() {
         return Math.abs(targetRPM - motor[0].getEncoder().getVelocity());
+    }
+
+    public double getVelocity() {
+        return motor[0].getEncoder().getVelocity();
+    }
+
+    public double getOutput() {
+        return motor[0].getAppliedOutput();
     }
 }

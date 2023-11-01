@@ -26,10 +26,9 @@ public class PreloadOne extends AutoRoutine {
         addCommands(
                 new Preload(conveyor, shooter),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
-                new LowerIntake(intake),
                 new ParallelCommandGroup(
                         new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10)),
-                        new BringCubeToHolding(conveyor)
+                        new BringCubeToHolding(conveyor).raceWith(new LowerIntake(intake))
                 ),
                 new RaiseIntake(intake),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstScorePath),

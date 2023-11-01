@@ -30,6 +30,6 @@ public class LowerIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return intake.getPositionError(Constants.IntakeConstants.DOWN_POSITION) < Constants.IntakeConstants.THRESHOLD;
+        return false;
     }
 }

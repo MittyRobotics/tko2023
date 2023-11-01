@@ -51,7 +51,7 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
-        throttleX = (poseEstimator.FIELD_LEFT_SIDE ? 1 : -1) * xSupplier.getAsDouble();
+        throttleX = (poseEstimator.FIELD_LEFT_SIDE ? 1 : -1) * -xSupplier.getAsDouble();
         throttleY = (poseEstimator.FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
         throttleAngular = -angularSupplier.getAsDouble();
         rightBumper = rBumperSupplier.getAsBoolean();

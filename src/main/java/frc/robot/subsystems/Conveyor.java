@@ -19,8 +19,8 @@ public class Conveyor extends SubsystemBase {
     public void initHardware() {
         motor = new CANSparkMax(MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         motor.restoreFactoryDefaults();
-        motor.getEncoder().setPositionConversionFactor(INCHES_PER_REV);
-        motor.getEncoder().setVelocityConversionFactor(INCHES_PER_REV / 60);
+//        motor.getEncoder().setPositionConversionFactor(INCHES_PER_REV);
+//        motor.getEncoder().setVelocityConversionFactor(INCHES_PER_REV / 60);
 
         limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
     }
@@ -29,7 +29,11 @@ public class Conveyor extends SubsystemBase {
         motor.set(speed);
     }
 
+    public double getPosition() {
+        return motor.getEncoder().getPosition();
+    }
+
     public boolean getLimitSwitchTripped() {
-        return !limitSwitch.get();
+        return limitSwitch.get();
     }
 }

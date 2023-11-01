@@ -19,8 +19,8 @@ public final class Constants {
     }
 
     public static class SwerveConstants {
-        public static final int[] DRIVE_MOTOR_IDS = {2, 4, 6, 0};
-        public static final int[] ANGLE_MOTOR_IDS = {3, 5, 7, 1};
+        public static final int[] ANGLE_MOTOR_IDS = {10, 12, 14, 16};
+        public static final int[] DRIVE_MOTOR_IDS = {11, 13, 15, 17};
         public static final int[] ABS_ENCODER_IDS = {30, 31, 32, 33};
 
         //    public static final double[] ANGLE_PID = {0.135, 0, 0.03};
@@ -49,13 +49,13 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int[] MOTOR_ID = new int[]{ 20, 21 };
 
-        public static final double[] PID = new double[]{0, 0, 0, 0};
+        public static final double[] PID = new double[]{0, 0, 0, 1. / 2920};
 
         public static final double MOTOR_TURNS_PER_REV = 2;
 
         //RPM
-        public static final double MID_SHOOTER_RPM = 2000;
-        public static final double HIGH_SHOOTER_RPM = 4000;
+        public static final double MID_SHOOTER_RPM = 1000;
+        public static final double HIGH_SHOOTER_RPM = 2000;
         public static final double THRESHOLD = 100;
     }
 
@@ -74,14 +74,14 @@ public final class Constants {
 
         public static final double RADIANS_PER_REV = 2 * Math.PI / (16 * 30. / 12);
 
-        public static final double[] PID = new double[]{0, 0, 0, 0};
+        public static final double[] PID = new double[]{1.2, 0, 0, 0};
 
         //RADIANS
-        public static final double ZERO_POSITION = 0.8;
-        public static final double UP_POSITION = 1;
-        public static final double DOWN_POSITION = -1;
-        public static final double LOW_SCORE_POSITION = 0.5;
-        public static final double THRESHOLD = 2 * 3.1415 / 180;
+        public static final double ZERO_POSITION = 1.997;
+        public static final double UP_POSITION = Math.PI / 2;
+        public static final double DOWN_POSITION = -0.17;
+        public static final double LOW_SCORE_POSITION = 0.2;
+        public static final double THRESHOLD = 0.5 * 3.1415 / 180;
 
     }
 }

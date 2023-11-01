@@ -69,7 +69,7 @@ public class Swerve extends SubsystemBase {
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);
             angleMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-            angleMotors[i].setSelectedSensorPosition(0);
+            angleMotors[i].setSelectedSensorPosition(absEncoders[i].getAbsPosition() * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2 * PI);
             angleMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Brake);

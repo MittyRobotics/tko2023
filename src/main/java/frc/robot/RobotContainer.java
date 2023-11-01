@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
@@ -26,18 +27,21 @@ public class RobotContainer {
     private final Gyro gyro;
     private final Limelight limelight;
     private final Shooter shooter;
-    public final Intake intake;
-    private final Conveyor conveyor;
+    private final Intake intake;
+    public final Conveyor conveyor;
     private final Swerve swerve;
     private final PoseEstimator poseEstimator;
     private final AutoSelector autoSelector;
 
     private final Command midFlywheel;
     private final Command highFlywheel;
+    private final Command stopFlywheelAfterMid;
+    private final Command stopFlywheelAfterHigh;
     private final Command unloadConveyor;
     private final Command bringCubeToHolding;
     private final Command lowerIntake;
-    private final Command raiseIntake;
+    private final Command raiseIntakeAfterIntake;
+    private final Command raiseIntakeAfterScore;
     private final Command scoreIntake;
     private final Command zeroIntake;
 
@@ -67,10 +71,13 @@ public class RobotContainer {
 
         midFlywheel = new MidFlywheel(shooter);
         highFlywheel = new HighFlywheel(shooter);
+        stopFlywheelAfterMid = new StopFlywheel(shooter);
+        stopFlywheelAfterHigh = new StopFlywheel(shooter);
         unloadConveyor = new UnloadConveyor(conveyor, () -> shootForward);
         bringCubeToHolding = new BringCubeToHolding(conveyor);
         lowerIntake = new LowerIntake(intake);
-        raiseIntake = new RaiseIntake(intake);
+        raiseIntakeAfterIntake = new RaiseIntake(intake);
+        raiseIntakeAfterScore = new RaiseIntake(intake);
         scoreIntake = new ScoreIntake(intake);
         zeroIntake = new ZeroIntake(intake, conveyor);
 
@@ -89,35 +96,43 @@ public class RobotContainer {
     private void configureBindings() {
         swerve.setDefaultCommand(new SwerveDefaultCommand(
                 swerve, poseEstimator,
-                driverController::getLeftY, driverController::getLeftY, driverController::getRightX,
+                driverController::getLeftY, driverController::getLeftX, driverController::getRightX,
                 driverController::getRightBumper, driverController::getLeftBumper, driverController::getAButton
         ));
 
 
-        operatorController.leftTrigger().onTrue(lowerIntake.andThen(bringCubeToHolding));
-        operatorController.leftTrigger().onFalse(raiseIntake);
+        operatorController.leftTrigger().onTrue(bringCubeToHolding);
+        operatorController.leftTrigger().whileTrue(lowerIntake);
+        operatorController.leftTrigger().onFalse(raiseIntakeAfterIntake.alongWith(new InstantCommand(bringCubeToHolding::cancel)));
 
         operatorController.rightTrigger()
                 .and(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD)
                 .whileTrue(unloadConveyor);
 
         operatorController.y().whileTrue(highFlywheel.alongWith(new InstantCommand(() -> shootForward = true)));
-        operatorController.y().onFalse(new InstantCommand(() -> shootForward = false));
+        operatorController.y().onFalse(stopFlywheelAfterHigh.andThen(new InstantCommand(() -> shootForward = false)));
 
         operatorController.x().whileTrue(midFlywheel.alongWith(new InstantCommand(() -> shootForward = true)));
-        operatorController.x().onFalse(new InstantCommand(() -> shootForward = false));
+        operatorController.x().onFalse(stopFlywheelAfterMid.andThen(new InstantCommand(() -> shootForward = false)));
 
-        operatorController.a().onTrue(scoreIntake.andThen(new InstantCommand(() -> shootForward = false)));
+        operatorController.a().whileTrue(scoreIntake.alongWith(new InstantCommand(() -> shootForward = false)));
+        operatorController.a().onFalse(raiseIntakeAfterScore);
 
         operatorController.leftBumper().and(operatorController.rightTrigger()).onTrue(zeroIntake);
     }
 
     public void autoInit() {
-        if (!intake.hasBeenZeroed()) zeroIntake.andThen(raiseIntake).schedule();
+        if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).andThen(new RaiseIntake(intake)).schedule();
+        else new RaiseIntake(intake).schedule();
+
+        swerve.zeroRelativeEncoders();
     }
 
     public void teleopInit() {
-        if (!intake.hasBeenZeroed()) zeroIntake.andThen(raiseIntake).schedule();
+        if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).andThen(new RaiseIntake(intake)).schedule();
+        else new RaiseIntake(intake).schedule();
+
+        swerve.zeroRelativeEncoders();
     }
 
     /**
