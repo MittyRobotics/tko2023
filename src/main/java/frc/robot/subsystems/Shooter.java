@@ -27,6 +27,9 @@ public class Shooter extends SubsystemBase {
             motor[i].getPIDController().setI(PID[1]);
             motor[i].getPIDController().setD(PID[2]);
             motor[i].getPIDController().setFF(PID[3]);
+
+            motor[i].setClosedLoopRampRate(0.3);
+            motor[i].setOpenLoopRampRate(0.3);
         }
         motor[0].setInverted(true);
     }

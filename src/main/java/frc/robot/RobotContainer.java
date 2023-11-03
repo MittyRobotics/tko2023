@@ -35,13 +35,11 @@ public class RobotContainer {
 
     private final Command midFlywheel;
     private final Command highFlywheel;
-    private final Command stopFlywheelAfterMid;
-    private final Command stopFlywheelAfterHigh;
+    private final Command stopFlywheel;
     private final Command unloadConveyor;
     private final Command bringCubeToHolding;
     private final Command lowerIntake;
-    private final Command raiseIntakeAfterIntake;
-    private final Command raiseIntakeAfterScore;
+    private final Command raiseIntake;
     private final Command scoreIntake;
     private final Command zeroIntake;
 
@@ -71,13 +69,11 @@ public class RobotContainer {
 
         midFlywheel = new MidFlywheel(shooter);
         highFlywheel = new HighFlywheel(shooter);
-        stopFlywheelAfterMid = new StopFlywheel(shooter);
-        stopFlywheelAfterHigh = new StopFlywheel(shooter);
+        stopFlywheel = new StopFlywheel(shooter);
         unloadConveyor = new UnloadConveyor(conveyor, () -> shootForward);
         bringCubeToHolding = new BringCubeToHolding(conveyor);
         lowerIntake = new LowerIntake(intake);
-        raiseIntakeAfterIntake = new RaiseIntake(intake);
-        raiseIntakeAfterScore = new RaiseIntake(intake);
+        raiseIntake = new RaiseIntake(intake);
         scoreIntake = new ScoreIntake(intake);
         zeroIntake = new ZeroIntake(intake, conveyor);
 
@@ -99,24 +95,23 @@ public class RobotContainer {
                 driverController::getLeftY, driverController::getLeftX, driverController::getRightX,
                 driverController::getRightBumper, driverController::getLeftBumper, driverController::getAButton
         ));
+        shooter.setDefaultCommand(stopFlywheel);
+        intake.setDefaultCommand(raiseIntake);
 
-
-        operatorController.leftTrigger().onTrue(bringCubeToHolding);
-        operatorController.leftTrigger().whileTrue(lowerIntake);
-        operatorController.leftTrigger().onFalse(raiseIntakeAfterIntake.alongWith(new InstantCommand(bringCubeToHolding::cancel)));
+        operatorController.leftTrigger().whileTrue(bringCubeToHolding.raceWith(lowerIntake));
+        operatorController.leftTrigger().onFalse(new InstantCommand(bringCubeToHolding::cancel));
 
         operatorController.rightTrigger()
                 .and(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD)
                 .whileTrue(unloadConveyor);
 
         operatorController.y().whileTrue(highFlywheel.alongWith(new InstantCommand(() -> shootForward = true)));
-        operatorController.y().onFalse(stopFlywheelAfterHigh.andThen(new InstantCommand(() -> shootForward = false)));
+        operatorController.y().onFalse(new InstantCommand(() -> shootForward = false));
 
         operatorController.x().whileTrue(midFlywheel.alongWith(new InstantCommand(() -> shootForward = true)));
-        operatorController.x().onFalse(stopFlywheelAfterMid.andThen(new InstantCommand(() -> shootForward = false)));
+        operatorController.x().onFalse(new InstantCommand(() -> shootForward = false));
 
         operatorController.a().whileTrue(scoreIntake.alongWith(new InstantCommand(() -> shootForward = false)));
-        operatorController.a().onFalse(raiseIntakeAfterScore);
 
         operatorController.leftBumper().and(operatorController.rightTrigger()).onTrue(zeroIntake);
     }

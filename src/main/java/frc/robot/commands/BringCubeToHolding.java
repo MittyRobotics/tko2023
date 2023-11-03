@@ -26,7 +26,7 @@ public class BringCubeToHolding extends CommandBase {
 
     @Override
     public void execute() {
-        conveyor.setMotor(0.5);
+        conveyor.setMotor(1.0);
 
         if (initPose == null && conveyor.getLimitSwitchTripped()) {
             initPose = conveyor.getPosition();
@@ -41,7 +41,7 @@ public class BringCubeToHolding extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        boolean condition = initPose != null && conveyor.getPosition() - initPose > 0.01;
+        boolean condition = initPose != null && conveyor.getPosition() - initPose > 0;
         SmartDashboard.putBoolean("isFinished", condition);
         return condition || Timer.getFPGATimestamp() - initTime > 10;
     }

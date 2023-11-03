@@ -25,7 +25,12 @@ public final class Constants {
 
         //    public static final double[] ANGLE_PID = {0.135, 0, 0.03};
         public static final double[] ANGLE_PID = {0.135, 0.0005, 0.002};
-        public static final double[] DRIVE_PID = {0.16, 0, 0.01, 1024. / 22328.48};
+        public static final double[][] DRIVE_PID = {
+                {0.25, 0, 0.01, 1024. / 22328.48},
+                {0.175, 0, 0.01, 1024. / 22328.48},
+                {0.175, 0, 0.01, 1024. / 22328.48},
+                {0.175, 0, 0.01, 1024. / 22328.48}
+        };
         public static final double MAX_LINEAR_SPEED_INCHES_PER_SECOND = 15 * 12;
         public static final double MAX_ANGULAR_SPEED = 1;
         public static final boolean[] DRIVE_INVERTED = {false, false, false, false};
@@ -49,12 +54,12 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int[] MOTOR_ID = new int[]{ 20, 21 };
 
-        public static final double[] PID = new double[]{0, 0, 0, 1. / 2920};
+        public static final double[] PID = new double[]{5e-4, 0, 5e-5, 1. / 2920};
 
         public static final double MOTOR_TURNS_PER_REV = 2;
 
         //RPM
-        public static final double MID_SHOOTER_RPM = 1000;
+        public static final double MID_SHOOTER_RPM = 1500;
         public static final double HIGH_SHOOTER_RPM = 2000;
         public static final double THRESHOLD = 100;
     }
@@ -79,7 +84,7 @@ public final class Constants {
         //RADIANS
         public static final double ZERO_POSITION = 1.997;
         public static final double UP_POSITION = Math.PI / 2;
-        public static final double DOWN_POSITION = -0.17;
+        public static final double DOWN_POSITION = -0.19;
         public static final double LOW_SCORE_POSITION = 0.2;
         public static final double THRESHOLD = 0.5 * 3.1415 / 180;
 

@@ -24,7 +24,7 @@ public class UnloadConveyor extends CommandBase {
 
     @Override
     public void execute() {
-        conveyor.setMotor(dir.getAsBoolean() ? 0.5 : -0.5);
+        conveyor.setMotor(dir.getAsBoolean() ? 1.0 : -1.0);
     }
 
     @Override

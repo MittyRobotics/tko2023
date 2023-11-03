@@ -55,10 +55,10 @@ public class Swerve extends SubsystemBase {
 
             driveMotors[i].configFactoryDefault();
             driveMotors[i].setSelectedSensorPosition(0);
-            driveMotors[i].config_kP(0, DRIVE_PID[0]);
-            driveMotors[i].config_kI(0, DRIVE_PID[1]);
-            driveMotors[i].config_kD(0, DRIVE_PID[2]);
-            driveMotors[i].config_kF(0, DRIVE_PID[3]);
+            driveMotors[i].config_kP(0, DRIVE_PID[i][0]);
+            driveMotors[i].config_kI(0, DRIVE_PID[i][1]);
+            driveMotors[i].config_kD(0, DRIVE_PID[i][2]);
+            driveMotors[i].config_kF(0, DRIVE_PID[i][3]);
             driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
             driveMotors[i].setNeutralMode(NeutralMode.Coast);
@@ -260,7 +260,7 @@ public class Swerve extends SubsystemBase {
         private double[] angles;
         private double[] magnitudes;
 
-        private final double length = 25.68, width = 22.68;
+        private final double length = 20.75, width = 17.75;
 
         private Vector r;
 
