@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.math.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,6 +18,11 @@ public class Gyro extends SubsystemBase {
         gyro = new WPI_Pigeon2(61);
         gyro.configFactoryDefault();
         gyro.reset();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Heading", getHeadingRadians() * 180 / Math.PI);
     }
 
     public double getPitch() {

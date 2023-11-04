@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
@@ -38,6 +37,7 @@ public class RobotContainer {
     private final Command stopFlywheel;
     private final Command unloadConveyor;
     private final Command bringCubeToHolding;
+    private final Command returnCube;
     private final Command lowerIntake;
     private final Command raiseIntake;
     private final Command scoreIntake;
@@ -71,7 +71,8 @@ public class RobotContainer {
         highFlywheel = new HighFlywheel(shooter);
         stopFlywheel = new StopFlywheel(shooter);
         unloadConveyor = new UnloadConveyor(conveyor, () -> shootForward);
-        bringCubeToHolding = new BringCubeToHolding(conveyor);
+        bringCubeToHolding = new IntakeCube(conveyor);
+        returnCube = new ReturnCube(conveyor);
         lowerIntake = new LowerIntake(intake);
         raiseIntake = new RaiseIntake(intake);
         scoreIntake = new ScoreIntake(intake);
@@ -99,7 +100,8 @@ public class RobotContainer {
         intake.setDefaultCommand(raiseIntake);
 
         operatorController.leftTrigger().whileTrue(bringCubeToHolding.raceWith(lowerIntake));
-        operatorController.leftTrigger().onFalse(new InstantCommand(bringCubeToHolding::cancel));
+        operatorController.leftTrigger().onFalse(new InstantCommand(bringCubeToHolding::cancel)
+                .andThen(returnCube));
 
         operatorController.rightTrigger()
                 .and(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD)

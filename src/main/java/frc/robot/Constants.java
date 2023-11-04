@@ -26,7 +26,7 @@ public final class Constants {
         //    public static final double[] ANGLE_PID = {0.135, 0, 0.03};
         public static final double[] ANGLE_PID = {0.135, 0.0005, 0.002};
         public static final double[][] DRIVE_PID = {
-                {0.25, 0, 0.01, 1024. / 22328.48},
+                {0.175, 0, 0.01, 1024. / 22328.48},
                 {0.175, 0, 0.01, 1024. / 22328.48},
                 {0.175, 0, 0.01, 1024. / 22328.48},
                 {0.175, 0, 0.01, 1024. / 22328.48}
@@ -54,13 +54,13 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int[] MOTOR_ID = new int[]{ 20, 21 };
 
-        public static final double[] PID = new double[]{5e-4, 0, 5e-5, 1. / 2920};
+        public static final double[] PID = new double[]{3e-4, 0, 3e-5, 1. / 2920};
 
         public static final double MOTOR_TURNS_PER_REV = 2;
 
         //RPM
         public static final double MID_SHOOTER_RPM = 1500;
-        public static final double HIGH_SHOOTER_RPM = 2000;
+        public static final double HIGH_SHOOTER_RPM = 2300;
         public static final double THRESHOLD = 100;
     }
 

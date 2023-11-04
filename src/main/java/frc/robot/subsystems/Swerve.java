@@ -1,10 +1,11 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.MotorFeedbackSensor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.math.*;
 import com.reduxrobotics.sensors.canandcoder.CANandcoder;
 import edu.wpi.first.math.controller.PIDController;
@@ -59,7 +60,7 @@ public class Swerve extends SubsystemBase {
             driveMotors[i].config_kI(0, DRIVE_PID[i][1]);
             driveMotors[i].config_kD(0, DRIVE_PID[i][2]);
             driveMotors[i].config_kF(0, DRIVE_PID[i][3]);
-            driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
+            driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 0.5));
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
             driveMotors[i].setNeutralMode(NeutralMode.Coast);
 //            driveMotors[i].configOpenloopRamp(1.45);
@@ -74,6 +75,14 @@ public class Swerve extends SubsystemBase {
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Brake);
         }
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Vel 1", getWheelVelocityInches(0));
+        SmartDashboard.putNumber("Vel 2", getWheelVelocityInches(1));
+        SmartDashboard.putNumber("Vel 3", getWheelVelocityInches(2));
+        SmartDashboard.putNumber("Vel 4", getWheelVelocityInches(3));
     }
 
     public ForwardKinematics getForwardKinematics() {

@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Conveyor;
 
-public class BringCubeToHolding extends CommandBase {
+public class IntakeCube extends CommandBase {
     private Conveyor conveyor;
 
     private double initTime;
     private Double initPose = null;
 
-    public BringCubeToHolding(Conveyor conveyor) {
+    public IntakeCube(Conveyor conveyor) {
         this.conveyor = conveyor;
 
         addRequirements(conveyor);
@@ -26,11 +26,7 @@ public class BringCubeToHolding extends CommandBase {
 
     @Override
     public void execute() {
-        conveyor.setMotor(1.0);
-
-        if (initPose == null && conveyor.getLimitSwitchTripped()) {
-            initPose = conveyor.getPosition();
-        }
+        conveyor.setMotor(0.8);
     }
 
     @Override
@@ -41,8 +37,6 @@ public class BringCubeToHolding extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        boolean condition = initPose != null && conveyor.getPosition() - initPose > 0;
-        SmartDashboard.putBoolean("isFinished", condition);
-        return condition || Timer.getFPGATimestamp() - initTime > 10;
+        return conveyor.getLimitSwitchTripped() || Timer.getFPGATimestamp() - initTime > 10;
     }
 }

@@ -81,6 +81,8 @@ public class SwerveDefaultCommand extends CommandBase {
                     new Vector(
                             Constants.SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleX) * throttleX * (rightBumper ? 1.5 : 1),
                             Constants.SwerveConstants.MAX_LINEAR_SPEED_INCHES_PER_SECOND * Math.abs(throttleY) * throttleY * (rightBumper ? 1.5 : 1)
+//                            15 * (throttleX > 0 ? 1 : -1),
+//                            0
                     ),
                     Constants.SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 1.5 : 1)
 //                    0
