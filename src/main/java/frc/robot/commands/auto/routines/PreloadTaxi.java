@@ -16,6 +16,10 @@ public class PreloadTaxi extends AutoRoutine {
 
         SwervePath taxiPath = pathManager.paths.get(
                 low == null ? null : low ? LOW_TAXI : HIGH_TAXI);
+
+        poseEstimator.setState(taxiPath.getByT(0).getPoint().getX(), taxiPath.getByT(0).getPoint().getY(),
+                taxiPath.getByT(0).getHeading().getRadians());
+
         addCommands(
                 new Preload(conveyor, shooter),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, taxiPath)

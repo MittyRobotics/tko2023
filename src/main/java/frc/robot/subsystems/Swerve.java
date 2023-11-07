@@ -45,6 +45,8 @@ public class Swerve extends SubsystemBase {
         prevEnc = new double[4];
 
         initHardware();
+
+        forwardKinematics.init();
     }
 
     public void initHardware() {
@@ -79,6 +81,8 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateForwardKinematics();
+
         SmartDashboard.putNumber("Vel 1", getWheelVelocityInches(0));
         SmartDashboard.putNumber("Vel 2", getWheelVelocityInches(1));
         SmartDashboard.putNumber("Vel 3", getWheelVelocityInches(2));

@@ -23,14 +23,16 @@ public class PreloadOne extends AutoRoutine {
                 low == null ? null : low ? LOW_TO_FIRST_PIECE : HIGH_TO_FIRST_PIECE);
         SwervePath firstScorePath = pathManager.paths.get(
                 low == null ? null : low ? LOW_FIRST_PIECE_TO_SCORE : HIGH_FIRST_PIECE_TO_SCORE);
+
+        poseEstimator.setState(firstPiecePath.getByT(0).getPoint().getX(), firstPiecePath.getByT(0).getPoint().getY(),
+                firstPiecePath.getByT(0).getHeading().getRadians());
+
         addCommands(
                 new Preload(conveyor, shooter),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
-                new ParallelCommandGroup(
-                        new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10)),
-                        new IntakeCube(conveyor).raceWith(new LowerIntake(intake))
-                ),
-                new RaiseIntake(intake),
+                new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10))
+                        .alongWith(new IntakeCube(conveyor))
+                        .raceWith(new LowerIntake(intake)),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstScorePath),
                 new AutoScoreMid(conveyor, shooter)
         );

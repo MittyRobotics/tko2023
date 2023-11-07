@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.auto.*;
+import frc.robot.commands.auto.routines.Preload;
+import frc.robot.commands.auto.routines.PreloadOne;
+import frc.robot.commands.auto.routines.PreloadTaxi;
 import frc.robot.subsystems.*;
 
 import static frc.robot.Constants.*;
@@ -36,7 +39,7 @@ public class RobotContainer {
     private final Command highFlywheel;
     private final Command stopFlywheel;
     private final Command unloadConveyor;
-    private final Command bringCubeToHolding;
+    private final Command intakeCube;
     private final Command returnCube;
     private final Command lowerIntake;
     private final Command raiseIntake;
@@ -71,7 +74,7 @@ public class RobotContainer {
         highFlywheel = new HighFlywheel(shooter);
         stopFlywheel = new StopFlywheel(shooter);
         unloadConveyor = new UnloadConveyor(conveyor, () -> shootForward);
-        bringCubeToHolding = new IntakeCube(conveyor);
+        intakeCube = new IntakeCube(conveyor);
         returnCube = new ReturnCube(conveyor);
         lowerIntake = new LowerIntake(intake);
         raiseIntake = new RaiseIntake(intake);
@@ -99,9 +102,9 @@ public class RobotContainer {
         shooter.setDefaultCommand(stopFlywheel);
         intake.setDefaultCommand(raiseIntake);
 
-        operatorController.leftTrigger().whileTrue(bringCubeToHolding.raceWith(lowerIntake));
-        operatorController.leftTrigger().onFalse(new InstantCommand(bringCubeToHolding::cancel)
-                .andThen(returnCube));
+        operatorController.leftTrigger().whileTrue(intakeCube.raceWith(lowerIntake));
+        operatorController.leftTrigger().onFalse(new InstantCommand(intakeCube::cancel));
+//                .andThen(new InstantCommand(returnCube::cancel)).andThen(returnCube));
 
         operatorController.rightTrigger()
                 .and(() -> shooter.getVelocityError() < ShooterConstants.THRESHOLD)
@@ -125,6 +128,10 @@ public class RobotContainer {
         swerve.zeroRelativeEncoders();
     }
 
+    public void autoPeriodic() {
+        System.out.println(poseEstimator.getState());
+    }
+
     public void teleopInit() {
         if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).andThen(new RaiseIntake(intake)).schedule();
         else new RaiseIntake(intake).schedule();
@@ -140,6 +147,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
 //        return Autos.exampleAuto(m_exampleSubsystem);
-        return autoSelector.getAuto();
+//        return autoSelector.getAuto();
+        return new PreloadOne(new AutoPathManager(poseEstimator, swerve, gyro),
+                swerve, gyro, poseEstimator, conveyor, shooter, intake,true);
+//        return new Preload(conveyor, shooter);
     }
 }

@@ -22,10 +22,14 @@ public class AutoPathManager {
     public final HashMap<PathName, SwervePath> paths;
 
     private Pose lowStartPose;
+    private Pose lowEndPose;
     private Pose highStartPose;
+    private Pose highEndPose;
 
-    private Pose lowFirstPiece;
-    private Pose highFirstPiece;
+    private Pose lowBeforeFirstPiece;
+    private Pose lowAfterFirstPiece;
+    private Pose highBeforeFirstPiece;
+    private Pose highAfterFirstPiece;
 
     private Pose lowSecondPiece;
     private Pose highSecondPiece;
@@ -40,28 +44,63 @@ public class AutoPathManager {
 
         paths = new HashMap<>();
 
-        initLowStartPaths();
-        initLowReturnPaths();
-        initHighStartPaths();
-        initHighReturnPaths();
-
         int lowTag = poseEstimator.FIELD_LEFT_SIDE ? 8 : 1;
         int highTag = poseEstimator.FIELD_LEFT_SIDE ? 6 : 3;
+
+        initLowPoses(lowTag, poseEstimator.FIELD_LEFT_SIDE);
+        initHighPoses(highTag, poseEstimator.FIELD_LEFT_SIDE);
+
+        initLowStartPaths(poseEstimator.FIELD_LEFT_SIDE);
+        initLowReturnPaths();
+        initHighStartPaths(poseEstimator.FIELD_LEFT_SIDE);
+        initHighReturnPaths();
     }
 
-    private void initPoses(int tag, boolean leftSide) {
+    private void initLowPoses(int tag, boolean leftSide) {
         lowStartPose = new Pose(Point.add(poseEstimator.getScoringZone(tag)[1].getPoint(), new Point(leftSide ? 32 : -32, 0)),
                 new Angle(leftSide ? 0 : Math.PI, true));
-
+        lowEndPose = new Pose(lowStartPose.getPoint(),
+                new Angle(leftSide ? Math.PI : 0, true));
+        lowBeforeFirstPiece = new Pose(Point.add(lowStartPose.getPosition(), new Point(leftSide ? 180 : -180, 0)),
+                lowStartPose.getAngle());
+        lowAfterFirstPiece = new Pose(Point.add(lowBeforeFirstPiece.getPoint(), new Point(new Vector(lowBeforeFirstPiece.getAngle(), 10))),
+                new Angle(lowBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
     }
 
-    private void initLowStartPaths() {
-//        paths.put(LOW_TAXI, new SwervePath(
-//
-//        ));
-//        paths.put(LOW_TO_FIRST_PIECE, new SwervePath(
-//
-//        ));
+    private void initHighPoses(int tag, boolean leftSide) {
+        highStartPose = new Pose(Point.add(poseEstimator.getScoringZone(tag)[1].getPoint(), new Point(leftSide ? 32 : -32, 0)),
+                new Angle(leftSide ? 0 : Math.PI, true));
+        highEndPose = new Pose(highStartPose.getPoint(),
+                new Angle(leftSide ? Math.PI : 0, true));
+        highBeforeFirstPiece = new Pose(Point.add(highStartPose.getPosition(), new Point(leftSide ? 180 : -180, 0)),
+                lowStartPose.getAngle());
+        highAfterFirstPiece = new Pose(Point.add(highBeforeFirstPiece.getPoint(), new Point(new Vector(highBeforeFirstPiece.getAngle(), 10))),
+                new Angle(highBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
+    }
+
+    private void initLowStartPaths(boolean leftSide) {
+        paths.put(LOW_TAXI, new SwervePath(
+                new QuinticHermiteSpline(
+                        lowStartPose,
+                        new Pose(Point.add(lowStartPose.getPoint(), new Point(leftSide ? 100 : -100, 0)), lowStartPose.getAngle())
+                ),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
+        paths.put(LOW_TO_FIRST_PIECE, new SwervePath(
+                new QuinticHermiteSpline(
+                        lowStartPose,
+                        lowBeforeFirstPiece
+                ),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(LOW_TO_SECOND_PIECE, new SwervePath(
 //
 //        ));
@@ -74,21 +113,43 @@ public class AutoPathManager {
     }
 
     private void initLowReturnPaths() {
-//        paths.put(LOW_FIRST_PIECE_TO_SCORE, new SwervePath(
-//
-//        ));
+        paths.put(LOW_FIRST_PIECE_TO_SCORE, new SwervePath(
+                new QuinticHermiteSpline(
+                        lowAfterFirstPiece,
+                        lowEndPose),
+                lowStartPose.getHeading(), lowStartPose.getHeading(),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(LOW_SECOND_PIECE_TO_SCORE, new SwervePath(
 //
 //        ));
     }
 
-    private void initHighStartPaths() {
-//        paths.put(HIGH_TAXI, new SwervePath(
-//
-//        ));
-//        paths.put(HIGH_TO_FIRST_PIECE, new SwervePath(
-//
-//        ));
+    private void initHighStartPaths(boolean leftSide) {
+        paths.put(HIGH_TAXI, new SwervePath(
+                new QuinticHermiteSpline(
+                        highStartPose,
+                        new Pose(Point.add(highStartPose.getPoint(), new Point(leftSide ? 100 : -100, 0)), highStartPose.getAngle())
+                ),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
+        paths.put(HIGH_TO_FIRST_PIECE, new SwervePath(
+                new QuinticHermiteSpline(
+                        highStartPose,
+                        highBeforeFirstPiece
+                ),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(HIGH_TO_SECOND_PIECE, new SwervePath(
 //
 //        ));
@@ -101,9 +162,16 @@ public class AutoPathManager {
     }
 
     private void initHighReturnPaths() {
-//        paths.put(HIGH_FIRST_PIECE_TO_SCORE, new SwervePath(
-//
-//        ));
+        paths.put(HIGH_FIRST_PIECE_TO_SCORE, new SwervePath(
+                new QuinticHermiteSpline(
+                        highAfterFirstPiece,
+                        highEndPose),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(HIGH_SECOND_PIECE_TO_SCORE, new SwervePath(
 //
 //        ));

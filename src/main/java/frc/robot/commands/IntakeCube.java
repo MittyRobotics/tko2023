@@ -9,7 +9,6 @@ public class IntakeCube extends CommandBase {
     private Conveyor conveyor;
 
     private double initTime;
-    private Double initPose = null;
 
     public IntakeCube(Conveyor conveyor) {
         this.conveyor = conveyor;
@@ -20,13 +19,12 @@ public class IntakeCube extends CommandBase {
     @Override
     public void initialize() {
         initTime = Timer.getFPGATimestamp();
-        initPose = null;
         SmartDashboard.putBoolean("Ended", false);
     }
 
     @Override
     public void execute() {
-        conveyor.setMotor(0.8);
+        conveyor.setMotor(0.6);
     }
 
     @Override
@@ -37,6 +35,6 @@ public class IntakeCube extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return conveyor.getLimitSwitchTripped() || Timer.getFPGATimestamp() - initTime > 10;
+        return conveyor.getLimitSwitchTripped();
     }
 }

@@ -130,6 +130,7 @@ public class PathFollowingCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+//        SmartDashboard.putNumber("DIST", new Vector(robot.getPoint(), path.getByT(1.0).getPoint()).getMagnitude());
         return new Vector(robot.getPoint(), path.getByT(1.0).getPoint()).getMagnitude() <= 5;
     }
 }
