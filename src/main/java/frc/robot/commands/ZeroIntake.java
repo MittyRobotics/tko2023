@@ -34,6 +34,6 @@ public class ZeroIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return intake.getLimitSwitchTripped();
+        return intake.getLimitSwitchTripped() || intake.hasBeenZeroed();
     }
 }

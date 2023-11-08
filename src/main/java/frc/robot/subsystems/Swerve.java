@@ -62,18 +62,18 @@ public class Swerve extends SubsystemBase {
             driveMotors[i].config_kI(0, DRIVE_PID[i][1]);
             driveMotors[i].config_kD(0, DRIVE_PID[i][2]);
             driveMotors[i].config_kF(0, DRIVE_PID[i][3]);
-            driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 0.5));
+            driveMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 100, 100, 0.5));
             driveMotors[i].setInverted(DRIVE_INVERTED[i]);
             driveMotors[i].setNeutralMode(NeutralMode.Coast);
-//            driveMotors[i].configOpenloopRamp(1.45);
-//            driveMotors[i].configClosedloopRamp(1.45);
+            driveMotors[i].configOpenloopRamp(0);
+            driveMotors[i].configClosedloopRamp(0);
             angleMotors[i].configFactoryDefault();
             angleMotors[i].config_kP(0, ANGLE_PID[0]);
             angleMotors[i].config_kI(0, ANGLE_PID[1]);
             angleMotors[i].config_kD(0, ANGLE_PID[2]);
             angleMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
             angleMotors[i].setSelectedSensorPosition(absEncoders[i].getAbsPosition() * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2 * PI);
-            angleMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
+            angleMotors[i].configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 100, 100, 0.5));
             angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Brake);
         }

@@ -96,7 +96,7 @@ public class AutoPathManager {
                         lowBeforeFirstPiece
                 ),
                 new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
-                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(lowBeforeFirstPiece.getHeading().getRadians() - Math.PI, true),
                 0, 0, 100, 100, 100, 0,
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
@@ -117,7 +117,7 @@ public class AutoPathManager {
                 new QuinticHermiteSpline(
                         lowAfterFirstPiece,
                         lowEndPose),
-                lowStartPose.getHeading(), lowStartPose.getHeading(),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true), new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
                 0, 0, 100, 100, 100, 0,
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
@@ -178,16 +178,19 @@ public class AutoPathManager {
     }
 
     public SwervePath getGroundIntakingPath(double dist) {
-        Pose robot = new Pose(poseEstimator.getState().getPoint(), gyro.getRadiansAsAngle());
+        Pose start = new Pose(poseEstimator.getState().getPoint(), new Angle(gyro.getHeadingRadians() + Math.PI, true));
 
         QuinticHermiteSpline spline = new QuinticHermiteSpline(
-                robot,
-                new Pose(Point.add(robot.getPoint(), new Point(new Vector(robot.getAngle(), dist))), robot.getAngle())
+                start,
+                new Pose(
+                        Point.add(start.getPoint(), new Point(new Vector(start.getAngle(), dist))),
+                        start.getAngle()
+                )
         );
 
         return new SwervePath(
                 spline,
-                robot.getHeading(), robot.getHeading(),
+                start.getHeading(), start.getHeading(),
                 swerve.getDesiredVel().getMagnitude(), 0, 10, 10, 10, 0,
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001

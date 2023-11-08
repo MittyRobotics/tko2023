@@ -53,7 +53,7 @@ public class AutoSelector {
             case 1:
                 switch (end.getSelected()) {
                     case "nothing":
-                        return new Preload(conveyor, shooter);
+                        return new Preload(conveyor, shooter, intake);
                     case "balance":
                         return new PreloadBalance(pathManager,
                                 swerve, gyro, poseEstimator,
@@ -62,10 +62,10 @@ public class AutoSelector {
                     case "taxi":
                         return new PreloadTaxi(pathManager,
                                 swerve, gyro, poseEstimator,
-                                conveyor, shooter,
+                                conveyor, shooter, intake,
                                 start.getSelected());
                     default:
-                        return new Preload(conveyor, shooter);
+                        return new Preload(conveyor, shooter, intake);
                 }
             case 2:
                 switch (end.getSelected()) {

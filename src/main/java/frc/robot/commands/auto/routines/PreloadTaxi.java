@@ -10,7 +10,7 @@ import static frc.robot.commands.auto.AutoPathManager.PathName.*;
 public class PreloadTaxi extends AutoRoutine {
     public PreloadTaxi(AutoPathManager pathManager,
                        Swerve swerve, Gyro gyro, PoseEstimator poseEstimator,
-                       Conveyor conveyor, Shooter shooter,
+                       Conveyor conveyor, Shooter shooter, Intake intake,
                        Boolean low) {
         super();
 
@@ -21,7 +21,7 @@ public class PreloadTaxi extends AutoRoutine {
                 taxiPath.getByT(0).getHeading().getRadians());
 
         addCommands(
-                new Preload(conveyor, shooter),
+                new Preload(conveyor, shooter, intake),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, taxiPath)
         );
     }

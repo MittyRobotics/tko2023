@@ -95,8 +95,8 @@ public class RobotContainer {
      */
     private void configureBindings() {
         swerve.setDefaultCommand(new SwerveDefaultCommand(
-                swerve, poseEstimator,
-                driverController::getLeftY, driverController::getLeftX, driverController::getRightX,
+                swerve, poseEstimator, gyro,
+                driverController::getLeftY, driverController::getLeftX, driverController::getRightX, driverController::getLeftTriggerAxis,
                 driverController::getRightBumper, driverController::getLeftBumper, driverController::getAButton
         ));
         shooter.setDefaultCommand(stopFlywheel);
@@ -122,19 +122,15 @@ public class RobotContainer {
     }
 
     public void autoInit() {
-        if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).andThen(new RaiseIntake(intake)).schedule();
-        else new RaiseIntake(intake).schedule();
-
         swerve.zeroRelativeEncoders();
     }
 
     public void autoPeriodic() {
-        System.out.println(poseEstimator.getState());
+//        System.out.println(poseEstimator.getState());
     }
 
     public void teleopInit() {
-        if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).andThen(new RaiseIntake(intake)).schedule();
-        else new RaiseIntake(intake).schedule();
+        if (!intake.hasBeenZeroed()) new ZeroIntake(intake, conveyor).schedule();
 
         swerve.zeroRelativeEncoders();
     }

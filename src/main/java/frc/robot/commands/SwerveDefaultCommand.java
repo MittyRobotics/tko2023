@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.PoseEstimator;
@@ -19,18 +21,23 @@ import static frc.robot.Constants.SwerveConstants.TICKS_PER_INCH;
 public class SwerveDefaultCommand extends CommandBase {
     private Swerve swerve;
     private PoseEstimator poseEstimator;
+    private Gyro gyro;
 
-    private DoubleSupplier xSupplier, ySupplier, angularSupplier;
+    private DoubleSupplier xSupplier, ySupplier, angularSupplier, lTriggerSupplier;
     private BooleanSupplier rBumperSupplier, lBumperSupplier, aSupplier;
     private double throttleX, throttleY, throttleAngular, joystickDeadzone;
     private boolean rightBumper, leftBumper, a;
+    private boolean wasTurningLastLoop = true;
 
-    public SwerveDefaultCommand(Swerve swerve, PoseEstimator poseEstimator,
-                                DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier angularSupplier,
+    PIDController angularController;
+
+    public SwerveDefaultCommand(Swerve swerve, PoseEstimator poseEstimator, Gyro gyro,
+                                DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier angularSupplier, DoubleSupplier lTtiggerSupplier,
                                 BooleanSupplier rBumperSupplier, BooleanSupplier lBumperSupplier, BooleanSupplier aSupplier) {
 
         this.swerve = swerve;
         this.poseEstimator = poseEstimator;
+        this.gyro = gyro;
 
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
@@ -39,6 +46,10 @@ public class SwerveDefaultCommand extends CommandBase {
         this.rBumperSupplier = rBumperSupplier;
         this.lBumperSupplier = lBumperSupplier;
         this.aSupplier = aSupplier;
+
+        this.lTriggerSupplier = lTtiggerSupplier;
+
+        this.angularController = new PIDController(3, 0, 0.001);
 
         addRequirements(swerve);
     }
@@ -56,6 +67,8 @@ public class SwerveDefaultCommand extends CommandBase {
 
     @Override
     public void execute() {
+        wasTurningLastLoop = throttleAngular != 0;
+
         throttleX = (poseEstimator.FIELD_LEFT_SIDE ? 1 : -1) * -xSupplier.getAsDouble();
         throttleY = (poseEstimator.FIELD_LEFT_SIDE ? -1 : 1) * ySupplier.getAsDouble();
         throttleAngular = -angularSupplier.getAsDouble();
@@ -67,10 +80,19 @@ public class SwerveDefaultCommand extends CommandBase {
         if (Math.abs(throttleY) < joystickDeadzone) throttleY = 0;
         if (Math.abs(throttleAngular) < joystickDeadzone) throttleAngular = 0;
 
-//        System.out.println("FLS: " + Odometry.getInstance().FIELD_LEFT_SIDE + ", X: " + throttleX);
+        double angularVel = 0;
 
-//        System.out.printf("X: %.2f, Y: %.2f, A: %.2f", throttleX, throttleY, throttleAngular);
-//        System.out.println();
+        if (throttleAngular == 0 && wasTurningLastLoop) {
+            angularController.setSetpoint(gyro.getHeadingRadians());
+            System.out.println("SETTING");
+        }
+
+        if (throttleAngular == 0 && lTriggerSupplier.getAsDouble() > 0.5) {
+            angularVel = angularController.calculate(gyro.getHeadingRadians());
+        } else {
+            angularVel = Constants.SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 1.5 : 1);
+        }
+
         if (a) {
             swerve.setZero();
             swerve.lockWheels();
@@ -84,7 +106,7 @@ public class SwerveDefaultCommand extends CommandBase {
 //                            15 * (throttleX > 0 ? 1 : -1),
 //                            0
                     ),
-                    Constants.SwerveConstants.MAX_ANGULAR_SPEED * throttleAngular * (leftBumper ? 1.5 : 1)
+                    angularVel
 //                    0
             );
             swerve.applyCalculatedInputs();

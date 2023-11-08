@@ -28,11 +28,11 @@ public class PreloadOne extends AutoRoutine {
                 firstPiecePath.getByT(0).getHeading().getRadians());
 
         addCommands(
-                new Preload(conveyor, shooter),
+                new Preload(conveyor, shooter, intake),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstPiecePath),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, low == null ? null : () -> pathManager.getGroundIntakingPath(10))
-                        .alongWith(new IntakeCube(conveyor))
-                        .raceWith(new LowerIntake(intake)),
+                        .alongWith(new IntakeCube(conveyor)
+                        .raceWith(new LowerIntake(intake))),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, firstScorePath),
                 new AutoScoreMid(conveyor, shooter)
         );

@@ -18,7 +18,7 @@ public class PreloadBalance extends AutoRoutine {
         SwervePath balancePath = pathManager.paths.get(
                 low == null ? null : low ? LOW_BALANCE_FAR_SIDE : HIGH_BALANCE_FAR_SIDE);
         addCommands(
-                new Preload(conveyor, shooter),
+                new Preload(conveyor, shooter, intake),
                 new PathFollowingCommand(swerve, gyro, poseEstimator, balancePath),
                 new AutoBalance(swerve, gyro, poseEstimator, low == null)
         );

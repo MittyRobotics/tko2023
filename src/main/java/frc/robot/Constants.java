@@ -59,7 +59,7 @@ public final class Constants {
         public static final double MOTOR_TURNS_PER_REV = 2;
 
         //RPM
-        public static final double MID_SHOOTER_RPM = 1150;
+        public static final double MID_SHOOTER_RPM = 1250;
         public static final double HIGH_SHOOTER_RPM = 1900;
         public static final double THRESHOLD = 100;
     }
