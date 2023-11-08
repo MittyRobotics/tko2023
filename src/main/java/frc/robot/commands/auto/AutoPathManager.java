@@ -31,11 +31,15 @@ public class AutoPathManager {
     private Pose highBeforeFirstPiece;
     private Pose highAfterFirstPiece;
 
-    private Pose lowSecondPiece;
-    private Pose highSecondPiece;
+    private Pose lowBeforeSecondPiece;
+    private Pose lowAfterSecondPiece;
+    private Pose highBeforeSecondPiece;
+    private Pose highAfterSecondPiece;
 
-    private Pose lowBalance;
-    private Pose highBalance;
+    private Pose lowBalanceEnding;
+    private Pose lowBalanceConnection;
+    private Pose highBalanceEnding;
+    private Pose highBalanceConnection;
 
     public AutoPathManager(PoseEstimator poseEstimator, Swerve swerve, Gyro gyro) {
         this.poseEstimator = poseEstimator;
@@ -61,9 +65,15 @@ public class AutoPathManager {
                 new Angle(leftSide ? 0 : Math.PI, true));
         lowEndPose = new Pose(lowStartPose.getPoint(),
                 new Angle(leftSide ? Math.PI : 0, true));
-        lowBeforeFirstPiece = new Pose(Point.add(lowStartPose.getPosition(), new Point(leftSide ? 180 : -180, 0)),
+
+        lowBeforeFirstPiece = new Pose(Point.add(lowStartPose.getPosition(), new Point(leftSide ? 180 : -180, -6.25)),
                 lowStartPose.getAngle());
         lowAfterFirstPiece = new Pose(Point.add(lowBeforeFirstPiece.getPoint(), new Point(new Vector(lowBeforeFirstPiece.getAngle(), 10))),
+                new Angle(lowBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
+
+        lowBeforeSecondPiece = new Pose(Point.add(lowBeforeFirstPiece.getPoint(), new Point(0, 45)),
+                new Angle(lowStartPose.getAngle().getRadians() + Math.PI / 3 * (leftSide ? 1 : -1), true));
+        lowAfterSecondPiece = new Pose(Point.add(lowBeforeSecondPiece.getPoint(), new Point(new Vector(lowBeforeSecondPiece.getAngle(), 10))),
                 new Angle(lowBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
     }
 
@@ -72,9 +82,15 @@ public class AutoPathManager {
                 new Angle(leftSide ? 0 : Math.PI, true));
         highEndPose = new Pose(highStartPose.getPoint(),
                 new Angle(leftSide ? Math.PI : 0, true));
-        highBeforeFirstPiece = new Pose(Point.add(highStartPose.getPosition(), new Point(leftSide ? 180 : -180, 0)),
+
+        highBeforeFirstPiece = new Pose(Point.add(highStartPose.getPosition(), new Point(leftSide ? 180 : -180, 5.75)),
                 lowStartPose.getAngle());
         highAfterFirstPiece = new Pose(Point.add(highBeforeFirstPiece.getPoint(), new Point(new Vector(highBeforeFirstPiece.getAngle(), 10))),
+                new Angle(highBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
+
+        highBeforeSecondPiece = new Pose(Point.add(highBeforeFirstPiece.getPoint(), new Point(0, -45)),
+                new Angle(highStartPose.getAngle().getRadians() + Math.PI / 3 * (leftSide ? -1 : 1), true));
+        highAfterSecondPiece = new Pose(Point.add(lowBeforeSecondPiece.getPoint(), new Point(new Vector(lowBeforeSecondPiece.getAngle(), 10))),
                 new Angle(highBeforeFirstPiece.getAngle().getRadians() + Math.PI, true));
     }
 
@@ -101,9 +117,17 @@ public class AutoPathManager {
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
         ));
-//        paths.put(LOW_TO_SECOND_PIECE, new SwervePath(
-//
-//        ));
+        paths.put(LOW_TO_SECOND_PIECE, new SwervePath(
+                new QuinticHermiteSpline(
+                        lowStartPose,
+                        lowBeforeSecondPiece
+                ),
+                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(lowBeforeSecondPiece.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(LOW_TO_THIRD_PIECE, new SwervePath(
 //
 //        ));
@@ -117,14 +141,20 @@ public class AutoPathManager {
                 new QuinticHermiteSpline(
                         lowAfterFirstPiece,
                         lowEndPose),
-                new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true), new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(lowBeforeFirstPiece.getHeading().getRadians() - Math.PI, true), new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
                 0, 0, 100, 100, 100, 0,
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
         ));
-//        paths.put(LOW_SECOND_PIECE_TO_SCORE, new SwervePath(
-//
-//        ));
+        paths.put(LOW_SECOND_PIECE_TO_SCORE, new SwervePath(
+                new QuinticHermiteSpline(
+                        lowAfterSecondPiece,
+                        lowEndPose),
+                new Angle(lowBeforeSecondPiece.getHeading().getRadians() - Math.PI, true), new Angle(lowStartPose.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
     }
 
     private void initHighStartPaths(boolean leftSide) {
@@ -150,9 +180,17 @@ public class AutoPathManager {
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
         ));
-//        paths.put(HIGH_TO_SECOND_PIECE, new SwervePath(
-//
-//        ));
+        paths.put(HIGH_TO_SECOND_PIECE, new SwervePath(
+                new QuinticHermiteSpline(
+                        highStartPose,
+                        highBeforeSecondPiece
+                ),
+                new Angle(highStartPose.getHeading().getRadians() - Math.PI, true),
+                new Angle(highBeforeSecondPiece.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
 //        paths.put(HIGH_TO_THIRD_PIECE, new SwervePath(
 //
 //        ));
@@ -172,9 +210,15 @@ public class AutoPathManager {
                 0.1, 0.5, 1, 1,
                 3, 0, 0.001
         ));
-//        paths.put(HIGH_SECOND_PIECE_TO_SCORE, new SwervePath(
-//
-//        ));
+        paths.put(HIGH_SECOND_PIECE_TO_SCORE, new SwervePath(
+                new QuinticHermiteSpline(
+                        highAfterSecondPiece,
+                        highEndPose),
+                new Angle(highBeforeSecondPiece.getHeading().getRadians() - Math.PI, true), new Angle(highAfterSecondPiece.getHeading().getRadians() - Math.PI, true),
+                0, 0, 100, 100, 100, 0,
+                0.1, 0.5, 1, 1,
+                3, 0, 0.001
+        ));
     }
 
     public SwervePath getGroundIntakingPath(double dist) {
