@@ -1,12 +1,8 @@
 package com.github.mittyrobotics.drivetrain;
 
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -80,10 +76,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             driveMotors[i].getConfigurator().apply(driveMotorConfig);
         }
 
-        modulePos[0] = new Translation2d(SwerveConstants.xRad, SwerveConstants.yRad);
-        modulePos[1] = new Translation2d(-SwerveConstants.xRad, SwerveConstants.yRad);
-        modulePos[2] = new Translation2d(-SwerveConstants.xRad, -SwerveConstants.yRad);
-        modulePos[3] = new Translation2d(SwerveConstants.xRad, -SwerveConstants.yRad);
+        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
+        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
+        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
+        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
 
         kinematics = new SwerveDriveKinematics(modulePos[0], modulePos[1], modulePos[2], modulePos[3]);
     }

@@ -1,6 +1,7 @@
 package com.github.mittyrobotics;
 
 import com.github.mittyrobotics.drivetrain.SwerveSubsystemPhoenix6;
+import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,6 +17,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        Gyro.getInstance().initHardware();
         SwerveSubsystemPhoenix6.getInstance().initHardware();
     }
 

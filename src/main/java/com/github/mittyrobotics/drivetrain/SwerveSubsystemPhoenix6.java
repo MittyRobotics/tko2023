@@ -67,10 +67,10 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
             angleMotors[i].setNeutralMode(NeutralMode.Coast);
         }
 
-        modulePos[0] = new Translation2d(SwerveConstants.xRad, SwerveConstants.yRad);
-        modulePos[1] = new Translation2d(-SwerveConstants.xRad, SwerveConstants.yRad);
-        modulePos[2] = new Translation2d(-SwerveConstants.xRad, -SwerveConstants.yRad);
-        modulePos[3] = new Translation2d(SwerveConstants.xRad, -SwerveConstants.yRad);
+        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
+        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
+        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
+        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
 
         kinematics = new SwerveDriveKinematics(modulePos[0], modulePos[1], modulePos[2], modulePos[3]);
 

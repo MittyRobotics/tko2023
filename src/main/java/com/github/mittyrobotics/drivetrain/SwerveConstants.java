@@ -4,17 +4,17 @@ import java.awt.*;
 
 public class SwerveConstants {
 
-    public static final double xRad = 0;
+    public static final double W = 0;
 
-    public static final double yRad = 0;
-
-    //in the order of quadrants
-
-    public static final int DRIVE_MOTOR_IDS[] = {6, 4, 2, 0}; // 3, 10, 11, 7
+    public static final double L = 0;
 
     //in the order of quadrants
 
-    public static final int ANGLE_MOTOR_IDS[] = {7, 5, 3, 1};//6, 4, 9, 2
+    public static final int DRIVE_MOTOR_IDS[] = {11, 13, 15, 17}; // 3, 10, 11, 7
+
+    //in the order of quadrants
+
+    public static final int ANGLE_MOTOR_IDS[] = {10, 12, 14, 16};//6, 4, 9, 2
 
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6,7}};

@@ -3,6 +3,7 @@ package com.github.mittyrobotics.util;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Gyro extends SubsystemBase {
@@ -59,5 +60,9 @@ public class Gyro extends SubsystemBase {
 
     public double getAngularVel() {
         return gyro.getRate() * Math.PI / 180;
+    }
+
+    public Rotation2d getRotation2D() {
+        return gyro.getRotation2d();
     }
 }

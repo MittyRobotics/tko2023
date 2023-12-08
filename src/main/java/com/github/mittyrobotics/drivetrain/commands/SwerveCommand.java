@@ -48,7 +48,7 @@ public class SwerveCommand extends CommandBase {
         velY = leftStickY * SwerveConstants.MAX_LINEAR_VEL;
         angVel = rightStickY * SwerveConstants.MAX_ANGULAR_VEL;
 
-        angle = new Rotation2d(Gyro.getInstance().getHeadingAngle());
+        angle = Gyro.getInstance().getRotation2D();
 
         //can merge if wanted
         speed = new ChassisSpeeds(velX, velY, angVel);
