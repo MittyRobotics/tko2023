@@ -1,7 +1,6 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.drivetrain.SwerveSubsystemPhoenix6;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
@@ -13,12 +12,15 @@ public class SwerveCommand extends CommandBase {
 
     private double leftStickX;
     private double leftStickY;
-    private double rightStickY;
+    private double rightStickX;
 
     private ChassisSpeeds speed;
     private Rotation2d angle;
     private double velX, velY, angVel;
 
+    public SwerveCommand() {
+        addRequirements(SwerveSubsystemPhoenix6.getInstance());
+    }
     @Override
     public void initialize() {
         velX = 0;
@@ -27,7 +29,7 @@ public class SwerveCommand extends CommandBase {
 
         leftStickX = 0;
         leftStickY = 0;
-        rightStickY = 0;
+        rightStickX = 0;
 
         angle = new Rotation2d(0);
 
@@ -38,15 +40,15 @@ public class SwerveCommand extends CommandBase {
     public void execute() {
         leftStickX = OI.getInstance().getDriveController().getLeftX();
         leftStickY = OI.getInstance().getDriveController().getLeftY();
-        rightStickY = OI.getInstance().getDriveController().getRightY();
+        rightStickX = OI.getInstance().getDriveController().getRightX();
 
         leftStickX = Math.abs(leftStickX) > 0.1 ? leftStickX : 0;
         leftStickY = Math.abs(leftStickY) > 0.1 ? leftStickY : 0;
-        rightStickY = Math.abs(rightStickY) > 0.1 ? rightStickY : 0;
+        rightStickX = Math.abs(rightStickX) > 0.1 ? rightStickX : 0;
 
         velX = leftStickX * SwerveConstants.MAX_LINEAR_VEL;
         velY = leftStickY * SwerveConstants.MAX_LINEAR_VEL;
-        angVel = rightStickY * SwerveConstants.MAX_ANGULAR_VEL;
+        angVel = rightStickX * SwerveConstants.MAX_ANGULAR_VEL;
 
         angle = Gyro.getInstance().getRotation2D();
 

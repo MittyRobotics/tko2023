@@ -23,7 +23,7 @@ public class SwerveConstants {
 
 
 
-    public static final double MAX_LINEAR_VEL = 7 / 3.28084; //10 ft/s
+    public static final double MAX_LINEAR_VEL = 3 / 3.28084; //10 ft/s
     public static final double MAX_BOOST_LINEAR_VEL = 17 / 3.28084; //18 ft/s
 
 
@@ -37,11 +37,11 @@ public class SwerveConstants {
 
     public static final double LINEAR_VELOCITY_D = 0.001;
 
-    public static final double ANGLE_LOCK_P = 3;
+    public static final double ANGLE_LOCK_P = 1;
 
     public static final double ANGLE_LOCK_I = 0.0;
 
-    public static final double ANGLE_LOCK_D = 0.02;
+    public static final double ANGLE_LOCK_D = 0;
 
     public static final double BALANCE_P = 0.1;
     public static final double BALANCE_I = 0;
@@ -88,7 +88,7 @@ public class SwerveConstants {
 
     public static final double TICKS_PER_RADIAN_MAG_ENCODER = MAG_ENCODER_TICKS / MAG_ENCODER_SAMPLING_RATE / (2*Math.PI);
 
-    public static final int PIGEON_TWO_ID = 62;
+    public static final int PIGEON_TWO_ID = 61;
     public static final double[] PIGEON_TWO_MOUNT_CONFIG = {-90, 0, 0}; //(-Yaw) Angle --> +CW, Pitch, Roll
     public static final double TRIGGER_THRESHOLD = 0.05;
 

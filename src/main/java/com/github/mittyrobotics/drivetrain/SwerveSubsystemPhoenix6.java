@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.Arrays;
+
 import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 import static java.lang.Math.PI;
 
@@ -24,9 +26,9 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
 
     private SwerveModuleState[] modules;
 
-    private Translation2d[] modulePos;
+    private Translation2d[] modulePos = new Translation2d[4];
 
-    private TalonFX[] angleMotors, driveMotors;
+    private TalonFX[] angleMotors = new TalonFX[4], driveMotors = new TalonFX[4];
 
     private SwerveDriveKinematics kinematics;
 
@@ -89,6 +91,7 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
 
     public void setModuleStates(ChassisSpeeds speed) {
         modules = kinematics.toSwerveModuleStates(speed);
+        System.out.println("MODULES: " + Arrays.toString(modules));
         for (int i = 0; i < 4; i++) {
             modules[i] = SwerveModuleState.optimize(modules[i],
                     new Rotation2d(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO));
@@ -103,8 +106,10 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
 //            angleMotors[i].set(ControlMode.Position, currentDes[1] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
 //            driveMotors[i].set(ControlMode.Velocity, currentDes[0] * TICKS_PER_METER / 10);
 
+            System.out.println("angle " + i + modules[i].angle);
             angleMotors[i].set(ControlMode.Position, modules[i].angle.getRadians() * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
             driveMotors[i].set(ControlMode.Velocity, modules[i].speedMetersPerSecond * TICKS_PER_METER / 10);
+            System.out.println("SPEED MOTOR: " + i + modules[i].speedMetersPerSecond);
         }
     }
 
