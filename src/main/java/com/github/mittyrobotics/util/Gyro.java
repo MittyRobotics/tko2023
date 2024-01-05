@@ -31,6 +31,7 @@ public class Gyro extends SubsystemBase {
         gyro = new WPI_Pigeon2(SwerveConstants.PIGEON_TWO_ID);
         gyro.configFactoryDefault();
         gyro.reset();
+        gyro.setAccumZAngle(0);
     }
 
     public double getPitch() {

@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.github.mittyrobotics.drivetrain.commands.SwerveCommand;
 import com.github.mittyrobotics.util.interfaces.IMotorSubsystem;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -21,6 +22,7 @@ import static com.github.mittyrobotics.drivetrain.SwerveConstants.*;
 import static java.lang.Math.PI;
 
 public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubsystem {
+    private int count = 0;
 
     private static SwerveSubsystemPhoenix6 instance;
 
@@ -31,6 +33,8 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
     private TalonFX[] angleMotors = new TalonFX[4], driveMotors = new TalonFX[4];
 
     private SwerveDriveKinematics kinematics;
+
+    private com.reduxrobotics.sensors.canandcoder.Canandcoder[] absEncoders = new Canandcoder[4];
 
     public SwerveSubsystemPhoenix6() {
 
@@ -48,6 +52,7 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
     @Override
     public void initHardware() {
         for (int i = 0; i < 4; i++) {
+            absEncoders[i] = new Canandcoder(SwerveConstants.ABS_ENCODER_IDS[i]);
 
             driveMotors[i] = new WPI_TalonFX(DRIVE_MOTOR_IDS[i]);
             angleMotors[i] = new WPI_TalonFX(ANGLE_MOTOR_IDS[i]);
@@ -67,12 +72,27 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
             angleMotors[i].setSelectedSensorPosition(0);
 //            angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Coast);
+
+
+            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition() - 1./4) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
+//            angleMotors[i].setSelectedSensorPosition(angleMotors[i].getSelectedSensorPosition() + PI/2. * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
 
-        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
-        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
-        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
-        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
+//        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
+//        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
+//        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
+//        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
+
+        modulePos[0] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+        modulePos[1] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
+        modulePos[2] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+        modulePos[3] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
+
+////
+//         modulePos[0] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
+//        modulePos[1] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
+//        modulePos[2] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
+//        modulePos[3] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);;
 
         kinematics = new SwerveDriveKinematics(modulePos[0], modulePos[1], modulePos[2], modulePos[3]);
 
@@ -89,9 +109,38 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
 
     }
 
+    public void rotateTwo() {
+
+    }
+
+    public void setZero() {
+        System.out.println("ID 30: " + angleMotors[3].getSelectedSensorPosition() + "ABS: " + absEncoders[3].getAbsPosition());
+        count++;
+        for (int i = 0; i < 4; i++) {
+            if(count < 2)
+            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition() + 1/4) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
+
+
+            angleMotors[i].set(ControlMode.Position, 0);
+        }
+
+    }
+
+    public void setRelative() {
+        for (int i = 0; i < 4; i++) {
+            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition() - 1./4) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
+
+        }
+    }
+
+    public double getAbsEncoderPosition(int i) {
+        return absEncoders[i].getAbsPosition();
+    }
+
     public void setModuleStates(ChassisSpeeds speed) {
         modules = kinematics.toSwerveModuleStates(speed);
-        System.out.println("MODULES: " + Arrays.toString(modules));
+//        System.out.println("MODULES: " + Arrays.toString(modules));
+        //OPTIMIZATION
         for (int i = 0; i < 4; i++) {
             modules[i] = SwerveModuleState.optimize(modules[i],
                     new Rotation2d(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO));
@@ -106,10 +155,10 @@ public class SwerveSubsystemPhoenix6 extends SubsystemBase implements IMotorSubs
 //            angleMotors[i].set(ControlMode.Position, currentDes[1] * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
 //            driveMotors[i].set(ControlMode.Velocity, currentDes[0] * TICKS_PER_METER / 10);
 
-            System.out.println("angle " + i + modules[i].angle);
+//            System.out.println("angle " + i + modules[i].angle);
             angleMotors[i].set(ControlMode.Position, modules[i].angle.getRadians() * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
             driveMotors[i].set(ControlMode.Velocity, modules[i].speedMetersPerSecond * TICKS_PER_METER / 10);
-            System.out.println("SPEED MOTOR: " + i + modules[i].speedMetersPerSecond);
+//            System.out.println("SPEED MOTOR: " + i + modules[i].speedMetersPerSecond);
         }
     }
 

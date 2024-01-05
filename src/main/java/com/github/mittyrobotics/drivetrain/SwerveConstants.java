@@ -4,20 +4,28 @@ import java.awt.*;
 
 public class SwerveConstants {
 
-    public static final double W = 0;
+    public static final double W = 17.75;
 
-    public static final double L = 0;
-
-    //in the order of quadrants
-
-    public static final int DRIVE_MOTOR_IDS[] = {11, 13, 15, 17}; // 3, 10, 11, 7
+    public static final double L = 20.75;
 
     //in the order of quadrants
 
-    public static final int ANGLE_MOTOR_IDS[] = {10, 12, 14, 16};//6, 4, 9, 2
+    public static final int DRIVE_MOTOR_IDS[] = {13, 15, 17, 11}; // 3, 10, 11, 7\][
+
+
+    //in the order of quadrants
+
+    public static final int ANGLE_MOTOR_IDS[] = {12, 14, 16, 10};//6, 4, 9, 2
+
+//    public static final int DRIVE_MOTOR_IDS[] = {11, 13, 15, 17}; // 3, 10, 11, 7
+//
+//    //in the order of quadrants
+//
+//    public static final int ANGLE_MOTOR_IDS[] = {10, 12, 14, 16};//6, 4, 9, 2
 
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6,7}};
+    public static final int[] ABS_ENCODER_IDS = {31, 32, 33, 30};
 
     public static boolean ROTATION_FALCON_INVERT = true;
 
@@ -27,11 +35,11 @@ public class SwerveConstants {
     public static final double MAX_BOOST_LINEAR_VEL = 17 / 3.28084; //18 ft/s
 
 
-    public static final double MAX_ANGULAR_VEL = 3; // was 3.5
+    public static final double MAX_ANGULAR_VEL = 0.5; // was 3.5
 
     public static final double BUMPER_ANGULAR_VEL = 2;
 
-    public static final double LINEAR_VELOCITY_P = 0.1;
+    public static final double LINEAR_VELOCITY_P = 0.05;
 
     public static final double LINEAR_VELOCITY_I = 0;
 

@@ -8,7 +8,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+import static com.github.mittyrobotics.drivetrain.SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
+import static java.lang.Math.PI;
+
 public class SwerveCommand extends CommandBase {
+    int count = 0;
 
     private double leftStickX;
     private double leftStickY;
@@ -38,6 +42,12 @@ public class SwerveCommand extends CommandBase {
 
     @Override
     public void execute() {
+
+        if(count < 2)
+            SwerveSubsystemPhoenix6.getInstance().setRelative();
+
+
+
         leftStickX = OI.getInstance().getDriveController().getLeftX();
         leftStickY = OI.getInstance().getDriveController().getLeftY();
         rightStickX = OI.getInstance().getDriveController().getRightX();
@@ -49,8 +59,11 @@ public class SwerveCommand extends CommandBase {
         velX = leftStickX * SwerveConstants.MAX_LINEAR_VEL;
         velY = leftStickY * SwerveConstants.MAX_LINEAR_VEL;
         angVel = rightStickX * SwerveConstants.MAX_ANGULAR_VEL;
+//
+//        System.out.println("ABS ENCODER: " + SwerveSubsystemPhoenix6.getInstance().getAbsEncoderPosition(0));
 
-        angle = Gyro.getInstance().getRotation2D();
+//        angle = Gyro.getInstance().getRotation2D();
+        angle = new Rotation2d(-Gyro.getInstance().getHeadingRadians());
 
         //can merge if wanted
         speed = new ChassisSpeeds(velX, velY, angVel);
@@ -58,6 +71,8 @@ public class SwerveCommand extends CommandBase {
 
         SwerveSubsystemPhoenix6.getInstance().setModuleStates(speed);
         SwerveSubsystemPhoenix6.getInstance().setModules();
+
+        count++;
     }
 
     @Override

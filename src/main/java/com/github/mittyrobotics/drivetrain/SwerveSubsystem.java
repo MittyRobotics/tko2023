@@ -76,10 +76,10 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             driveMotors[i].getConfigurator().apply(driveMotorConfig);
         }
 
-        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
-        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
-        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
-        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
+        modulePos[0] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+        modulePos[1] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
+        modulePos[2] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+        modulePos[3] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
 
         kinematics = new SwerveDriveKinematics(modulePos[0], modulePos[1], modulePos[2], modulePos[3]);
     }
