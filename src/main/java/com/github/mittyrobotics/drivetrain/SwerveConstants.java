@@ -25,7 +25,7 @@ public class SwerveConstants {
 
 
     public static final int MAG_ENCODER_CHANNEL[][] = {{0, 1}, {2, 3}, {4, 5}, {6,7}};
-    public static final int[] ABS_ENCODER_IDS = {31, 32, 33, 30};
+    public static final int[] ABS_ENCODER_IDS = {32, 33, 30, 31};
 
     public static boolean ROTATION_FALCON_INVERT = true;
 
@@ -35,7 +35,7 @@ public class SwerveConstants {
     public static final double MAX_BOOST_LINEAR_VEL = 17 / 3.28084; //18 ft/s
 
 
-    public static final double MAX_ANGULAR_VEL = 0.5; // was 3.5
+    public static final double MAX_ANGULAR_VEL = 0.1; // was 3.5
 
     public static final double BUMPER_ANGULAR_VEL = 2;
 

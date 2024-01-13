@@ -48,7 +48,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
+//        SwerveSubsystem.getInstance().setRelative();
     }
 
     /**
@@ -56,7 +63,17 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        System.out.println("X: " + SwerveSubsystem.getInstance().getRobotPose().getX() + " Y: " + SwerveSubsystem.getInstance().getRobotPose().getY());
+        System.out.println("X: " + SwerveSubsystem.getInstance().getRobotPose().getX() * 39.37 + " Y: " + SwerveSubsystem.getInstance().getRobotPose().getY() * 39.37);
+//        System.out.println("ABSOLUTE: ");
+//        for (int i = 0; i < 4; i++) {
+//            System.out.print(SwerveSubsystem.getInstance().absEncPos()[i] + " ");;
+//        }
+//        System.out.println();
+//        System.out.println("FALCONS: ");
+//        for (int i = 0; i < 4; i++) {
+//            System.out.print(SwerveSubsystem.getInstance().getAngles()[i] + " ");
+//        }
+//        System.out.println();
     }
 
     /**

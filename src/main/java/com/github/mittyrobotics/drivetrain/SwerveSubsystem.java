@@ -81,7 +81,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 //        modulePos[2] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
 //        modulePos[3] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
 
-        setRelative();
+//        setRelative();
 
         modulePos[0] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
         modulePos[1] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
@@ -113,6 +113,14 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         for (int i = 0; i < 4; i++) {
             driveMotors[i].set(ControlMode.PercentOutput, 0.1);
         }
+    }
+
+    public double[] absEncPos() {
+        double[] pos = new double[4];
+        for (int i = 0; i < 4; i++) {
+            pos[i] = absEncoders[i].getAbsPosition();
+        }
+        return pos;
     }
 
     public void setZero() {
@@ -196,6 +204,14 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         Rotation2d[] angles = new Rotation2d[4];
         for (int i = 0; i < 4; i++) {
             angles[i] = new Rotation2d(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
+        }
+        return angles;
+    }
+
+    public double[] getAngles() {
+        double[] angles = new double[4];
+        for (int i = 0; i < 4; i++) {
+            angles[i] = angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
         }
         return angles;
     }
