@@ -1,15 +1,12 @@
 package com.github.mittyrobotics.drivetrain.commands;
 
 import com.github.mittyrobotics.drivetrain.SwerveConstants;
-import com.github.mittyrobotics.drivetrain.SwerveSubsystemPhoenix6;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import com.github.mittyrobotics.util.OI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import static com.github.mittyrobotics.drivetrain.SwerveConstants.TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO;
-import static java.lang.Math.PI;
 
 public class SwerveCommand extends CommandBase {
     int count = 0;
@@ -23,7 +20,7 @@ public class SwerveCommand extends CommandBase {
     private double velX, velY, angVel;
 
     public SwerveCommand() {
-        addRequirements(SwerveSubsystemPhoenix6.getInstance());
+        addRequirements(SwerveSubsystem.getInstance());
     }
     @Override
     public void initialize() {
@@ -44,7 +41,7 @@ public class SwerveCommand extends CommandBase {
     public void execute() {
 
         if(count < 2)
-            SwerveSubsystemPhoenix6.getInstance().setRelative();
+            SwerveSubsystem.getInstance().setRelative();
 
 
 
@@ -69,8 +66,8 @@ public class SwerveCommand extends CommandBase {
         speed = new ChassisSpeeds(velX, velY, angVel);
         speed = speed.fromFieldRelativeSpeeds(speed, angle);
 
-        SwerveSubsystemPhoenix6.getInstance().setModuleStates(speed);
-        SwerveSubsystemPhoenix6.getInstance().setModules();
+        SwerveSubsystem.getInstance().setModuleStates(speed);
+        SwerveSubsystem.getInstance().setModules();
 
         count++;
     }

@@ -1,9 +1,11 @@
 package com.github.mittyrobotics;
 
-import com.github.mittyrobotics.drivetrain.SwerveSubsystemPhoenix6;
+import com.github.mittyrobotics.drivetrain.SwerveSubsystem;
 import com.github.mittyrobotics.util.Gyro;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.sql.SQLOutput;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,11 +20,13 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         Gyro.getInstance().initHardware();
-        SwerveSubsystemPhoenix6.getInstance().initHardware();
+        SwerveSubsystem.getInstance().initHardware();
+        SwerveSubsystem.getInstance().initPose(0, 0, 0);
     }
 
     @Override
     public void robotPeriodic() {
+       SwerveSubsystem.getInstance().updatePose();
        CommandScheduler.getInstance().run();
     }
 
@@ -52,7 +56,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-//        SwerveSubsystemPhoenix6.getInstance().setZero();
+        System.out.println("X: " + SwerveSubsystem.getInstance().getRobotPose().getX() + " Y: " + SwerveSubsystem.getInstance().getRobotPose().getY());
     }
 
     /**
