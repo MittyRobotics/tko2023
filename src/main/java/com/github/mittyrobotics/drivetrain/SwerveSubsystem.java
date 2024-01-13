@@ -72,27 +72,23 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
             angleMotors[i].setSelectedSensorPosition(0);
 //            angleMotors[i].setInverted(ANGLE_INVERTED[i]);
             angleMotors[i].setNeutralMode(NeutralMode.Coast);
-
-
-            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition() - 1./4) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
+            angleMotors[i].setInverted(true);
 //            angleMotors[i].setSelectedSensorPosition(angleMotors[i].getSelectedSensorPosition() + PI/2. * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO);
         }
 
-//        modulePos[0] = new Translation2d(SwerveConstants.W, SwerveConstants.L);
-//        modulePos[1] = new Translation2d(-SwerveConstants.W, SwerveConstants.L);
-//        modulePos[2] = new Translation2d(-SwerveConstants.W, -SwerveConstants.L);
-//        modulePos[3] = new Translation2d(SwerveConstants.W, -SwerveConstants.L);
+//        modulePos[0] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+//        modulePos[1] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
+//        modulePos[2] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+//        modulePos[3] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
 
-        modulePos[0] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
-        modulePos[1] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
-        modulePos[2] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
-        modulePos[3] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
+        setRelative();
 
-////
-//         modulePos[0] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
-//        modulePos[1] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
-//        modulePos[2] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
-//        modulePos[3] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);;
+        modulePos[0] = new Translation2d(SwerveConstants.L, SwerveConstants.W);
+        modulePos[1] = new Translation2d(-SwerveConstants.L, SwerveConstants.W);
+        modulePos[2] = new Translation2d(-SwerveConstants.L, -SwerveConstants.W);
+        modulePos[3] = new Translation2d(SwerveConstants.L, -SwerveConstants.W);
+
+
 
         kinematics = new SwerveDriveKinematics(modulePos[0], modulePos[1], modulePos[2], modulePos[3]);
 
@@ -113,6 +109,12 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     }
 
+    public void driveFwd() {
+        for (int i = 0; i < 4; i++) {
+            driveMotors[i].set(ControlMode.PercentOutput, 0.1);
+        }
+    }
+
     public void setZero() {
         System.out.println("ID 30: " + angleMotors[3].getSelectedSensorPosition() + "ABS: " + absEncoders[3].getAbsPosition());
         count++;
@@ -128,7 +130,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
 
     public void setRelative() {
         for (int i = 0; i < 4; i++) {
-            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition() - 1./4) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
+            angleMotors[i].setSelectedSensorPosition((absEncoders[i].getAbsPosition()) * TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO * 2. * PI);
 
         }
     }
@@ -205,7 +207,7 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     public double[] getDriveDistanceMeters() {
         double[] distances = new double[4];
         for (int i = 0; i < 4; i++) {
-            distances[i] = driveMotors[i].getSelectedSensorPosition() / TICKS_PER_METER * 12.;
+            distances[i] = driveMotors[i].getSelectedSensorPosition() / TICKS_PER_METER;
         }
         return distances;
     }

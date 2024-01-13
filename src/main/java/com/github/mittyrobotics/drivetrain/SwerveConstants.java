@@ -10,12 +10,12 @@ public class SwerveConstants {
 
     //in the order of quadrants
 
-    public static final int DRIVE_MOTOR_IDS[] = {13, 15, 17, 11}; // 3, 10, 11, 7\][
+    public static final int DRIVE_MOTOR_IDS[] = {15, 17, 11, 13}; // 13, 15, 17, 11
 
 
     //in the order of quadrants
 
-    public static final int ANGLE_MOTOR_IDS[] = {12, 14, 16, 10};//6, 4, 9, 2
+    public static final int ANGLE_MOTOR_IDS[] = {14, 16, 10, 12};//12, 14, 16, 10
 
 //    public static final int DRIVE_MOTOR_IDS[] = {11, 13, 15, 17}; // 3, 10, 11, 7
 //
@@ -39,17 +39,19 @@ public class SwerveConstants {
 
     public static final double BUMPER_ANGULAR_VEL = 2;
 
-    public static final double LINEAR_VELOCITY_P = 0.05;
+    public static final double LINEAR_VELOCITY_P = 0.175;
 
     public static final double LINEAR_VELOCITY_I = 0;
 
-    public static final double LINEAR_VELOCITY_D = 0.001;
+    public static final double LINEAR_VELOCITY_D = 0.01;
 
-    public static final double ANGLE_LOCK_P = 1;
+    public static final double LINEAR_VELOCITY_FF = 1024./22328.48;
 
-    public static final double ANGLE_LOCK_I = 0.0;
+    public static final double ANGLE_LOCK_P = 0.135;
 
-    public static final double ANGLE_LOCK_D = 0;
+    public static final double ANGLE_LOCK_I = 0.0005;
+
+    public static final double ANGLE_LOCK_D = 0.002;
 
     public static final double BALANCE_P = 0.1;
     public static final double BALANCE_I = 0;

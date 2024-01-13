@@ -40,8 +40,8 @@ public class SwerveCommand extends CommandBase {
     @Override
     public void execute() {
 
-        if(count < 2)
-            SwerveSubsystem.getInstance().setRelative();
+//        if(count < 2)
+//            SwerveSubsystem.getInstance().setRelative();
 
 
 
@@ -53,9 +53,9 @@ public class SwerveCommand extends CommandBase {
         leftStickY = Math.abs(leftStickY) > 0.1 ? leftStickY : 0;
         rightStickX = Math.abs(rightStickX) > 0.1 ? rightStickX : 0;
 
-        velX = leftStickX * SwerveConstants.MAX_LINEAR_VEL;
-        velY = leftStickY * SwerveConstants.MAX_LINEAR_VEL;
-        angVel = rightStickX * SwerveConstants.MAX_ANGULAR_VEL;
+        velX = -leftStickY * SwerveConstants.MAX_LINEAR_VEL;
+        velY = -leftStickX * SwerveConstants.MAX_LINEAR_VEL;
+        angVel = -rightStickX * SwerveConstants.MAX_ANGULAR_VEL;
 //
 //        System.out.println("ABS ENCODER: " + SwerveSubsystemPhoenix6.getInstance().getAbsEncoderPosition(0));
 
@@ -63,13 +63,13 @@ public class SwerveCommand extends CommandBase {
         angle = new Rotation2d(-Gyro.getInstance().getHeadingRadians());
 
         //can merge if wanted
-        speed = new ChassisSpeeds(velX, velY, angVel);
-        speed = speed.fromFieldRelativeSpeeds(speed, angle);
+//        speed = new ChassisSpeeds(velX, velY, angVel);
+        speed = speed.fromFieldRelativeSpeeds(velX, velY, angVel, angle);
 
         SwerveSubsystem.getInstance().setModuleStates(speed);
         SwerveSubsystem.getInstance().setModules();
 
-        count++;
+//        count++;
     }
 
     @Override
