@@ -66,7 +66,7 @@ public class SwerveCommand extends CommandBase {
 //        speed = new ChassisSpeeds(velX, velY, angVel);
         speed = speed.fromFieldRelativeSpeeds(velX, velY, angVel, angle);
 
-        SwerveSubsystem.getInstance().setModuleStates(speed);
+        SwerveSubsystem.getInstance().setModuleStatesFromChassisSpeeds(speed);
         SwerveSubsystem.getInstance().setModules();
 
 //        count++;

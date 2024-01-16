@@ -147,13 +147,19 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
         return absEncoders[i].getAbsPosition();
     }
 
-    public void setModuleStates(ChassisSpeeds speed) {
+    public void setModuleStatesFromChassisSpeeds(ChassisSpeeds speed) {
         modules = kinematics.toSwerveModuleStates(speed);
 //        System.out.println("MODULES: " + Arrays.toString(modules));
         //OPTIMIZATION
         for (int i = 0; i < 4; i++) {
             modules[i] = SwerveModuleState.optimize(modules[i],
                     new Rotation2d(angleMotors[i].getSelectedSensorPosition() / TICKS_PER_RADIAN_FALCON_WITH_GEAR_RATIO));
+        }
+    }
+
+    public void setModuleStates(SwerveModuleState[] state) {
+        for (int i = 0; i < 4; i++) {
+            modules[i] = state[i];
         }
     }
 
@@ -243,6 +249,14 @@ public class SwerveSubsystem extends SubsystemBase implements IMotorSubsystem {
     //to be called in periodic()
     public void updatePose() {
         odometry.update(Gyro.getInstance().getRotation2D(), getModulePositions());
+    }
+
+    public SwerveDriveKinematics getKinematics() {
+        return kinematics;
+    }
+
+    public SwerveModuleState[] getModuleStates() {
+        return modules;
     }
 }
 
